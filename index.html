@@ -1831,7 +1831,7 @@ goAdmin('dashboard');
 <script src="https://www.gstatic.com/firebasejs/10.12.5/firebase-firestore-compat.js"></script>
 <script>
   // 1) Identidade do board (isola os comentários por módulo)
-  window.RV_CONFIG = { key: 'knowledge_center_v1', title: 'Revisão — Knowledge Center' };
+  window.RV_CONFIG = { key: 'knowledge_center_v1', title: 'Review — Knowledge Center' };
   // 2) COLE AQUI a config do seu projeto Firebase (Project settings > Your apps > Web)
   window.RV_FIREBASE = {
     apiKey: "AIzaSyDg2K6o-t5tU4EfnkxdwhZXZGRDIFgza5E",
@@ -1844,23 +1844,23 @@ goAdmin('dashboard');
 </script>
 <button id="rv-toggle">💬 Revisão</button>
 <div id="rv-bar">
-  <div class="rv-top"><span class="dot"></span> <span id="rv-title">Revisão de comentários</span> <span style="margin-left:auto;cursor:pointer" id="rv-min">—</span></div>
+  <div class="rv-top"><span class="dot"></span> <span id="rv-title">Review comments</span> <span style="margin-left:auto;cursor:pointer" id="rv-min">—</span></div>
   <div class="rv-sec">
-    <div><label>Seu nome (revisor)</label><input type="text" id="rv-name" placeholder="ex.: Maria"></div>
-    <button id="rv-mode">💬 Ativar modo comentário</button>
+    <div><label>Your name (reviewer)</label><input type="text" id="rv-name" placeholder="ex.: Maria"></div>
+    <button id="rv-mode">💬 Enable comment mode</button>
     <div class="row">
-      <button id="rv-listbtn">📋 Lista (<span id="rv-count">0</span>)</button>
-      <button id="rv-export">⬇ Exportar</button>
+      <button id="rv-listbtn">📋 List (<span id="rv-count">0</span>)</button>
+      <button id="rv-export">⬇ Export</button>
     </div>
-    <div class="row"><button id="rv-importbtn" style="flex:1">⬆ Importar comentários</button></div>
+    <div class="row"><button id="rv-importbtn" style="flex:1">⬆ Import comments</button></div>
     <input type="file" id="rv-import" accept=".html,.json" style="display:none">
-    <div class="hint">Ative o modo, <b>clique no ponto</b> e escreva. Comentários salvam no backend e aparecem para todos em tempo real.</div>
+    <div class="hint">Enable the mode, <b>click a spot</b> and write. Comments are saved to the backend and appear for everyone in real time.</div>
     <div id="rv-backend" class="rv-be">backend: …</div>
   </div>
 </div>
 <div id="rv-layer"></div>
 <div id="rv-pop"></div>
-<div id="rv-panel"><h3>Comentários <button id="rv-close">×</button></h3><div id="rv-list"></div></div>
+<div id="rv-panel"><h3>Comments <button id="rv-close">×</button></h3><div id="rv-list"></div></div>
 <script type="application/json" id="rv-data">{"savedAt":0,"comments":[]}</script>
 
 <style>
@@ -1941,11 +1941,11 @@ goAdmin('dashboard');
       try{
         if(!firebase.apps.length) firebase.initializeApp(fb);
         col=firebase.firestore().collection('rv_comments').doc(KEY).collection('items');
-        isFB=true; setBE('Firebase (tempo real)',true);
+        isFB=true; setBE('Firebase (real-time)',true);
         col.orderBy('n').onSnapshot(function(snap){
           comments=[]; snap.forEach(function(d){var x=d.data();x.id=d.id;comments.push(x);});
           seq=comments.reduce(function(m,c){return Math.max(m,c.n||0)},0); render();
-        },function(err){console.warn('RV firestore',err); setBE('Firebase (erro — ver regras)',false);});
+        },function(err){console.warn('RV firestore',err); setBE('Firebase (error — check rules)',false);});
         return;
       }catch(e){console.warn('RV firebase init falhou, usando Local',e);}
     }
@@ -1970,31 +1970,31 @@ goAdmin('dashboard');
     comments.filter(function(c){return (c.ctx||'view:dashboard')===curCtx();}).forEach(function(c){var pin=document.createElement('div');pin.className='rv-pin'+(c.resolved?' resolved':'');pin.textContent=c.n;
       pin.style.left=(c.xPct*W)+'px';pin.style.top=(c.yPct*H)+'px';pin.title=(c.author||'?')+': '+c.text;
       pin.addEventListener('click',function(ev){ev.stopPropagation();openPop(c,pin)});layer.appendChild(pin);});
-    list.innerHTML=''; if(!comments.length){list.innerHTML='<p style="color:#94a3b8;font-size:13px;padding:6px">Nenhum comentário ainda.</p>';}
+    list.innerHTML=''; if(!comments.length){list.innerHTML='<p style="color:#94a3b8;font-size:13px;padding:6px">No comments yet.</p>';}
     comments.slice().sort(function(a,b){return a.n-b.n}).forEach(function(c){var it=document.createElement('div');it.className='rv-item'+(c.resolved?' resolved':'');
-      it.innerHTML='<div class="h"><span class="b">'+c.n+'</span> '+esc(c.author||'—')+(c.resolved?' · ✓ resolvido':'')+'</div><div class="t">'+esc(c.text)+'</div><div class="when">'+(c.ts?new Date(c.ts).toLocaleString('pt-BR'):'')+'</div><div style="font-size:10.5px;color:#94a3b8;margin-top:3px">\uD83D\uDCCD '+ctxLabel(c.ctx)+'</div>';
+      it.innerHTML='<div class="h"><span class="b">'+c.n+'</span> '+esc(c.author||'—')+(c.resolved?' · ✓ resolved':'')+'</div><div class="t">'+esc(c.text)+'</div><div class="when">'+(c.ts?new Date(c.ts).toLocaleString('en-US'):'')+'</div><div style="font-size:10.5px;color:#94a3b8;margin-top:3px">\uD83D\uDCCD '+ctxLabel(c.ctx)+'</div>';
       it.addEventListener('click',function(){ rvJump(c); });list.appendChild(it);});
     countEl.textContent=comments.length;
     if(!isFB) syncEmbed();
   }
   function openPop(c,el){var r=el?el.getBoundingClientRect():{left:innerWidth/2,top:innerHeight/2};pop.style.display='block';
     pop.style.left=Math.min(r.left+30,innerWidth-280)+'px';pop.style.top=Math.max(8,Math.min(r.top,innerHeight-180))+'px';
-    pop.innerHTML='<div class="meta">Pino #'+c.n+(c.author?(' · '+esc(c.author)):'')+'</div><textarea id="rv-ta">'+esc(c.text)+'</textarea><div class="acts"><button class="save" id="rv-sv">Salvar</button><button class="res" id="rv-rs">'+(c.resolved?'Reabrir':'Resolver')+'</button><button class="del" id="rv-dl">Excluir</button></div>';
+    pop.innerHTML='<div class="meta">Pin #'+c.n+(c.author?(' · '+esc(c.author)):'')+'</div><textarea id="rv-ta">'+esc(c.text)+'</textarea><div class="acts"><button class="save" id="rv-sv">Save</button><button class="res" id="rv-rs">'+(c.resolved?'Reopen':'Resolve')+'</button><button class="del" id="rv-dl">Delete</button></div>';
     var ta=document.getElementById('rv-ta');ta.focus();
-    document.getElementById('rv-sv').onclick=function(){c.text=ta.value.trim();c.author=nameInput.value||c.author||'Anônimo';c.ts=Date.now();if(!c.text){deleteComment(c)}else{updateComment(c)}pop.style.display='none';};
+    document.getElementById('rv-sv').onclick=function(){c.text=ta.value.trim();c.author=nameInput.value||c.author||'Anonymous';c.ts=Date.now();if(!c.text){deleteComment(c)}else{updateComment(c)}pop.style.display='none';};
     document.getElementById('rv-rs').onclick=function(){c.resolved=!c.resolved;updateComment(c);pop.style.display='none';};
     document.getElementById('rv-dl').onclick=function(){deleteComment(c);pop.style.display='none';};
   }
   document.addEventListener('click',function(ev){if(!commentMode)return;if(ev.target.closest('#rv-bar,#rv-toggle,#rv-panel,#rv-pop,.rv-pin'))return;
     var sc=getScroller(),docMode=isDoc(sc),rect=sc.getBoundingClientRect?sc.getBoundingClientRect():{left:0,top:0};
     var x,y; if(docMode){x=ev.pageX;y=ev.pageY;} else {x=ev.clientX-(rect.left||0)+(sc.scrollLeft||0);y=ev.clientY-(rect.top||0)+(sc.scrollTop||0);}
-    var c={id:uid(),n:(++seq),xPct:x/(scW(sc)||1),yPct:y/(scH(sc)||1),author:nameInput.value||'Anônimo',text:'',ts:Date.now(),resolved:false,ctx:curCtx()};
+    var c={id:uid(),n:(++seq),xPct:x/(scW(sc)||1),yPct:y/(scH(sc)||1),author:nameInput.value||'Anonymous',text:'',ts:Date.now(),resolved:false,ctx:curCtx()};
     if(!isFB){comments.push(c);} addComment2(c);
     setTimeout(function(){openPop(c,findPin(c));},isFB?260:0);
   });
   function addComment2(c){ if(isFB){col.doc(c.id).set(strip(c));} else {persistLocal();render();} }
   function findPin(c){var pins=layer.querySelectorAll('.rv-pin');for(var i=0;i<pins.length;i++){if(pins[i].textContent==String(c.n))return pins[i];}return pins[pins.length-1];}
-  modeBtn.onclick=function(){commentMode=!commentMode;document.body.classList.toggle('rv-commenting',commentMode);modeBtn.classList.toggle('on',commentMode);modeBtn.textContent=commentMode?'✋ Sair do modo comentário':'💬 Ativar modo comentário';};
+  modeBtn.onclick=function(){commentMode=!commentMode;document.body.classList.toggle('rv-commenting',commentMode);modeBtn.classList.toggle('on',commentMode);modeBtn.textContent=commentMode?'✋ Exit comment mode':'💬 Enable comment mode';};
   document.getElementById('rv-listbtn').onclick=function(){panel.classList.add('open')};
   document.getElementById('rv-close').onclick=function(){panel.classList.remove('open')};
   nameInput.onchange=function(){localStorage.setItem(KEY+'_name',nameInput.value||'');};
@@ -2009,13 +2009,13 @@ goAdmin('dashboard');
   document.getElementById('rv-import').onchange=function(e){var f=e.target.files[0];if(!f)return;var rd=new FileReader();
     rd.onload=function(){var data=null,t=rd.result;if(f.name.endsWith('.json')){data=parse(t)}else{var m=t.match(/<script[^>]*id="rv-data"[^>]*>([\s\S]*?)<\/script>/);if(m)data=parse(m[1]);}
       if(data&&data.comments){
-        if(isFB){ data.comments.forEach(function(c){var nc=strip(c);nc.n=(++seq);col.doc(uid()).set(nc);}); alert('Enviados '+data.comments.length+' comentário(s) ao Firebase.'); }
-        else { comments=data.comments;seq=comments.reduce(function(mx,c){return Math.max(mx,c.n||0)},0);persistLocal();render();alert('Importados '+comments.length+' comentário(s).'); }
-      } else alert('Não encontrei comentários nesse arquivo.');};
+        if(isFB){ data.comments.forEach(function(c){var nc=strip(c);nc.n=(++seq);col.doc(uid()).set(nc);}); alert('Sent '+data.comments.length+' comment(s) to Firebase.'); }
+        else { comments=data.comments;seq=comments.reduce(function(mx,c){return Math.max(mx,c.n||0)},0);persistLocal();render();alert('Imported '+comments.length+' comment(s).'); }
+      } else alert('No comments found in this file.');};
     rd.readAsText(f);};
   function dl(blob,name){var a=document.createElement('a');a.href=URL.createObjectURL(blob);a.download=name;a.click();setTimeout(function(){URL.revokeObjectURL(a.href)},2000);}
   function curCtx(){ return document.body.getAttribute('data-rv-context')||'view:dashboard'; }
-  var CTXLBL={'view:dashboard':'Dashboard','view:articles-search':'Articles search','view:feedbacks-search':'Feedbacks search','view:category-reg':'Category registration','view:subcategory-reg':'Subcategory registration','view:tag-reg':'Tag registration','view:access-permissions':'Access Permissions','view:kc-home':'KC \u00b7 Home','view:kc-results':'KC \u00b7 Resultados','view:kc-article':'KC \u00b7 Artigo','modal:article:article':'Modal Artigo','modal:article:feedbacks':'Modal \u00b7 Feedbacks','modal:article:historic':'Modal \u00b7 Historic','modal:big:fullscreen':'Modal Fullscreen','modal:big:preview':'Modal Preview'};
+  var CTXLBL={'view:dashboard':'Dashboard','view:articles-search':'Articles search','view:feedbacks-search':'Feedbacks search','view:category-reg':'Category registration','view:subcategory-reg':'Subcategory registration','view:tag-reg':'Tag registration','view:access-permissions':'Access Permissions','view:kc-home':'KC \u00b7 Home','view:kc-results':'KC \u00b7 Results','view:kc-article':'KC \u00b7 Article','modal:article:article':'Article modal','modal:article:feedbacks':'Modal \u00b7 Feedbacks','modal:article:historic':'Modal \u00b7 Historic','modal:big:fullscreen':'Modal Fullscreen','modal:big:preview':'Modal Preview'};
   function ctxLabel(x){ return CTXLBL[x]||x||'Dashboard'; }
   function rvJump(c){ var target=c.ctx||'view:dashboard'; panel.classList.remove('open'); if(target!==curCtx() && window.rvGoToContext){ window.rvGoToContext(target); setTimeout(function(){scrollToPin(c);},480); } else scrollToPin(c); }
   function scrollToPin(c){ var s=getScroller(); var top=c.yPct*scH(s)-160; (s.scrollTo?s:window).scrollTo({top:Math.max(0,top),behavior:'smooth'}); setTimeout(function(){flashPin(c);},420); }
