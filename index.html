@@ -2025,8 +2025,8 @@ goAdmin('dashboard');
     var s=getScroller(), pin=findPinEl(c);
     if(!pin){ if(tries<16){ setTimeout(function(){ scrollToPin(c, tries+1); }, 120); } return; }
     var top=(parseFloat(pin.style.top)||(c.yPct*scH(s)))-140;
-    (s.scrollTo?s:window).scrollTo({ top:Math.max(0,top), behavior:'smooth' });
-    setTimeout(function(){ flashPin(c); }, 450);
+    if(s.scrollTo){ s.scrollTo({ top:Math.max(0,top), behavior:'auto' }); } else { s.scrollTop=Math.max(0,top); }
+    setTimeout(function(){ flashPin(c); }, 160);
   }
   function flashPin(c){ var p=findPinEl(c); if(!p) return; p.style.transition='transform .15s, box-shadow .15s'; p.style.transform='translate(-3px,-26px) scale(1.7)'; p.style.boxShadow='0 0 0 7px rgba(244,63,94,.4)'; setTimeout(function(){ p.style.transform='translate(-3px,-26px)'; p.style.boxShadow=''; }, 900); }
   window.rvRender=render;
