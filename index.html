@@ -2017,12 +2017,32 @@ goAdmin('dashboard');
   function curCtx(){ return document.body.getAttribute('data-rv-context')||'view:dashboard'; }
   var CTXLBL={'view:dashboard':'Dashboard','view:articles-search':'Articles search','view:feedbacks-search':'Feedbacks search','view:category-reg':'Category registration','view:subcategory-reg':'Subcategory registration','view:tag-reg':'Tag registration','view:access-permissions':'Access Permissions','view:kc-home':'KC \u00b7 Home','view:kc-results':'KC \u00b7 Results','view:kc-article':'KC \u00b7 Article','modal:article:article':'Article modal','modal:article:feedbacks':'Modal \u00b7 Feedbacks','modal:article:historic':'Modal \u00b7 Historic','modal:big:fullscreen':'Modal Fullscreen','modal:big:preview':'Modal Preview'};
   function ctxLabel(x){ return CTXLBL[x]||x||'Dashboard'; }
-  function rvJump(c){ var target=c.ctx||'view:dashboard'; panel.classList.remove('open'); if(target!==curCtx() && window.rvGoToContext){ window.rvGoToContext(target); setTimeout(function(){scrollToPin(c);},480); } else scrollToPin(c); }
-  function scrollToPin(c){ var s=getScroller(); var top=c.yPct*scH(s)-160; (s.scrollTo?s:window).scrollTo({top:Math.max(0,top),behavior:'smooth'}); setTimeout(function(){flashPin(c);},420); }
-  function flashPin(c){ var pins=layer.querySelectorAll('.rv-pin'); for(var i=0;i<pins.length;i++){ if(pins[i].textContent==String(c.n)){ (function(p){ p.style.transition='transform .15s, box-shadow .15s'; p.style.transform='translate(-3px,-26px) scale(1.6)'; p.style.boxShadow='0 0 0 7px rgba(244,63,94,.35)'; setTimeout(function(){ p.style.transform='translate(-3px,-26px)'; p.style.boxShadow=''; },800); })(pins[i]); break; } } }
+  function findPinEl(c){ var pins=layer.querySelectorAll('.rv-pin'); for(var i=0;i<pins.length;i++){ if(pins[i].textContent==String(c.n)) return pins[i]; } return null; }
+  function rvJump(c){ var target=c.ctx||'view:dashboard'; panel.classList.remove('open'); if(target!==curCtx() && window.rvGoToContext){ window.rvGoToContext(target); setTimeout(function(){ scrollToPin(c,0); },150); } else { scrollToPin(c,0); } }
+  // espera o pino renderizar (cobre o skeleton de carregamento ao trocar de contexto) e rola usando a posição real do pino
+  function scrollToPin(c, tries){
+    tries = tries||0;
+    var s=getScroller(), pin=findPinEl(c);
+    if(!pin){ if(tries<16){ setTimeout(function(){ scrollToPin(c, tries+1); }, 120); } return; }
+    var top=(parseFloat(pin.style.top)||(c.yPct*scH(s)))-140;
+    (s.scrollTo?s:window).scrollTo({ top:Math.max(0,top), behavior:'smooth' });
+    setTimeout(function(){ flashPin(c); }, 450);
+  }
+  function flashPin(c){ var p=findPinEl(c); if(!p) return; p.style.transition='transform .15s, box-shadow .15s'; p.style.transform='translate(-3px,-26px) scale(1.7)'; p.style.boxShadow='0 0 0 7px rgba(244,63,94,.4)'; setTimeout(function(){ p.style.transform='translate(-3px,-26px)'; p.style.boxShadow=''; }, 900); }
   window.rvRender=render;
   window.addEventListener('resize',render); window.addEventListener('load',render);
-  try{var mo=new MutationObserver(function(){clearTimeout(window.__rvmo);window.__rvmo=setTimeout(render,80);});mo.observe(document.body,{childList:true,subtree:true});}catch(e){}
+  // re-renderiza quando o CONTEÚDO da página muda (troca de view/modal), ignorando as mutações da própria camada de revisão (evita loop de render)
+  try{var mo=new MutationObserver(function(muts){
+    for(var i=0;i<muts.length;i++){ var t=muts[i].target;
+      if(t && t.closest && (t.closest('#rv-layer')||t.closest('#rv-list')||t.closest('#rv-pop')||t.closest('#rv-bar')||t.closest('#rv-panel')||t.id==='rv-data')) continue;
+      clearTimeout(window.__rvmo); window.__rvmo=setTimeout(render,90); return;
+    }
+  });
+  var watch=document.getElementById('admin-view')||document.body; mo.observe(watch,{childList:true,subtree:true});
+  var pv=document.getElementById('public-view'); if(pv) mo.observe(pv,{childList:true,subtree:true});
+  var am=document.getElementById('article-modal-body'); if(am) mo.observe(am,{childList:true,subtree:true});
+  var bm=document.getElementById('big-modal-body'); if(bm) mo.observe(bm,{childList:true,subtree:true});
+  }catch(e){}
   initBackend();
 })();
 </script>
