@@ -440,7 +440,7 @@
 <div class="dialog" id="share-modal" style="width:404px;left:50%;top:50%;transform:translate(-50%,-50%);z-index:72">
   <div class="dialog-head"><span>Share</span><button class="kebab" onclick="closeShare()"><svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M18 6 6 18M6 6l12 12"/></svg></button></div>
   <div style="padding:0 18px 12px">
-    <div class="search-box"><input class="input" placeholder="Search"><span class="s-ico"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="11" cy="11" r="7"/><path d="m21 21-4-4"/></svg></span></div>
+    <div class="search-box"><input class="input" id="share-search" placeholder="Search" oninput="shareSearch(this.value)"><span class="s-ico"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="11" cy="11" r="7"/><path d="m21 21-4-4"/></svg></span></div>
   </div>
   <div style="max-height:300px;overflow:auto;padding:0 6px" id="share-list"></div>
   <div style="padding:16px 18px;display:flex;justify-content:flex-end;gap:10px"><button class="btn btn-outline btn-sm" onclick="closeShare()">Cancel</button><button class="btn btn-primary btn-sm" onclick="closeShare(); showToast('Artigo compartilhado')">Share</button></div>
@@ -556,14 +556,14 @@ const CAT_ICON = {
  integr:'<svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="3"/><circle cx="5" cy="5" r="2"/><circle cx="19" cy="5" r="2"/><circle cx="5" cy="19" r="2"/><circle cx="19" cy="19" r="2"/></svg>'
 };
 const ARTICLES = [
- {t:"Customizing dashboards for every team", d:"Build personalized dashboards with widgets, filters, and shared views so each department sees exactly the metrics they need at a glance.", tags:["Dashboard","Analytics","Customization module a…"], likes:"000", views:"000", img:PICS[0]},
- {t:"Building reports your stakeholders will love", d:"Choose the right chart, narrate your data clearly, and schedule automated deliveries so leadership always has fresh insights without asking twice.", tags:["Reports","Analytics","Sharing"], likes:"000", views:"000", read:"20 minutes", img:PICS[1]},
+ {t:"Customizing dashboards for every team", d:"Build personalized dashboards with widgets, filters, and shared views so each department sees exactly the metrics they need at a glance.", tags:["Dashboard","Analytics","Customization module a…"], likes:"000", views:"000", read:"12 min", img:PICS[0]},
+ {t:"Building reports your stakeholders will love", d:"Choose the right chart, narrate your data clearly, and schedule automated deliveries so leadership always has fresh insights without asking twice.", tags:["Reports","Analytics","Sharing"], likes:"000", views:"000", read:"20 min", img:PICS[1]},
 ];
 const RELATED = [
- {t:"Mobile app: tips you might have missed", d:"Discover offline mode, push notification controls, and gesture shortcuts that make working on the go faster and far less frustr…", l:"147", v:"1.1k", tags:["Mobile","Tips","iOS"], img:PICS[0]},
- {t:"Troubleshooting login and access issues", d:"From expired tokens to locked accounts, this guide walks you through the most common access problems and the fastes…", l:"201", v:"3.0k", tags:["Troubleshooting","Login","Support"], img:PICS[1]},
- {t:"Building reports your stakeholders will love", d:"Choose the right chart, narrate your data clearly, and schedule automated deliveries so leadership always has fresh insi…", l:"176", v:"1.5k", tags:["Reports","Analytics","Sharing"], img:PICS[2]},
- {t:"Release notes: what's new this quarter", d:"Catch up on the latest features, performance improvements, and bug fixes shipped to Solvace over the past three months, with scr…", l:"634", v:"5.9k", tags:["Updates","Releases","News"], img:PICS[3]},
+ {t:"Mobile app: tips you might have missed", d:"Discover offline mode, push notification controls, and gesture shortcuts that make working on the go faster and far less frustr…", l:"147", v:"1.1k", tags:["Mobile","Tips","iOS"], read:"8 min", img:PICS[0]},
+ {t:"Troubleshooting login and access issues", d:"From expired tokens to locked accounts, this guide walks you through the most common access problems and the fastes…", l:"201", v:"3.0k", tags:["Troubleshooting","Login","Support"], read:"6 min", img:PICS[1]},
+ {t:"Building reports your stakeholders will love", d:"Choose the right chart, narrate your data clearly, and schedule automated deliveries so leadership always has fresh insi…", l:"176", v:"1.5k", tags:["Reports","Analytics","Sharing"], read:"20 min", img:PICS[2]},
+ {t:"Release notes: what's new this quarter", d:"Catch up on the latest features, performance improvements, and bug fixes shipped to Solvace over the past three months, with scr…", l:"634", v:"5.9k", tags:["Updates","Releases","News"], read:"5 min", img:PICS[3]},
 ];
 const RELATED_CONTENT = [
  {t:"System Settings", open:true, items:["User Configuration","How to Set Up Notifications","Permissions and Access","External Integrations"]},
@@ -572,6 +572,32 @@ const RELATED_CONTENT = [
  {t:"Troubleshooting", open:false, items:["Common errors","Contact support"]},
  {t:"Updates", open:false, items:["Changelog","Roadmap"]},
  {t:"Integrations", open:false, items:["CRM","Messaging"]},
+];
+/* usuários fictícios para o modal Share (busca + scroll infinito) */
+const SHARE_USERS = [
+ {n:"Evandro Silva", r:"Production Operator I"}, {n:"Mariana Costa", r:"Quality Analyst"},
+ {n:"Rafael Almeida", r:"Maintenance Technician"}, {n:"Beatriz Fernandes", r:"Shift Supervisor"},
+ {n:"Lucas Oliveira", r:"Process Engineer"}, {n:"Camila Rocha", r:"Safety Coordinator"},
+ {n:"Thiago Martins", r:"Line Leader"}, {n:"Patrícia Gomes", r:"Warehouse Operator"},
+ {n:"Bruno Carvalho", r:"Continuous Improvement Analyst"}, {n:"Juliana Ribeiro", r:"Plant Manager"},
+ {n:"Felipe Souza", r:"Production Operator II"}, {n:"Larissa Dias", r:"Quality Inspector"},
+ {n:"Gustavo Pereira", r:"Reliability Engineer"}, {n:"Aline Barbosa", r:"Planning Analyst"},
+ {n:"Rodrigo Nunes", r:"Maintenance Supervisor"}, {n:"Tatiane Lima", r:"EHS Specialist"},
+ {n:"Diego Ramos", r:"Automation Technician"}, {n:"Vanessa Cardoso", r:"Logistics Coordinator"},
+ {n:"Marcelo Teixeira", r:"Production Operator I"}, {n:"Fernanda Azevedo", r:"Lab Technician"},
+ {n:"André Moreira", r:"Industrial Engineer"}, {n:"Carolina Pinto", r:"Training Lead"},
+ {n:"Eduardo Castro", r:"Tooling Technician"}, {n:"Renata Freitas", r:"Document Controller"},
+ {n:"Vinícius Lopes", r:"Production Operator III"}, {n:"Sabrina Melo", r:"Quality Analyst"},
+ {n:"Leonardo Araújo", r:"Process Technician"}, {n:"Priscila Santana", r:"Supply Planner"},
+ {n:"Caio Monteiro", r:"Maintenance Planner"}, {n:"Débora Cunha", r:"Operations Analyst"},
+ {n:"Igor Batista", r:"Forklift Operator"}, {n:"Letícia Vieira", r:"Production Coordinator"},
+ {n:"Henrique Cardin", r:"Project Engineer"}, {n:"Natália Borges", r:"HR Business Partner"},
+ {n:"Otávio Maia", r:"Quality Manager"}, {n:"Bianca Fonseca", r:"Lean Specialist"},
+ {n:"Samuel Tavares", r:"Production Operator II"}, {n:"Gabriela Antunes", r:"Scheduler"},
+ {n:"Murilo Farias", r:"Electrical Technician"}, {n:"Isabela Macedo", r:"Procurement Analyst"},
+ {n:"Fábio Reis", r:"Shift Supervisor"}, {n:"Carla Siqueira", r:"Cost Analyst"},
+ {n:"Daniel Brito", r:"Mechanical Technician"}, {n:"Amanda Pires", r:"Quality Engineer"},
+ {n:"Roberto Camargo", r:"Plant Controller"}, {n:"Verônica Andrade", r:"Production Operator I"}
 ];
 
 /* ---------- LOGO Solvace (SVG oficial do logotype) ---------- */
@@ -1393,15 +1419,26 @@ function closeKai(){ kcKaiOpen=false; if(kcResultsMode==='kai') kcResultsMode='s
 function summarizeArticle(){ kcSummaryOpen=true; renderKcArticle(); el('public-view').parentElement.scrollTop=0; }
 function closeSummary(){ kcSummaryOpen=false; renderKcArticle(); }
 /* Share modal */
-function openShare(){
-  el('share-list').innerHTML = Array.from({length:6}).map(()=>`
-    <div style="display:flex;align-items:center;gap:12px;padding:10px 12px;border-bottom:1px solid var(--color-input)">
-      <span style="width:38px;height:38px;border-radius:9999px;background:#e6e6ea;color:#555;font-size:12px;font-weight:600;display:inline-flex;align-items:center;justify-content:center">NU</span>
-      <div style="flex:1"><div style="font-weight:700;font-size:14px">Evandro Silva</div><div style="color:#8a8f9b;font-size:13px">Production Operator I</div></div>
-      <button class="cbx" aria-checked="true" onclick="toggleCbx(this)">${I.check}</button>
-    </div>`).join('');
-  el('overlay').classList.add('open'); el('share-modal').classList.add('open');
+let shareShown=10, shareQuery='', shareSel={};
+function shareInitials(n){ var p=(n||'').trim().split(/\s+/); return (((p[0]||'')[0]||'')+((p[p.length-1]||'')[0]||'')).toUpperCase(); }
+function shareFiltered(){ var q=shareQuery.trim().toLowerCase(); return q ? SHARE_USERS.filter(function(u){return (u.n+' '+u.r).toLowerCase().indexOf(q)>=0;}) : SHARE_USERS.slice(); }
+function renderShareList(){
+  var f=shareFiltered(), slice=f.slice(0,shareShown), html='';
+  if(!slice.length){ el('share-list').innerHTML='<p style="color:#94a3b8;font-size:13px;padding:18px;text-align:center">No users found.</p>'; return; }
+  slice.forEach(function(u){ var id=SHARE_USERS.indexOf(u), on=!!shareSel[id];
+    html+='<div style="display:flex;align-items:center;gap:12px;padding:10px 12px;border-bottom:1px solid var(--color-input)">'
+      +'<span style="width:38px;height:38px;border-radius:9999px;background:#e6e6ea;color:#555;font-size:12px;font-weight:600;display:inline-flex;align-items:center;justify-content:center">'+shareInitials(u.n)+'</span>'
+      +'<div style="flex:1"><div style="font-weight:700;font-size:14px">'+u.n+'</div><div style="color:#8a8f9b;font-size:13px">'+u.r+'</div></div>'
+      +'<button class="cbx" aria-checked="'+(on?'true':'false')+'" onclick="shareToggle('+id+',this)">'+I.check+'</button>'
+      +'</div>';
+  });
+  if(f.length>shareShown){ html+='<div id="share-more" style="text-align:center;color:#9aa0ac;font-size:12px;padding:12px">Loading more…</div>'; }
+  el('share-list').innerHTML=html;
 }
+function shareToggle(id,btn){ shareSel[id]=!shareSel[id]; btn.setAttribute('aria-checked', shareSel[id]?'true':'false'); }
+function shareSearch(v){ shareQuery=v||''; shareShown=10; renderShareList(); var c=el('share-list'); if(c) c.scrollTop=0; }
+function shareOnScroll(){ var c=el('share-list'); if(!c) return; if(c.scrollTop+c.clientHeight >= c.scrollHeight-28){ if(shareShown<shareFiltered().length){ shareShown+=10; renderShareList(); } } }
+function openShare(){ shareQuery=''; shareShown=10; shareSel={}; var s=el('share-search'); if(s) s.value=''; renderShareList(); var c=el('share-list'); if(c){ c.scrollTop=0; c.onscroll=shareOnScroll; } el('overlay').classList.add('open'); el('share-modal').classList.add('open'); }
 function closeShare(){ el('share-modal').classList.remove('open'); maybeCloseOverlay(); }
 /* painel de resumo do KAI (reutilizável) */
 function kaiPanel(closeFn){
@@ -1435,7 +1472,7 @@ function renderKcHome(){
       <a onclick="viewAllArticles()" style="color:var(--color-primary);font-weight:600;font-size:14px;display:inline-flex;align-items:center;gap:8px;margin-top:18px;cursor:pointer">View articles ${I.arrow}</a>
     </div>`).join('');
   el('public-view').innerHTML=`
-    <div style="max-width:760px;margin:40px auto 0;text-align:center">
+    <div style="max-width:760px;margin:28px auto 0;text-align:center">
       <h1 class="kc-hero-title">How can we help you today?</h1>
       <p style="color:#8a8f9b;margin:8px 0 26px">Search across all documentation, guides and videos tutorials</p>
       <div style="display:flex;gap:12px;justify-content:center;align-items:center;flex-wrap:wrap">
@@ -1444,7 +1481,7 @@ function renderKcHome(){
       </div>
       <div style="display:flex;gap:8px;justify-content:center;flex-wrap:wrap;margin-top:18px">${tagPills()}</div>
     </div>
-    <div style="max-width:1180px;margin:48px auto 0">
+    <div style="max-width:1180px;margin:32px auto 0">
       <div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:18px">
         <div style="font-weight:700;font-size:18px">Quick Access</div>
         <a onclick="viewAllArticles()" style="color:var(--color-primary);font-weight:600;display:inline-flex;align-items:center;gap:8px;cursor:pointer">View all articles ${I.arrow}</a>
@@ -1457,20 +1494,20 @@ function renderKcHome(){
 function allArticles(){
   const base = [
     ...ARTICLES,
-    ...RELATED.map(r=>({t:r.t, d:r.d, tags:r.tags, likes:r.l, views:r.v, img:r.img}))
+    ...RELATED.map(r=>({t:r.t, d:r.d, tags:r.tags, likes:r.l, views:r.v, read:r.read, img:r.img}))
   ];
   const out = base.concat(base).slice(0,9);
   return out;
 }
 function articleCard(a){
-  return `<div class="article-card" onclick="openArticle()" style="cursor:pointer">
+  return `<div class="article-card" onclick="openArticle(&quot;${(a.t||'').replace(/"/g,'')}&quot;)" style="cursor:pointer">
     <div class="thumb" style="background-image:url('${a.img}')"></div>
     <div style="padding:18px;display:flex;flex-direction:column;gap:10px">
       <div style="color:var(--color-primary);font-weight:700;font-size:16px">${a.t}</div>
       <div style="color:#5a5f6b;font-size:14px;line-height:1.5;flex:1">${a.d}</div>
       <div style="display:flex;align-items:center;justify-content:space-between;color:#777;font-size:13px;margin-top:4px">
         <span style="display:inline-flex;gap:14px"><span style="display:inline-flex;gap:4px;align-items:center">${I.like}${a.likes}</span><span style="display:inline-flex;gap:4px;align-items:center">${I.eye}${a.views}</span></span>
-        ${a.read?`<span title="Read time: ${a.read}" aria-label="Read time: ${a.read}" style="display:inline-flex;align-items:center;color:#777">${I.clock}</span>`:''}
+        <span title="Read time" style="display:inline-flex;gap:4px;align-items:center;color:#777;white-space:nowrap">${I.clock}${a.read||'5 min'}</span>
       </div>
       <div style="display:flex;gap:8px;flex-wrap:wrap">${tagList(a.tags,3)}</div>
     </div>
@@ -1599,12 +1636,12 @@ function renderKcArticle(){
 
        <div style="display:flex;align-items:center;gap:8px;color:var(--color-primary);font-weight:700;margin-bottom:16px">${I.book}Related articles</div>
        <div class="grid-resp-2" style="display:grid;grid-template-columns:repeat(4,1fr);gap:18px">
-         ${RELATED.map(a=>`<div class="article-card" onclick="openArticle()" style="cursor:pointer">
+         ${RELATED.map(a=>`<div class="article-card" onclick="openArticle(&quot;${(a.t||'').replace(/"/g,'')}&quot;)" style="cursor:pointer">
            <div class="thumb" style="height:120px;background-image:url('${a.img}')"></div>
            <div style="padding:14px;display:flex;flex-direction:column;gap:8px">
              <div style="color:var(--color-primary);font-weight:700;font-size:14px;line-height:1.3">${a.t}</div>
              <div style="color:#5a5f6b;font-size:12px;line-height:1.5">${a.d}</div>
-             <div style="display:flex;gap:12px;color:#777;font-size:12px"><span style="display:inline-flex;gap:4px;align-items:center">${I.like}${a.l}</span><span style="display:inline-flex;gap:4px;align-items:center">${I.eye}${a.v}</span></div>
+             <div style="display:flex;gap:12px;color:#777;font-size:12px"><span style="display:inline-flex;gap:4px;align-items:center">${I.like}${a.l}</span><span style="display:inline-flex;gap:4px;align-items:center">${I.eye}${a.v}</span><span style="display:inline-flex;gap:4px;align-items:center">${I.clock}${a.read||'5 min'}</span></div>
              <div style="display:flex;gap:6px;flex-wrap:wrap">${a.tags.map(t=>`<span class="tag" style="font-size:11px;padding:3px 8px">${t}</span>`).join('')}</div>
            </div>
          </div>`).join('')}
@@ -2018,8 +2055,10 @@ goAdmin('dashboard');
     var sc=getScroller(),docMode=isDoc(sc),host=docMode?document.body:sc;
     if(layer.parentNode!==host) host.appendChild(layer);
     if(!docMode && getComputedStyle(sc).position==='static') sc.style.position='relative';
+    // colapsa a camada ANTES de medir, senão a própria altura dela infla o scrollHeight (rolagem fantasma)
+    layer.innerHTML=''; layer.style.height='0px';
     var W=scW(sc),H=scH(sc);
-    layer.style.width=docMode?(W+'px'):'100%'; layer.style.height=H+'px'; layer.innerHTML='';
+    layer.style.width=docMode?(W+'px'):'100%'; layer.style.height=H+'px';
     (pending?comments.concat([pending]):comments).filter(function(c){return (c.ctx||'view:dashboard')===curCtx();}).forEach(function(c){var pin=document.createElement('div');pin.className='rv-pin'+(c.resolved?' resolved':'');pin.textContent=c.n;
       pin.style.left=(c.xPct*W)+'px';pin.style.top=(c.yPct*H)+'px';pin.title=(c.author||'?')+': '+c.text;
       pin.addEventListener('click',function(ev){ev.stopPropagation();openPop(c,pin)});layer.appendChild(pin);});
