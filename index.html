@@ -91,8 +91,9 @@
   .topbar-logo{ display:flex; align-items:center; gap:8px; font-size:22px; font-weight:600; color:#0a0a0a }
   .topbar-right{ margin-left:auto; display:flex; align-items:center; gap:18px; color:var(--color-primary) }
   /* Knowledge Center — botão fixo na top bar global (#28) */
-  .top-kc{ display:inline-flex;align-items:center;gap:7px;padding:7px 12px;border:1px solid var(--color-input);border-radius:9px;background:#fff;color:var(--color-primary);font-weight:600;font-size:13px;cursor:pointer }
-  .top-kc:hover{ background:rgba(0,19,145,.06);border-color:var(--color-primary) }
+  .top-kc{ display:inline-flex;align-items:center;gap:7px;padding:8px 14px;border:0;border-radius:9px;background:var(--color-primary);color:#fff;font-weight:600;font-size:13px;cursor:pointer;white-space:nowrap;box-shadow:0 1px 2px rgba(0,19,145,.25) }
+  .top-kc:hover{ background:#0a1ec0 }
+  .top-kc svg{ flex:0 0 auto }
   .top-pin{ display:flex; align-items:center; gap:6px; font-weight:600; font-size:14px }
   .top-avatar{ width:30px;height:30px;border-radius:9999px;background:#e6e6ea;color:#555;display:flex;align-items:center;justify-content:center;font-size:11px;font-weight:600 }
   .hamburger{ display:none; background:transparent;border:0;color:var(--color-primary);margin-right:8px }
@@ -293,8 +294,10 @@
     .breadcrumb{ padding:12px 14px }
     .modal-article{ width:100vw }
     .kc-hero-title{ font-size:28px }
-    .top-kc-lbl{ display:none }
-    .topbar-right{ gap:12px }
+    .topbar-right{ gap:10px }
+    /* mobile: oculta os ícones utilitários para o botão Knowledge Center se destacar (#28) */
+    .topbar-right > svg, .top-pin, .top-avatar{ display:none }
+    .top-kc{ padding:8px 12px }
     .topbar{ padding:0 14px }
     .top-pin span, .top-apps{ display:none }
     .cols-mobile-hidden{ display:none !important }
