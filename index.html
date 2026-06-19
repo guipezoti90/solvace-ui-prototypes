@@ -1938,7 +1938,7 @@ goAdmin('dashboard');
     appId: "1:759337509403:web:311561cd571cbe2efccebe"
   };
 </script>
-<button id="rv-toggle">💬 Revisão</button>
+<button id="rv-toggle" title="Review comments">💬</button>
 <div id="rv-bar">
   <div class="rv-top"><span class="dot"></span> <span id="rv-title">Review comments</span> <span style="margin-left:auto;cursor:pointer" id="rv-min">—</span></div>
   <div class="rv-sec">
@@ -1960,7 +1960,7 @@ goAdmin('dashboard');
 <script type="application/json" id="rv-data">{"savedAt":0,"comments":[]}</script>
 
 <style>
-  #rv-bar{position:fixed;top:14px;right:14px;z-index:9000;background:#0f172a;color:#fff;border-radius:12px;box-shadow:0 8px 24px rgba(2,6,23,.35);font-size:13px;width:270px;overflow:hidden;font-family:-apple-system,BlinkMacSystemFont,"Segoe UI",Roboto,Arial,sans-serif}
+  #rv-bar{position:fixed;top:14px;right:14px;z-index:9000;display:none;background:#0f172a;color:#fff;border-radius:12px;box-shadow:0 8px 24px rgba(2,6,23,.35);font-size:13px;width:270px;overflow:hidden;font-family:-apple-system,BlinkMacSystemFont,"Segoe UI",Roboto,Arial,sans-serif}
   #rv-bar .rv-top{display:flex;align-items:center;gap:8px;padding:11px 13px;font-weight:700}
   #rv-bar .rv-top .dot{width:10px;height:10px;border-radius:50%;background:#f43f5e}
   #rv-bar .rv-sec{padding:0 13px 13px;display:flex;flex-direction:column;gap:9px}
@@ -1972,7 +1972,7 @@ goAdmin('dashboard');
   #rv-bar .hint{font-size:11px;color:#94a3b8;line-height:1.45}
   #rv-bar .rv-be{font-size:10.5px;color:#64748b;border-top:1px solid #1e293b;padding-top:8px}
   #rv-bar .rv-be b{color:#cbd5e1}
-  #rv-toggle{position:fixed;top:14px;right:14px;z-index:9001;background:#0f172a;color:#fff;border:0;border-radius:10px;padding:9px 12px;font-weight:700;font-size:13px;cursor:pointer;box-shadow:0 6px 18px rgba(2,6,23,.3);display:none;font-family:inherit}
+  #rv-toggle{position:fixed;top:14px;right:14px;z-index:9001;background:#0f172a;color:#fff;border:0;border-radius:50%;width:46px;height:46px;font-size:20px;cursor:pointer;box-shadow:0 6px 18px rgba(2,6,23,.3);display:flex;align-items:center;justify-content:center;font-family:inherit}
   .rv-pin{position:absolute;z-index:8000;width:26px;height:26px;border-radius:50% 50% 50% 2px;background:#f43f5e;color:#fff;display:flex;align-items:center;justify-content:center;font-size:12px;font-weight:700;cursor:pointer;transform:translate(-3px,-26px);box-shadow:0 3px 8px rgba(0,0,0,.3);border:2px solid #fff}
   .rv-pin.resolved{background:#16a34a;opacity:.85}
   #rv-layer{position:absolute;top:0;left:0;width:100%;pointer-events:none;z-index:7000}
@@ -2094,10 +2094,10 @@ goAdmin('dashboard');
   });
   function findPin(c){var pins=layer.querySelectorAll('.rv-pin');for(var i=0;i<pins.length;i++){if(pins[i].textContent==String(c.n))return pins[i];}return pins[pins.length-1];}
   modeBtn.onclick=function(){commentMode=!commentMode;document.body.classList.toggle('rv-commenting',commentMode);modeBtn.classList.toggle('on',commentMode);modeBtn.textContent=commentMode?'✋ Exit comment mode':'💬 Enable comment mode';};
-  document.getElementById('rv-listbtn').onclick=function(){panel.classList.add('open')};
+  document.getElementById('rv-listbtn').onclick=function(){panel.classList.toggle('open')};
   document.getElementById('rv-close').onclick=function(){panel.classList.remove('open')};
   nameInput.onchange=function(){localStorage.setItem(KEY+'_name',nameInput.value||'');};
-  document.getElementById('rv-min').onclick=function(){document.getElementById('rv-bar').style.display='none';document.getElementById('rv-toggle').style.display='block';};
+  document.getElementById('rv-min').onclick=function(){document.getElementById('rv-bar').style.display='none';document.getElementById('rv-toggle').style.display='flex';};
   document.getElementById('rv-toggle').onclick=function(){document.getElementById('rv-bar').style.display='block';document.getElementById('rv-toggle').style.display='none';};
   document.getElementById('rv-export').onclick=function(){syncEmbed();var clone=document.documentElement.cloneNode(true);
     var a=clone.querySelector('#rv-layer');if(a)a.innerHTML='';var b=clone.querySelector('#rv-list');if(b)b.innerHTML='';
