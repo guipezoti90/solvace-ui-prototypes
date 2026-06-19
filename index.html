@@ -2083,9 +2083,13 @@ goAdmin('dashboard');
     document.getElementById('rv-rs').onclick=function(){ if(c._new){return;} c.resolved=!c.resolved;updateComment(c);pop.style.display='none';};
     document.getElementById('rv-dl').onclick=function(){ pop.style.display='none'; if(c._new){pending=null;render();} else {deleteComment(c);} };
   }
+  // anti-clique acidental (v3): clicar em elemento clicável/navegação NÃO cria pino
+  function rvInteractive(el){var sel='a,button,input,select,textarea,label,[role="button"],[tabindex],[contenteditable="true"],[onclick]'+(CFG.skipSelector?(','+CFG.skipSelector):'');var n=el;while(n&&n!==document.body){try{if(n.matches&&n.matches(sel))return true;if(getComputedStyle(n).cursor==='pointer')return true;}catch(e){}n=n.parentElement;}return false;}
   document.addEventListener('click',function(ev){if(!commentMode)return;if(ev.target.closest('#rv-bar,#rv-toggle,#rv-panel,#rv-pop,.rv-pin'))return;
     // se um popup está aberto, este clique apenas fecha (e descarta pino pendente sem texto) — não cria outro
     if(pop.style.display==='block'){ if(pending){pending=null;render();} pop.style.display='none'; return; }
+    // clicou num elemento clicável (link/botão/card/aba/árvore) → deixa navegar, não cria pino
+    if(rvInteractive(ev.target)) return;
     var sc=getScroller(),docMode=isDoc(sc),rect=sc.getBoundingClientRect?sc.getBoundingClientRect():{left:0,top:0};
     var x,y; if(docMode){x=ev.pageX;y=ev.pageY;} else {x=ev.clientX-(rect.left||0)+(sc.scrollLeft||0);y=ev.clientY-(rect.top||0)+(sc.scrollTop||0);}
     // cria pino PENDENTE (local) — só grava no backend ao Salvar com texto
