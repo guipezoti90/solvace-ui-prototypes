@@ -304,6 +304,11 @@
     .grid-resp-3,.grid-resp-2{ grid-template-columns:1fr !important }
     .dash-grid{ grid-template-columns:1fr !important }
   }
+  /* celulares estreitos: botão KC vira só ícone (continua destacado, sem estourar o header) */
+  @media (max-width:480px){
+    .top-kc-lbl{ display:none }
+    .top-kc{ padding:9px 11px }
+  }
 </style>
 </head>
 <body>
