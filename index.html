@@ -63,10 +63,10 @@
   .side-acc-trigger .chev{ margin-left:auto; transition:transform .2s }
   .side-acc-trigger[aria-expanded="true"] .chev{ transform:rotate(180deg) }
   /* Knowledge Center — gateway no topo da sidebar (#28) */
-  .side-kc{ display:flex;align-items:center;gap:12px;width:100%;padding:11px 16px;margin-bottom:6px;color:#fff;font-size:14px;font-weight:600;cursor:pointer;background:rgba(255,255,255,.12);border-left:3px solid #fff }
+  .side-kc{ display:flex;align-items:center;gap:12px;width:100%;padding:11px 16px;margin-bottom:6px;color:#fff;font-size:14px;font-weight:600;cursor:pointer;background:rgba(255,255,255,.12);border-radius:10px }
   .side-kc:hover{ background:rgba(255,255,255,.2) }
   .side-kc svg{ flex:0 0 auto }
-  #sidebar[data-collapsed="true"] .side-kc{ justify-content:center;padding:11px 0;border-left:0 }
+  #sidebar[data-collapsed="true"] .side-kc{ justify-content:center;padding:11px 0 }
   .side-acc-content{ display:flex; flex-direction:column }
   .side-acc-content.collapsed{ display:none }
   .side-sublink{ padding:10px 16px 10px 52px; color:#dfe3ff; font-size:14px }
@@ -1291,14 +1291,14 @@ function viewsTab(t){ const on=dashViewsTab===t; return `<span onclick="setDashV
 function renderDashboard(){
   const topRows=Array.from({length:10}).map(()=>`
     <tr><td><span class="row-link" style="cursor:pointer" onclick="openArticleModal('view')">ART-99</span></td>
-      <td style="max-width:220px;overflow:hidden;text-overflow:ellipsis;white-space:nowrap">Lorem Ipsum is simply dummy text of the…</td>
+      <td style="overflow:hidden;text-overflow:ellipsis;white-space:nowrap">Lorem Ipsum is simply dummy text of the printing and typesetting industry…</td>
       <td class="cols-mobile-hidden">Category</td>
       <td class="cols-mobile-hidden">Subcategory</td>
       <td class="cols-mobile-hidden">Originator</td>
       <td class="cols-mobile-hidden">00/00/0000</td>
       <td style="text-align:right;color:#777"><span style="display:inline-flex;gap:5px;align-items:center;justify-content:flex-end">${I.eye}000</span></td></tr>`).join('');
   const fbRows=Array.from({length:10}).map(()=>`
-    <tr><td style="max-width:240px">Lorem Ipsum is simply dummy text of th…</td><td><span class="row-link" style="cursor:pointer" onclick="openArticleModal('view','feedbacks')">ART-99</span></td><td class="cols-mobile-hidden">00/00/0000</td></tr>`).join('');
+    <tr><td style="overflow:hidden;text-overflow:ellipsis;white-space:nowrap">Lorem Ipsum is simply dummy text of the printing and typesetting industry…</td><td><span class="row-link" style="cursor:pointer" onclick="openArticleModal('view','feedbacks')">ART-99</span></td><td class="cols-mobile-hidden" style="text-align:right">00/00/0000</td></tr>`).join('');
   const rowLabel = dashViewsTab==='Client' ? 'Client name' : 'Site name';
   const clientRows=Array.from({length:10}).map(()=>`
     <tr><td>${rowLabel}</td>
@@ -1326,7 +1326,7 @@ function renderDashboard(){
        <div style="display:flex;justify-content:center;gap:24px;border-bottom:1px solid var(--color-input);padding-bottom:10px;margin-bottom:14px;font-size:14px">
          ${viewsTab('Client')}${viewsTab('Site')}
        </div>
-       <table class="tbl" style="table-layout:fixed;width:100%"><thead><tr><th style="width:46%"><span class="th-sort">NAME ${I.chevDownSm}</span></th><th style="width:27%">Views</th><th style="width:27%">Feedbacks</th></tr></thead>
+       <table class="tbl" style="table-layout:fixed;width:100%"><thead><tr><th style="width:40%"><span class="th-sort">NAME ${I.chevDownSm}</span></th><th style="width:30%">Views</th><th style="width:30%">Feedbacks</th></tr></thead>
          <tbody>${clientRows}</tbody>
          <tfoot><tr>
            <td style="background:var(--color-table-head);padding:12px 16px"></td>
@@ -1337,19 +1337,19 @@ function renderDashboard(){
      </div>
      <div class="card card-pad" style="grid-column:1 / -1">
        <div style="font-weight:700;margin-bottom:14px">Top view articles</div>
-       <div style="overflow-x:auto"><table class="tbl" style="width:100%"><thead><tr>
-         <th><span class="th-sort">NUMBER ${I.chevDownSm}</span></th>
-         <th><span class="th-sort">ARTICLE ${I.chevDownSm}</span></th>
-         <th class="cols-mobile-hidden">CATEGORY</th>
-         <th class="cols-mobile-hidden">SUBCATEGORY</th>
-         <th class="cols-mobile-hidden">ORIGINATOR</th>
-         <th class="cols-mobile-hidden">VERSION DATE</th>
-         <th style="text-align:right">VIEWS</th>
+       <div style="overflow-x:auto"><table class="tbl" style="table-layout:fixed;width:100%"><thead><tr>
+         <th style="width:9%"><span class="th-sort">NUMBER ${I.chevDownSm}</span></th>
+         <th style="width:28%"><span class="th-sort">ARTICLE ${I.chevDownSm}</span></th>
+         <th class="cols-mobile-hidden" style="width:15%">CATEGORY</th>
+         <th class="cols-mobile-hidden" style="width:15%">SUBCATEGORY</th>
+         <th class="cols-mobile-hidden" style="width:16%">ORIGINATOR</th>
+         <th class="cols-mobile-hidden" style="width:11%">VERSION DATE</th>
+         <th style="width:6%;text-align:right">VIEWS</th>
        </tr></thead><tbody>${topRows}</tbody></table></div>
      </div>
      <div class="card card-pad" style="grid-column:1 / -1">
        <div style="font-weight:700;margin-bottom:14px">Last feedbacks</div>
-       <table class="tbl" style="table-layout:fixed;width:100%"><thead><tr><th style="width:55%"><span class="th-sort">FEEDBACK ${I.chevDownSm}</span></th><th style="width:30%"><span class="th-sort">SOURCE ${I.chevDownSm}</span></th><th class="cols-mobile-hidden" style="width:15%">DATE</th></tr></thead><tbody>${fbRows}</tbody></table>
+       <table class="tbl" style="table-layout:fixed;width:100%"><thead><tr><th style="width:60%"><span class="th-sort">FEEDBACK ${I.chevDownSm}</span></th><th style="width:22%"><span class="th-sort">SOURCE ${I.chevDownSm}</span></th><th class="cols-mobile-hidden" style="width:18%;text-align:right">DATE</th></tr></thead><tbody>${fbRows}</tbody></table>
        ${pagination(131)}
      </div>
    </div>`;
