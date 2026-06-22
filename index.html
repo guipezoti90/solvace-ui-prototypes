@@ -2045,9 +2045,13 @@ goAdmin('dashboard');
   function isDoc(sc){return sc===document.scrollingElement||sc===document.documentElement||sc===document.body;}
   function scW(sc){return isDoc(sc)?document.documentElement.scrollWidth:sc.scrollWidth;}
   function scH(sc){return isDoc(sc)?document.documentElement.scrollHeight:sc.scrollHeight;}
+  // ---------- ancoragem por elemento (pino fica preso ao elemento, estável em qualquer tela) ----------
+  function rvPath(el,root){ if(!el||el.nodeType!==1||!root||!root.contains(el)||el===root) return ''; var parts=[]; while(el&&el!==root&&el.nodeType===1){ var i=1,s=el; while(s=s.previousElementSibling) i++; parts.unshift(i); el=el.parentNode; } return parts.join('.'); }
+  function rvResolve(path,root){ if(!path||!root) return null; var el=root,a=path.split('.'); for(var k=0;k<a.length;k++){ el=el.children[parseInt(a[k],10)-1]; if(!el) return null; } return el; }
+  function rvElPos(ae,sc){ var er=ae.getBoundingClientRect(); if(isDoc(sc)) return {l:er.left+(window.pageXOffset||0),t:er.top+(window.pageYOffset||0),w:er.width,h:er.height}; var sr=sc.getBoundingClientRect(); return {l:er.left-sr.left+sc.scrollLeft,t:er.top-sr.top+sc.scrollTop,w:er.width,h:er.height}; }
 
   // ---------- backend ----------
-  function strip(c){return {n:c.n,xPct:c.xPct,yPct:c.yPct,author:c.author||'',text:c.text||'',ts:c.ts||Date.now(),resolved:!!c.resolved,ctx:c.ctx||''};}
+  function strip(c){return {n:c.n,xPct:c.xPct,yPct:c.yPct,asel:c.asel||'',aox:(typeof c.aox==='number'?c.aox:null),aoy:(typeof c.aoy==='number'?c.aoy:null),author:c.author||'',text:c.text||'',ts:c.ts||Date.now(),resolved:!!c.resolved,ctx:c.ctx||''};}
   function persistLocal(){localStorage.setItem(KEY,JSON.stringify({savedAt:Date.now(),comments:comments}));localStorage.setItem(KEY+'_name',nameInput.value||'');syncEmbed();}
   function syncEmbed(){document.getElementById('rv-data').textContent=JSON.stringify({savedAt:Date.now(),comments:comments.map(strip)});}
   function initBackend(){
@@ -2085,7 +2089,9 @@ goAdmin('dashboard');
     var W=scW(sc),H=scH(sc);
     layer.style.width=docMode?(W+'px'):'100%'; layer.style.height=H+'px';
     (pending?comments.concat([pending]):comments).filter(function(c){return (c.ctx||'view:dashboard')===curCtx();}).forEach(function(c){var pin=document.createElement('div');pin.className='rv-pin'+(c.resolved?' resolved':'');pin.textContent=c.n;
-      pin.style.left=(c.xPct*W)+'px';pin.style.top=(c.yPct*H)+'px';pin.title=(c.author||'?')+': '+c.text;
+      var px=c.xPct*W, py=c.yPct*H;
+      if(c.asel){ var ae=rvResolve(c.asel,host); if(ae&&ae.getClientRects().length){ var ep=rvElPos(ae,sc); px=ep.l+(typeof c.aox==='number'?c.aox:0.5)*ep.w; py=ep.t+(typeof c.aoy==='number'?c.aoy:0.5)*ep.h; } }
+      pin.style.left=px+'px';pin.style.top=py+'px';pin.title=(c.author||'?')+': '+c.text;
       pin.addEventListener('click',function(ev){ev.stopPropagation();openPop(c,pin)});layer.appendChild(pin);});
     list.innerHTML=''; if(!comments.length){list.innerHTML='<p style="color:#94a3b8;font-size:13px;padding:6px">No comments yet.</p>';}
     comments.slice().sort(function(a,b){return a.n-b.n}).forEach(function(c){var it=document.createElement('div');it.className='rv-item'+(c.resolved?' resolved':'');
@@ -2112,7 +2118,9 @@ goAdmin('dashboard');
     var sc=getScroller(),docMode=isDoc(sc),rect=sc.getBoundingClientRect?sc.getBoundingClientRect():{left:0,top:0};
     var x,y; if(docMode){x=ev.pageX;y=ev.pageY;} else {x=ev.clientX-(rect.left||0)+(sc.scrollLeft||0);y=ev.clientY-(rect.top||0)+(sc.scrollTop||0);}
     // cria pino PENDENTE (local) — só grava no backend ao Salvar com texto
-    var c={id:uid(),n:(++seq),xPct:x/(scW(sc)||1),yPct:y/(scH(sc)||1),author:nameInput.value||'Anonymous',text:'',ts:Date.now(),resolved:false,ctx:curCtx(),_new:true};
+    var root=docMode?document.body:sc, asel=rvPath(ev.target,root), aox=0.5, aoy=0.5;
+    if(asel){ var ep=rvElPos(ev.target,sc); if(ep.w) aox=(x-ep.l)/ep.w; if(ep.h) aoy=(y-ep.t)/ep.h; }
+    var c={id:uid(),n:(++seq),xPct:x/(scW(sc)||1),yPct:y/(scH(sc)||1),asel:asel,aox:aox,aoy:aoy,author:nameInput.value||'Anonymous',text:'',ts:Date.now(),resolved:false,ctx:curCtx(),_new:true};
     pending=c; render(); openPop(c, findPin(c));
   });
   function findPin(c){var pins=layer.querySelectorAll('.rv-pin');for(var i=0;i<pins.length;i++){if(pins[i].textContent==String(c.n))return pins[i];}return pins[pins.length-1];}
