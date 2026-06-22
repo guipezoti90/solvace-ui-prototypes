@@ -1728,6 +1728,9 @@ function renderSelList(){
   const cfg=SEL_OPTS[selKey];
   el('sel-dd-list').innerHTML = cfg.opts.map(o=>{
     const sel = cfg.multi ? (artSel[selKey]||[]).includes(o) : artSel[selKey]===o;
+    if(cfg.multi){
+      return `<div class="idd-item" onclick="pickSel('${o.replace(/'/g,"\\'")}')"><span class="cbx" aria-checked="${sel?'true':'false'}">${I.check}</span>${selKey==='participants'?avatar(22):''}<span style="flex:1">${o}</span></div>`;
+    }
     return `<div class="idd-item" onclick="pickSel('${o.replace(/'/g,"\\'")}')" style="${sel?'color:var(--color-primary);font-weight:600':''}">${selKey==='participants'?avatar(22):''}<span style="flex:1">${o}</span>${sel?I.check:''}</div>`;
   }).join('');
 }
