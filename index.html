@@ -1088,6 +1088,8 @@ function renderFeedbacksSearch(){
       <td style="max-width:360px">Lorem Ipsum is simply dummy text of the printing.</td>
       <td><span class="row-link" style="cursor:pointer" onclick="openArticleModal('view','feedbacks')">ART-99</span></td>
       <td class="cols-mobile-hidden"><span style="display:inline-flex;align-items:center;gap:8px">${avatar(20)} User name</span></td>
+      <td class="cols-mobile-hidden">Client name</td>
+      <td class="cols-mobile-hidden">Site name</td>
       <td class="cols-mobile-hidden">00/00/0000</td>
     </tr>`).join('');
   const tbl = pageState==='empty' ? tableEmptyState('feedbacks-search') : `<div class="tbl-bleed" style="overflow-x:auto"><table class="tbl">
@@ -1095,6 +1097,8 @@ function renderFeedbacksSearch(){
         <th><span class="th-sort">FEEDBACK ${I.chevDownSm}</span></th>
         <th><span class="th-sort">SOURCE ${I.chevDownSm}</span></th>
         <th class="cols-mobile-hidden">USER</th>
+        <th class="cols-mobile-hidden">CLIENT</th>
+        <th class="cols-mobile-hidden">SITE</th>
         <th class="cols-mobile-hidden">DATE</th>
       </tr></thead>
       <tbody>${rows}</tbody>
@@ -1765,10 +1769,11 @@ function removeSelChip(key,opt){
 }
 /* validação do registro: Include só habilita com Title + Category + Subcategory preenchidos */
 function artFormValid(){
-  const t=document.getElementById('art-title-input');
-  const titleOk=t?!!t.value.trim():false;
   const has=x=>Array.isArray(x)?x.length>0:!!x;
-  return titleOk && has(artSel.category) && has(artSel.subcategory);
+  const titleOk=!!(artSel.title && String(artSel.title).trim());
+  // todos os campos preenchíveis: Título, Participants, Category, Subcategory, Tags e Cover
+  return titleOk && has(artSel.participants) && has(artSel.category)
+    && has(artSel.subcategory) && has(artSel.tags) && !!artCover;
 }
 function updateIncludeBtn(){
   const b=document.getElementById('art-include-btn'); if(!b) return;
@@ -1797,7 +1802,7 @@ function removeCover(){ artCover=null; renderArticleModal(); showToast('Imagem r
 /* shared header form (Title..dates) */
 function articleHeader(){
   const isView = artMode==='view', isCreate = artMode==='creation';
-  const titleVal = isCreate ? '' : 'How to set up the notification system';
+  const titleVal = isCreate ? (artSel.title||'') : (artSel.title||'How to set up the notification system');
   const number = isCreate ? 'ART-' : 'ART-000';
   let participants;
   if(isView) participants = `<div style="display:flex;align-items:center;gap:14px;padding-top:2px">${avatar(24)} User name ${avatar(24)} User name ${avatar(24)} User name <span style="background:var(--color-primary);color:#fff;border-radius:9999px;width:26px;height:26px;display:inline-flex;align-items:center;justify-content:center;font-size:11px;font-weight:600">+5</span></div>`;
@@ -1806,7 +1811,7 @@ function articleHeader(){
   if(isView) tags = `<div style="display:flex;gap:6px;align-items:center;flex-wrap:wrap;padding-top:4px">${(artSel.tags||[]).map(t=>`<span class="tag">${t}</span>`).join('')||'<span class="tag">Configuration</span><span class="tag">Notifications</span><span class="tag">System</span>'}</div>`;
   else tags = selTrigger('tags');
   return `
-    ${field('Title', isView?`<div style="font-weight:700;font-size:17px">${titleVal}</div>`:`<input class="input" id="art-title-input" value="${titleVal}" oninput="updateIncludeBtn()">`)}
+    ${field('Title', isView?`<div style="font-weight:700;font-size:17px">${titleVal}</div>`:`<input class="input" id="art-title-input" value="${titleVal}" oninput="artSel.title=this.value; updateIncludeBtn()">`)}
     <div style="display:grid;grid-template-columns:1fr 1fr;gap:20px;margin-top:18px">
       ${field('Number', `<div style="font-size:15px;color:#333;padding-top:4px">${number}</div>`)}
       ${field('Originator', `<div style="display:flex;align-items:center;gap:8px;padding-top:2px">${avatar(24)} User name</div>`)}
