@@ -111,6 +111,7 @@
   .textarea{ padding:12px 14px; min-height:120px; resize:vertical }
   .select-trigger{ height:44px; padding:0 14px; display:flex; align-items:center; justify-content:space-between; text-align:left; color:#1c1c1c }
   .input:focus,.textarea:focus,.select-trigger:focus{ outline:2px solid rgba(0,19,145,.35); outline-offset:0; border-color:var(--color-primary) }
+  .select-trigger.disabled-fld,.input.disabled-fld{ opacity:.45; pointer-events:none; cursor:not-allowed; background:#f4f5f7 }
   .search-box{ position:relative }
   .search-box .input{ padding-right:44px }
   .search-box .s-ico{ position:absolute; right:14px; top:50%; transform:translateY(-50%); color:var(--color-primary) }
@@ -828,11 +829,11 @@ function closeAllModals(){
 
 /* ---------- FILTERS (drawer = colunas da tabela) ---------- */
 const FILTER_FIELDS = {
-  'articles-search':[['Number','text'],['Article','text'],['Category','select'],['Subcategory','select'],['Originator','select'],['Version date','date']],
+  'articles-search':[['Category','select'],['Subcategory','select'],['Originator','select'],['Period','date']],
   'feedbacks-search':[['Feedback','text'],['Source','text'],['User','select'],['Date','date']],
   'dashboard':[['Period','select'],['Article','text'],['Client','select'],['Start date','date'],['End date','date']],
 };
-const FFILTER_FIELDS = [['Feedback','text'],['Originator','select'],['Client','select'],['Site','select'],['Date','date']];
+const FFILTER_FIELDS = [['Feedback','text'],['Client','select'],['Site','select'],['Originator','select'],['Period','date']];
 /* opções dos droplists de filtro (por coluna) */
 const FILTER_OPTS={
   'Category':['System Settings','Getting Started','Data Management','Troubleshooting','Updates','Integrations'],
@@ -845,6 +846,7 @@ const FILTER_OPTS={
 };
 let fltTrgEl=null;
 function openFilterDD(trg,label){
+  if(trg.classList.contains('disabled-fld')) return;
   fltTrgEl=trg;
   const opts=FILTER_OPTS[label]||['Option 1','Option 2','Option 3'];
   const dd=el('sel-dd'); const r=trg.getBoundingClientRect();
@@ -852,13 +854,22 @@ function openFilterDD(trg,label){
   el('sel-dd-list').innerHTML = opts.map(o=>`<div class="idd-item" onclick="pickFilterOpt('${o.replace(/'/g,"\\'")}')">${o}</div>`).join('');
   dd.classList.add('open');
 }
-function pickFilterOpt(o){ if(fltTrgEl){const v=fltTrgEl.querySelector('.flt-val'); if(v) v.innerHTML=`<span style="color:#1c1c1c">${o}</span>`;} el('sel-dd').classList.remove('open'); }
+function pickFilterOpt(o){ if(fltTrgEl){const v=fltTrgEl.querySelector('.flt-val'); if(v) v.innerHTML=`<span style="color:#1c1c1c">${o}</span>`;} el('sel-dd').classList.remove('open'); refreshFFilterDeps(); }
+function refreshFFilterDeps(){
+  const modal=el('ffilter-modal'); if(!modal||!modal.classList.contains('open')) return;
+  const body=el('ffilter-body');
+  function hasVal(lbl){ const t=body.querySelector('[data-fld="'+lbl+'"]'); if(!t) return false; const v=t.querySelector('.flt-val'); return !!(v && v.textContent.trim()); }
+  function setEn(lbl,en){ const t=body.querySelector('[data-fld="'+lbl+'"]'); if(t) t.classList.toggle('disabled-fld', !en); }
+  setEn('Site', hasVal('Client'));
+  setEn('Originator', hasVal('Client') && hasVal('Site'));
+}
 
 /* ---- date range picker ---- */
 const CAL_MONTHS=['Janeiro','Fevereiro','Março','Abril','Maio','Junho','Julho','Agosto','Setembro','Outubro','Novembro','Dezembro'];
 let dateTrgEl=null, calM=(new Date()).getMonth(), calY=(new Date()).getFullYear(), calStart=null, calEnd=null;
 function fmtDate(d){ return ('0'+d.getDate()).slice(-2)+'/'+('0'+(d.getMonth()+1)).slice(-2)+'/'+d.getFullYear(); }
 function openDateDD(trg){
+  if(trg.classList.contains('disabled-fld')) return;
   dateTrgEl=trg; calStart=null; calEnd=null;
   const dd=el('date-dd'); const r=trg.getBoundingClientRect();
   dd.style.left=Math.min(r.left, window.innerWidth-310)+'px';
@@ -902,11 +913,11 @@ function updateDateTrg(){
   else if(calStart) v.innerHTML=`<span style="color:#1c1c1c">${fmtDate(calStart)} – …</span>`;
 }
 
-function filterField(label,type){
-  let ctrl;
-  if(type==='select') ctrl=`<button class="select-trigger" data-sel onclick="openFilterDD(this,'${label}')"><span class="flt-val" style="color:#9aa0ac">&nbsp;</span>${I.chevDown}</button>`;
-  else if(type==='date') ctrl=`<button class="input" data-date onclick="openDateDD(this)" style="display:flex;align-items:center;justify-content:space-between;color:#9aa0ac;width:100%;cursor:pointer"><span class="date-val">dd/mm/yyyy</span>${I.cal}</button>`;
-  else ctrl=`<input class="input" placeholder="${label}">`;
+function filterField(label,type,disabled){
+  let ctrl; const dis=disabled?' disabled-fld':'';
+  if(type==='select') ctrl=`<button class="select-trigger${dis}" data-fld="${label}" data-sel onclick="openFilterDD(this,'${label}')"><span class="flt-val" style="color:#9aa0ac">&nbsp;</span>${I.chevDown}</button>`;
+  else if(type==='date') ctrl=`<button class="input${dis}" data-fld="${label}" data-date onclick="openDateDD(this)" style="display:flex;align-items:center;justify-content:space-between;color:#9aa0ac;width:100%;cursor:pointer"><span class="date-val">dd/mm/yyyy</span>${I.cal}</button>`;
+  else ctrl=`<input class="input" data-fld="${label}" placeholder="${label}">`;
   return `<div><label class="lbl-field">${label}</label>${ctrl}</div>`;
 }
 function openFilter(view){
@@ -915,7 +926,7 @@ function openFilter(view){
 }
 function closeFilter(){ el('filter-drawer').classList.remove('open'); maybeCloseOverlay(); }
 function openFFilter(){
-  el('ffilter-body').innerHTML = FFILTER_FIELDS.map(f=>`<div style="margin-bottom:14px">${filterField(f[0],f[1])}</div>`).join('');
+  el('ffilter-body').innerHTML = FFILTER_FIELDS.map(f=>{ const dep=(f[0]==='Site'||f[0]==='Originator'); return `<div style="margin-bottom:14px">${filterField(f[0],f[1],dep)}</div>`; }).join('');
   el('overlay').classList.add('open'); el('ffilter-modal').classList.add('open');
 }
 function closeFFilter(){ el('ffilter-modal').classList.remove('open'); maybeCloseOverlay(); }
@@ -1364,7 +1375,7 @@ function renderDashboard(){
        </tr></thead><tbody>${topRows}</tbody></table></div>
      </div>
      <div class="card card-pad" style="grid-column:1 / -1">
-       <div style="font-weight:700;margin-bottom:14px">Last feedbacks</div>
+       <div style="font-weight:700;margin-bottom:14px">Last 30 days feedbacks</div>
        <table class="tbl" style="table-layout:fixed;width:100%"><thead><tr><th style="width:60%"><span class="th-sort">FEEDBACK ${I.chevDownSm}</span></th><th style="width:22%"><span class="th-sort">SOURCE ${I.chevDownSm}</span></th><th class="cols-mobile-hidden" style="width:18%;text-align:right">DATE</th></tr></thead><tbody>${fbRows}</tbody></table>
        ${pagination(131)}
      </div>
@@ -1696,8 +1707,8 @@ let artCover=null;        // {name,url} da imagem de capa
 /* ----- droplists funcionais do registro ----- */
 const SEL_OPTS={
   participants:{multi:true,  opts:['User name','Fernando Alex','Renato Basso','Evandro Silva']},
-  category:    {multi:false, opts:['System Settings','Getting Started','Data Management','Troubleshooting','Updates','Integrations']},
-  subcategory: {multi:false, opts:['Subcategory 1','Subcategory 2','Subcategory 3']},
+  category:    {multi:true,  opts:['System Settings','Getting Started','Data Management','Troubleshooting','Updates','Integrations']},
+  subcategory: {multi:true,  opts:['Subcategory 1','Subcategory 2','Subcategory 3']},
   tags:        {multi:true,  opts:TAGS},
 };
 function selChip(key,o){
@@ -1788,8 +1799,8 @@ function articleHeader(){
     </div>
     <div style="margin-top:18px">${field('Participants', participants)}</div>
     <div style="display:grid;grid-template-columns:1fr 1fr;gap:20px;margin-top:18px">
-      ${field('Category', isView?`<div style="padding-top:4px">${artSel.category||'Label'}</div>`:selTrigger('category'))}
-      ${field('subcategory', isView?`<div style="padding-top:4px">${artSel.subcategory||'Label'}</div>`:selTrigger('subcategory'))}
+      ${field('Category', isView?`<div style="padding-top:4px">${(Array.isArray(artSel.category)?artSel.category.join(', '):artSel.category)||'Label'}</div>`:selTrigger('category'))}
+      ${field('Subcategory', isView?`<div style="padding-top:4px">${(Array.isArray(artSel.subcategory)?artSel.subcategory.join(', '):artSel.subcategory)||'Label'}</div>`:selTrigger('subcategory'))}
     </div>
     <div style="display:grid;grid-template-columns:1fr auto;gap:20px;align-items:end;margin-top:18px">
       ${field('Tags', tags)}
@@ -1797,8 +1808,8 @@ function articleHeader(){
     </div>
     <div style="margin-top:16px">${coverArea()}</div>
     <div style="background:#dfe1f1;border-radius:10px;padding:14px 16px;margin-top:18px;display:grid;grid-template-columns:1fr 1fr;gap:16px">
-      <div><label class="lbl-field" style="font-size:12px">Cretion date</label><div class="input" style="display:flex;align-items:center;justify-content:space-between;background:#fff">00/00/0000 ${I.cal}</div></div>
-      <div><label class="lbl-field" style="font-size:12px">Last modification</label><div class="input" style="display:flex;align-items:center;justify-content:space-between;background:#fff">00/00/0000 ${I.cal}</div></div>
+      <div><label class="lbl-field" style="font-size:12px">Creation date</label><div class="input" style="display:flex;align-items:center;justify-content:space-between;background:#fff">00/00/0000 ${I.cal}</div></div>
+      <div><label class="lbl-field" style="font-size:12px">Last modification</label><div class="input" style="display:flex;align-items:center;justify-content:space-between;background:#fff">${isCreate ? '—' : `00/00/0000 ${I.cal}`}</div></div>
     </div>`;
 }
 
@@ -1832,12 +1843,11 @@ function articleTabBody(){
   if(artTab==='feedbacks'){
     const rows=Array.from({length:6}).map(()=>`
       <tr><td style="max-width:230px">Lorem Ipsum is simply dummy text of the printing.</td>
-      <td class="cols-mobile-hidden"><span style="display:inline-flex;align-items:center;gap:6px">${avatar(20)} User na…</span></td>
       <td class="cols-mobile-hidden">Client name</td><td class="cols-mobile-hidden">Site name</td><td>00/00/0000</td></tr>`).join('');
     return `<div style="display:flex;align-items:center;gap:10px;margin:18px 0">
         <div class="search-box" style="width:280px"><input class="input" placeholder="Search"><span class="s-ico">${I.search}</span></div>
         <button class="icon-btn" onclick="openFFilter()">${I.filter}</button></div>
-      <div style="overflow-x:auto"><table class="tbl"><thead><tr><th><span class="th-sort">FEEDBACK ${I.chevDownSm}</span></th><th class="cols-mobile-hidden">ORIGINATOR</th><th class="cols-mobile-hidden">CLIENT</th><th class="cols-mobile-hidden">SITE</th><th>DATE</th></tr></thead><tbody>${rows}</tbody></table></div>`;
+      <div style="overflow-x:auto"><table class="tbl"><thead><tr><th><span class="th-sort">FEEDBACK ${I.chevDownSm}</span></th><th class="cols-mobile-hidden">CLIENT</th><th class="cols-mobile-hidden">SITE</th><th>DATE</th></tr></thead><tbody>${rows}</tbody></table></div>`;
   }
   if(artTab==='historic'){
     const rows=Array.from({length:8}).map(()=>`
