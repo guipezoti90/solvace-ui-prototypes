@@ -112,6 +112,7 @@
   .select-trigger{ height:44px; padding:0 14px; display:flex; align-items:center; justify-content:space-between; text-align:left; color:#1c1c1c }
   .input:focus,.textarea:focus,.select-trigger:focus{ outline:2px solid rgba(0,19,145,.35); outline-offset:0; border-color:var(--color-primary) }
   .select-trigger.disabled-fld,.input.disabled-fld{ opacity:.45; pointer-events:none; cursor:not-allowed; background:#f4f5f7 }
+  .btn:disabled,.btn.btn-disabled{ opacity:.5; cursor:not-allowed; pointer-events:none }
   .search-box{ position:relative }
   .search-box .input{ padding-right:44px }
   .search-box .s-ico{ position:absolute; right:14px; top:50%; transform:translateY(-50%); color:var(--color-primary) }
@@ -833,7 +834,7 @@ const FILTER_FIELDS = {
   'feedbacks-search':[['Feedback','text'],['Source','text'],['User','select'],['Date','date']],
   'dashboard':[['Period','select'],['Article','text'],['Client','select'],['Start date','date'],['End date','date']],
 };
-const FFILTER_FIELDS = [['Feedback','text'],['Client','select'],['Site','select'],['Originator','select'],['Period','date']];
+const FFILTER_FIELDS = [['Client','select'],['Site','select'],['Originator','select'],['Period','date']];
 /* opções dos droplists de filtro (por coluna) */
 const FILTER_OPTS={
   'Category':['System Settings','Getting Started','Data Management','Troubleshooting','Updates','Integrations'],
@@ -1755,10 +1756,23 @@ function pickSel(opt){
     artSel[selKey]=opt; el('sel-dd').classList.remove('open');
   }
   if(selTrgEl) selTrgEl.innerHTML=selTriggerInner(selKey);
+  updateIncludeBtn();
 }
 function removeSelChip(key,opt){
   const arr=artSel[key]||[]; const i=arr.indexOf(opt); if(i>=0) arr.splice(i,1);
   const trg=document.querySelector(`[data-sel="${key}"]`); if(trg) trg.innerHTML=selTriggerInner(key);
+  updateIncludeBtn();
+}
+/* validação do registro: Include só habilita com Title + Category + Subcategory preenchidos */
+function artFormValid(){
+  const t=document.getElementById('art-title-input');
+  const titleOk=t?!!t.value.trim():false;
+  const has=x=>Array.isArray(x)?x.length>0:!!x;
+  return titleOk && has(artSel.category) && has(artSel.subcategory);
+}
+function updateIncludeBtn(){
+  const b=document.getElementById('art-include-btn'); if(!b) return;
+  const ok=artFormValid(); b.disabled=!ok; b.classList.toggle('btn-disabled', !ok);
 }
 
 /* ----- capa (cover) do registro ----- */
@@ -1792,7 +1806,7 @@ function articleHeader(){
   if(isView) tags = `<div style="display:flex;gap:6px;align-items:center;flex-wrap:wrap;padding-top:4px">${(artSel.tags||[]).map(t=>`<span class="tag">${t}</span>`).join('')||'<span class="tag">Configuration</span><span class="tag">Notifications</span><span class="tag">System</span>'}</div>`;
   else tags = selTrigger('tags');
   return `
-    ${field('Title', isView?`<div style="font-weight:700;font-size:17px">${titleVal}</div>`:`<input class="input" value="${titleVal}">`)}
+    ${field('Title', isView?`<div style="font-weight:700;font-size:17px">${titleVal}</div>`:`<input class="input" id="art-title-input" value="${titleVal}" oninput="updateIncludeBtn()">`)}
     <div style="display:grid;grid-template-columns:1fr 1fr;gap:20px;margin-top:18px">
       ${field('Number', `<div style="font-size:15px;color:#333;padding-top:4px">${number}</div>`)}
       ${field('Originator', `<div style="display:flex;align-items:center;gap:8px;padding-top:2px">${avatar(24)} User name</div>`)}
@@ -1809,7 +1823,7 @@ function articleHeader(){
     <div style="margin-top:16px">${coverArea()}</div>
     <div style="background:#dfe1f1;border-radius:10px;padding:14px 16px;margin-top:18px;display:grid;grid-template-columns:1fr 1fr;gap:16px">
       <div><label class="lbl-field" style="font-size:12px">Creation date</label><div class="input" style="display:flex;align-items:center;justify-content:space-between;background:#fff">00/00/0000 ${I.cal}</div></div>
-      <div><label class="lbl-field" style="font-size:12px">Last modification</label><div class="input" style="display:flex;align-items:center;justify-content:space-between;background:#fff">${isCreate ? '—' : `00/00/0000 ${I.cal}`}</div></div>
+      <div><label class="lbl-field" style="font-size:12px">Last modification</label><div class="input" style="display:flex;align-items:center;justify-content:space-between;background:#fff">—</div></div>
     </div>`;
 }
 
@@ -1874,7 +1888,7 @@ function renderArticleModal(){
   el('article-modal-body').innerHTML = articleHeader() + articleTabs() + `<div id="art-tab-body">${articleTabBody()}</div>`;
   const foot=el('article-modal-foot');
   if(artMode==='creation'){
-    foot.innerHTML = `<button class="btn btn-outline btn-sm" style="border-color:#fff;color:#fff;background:transparent" onclick="closeArticleModal()">Cancel</button><button class="btn btn-white btn-sm" onclick="closeArticleModal(); showToast('Artigo incluído com sucesso')">Include</button>`;
+    foot.innerHTML = `<button class="btn btn-outline btn-sm" style="border-color:#fff;color:#fff;background:transparent" onclick="closeArticleModal()">Cancel</button><button class="btn btn-white btn-sm${artFormValid()?'':' btn-disabled'}" id="art-include-btn" ${artFormValid()?'':'disabled'} onclick="if(artFormValid()){closeArticleModal(); showToast('Artigo incluído com sucesso')}">Include</button>`;
   } else if(artMode==='view'){
     foot.innerHTML = `<button class="kebab" style="color:#fff" onclick="openKebabMenu(this, articleDelete)">${I.kebab}</button><button class="btn btn-outline btn-sm" style="border-color:#fff;color:#fff;background:transparent" onclick="closeArticleModal()">Close</button><button class="btn btn-white btn-sm" onclick="openArticleModal('edit', artTab==='historic'?'article':artTab)">Edit</button>`;
   } else {
@@ -1890,7 +1904,7 @@ function openArticleModal(mode, tab){
   // estado inicial dos droplists e capa por modo (mantém ao alternar view<->edit)
   const fresh = !el('article-modal').classList.contains('open');
   if(artMode==='creation'){ artSel={}; artCover=null; }
-  else if(fresh){ artSel={category:'Label', subcategory:'Label', tags:['Configuration','Notifications'], participants:['User name','User name']}; artCover={name:'image.png', url:HERO}; }
+  else if(fresh){ artSel={category:['System Settings'], subcategory:['Subcategory 1'], tags:['Configuration','Notifications'], participants:['User name','User name']}; artCover={name:'image.png', url:HERO}; }
   renderArticleModal();
   el('overlay').classList.add('open');
   el('article-modal').classList.add('open');
@@ -1937,9 +1951,13 @@ function previewCard(){
 document.addEventListener('keydown', e=>{ if(e.key==='Escape') closeAllModals(); });
 window.addEventListener('resize', ()=>{ if(window.innerWidth>=1024) closeMobileSidebar(); });
 document.addEventListener('click', e=>{
-  if(!e.target.closest('#icon-dd') && !e.target.closest('[data-icon-trigger]')) el('icon-dd').classList.remove('open');
-  if(!e.target.closest('#sel-dd') && !e.target.closest('[data-sel]')) el('sel-dd').classList.remove('open');
-  if(!e.target.closest('#date-dd') && !e.target.closest('[data-date]')) el('date-dd').classList.remove('open');
+  // usa composedPath (capturado no dispatch) p/ não fechar quando o clique foi DENTRO do dropdown,
+  // mesmo que o re-render (pickSel/calPick) tenha destacado o e.target do DOM
+  const path=(e.composedPath&&e.composedPath())||[];
+  const inPath=sel=>path.some(n=>n&&n.nodeType===1&&n.matches&&n.matches(sel));
+  if(!inPath('#icon-dd') && !inPath('[data-icon-trigger]')) el('icon-dd').classList.remove('open');
+  if(!inPath('#sel-dd') && !inPath('[data-sel]')) el('sel-dd').classList.remove('open');
+  if(!inPath('#date-dd') && !inPath('[data-date]')) el('date-dd').classList.remove('open');
 });
 fillLogos();
 goAdmin('dashboard');
