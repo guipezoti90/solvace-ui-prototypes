@@ -2098,6 +2098,10 @@ goAdmin('dashboard');
   .rv-item.resolved .b{background:#16a34a}
   .rv-item .t{font-size:13px;white-space:pre-wrap}
   .rv-item .when{font-size:10.5px;color:#64748b;margin-top:5px}
+  .rv-item .h .rv-li-acts{margin-left:auto;display:inline-flex;gap:4px}
+  .rv-li-act{border:0;background:#eef1f5;border-radius:6px;padding:2px 7px;font-size:12px;cursor:pointer;line-height:1.5;color:#475569}
+  .rv-li-act:hover{background:#e2e8f0}
+  .rv-li-del:hover{background:#fee2e2}
   @media print{#rv-bar,#rv-toggle,#rv-panel,#rv-pop{display:none!important}.rv-pin{-webkit-print-color-adjust:exact;print-color-adjust:exact}}
 </style>
 
@@ -2179,8 +2183,8 @@ goAdmin('dashboard');
       pin.addEventListener('click',function(ev){ev.stopPropagation();openPop(c,pin)});layer.appendChild(pin);});
     list.innerHTML=''; if(!comments.length){list.innerHTML='<p style="color:#94a3b8;font-size:13px;padding:6px">No comments yet.</p>';}
     comments.slice().sort(function(a,b){return a.n-b.n}).forEach(function(c){var it=document.createElement('div');it.className='rv-item'+(c.resolved?' resolved':'');
-      it.innerHTML='<div class="h"><span class="b">'+c.n+'</span> '+esc(c.author||'—')+(c.resolved?' · ✓ resolved':'')+'</div><div class="t">'+esc(c.text)+'</div><div class="when">'+(c.ts?new Date(c.ts).toLocaleString('en-US'):'')+'</div><div style="font-size:10.5px;color:#94a3b8;margin-top:3px">\uD83D\uDCCD '+ctxLabel(c.ctx)+'</div>';
-      it.addEventListener('click',function(){ rvJump(c); });list.appendChild(it);});
+      it.innerHTML='<div class="h"><span class="b">'+c.n+'</span> '+esc(c.author||'—')+(c.resolved?' · ✓':'')+'<span class="rv-li-acts"><button class="rv-li-act" data-act="resolve" title="'+(c.resolved?'Reopen':'Resolve')+'">'+(c.resolved?'↩':'✓')+'</button><button class="rv-li-act rv-li-del" data-act="del" title="Delete">🗑</button></span></div><div class="t">'+esc(c.text)+'</div><div class="when">'+(c.ts?new Date(c.ts).toLocaleString('en-US'):'')+'</div><div style="font-size:10.5px;color:#94a3b8;margin-top:3px">\uD83D\uDCCD '+ctxLabel(c.ctx)+'</div>';
+      it.addEventListener('click',function(ev){ var act=ev.target.closest&&ev.target.closest('.rv-li-act'); if(act){ ev.stopPropagation(); if(act.getAttribute('data-act')==='del'){ deleteComment(c); } else { c.resolved=!c.resolved; updateComment(c); } return; } rvJump(c); });list.appendChild(it);});
     countEl.textContent=comments.length;
     if(!isFB) syncEmbed();
   }
