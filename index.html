@@ -2050,6 +2050,7 @@ goAdmin('dashboard');
       <button id="rv-export">⬇ Export</button>
     </div>
     <div class="row"><button id="rv-importbtn" style="flex:1">⬆ Import comments</button></div>
+    <div class="row"><button id="rv-hide" style="flex:1">🙈 Hide comments</button></div>
     <input type="file" id="rv-import" accept=".html,.json" style="display:none">
     <div class="hint">Enable the mode, <b>click a spot</b> and write. Comments are saved to the backend and appear for everyone in real time.</div>
     <div id="rv-backend" class="rv-be">backend: …</div>
@@ -2109,6 +2110,7 @@ goAdmin('dashboard');
       list=document.getElementById('rv-list'),countEl=document.getElementById('rv-count'),nameInput=document.getElementById('rv-name'),
       modeBtn=document.getElementById('rv-mode'),beEl=document.getElementById('rv-backend');
   var comments=[],commentMode=false,seq=0,isFB=false,col=null,pending=null;
+  var rvHidden=localStorage.getItem(KEY+'_hidden')==='1';   // ocultar pinos na página
   function parse(s){try{return JSON.parse(s)}catch(e){return null}}
   function esc(s){return (s||'').replace(/[&<>"]/g,function(m){return {'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;'}[m]})}
   function uid(){return 'c'+Date.now().toString(36)+Math.random().toString(36).slice(2,7)}
@@ -2169,7 +2171,7 @@ goAdmin('dashboard');
     // colapsa a camada ANTES de medir, senão a própria altura dela infla o scrollHeight (rolagem fantasma)
     layer.innerHTML=''; layer.style.height='0px';
     var W=scW(sc),H=scH(sc);
-    layer.style.width=docMode?(W+'px'):'100%'; layer.style.height=H+'px';
+    layer.style.width=docMode?(W+'px'):'100%'; layer.style.height=H+'px'; layer.style.display=rvHidden?'none':'';
     (pending?comments.concat([pending]):comments).filter(function(c){return (c.ctx||'view:dashboard')===curCtx();}).forEach(function(c){var pin=document.createElement('div');pin.className='rv-pin'+(c.resolved?' resolved':'');pin.textContent=c.n;
       var px=c.xPct*W, py=c.yPct*H;
       if(c.asel){ var ae=rvResolve(c.asel,host); if(ae&&ae.getClientRects().length){ var ep=rvElPos(ae,sc); px=ep.l+(typeof c.aox==='number'?c.aox:0.5)*ep.w; py=ep.t+(typeof c.aoy==='number'?c.aoy:0.5)*ep.h; } }
@@ -2206,7 +2208,11 @@ goAdmin('dashboard');
     pending=c; render(); openPop(c, findPin(c));
   });
   function findPin(c){var pins=layer.querySelectorAll('.rv-pin');for(var i=0;i<pins.length;i++){if(pins[i].textContent==String(c.n))return pins[i];}return pins[pins.length-1];}
-  modeBtn.onclick=function(){commentMode=!commentMode;document.body.classList.toggle('rv-commenting',commentMode);modeBtn.classList.toggle('on',commentMode);modeBtn.textContent=commentMode?'✋ Exit comment mode':'💬 Enable comment mode';};
+  modeBtn.onclick=function(){commentMode=!commentMode;if(commentMode&&rvHidden){rvSetHidden(false);}document.body.classList.toggle('rv-commenting',commentMode);modeBtn.classList.toggle('on',commentMode);modeBtn.textContent=commentMode?'✋ Exit comment mode':'💬 Enable comment mode';};
+  // ocultar/mostrar os pinos na página (preferência por revisor, salva no localStorage)
+  function rvSetHidden(h){ rvHidden=h; localStorage.setItem(KEY+'_hidden', h?'1':'0'); var b=document.getElementById('rv-hide'); if(b){ b.textContent=h?'👁 Show comments':'🙈 Hide comments'; b.classList.toggle('on',h); } layer.style.display=h?'none':''; }
+  document.getElementById('rv-hide').onclick=function(){ rvSetHidden(!rvHidden); };
+  rvSetHidden(rvHidden);
   document.getElementById('rv-listbtn').onclick=function(){panel.classList.toggle('open')};
   document.getElementById('rv-close').onclick=function(){panel.classList.remove('open')};
   nameInput.onchange=function(){localStorage.setItem(KEY+'_name',nameInput.value||'');};
