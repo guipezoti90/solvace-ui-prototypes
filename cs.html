@@ -359,9 +359,10 @@
           <svg class="chev" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="m6 9 6 6 6-6"/></svg>
         </button>
         <div class="side-acc-content collapsed">
-          <a class="side-sublink" data-view="category-reg" onclick="switchView('category-reg')">Category registration</a>
-          <a class="side-sublink" data-view="subcategory-reg" onclick="switchView('subcategory-reg')">Subcategory registration</a>
-          <a class="side-sublink" data-view="tag-reg" onclick="switchView('tag-reg')">Tag registration</a>
+          <a class="side-sublink" data-view="category-reg" onclick="clearRegEdit('category-reg')">Category registration</a>
+          <a class="side-sublink" data-view="subcategory-reg" onclick="clearRegEdit('subcategory-reg')">Subcategory registration</a>
+          <a class="side-sublink" data-view="tag-category-reg" onclick="clearRegEdit('tag-category-reg')">Tag category registration</a>
+          <a class="side-sublink" data-view="tag-reg" onclick="clearRegEdit('tag-reg')">Tag registration</a>
           <a class="side-sublink" data-view="access-permissions" onclick="switchView('access-permissions')">Access Permissions</a>
         </div>
       </div>
@@ -759,6 +760,7 @@ function adminEmpty(view){
     'dashboard':['No data to display','There are no views or feedback in the selected period.','',''],
     'category-reg':['No categories registered','Add the first category using the form above.','Add',"setPageState('ready')"],
     'subcategory-reg':['No subcategories registered','Add the first subcategory using the form above.','Add',"setPageState('ready')"],
+    'tag-category-reg':['No tag categories registered','Add the first tag category using the form above.','Add',"setPageState('ready')"],
     'tag-reg':['No tags registered','Add the first tag using the form above.','Add',"setPageState('ready')"],
     'access-permissions':['No users with access','Add users to grant access to the Knowledge Center.','Add',"setPageState('ready')"],
   };
@@ -776,7 +778,7 @@ function publicSkeleton(view){
 }
 
 /* ---- dispatchers por shell ---- */
-const SETTINGS_VIEWS = ['category-reg','subcategory-reg','tag-reg','access-permissions'];
+const SETTINGS_VIEWS = ['category-reg','subcategory-reg','tag-category-reg','tag-reg','access-permissions'];
 const TABLE_EMPTY_VIEWS = SETTINGS_VIEWS.concat(['articles-search','feedbacks-search']);
 /* empty dentro da área da tabela (mantém formulário/toolbar acima) */
 function tableEmptyState(view){ return `<div style="border:1px solid var(--color-input);border-radius:10px;margin-top:4px">${adminEmpty(view)}</div>`; }
@@ -787,7 +789,7 @@ function renderAdminView(){
   // nos cadastros e buscas, o empty aparece só na tabela — formulário/toolbar continuam na tela
   if(pageState==='empty' && !TABLE_EMPTY_VIEWS.includes(currentView)){ c.innerHTML=adminEmpty(currentView); return; }
   ({'articles-search':renderArticlesSearch,'feedbacks-search':renderFeedbacksSearch,'dashboard':renderDashboard,
-    'category-reg':renderCategoryReg,'subcategory-reg':renderSubcategoryReg,'tag-reg':renderTagReg,
+    'category-reg':renderCategoryReg,'subcategory-reg':renderSubcategoryReg,'tag-category-reg':renderTagCategoryReg,'tag-reg':renderTagReg,
     'access-permissions':renderAccessPermissions})[currentView]();
 }
 function renderPublicView(){
@@ -842,7 +844,7 @@ function closeAllModals(){
 
 /* ---------- FILTERS (drawer = colunas da tabela) ---------- */
 const FILTER_FIELDS = {
-  'articles-search':[['Category','select'],['Subcategory','select'],['Originator','select'],['Tags','multiselect'],['Participants','multiselect'],['Version date','date']],
+  'articles-search':[['Category','select'],['Subcategory','select'],['Tags','multiselect'],['Originator','select'],['Participants','multiselect'],['Version date','date']],
   'feedbacks-search':[['Feedback','text'],['Article','text'],['Client','select'],['Site','select'],['Date','date']],
   'dashboard':[['Period','select'],['Article','text'],['Client','select'],['Start date','date'],['End date','date']],
 };
@@ -857,6 +859,7 @@ const FILTER_OPTS={
   'Site':['Site name 1','Site name 2','Site name 3'],
   'Tags':TAGS,
   'Participants':['User name','Fernando Alex','Renato Basso','Evandro Silva'],
+  'Tag categories':['Configuration','System','Notifications','Getting Started','Data Management','Integrations'],
   'Period':['Day','Month','Year'],
 };
 let fltTrgEl=null;
@@ -1024,6 +1027,7 @@ const ADMIN_VIEWS = {
  'dashboard':{ acc:1, crumb:'Dashboard', fab:true },
  'category-reg':{ acc:2, crumb:'Category registration', fab:true },
  'subcategory-reg':{ acc:2, crumb:'Subcategory registration', fab:true },
+ 'tag-category-reg':{ acc:2, crumb:'Tag category registration', fab:true },
  'tag-reg':{ acc:2, crumb:'Tag registration', fab:true },
  'access-permissions':{ acc:2, crumb:'Access Permissions', fab:true },
 };
@@ -1090,7 +1094,7 @@ function pagination(total){
 
 /* ----- Articles search ----- */
 function renderArticlesSearch(){
-  const stArr=['published','published','draft','published','unpublished','published','draft','published','published','unpublished'];
+  const stArr=['published','published','draft','published','archived','published','draft','published','published','archived'];
   const rows = Array.from({length:10}).map((_,i)=>{ var st=stArr[i]||'published'; return `
     <tr>
       <td><span class="row-link" style="cursor:pointer" onclick="openArticleModal('view','article','${st}')">ART-99</span></td>
@@ -1120,7 +1124,7 @@ function renderArticlesSearch(){
 
 /* ----- Feedbacks search ----- */
 /* seletor de idioma p/ tradução automática dos feedbacks (mock) */
-function feedbackLangSelector(){ return `<select class="input" style="width:auto;min-width:170px;height:38px;padding:0 10px;flex:none" title="Auto-translate feedbacks" onchange="if(this.value)showToast('Feedbacks translated to '+this.value)"><option value="">🌐 Original language</option><option>English</option><option>Português</option><option>Español</option><option>Français</option><option>Deutsch</option><option>Italiano</option></select>`; }
+function feedbackLangSelector(){ return `<select class="input" style="width:auto;min-width:170px;height:38px;padding:0 10px;flex:none" title="Auto-translate feedbacks" onchange="if(this.value)showToast('Feedbacks translated to '+this.value)"><option value="">Original language</option><option>English</option><option>Português</option><option>Español</option><option>Français</option><option>Deutsch</option><option>Italiano</option></select>`; }
 function renderFeedbacksSearch(){
   const rows = Array.from({length:10}).map(()=>`
     <tr>
@@ -1264,17 +1268,29 @@ function toggleGroup(g){
 }
 
 /* ----- Tag registration ----- */
+/* ----- Tag category registration (mesmo padrão de Category) ----- */
+function renderTagCategoryReg(){
+  const v='tag-category-reg', val=editVal(v);
+  const form = `<div style="max-width:560px">
+      <label class="lbl-field">Tag category</label><input class="input field-std" style="margin-bottom:18px" value="${val}">
+      ${checkboxRow('Active', true)}
+      ${regButtons(v)}</div>`;
+  const rows = [true,true,false,true].map(a=>`
+    <tr style="cursor:pointer" onclick="startRegEdit('${v}','Tag category name')"><td>Tag category name</td><td style="text-align:right">${statusBadge(a)}</td></tr>`).join('');
+  const tbl = pageState==='empty' ? tableEmptyState(v) : `<table class="tbl tbl-bleed"><thead><tr><th><span class="th-sort">TAG CATEGORY ${I.chevDownSm}</span></th><th style="text-align:right"><span class="th-sort" style="justify-content:flex-end">STATUS ${I.chevDownSm}</span></th></tr></thead><tbody>${rows}</tbody></table>${pagination(2)}`;
+  el('admin-view').innerHTML = form + `<div style="height:18px"></div>${tableToolbar(false)}${tbl}`;
+}
+
 /* ----- Tag registration (mesmo padrão de categorias: categorias de tag + tag em várias categorias) ----- */
 function renderTagReg(){
   const v='tag-reg', val=editVal(v);
+  const tcats = val ? ['Configuration','System'] : [];   // editar: mostra categorias da tag; entrar: em branco
+  fltSel['Tag categories'] = tcats.slice();
+  const tcatVal = tcats.length ? `<span style="color:#1c1c1c">${tcats.length} selected</span>` : `<span style="color:#9aa0ac">&nbsp;</span>`;
   const form = `<div style="max-width:560px">
       <label class="lbl-field">Tag</label><input class="input field-std" style="margin-bottom:18px" value="${val}">
       <label class="lbl-field">Categories</label>
-      <div class="input field-std" style="display:flex;flex-wrap:wrap;gap:6px;align-items:center;min-height:44px;margin-bottom:18px" title="Uma tag pode pertencer a várias categorias">
-        <span class="tag" style="gap:6px">Configuration ${I.x}</span>
-        <span class="tag" style="gap:6px">System ${I.x}</span>
-        <span style="color:#9aa0ac;font-size:13px;cursor:pointer">+ add category</span>
-      </div>
+      <button class="select-trigger field-std" data-fld="Tag categories" data-sel onclick="openFilterDD(this,'Tag categories',true)" style="margin-bottom:18px" title="Uma tag pode pertencer a várias categorias"><span class="flt-val">${tcatVal}</span>${I.chevDown}</button>
       ${checkboxRow('Active', true)}
       ${regButtons(v)}</div><div style="height:18px"></div>`;
   const GRP=['Configuration','System','Notifications'];
@@ -1377,8 +1393,8 @@ function renderDashboard(){
       <td style="overflow:hidden;text-overflow:ellipsis;white-space:nowrap">Lorem Ipsum is simply dummy text of the printing and typesetting industry…</td>
       <td class="cols-mobile-hidden">Category</td>
       <td class="cols-mobile-hidden">Subcategory</td>
-      <td class="cols-mobile-hidden">Originator</td>
-      <td class="cols-mobile-hidden">00/00/0000</td>
+      <td class="cols-mobile-hidden">Client name</td>
+      <td class="cols-mobile-hidden">Site name</td>
       <td style="text-align:right;color:#777"><span style="display:inline-flex;gap:5px;align-items:center;justify-content:flex-end">${I.eye}000</span></td></tr>`).join('');
   const fbRows=Array.from({length:10}).map(()=>`
     <tr><td style="overflow:hidden;text-overflow:ellipsis;white-space:nowrap">Lorem Ipsum is simply dummy text of the printing and typesetting industry…</td><td><span class="row-link" style="cursor:pointer" onclick="openArticleModal('view','feedbacks')">ART-99</span></td><td class="cols-mobile-hidden" style="text-align:right">00/00/0000</td></tr>`).join('');
@@ -1425,8 +1441,8 @@ function renderDashboard(){
          <th style="width:28%"><span class="th-sort">ARTICLE ${I.chevDownSm}</span></th>
          <th class="cols-mobile-hidden" style="width:15%">CATEGORY</th>
          <th class="cols-mobile-hidden" style="width:15%">SUBCATEGORY</th>
-         <th class="cols-mobile-hidden" style="width:16%">ORIGINATOR</th>
-         <th class="cols-mobile-hidden" style="width:11%">VERSION DATE</th>
+         <th class="cols-mobile-hidden" style="width:14%">CLIENT</th>
+         <th class="cols-mobile-hidden" style="width:13%">SITE</th>
          <th style="width:6%;text-align:right">VIEWS</th>
        </tr></thead><tbody>${topRows}</tbody></table></div>
      </div>
@@ -1586,14 +1602,17 @@ function allArticles(){
     ...ARTICLES,
     ...RELATED.map(r=>({t:r.t, d:r.d, tags:r.tags, likes:r.l, views:r.v, read:r.read, img:r.img}))
   ];
-  const out = base.concat(base).slice(0,9);
+  const out = base.concat(base).slice(0,9).map((a,i)=>Object.assign({},a,{seen:i%2===0}));  // alguns marcados como já lidos
   return out;
 }
 function articleCard(a){
   return `<div class="article-card" onclick="openArticle(&quot;${(a.t||'').replace(/"/g,'')}&quot;)" style="cursor:pointer">
     <div class="thumb" style="background-image:url('${a.img}')"></div>
     <div style="padding:18px;display:flex;flex-direction:column;gap:10px">
-      <div style="color:var(--color-primary);font-weight:700;font-size:16px">${a.t}</div>
+      <div style="display:flex;align-items:flex-start;justify-content:space-between;gap:8px">
+        <div style="color:var(--color-primary);font-weight:700;font-size:16px">${a.t}</div>
+        ${a.seen?'<span style="display:inline-flex;align-items:center;gap:4px;background:#dcfce7;color:#166534;border-radius:9999px;padding:2px 8px;font-size:11px;font-weight:600;flex:none;white-space:nowrap">✓ Read</span>':''}
+      </div>
       <div style="color:#5a5f6b;font-size:14px;line-height:1.5;flex:1">${a.d}</div>
       <div style="display:flex;align-items:center;justify-content:space-between;color:#777;font-size:13px;margin-top:4px">
         <span style="display:inline-flex;gap:14px"><span style="display:inline-flex;gap:4px;align-items:center">${I.like}${a.likes}</span><span style="display:inline-flex;gap:4px;align-items:center">${I.eye}${a.views}</span></span>
@@ -1669,6 +1688,7 @@ function renderKcResults(){
     </div>`;
 }
 
+function copyArticleLink(){ try{ if(navigator.clipboard) navigator.clipboard.writeText(location.href.split('?')[0]); }catch(e){} showToast('Link copied to clipboard'); }
 function renderKcArticle(){
   const steps=[
     ['Access the Settings panel','In the left sidebar menu, click on "Settings" and select the "Notifications" option. The management panel will be displayed.'],
@@ -1700,6 +1720,7 @@ function renderKcArticle(){
          <div style="display:flex;flex-direction:column;align-items:flex-end;gap:10px">
            <span style="display:inline-flex;align-items:center;gap:4px;color:#666;font-size:13px">${I.clock}Read time: 20 minutes</span>
            <button class="btn btn-outline btn-sm" onclick="summarizeArticle()">${I.kai} Summarize for me</button>
+           <button class="btn btn-outline btn-sm" onclick="copyArticleLink()"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M10 13a5 5 0 0 0 7.07 0l1.41-1.41a5 5 0 0 0-7.07-7.07L10 6"/><path d="M14 11a5 5 0 0 0-7.07 0L5.5 12.4a5 5 0 0 0 7.07 7.07L14 18"/></svg> Copy link</button>
          </div>
        </div>
        <div style="margin-top:20px">${kcSummaryOpen?kaiPanel('closeSummary()'):''}</div>
@@ -1769,7 +1790,7 @@ function field(label, html){ return `<div><label class="lbl-field">${label}</lab
 
 /* ----- article modal state ----- */
 let artMode='creation';   // creation | edit | view
-let artStatus='draft';    // draft (Em elaboração) | published | unpublished
+let artStatus='draft';    // draft (Draft) | published | archived
 let artTab='article';     // article | feedbacks | historic
 let artSel={};            // valores dos droplists do registro
 let artCover=null;        // {name,url} da imagem de capa
@@ -1999,22 +2020,22 @@ function openArticleModal(mode, tab, status){
 }
 function closeArticleModal(){ el('article-modal').classList.remove('open'); maybeCloseOverlay(); rvSyncContext(); }
 
-/* ----- status do registro: draft (Em elaboração) | published | unpublished ----- */
-function artStatusLabel(s){ return {draft:'Em elaboração', published:'Published', unpublished:'Unpublished'}[s] || s; }
-function artStatusBadge(s){ var c={draft:{b:'#fef3c7',f:'#92400e'},published:{b:'#dcfce7',f:'#166534'},unpublished:{b:'#e5e7eb',f:'#4b5563'}}[s] || {b:'#e5e7eb',f:'#4b5563'}; return '<span class="art-status" style="display:inline-flex;align-items:center;background:'+c.b+';color:'+c.f+';border-radius:9999px;padding:2px 10px;font-size:12px;font-weight:600;white-space:nowrap">'+artStatusLabel(s)+'</span>'; }
-var I_EYEOFF='<svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M17.9 17.9A10.1 10.1 0 0 1 12 20c-7 0-11-8-11-8a18.5 18.5 0 0 1 5.1-5.9M9.9 4.2A9.1 9.1 0 0 1 12 4c7 0 11 8 11 8a18.5 18.5 0 0 1-2.2 3.2m-6.7-1.1a3 3 0 1 1-4.2-4.2"/><line x1="1" y1="1" x2="23" y2="23"/></svg>';
+/* ----- status do registro: draft (Draft) | published | archived ----- */
+function artStatusLabel(s){ return {draft:'Draft', published:'Published', archived:'Archived'}[s] || s; }
+function artStatusBadge(s){ var c={draft:{b:'#fef3c7',f:'#92400e'},published:{b:'#dcfce7',f:'#166534'},archived:{b:'#e5e7eb',f:'#4b5563'}}[s] || {b:'#e5e7eb',f:'#4b5563'}; return '<span class="art-status" style="display:inline-flex;align-items:center;background:'+c.b+';color:'+c.f+';border-radius:9999px;padding:2px 10px;font-size:12px;font-weight:600;white-space:nowrap">'+artStatusLabel(s)+'</span>'; }
+var I_ARCHIVE='<svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="3" y="4" width="18" height="4" rx="1"/><path d="M5 8v11a1 1 0 0 0 1 1h12a1 1 0 0 0 1-1V8"/><path d="M10 12h4"/></svg>';
 function openArtKebab(trg){
   var m=el('kebab-menu'); m.style.width='180px'; var items=[];
   if(artStatus!=='published') items.push('<button class="km-item" onclick="artPublish()">'+I.check+' Publish</button>');
-  if(artStatus==='published') items.push('<button class="km-item" onclick="artUnpublish()">'+I_EYEOFF+' Unpublish</button>');
+  if(artStatus==='published') items.push('<button class="km-item" onclick="artArchive()">'+I_ARCHIVE+' Archive</button>');
   if(artMode!=='creation') items.push('<button class="km-item" onclick="articleDelete()">'+I.trash+' Delete</button>');
   m.innerHTML=items.join('');
   var r=trg.getBoundingClientRect(); m.style.left=Math.max(8, r.right-180)+'px'; m.style.top=Math.max(8, r.top-(items.length*42)-8)+'px';
   m.classList.add('open'); setTimeout(function(){document.addEventListener('click',closeKebabOnce);},0);
 }
-function artSave(){ if(artMode==='creation') artStatus='draft'; closeArticleModal(); showToast(artMode==='creation'?'Saved as draft (Em elaboração)':'Changes saved'); }
+function artSave(){ if(artMode==='creation') artStatus='draft'; closeArticleModal(); showToast(artMode==='creation'?'Saved as draft':'Changes saved'); }
 function artPublish(){ el('kebab-menu').classList.remove('open'); if(!artFormValid()){ showToast('Fill all required fields to publish','error'); return; } var wasCreation=(artMode==='creation'); artStatus='published'; if(wasCreation){ closeArticleModal(); } else { renderArticleModal(); } showToast('Article published'); }
-function artUnpublish(){ el('kebab-menu').classList.remove('open'); artStatus='unpublished'; renderArticleModal(); showToast('Article unpublished'); }
+function artArchive(){ el('kebab-menu').classList.remove('open'); artStatus='archived'; renderArticleModal(); showToast('Article archived'); }
 
 /* ----- Big modal: Fullscreen (editor) / Preview (reader) ----- */
 let bigMode='fullscreen';
