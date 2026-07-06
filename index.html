@@ -610,7 +610,6 @@
         <div class="side-acc-content collapsed">
           <a class="side-sublink" data-view="category-reg" onclick="clearRegEdit(&#39;category-reg&#39;)">Category registration</a>
           <a class="side-sublink" data-view="subcategory-reg" onclick="clearRegEdit(&#39;subcategory-reg&#39;)">Subcategory registration</a>
-          <a class="side-sublink" data-view="tag-category-reg" onclick="clearRegEdit(&#39;tag-category-reg&#39;)">Tag category registration</a>
           <a class="side-sublink" data-view="tag-reg" onclick="clearRegEdit(&#39;tag-reg&#39;)">Tag registration</a>
           <a class="side-sublink" data-view="access-permissions" onclick="switchView(&#39;access-permissions&#39;)">Access Permissions</a>
           <a class="side-sublink" data-view="notification-mgmt" onclick="switchView(&#39;notification-mgmt&#39;)">Notification Management</a>
@@ -1357,7 +1356,6 @@ function adminEmpty(view){
     'dashboard':['No data to display','There are no views or feedback in the selected period.','',''],
     'category-reg':['No categories registered','Add the first category.','New category',"openRegModal('category-reg')"],
     'subcategory-reg':['No subcategories registered','Add the first subcategory.','New subcategory',"openRegModal('subcategory-reg')"],
-    'tag-category-reg':['No tag categories registered','Add the first tag category.','New tag category',"openRegModal('tag-category-reg')"],
     'tag-reg':['No tags registered','Add the first tag.','New tag',"openRegModal('tag-reg')"],
     'notification-mgmt':['No notification rules','Notification rules will appear here once configured.','',''],
     'access-permissions':['No users with access','Add users to grant access to the Knowledge Center.','Add user',"openAddUser()"],
@@ -1376,7 +1374,7 @@ function publicSkeleton(view){
 }
 
 /* ---- dispatchers por shell ---- */
-const SETTINGS_VIEWS = ['category-reg','subcategory-reg','tag-category-reg','tag-reg','access-permissions','notification-mgmt'];
+const SETTINGS_VIEWS = ['category-reg','subcategory-reg','tag-reg','access-permissions','notification-mgmt'];
 const TABLE_EMPTY_VIEWS = SETTINGS_VIEWS.concat(['articles-search','feedbacks-search']);
 /* empty dentro da área da tabela (mantém formulário/toolbar acima) */
 function tableEmptyState(view){ return `<div style="border:1px solid var(--color-input);border-radius:10px;margin-top:4px">${adminEmpty(view)}</div>`; }
@@ -1387,7 +1385,7 @@ function renderAdminView(){
   // nos cadastros e buscas, o empty aparece só na tabela — formulário/toolbar continuam na tela
   if(pageState==='empty' && !TABLE_EMPTY_VIEWS.includes(currentView)){ c.innerHTML=adminEmpty(currentView); return; }
   ({'articles-search':renderArticlesSearch,'feedbacks-search':renderFeedbacksSearch,'dashboard':renderDashboard,
-    'category-reg':renderCategoryReg,'subcategory-reg':renderSubcategoryReg,'tag-category-reg':renderTagCategoryReg,'tag-reg':renderTagReg,
+    'category-reg':renderCategoryReg,'subcategory-reg':renderSubcategoryReg,'tag-reg':renderTagReg,
     'access-permissions':renderAccessPermissions,'notification-mgmt':renderNotificationMgmt})[currentView]();
 }
 function renderPublicView(){
@@ -1730,7 +1728,6 @@ const ADMIN_VIEWS = {
  'dashboard':{ acc:1, crumb:'Dashboard', fab:true },
  'category-reg':{ acc:2, crumb:'Category registration', fab:true },
  'subcategory-reg':{ acc:2, crumb:'Subcategory registration', fab:true },
- 'tag-category-reg':{ acc:2, crumb:'Tag category registration', fab:true },
  'tag-reg':{ acc:2, crumb:'Tag registration', fab:true },
  'access-permissions':{ acc:2, crumb:'Access Permissions', fab:true },
  'notification-mgmt':{ acc:2, crumb:'Notification Management', fab:true },
@@ -1940,14 +1937,12 @@ var regQuery = {};
 var catData = [true,true,false,true,true].map(function(a){ return {id:++regSeq, name:'Category name', active:a, icon:'', desc:''}; });
 var subGroups = [0,1,2].map(function(g){ return {name:'Category name', open:g===1,
   subs:[true,true,false,true,true].map(function(a){ return {id:++regSeq, name:'Subcategory name', active:a}; })}; });
-var tagCatData = [true,true,false,true].map(function(a){ return {id:++regSeq, name:'Tag category name', active:a}; });
 var tagGroups = ['Configuration','System','Notifications'].map(function(n,g){ return {name:n, open:g===0,
   tags:[true,true,false].map(function(a){ return {id:++regSeq, name:'Tag name', active:a}; })}; });
 
 var REG_CFG = {
   'category-reg':     {entity:'Category',     newLabel:'New category',     nameLabel:'Category name',     col:'CATEGORY'},
   'subcategory-reg':  {entity:'Subcategory',  newLabel:'New subcategory',  nameLabel:'Subcategory name',  col:'SUBCATEGORY'},
-  'tag-category-reg': {entity:'Tag category', newLabel:'New tag category', nameLabel:'Tag category name', col:'TAG CATEGORY'},
   'tag-reg':          {entity:'Tag',          newLabel:'New tag',          nameLabel:'Tag name',          col:'TAG'}
 };
 
@@ -2009,16 +2004,6 @@ function toggleRegGroup(v,g){
 }
 function toggleGroup(g){ /* legado: grupos agora re-renderizam via toggleRegGroup */ }
 
-/* ----- Tag category registration ----- */
-function renderTagCategoryReg(){
-  const v='tag-category-reg';
-  const list = tagCatData.filter(function(c){ return regMatch(v,c.name); });
-  const rows = list.map(function(c){ return `
-    <tr><td>${c.name}</td><td>${statusBadge(c.active)}</td>${regActionCells(v,c.id)}</tr>`; }).join('');
-  const tbl = (pageState==='empty' || !tagCatData.length) ? tableEmptyState(v) : `<div class="tbl-bleed" style="overflow-x:auto"><table class="tbl perm-tbl">${regTableHead(v)}<tbody>${rows}</tbody></table></div>`;
-  el('admin-view').innerHTML = regToolbar(v) + tbl;
-}
-
 /* ----- Tag registration (grouped by tag category) ----- */
 function renderTagReg(){
   const v='tag-reg';
@@ -2038,12 +2023,11 @@ function renderTagReg(){
   el('admin-view').innerHTML = regToolbar(v) + tbl;
 }
 
-var REG_RENDER = {'category-reg':renderCategoryReg,'subcategory-reg':renderSubcategoryReg,'tag-category-reg':renderTagCategoryReg,'tag-reg':renderTagReg};
+var REG_RENDER = {'category-reg':renderCategoryReg,'subcategory-reg':renderSubcategoryReg,'tag-reg':renderTagReg};
 
 /* ----- registration data helpers ----- */
 function regFind(v,id){
   if(v==='category-reg') return catData.find(function(x){ return x.id===id; });
-  if(v==='tag-category-reg') return tagCatData.find(function(x){ return x.id===id; });
   const groups = v==='subcategory-reg' ? subGroups : tagGroups;
   const key = v==='subcategory-reg' ? 'subs' : 'tags';
   for(var g=0; g<groups.length; g++){
@@ -2054,7 +2038,6 @@ function regFind(v,id){
 }
 function regDelete(v,id){
   if(v==='category-reg'){ catData = catData.filter(function(x){ return x.id!==id; }); return; }
-  if(v==='tag-category-reg'){ tagCatData = tagCatData.filter(function(x){ return x.id!==id; }); return; }
   const groups = v==='subcategory-reg' ? subGroups : tagGroups;
   const key = v==='subcategory-reg' ? 'subs' : 'tags';
   groups.forEach(function(grp){ grp[key] = grp[key].filter(function(x){ return x.id!==id; }); });
@@ -2132,9 +2115,7 @@ function saveRegModal(){
     item.icon = icoEl ? icoEl.textContent.trim() : (item.icon||'');
     item.desc = (el('reg-f-desc')||{value:''}).value;
     if(!editing) catData.unshift(item);
-  } else if(v==='tag-category-reg'){
-    if(!editing) tagCatData.unshift(item);
-  } else if(v==='subcategory-reg'){
+    } else if(v==='subcategory-reg'){
     if(!editing) subGroups[0].subs.unshift(item);
   } else if(v==='tag-reg'){
     const sel = fltSel['Tag categories']||[];
@@ -3115,8 +3096,8 @@ goAdmin('dashboard');
      Tempo real entre revisores. Cole sua config em RV_FIREBASE abaixo.
      Sem config, cai em modo Local (localStorage) automaticamente.
      ============================================================ -->
-<script src="./Knowledge Center — Solvace_files/firebase-app-compat.js"></script>
-<script src="./Knowledge Center — Solvace_files/firebase-firestore-compat.js"></script>
+<script src="https://www.gstatic.com/firebasejs/10.14.1/firebase-app-compat.js"></script>
+<script src="https://www.gstatic.com/firebasejs/10.14.1/firebase-firestore-compat.js"></script>
 <script>
   // 1) Identidade do board (isola os comentários por módulo)
   window.RV_CONFIG = { key: 'knowledge_center_v1', title: 'Review — Knowledge Center' };
