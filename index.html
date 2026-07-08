@@ -1148,10 +1148,11 @@
   <div class="dialog-head"><span>Feedback</span><button class="kebab" onclick="closeFeedback()"><svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M18 6 6 18M6 6l12 12"></path></svg></button></div>
   <div style="padding:0 20px 4px;color:#333;font-size:14px">Help us improve this article.</div>
   <div id="fb-cats" style="padding:10px 20px 4px;display:flex;flex-wrap:wrap;gap:8px">
-    <button class="fb-chip" data-c="Incorrect content" onclick="pickFbCat('Incorrect content')">Incorrect content</button>
+    <button class="fb-chip" data-c="Incorrect information" title="The article has a factual error" onclick="pickFbCat('Incorrect information')">Incorrect information</button>
+    <button class="fb-chip" data-c="Missing details" onclick="pickFbCat('Missing details')">Missing details</button>
+    <button class="fb-chip" data-c="Confusing or poorly explained" onclick="pickFbCat('Confusing or poorly explained')">Confusing or poorly explained</button>
     <button class="fb-chip" data-c="Outdated" onclick="pickFbCat('Outdated')">Outdated</button>
-    <button class="fb-chip" data-c="Missing information" onclick="pickFbCat('Missing information')">Missing information</button>
-    <button class="fb-chip" data-c="Suggestion" onclick="pickFbCat('Suggestion')">Suggestion</button>
+    <button class="fb-chip" data-c="Didn&#39;t solve my problem" onclick="pickFbCat('Didn\'t solve my problem')">Didn't solve my problem</button>
     <button class="fb-chip" data-c="Other" onclick="pickFbCat('Other')">Other</button>
   </div>
   <div style="padding:8px 20px 0"><textarea class="textarea" id="fb-text" placeholder="Type here" maxlength="250" style="min-height:110px" oninput="el('fb-count').textContent=this.value.length+'/250'"></textarea><div id="fb-count" style="text-align:right;font-size:12px;color:#9aa0ac;margin-top:4px">0/250</div></div>
@@ -2070,8 +2071,14 @@ var totHidden = {};
 function totCard(c){
   return `<div class="tot-card${c.on?' tot-click':''}${c.act?' tot-active':''}${c.big?' tot-big':''}"${c.on?` onclick="${c.on}" title="Filter list by ${c.l}"`:''}><span class="tc-ico" style="color:${c.c};background:${c.bg};border-color:${c.c}">${c.ic}</span><span style="display:flex;flex-direction:column;line-height:1.3"><span class="tc-lbl">${c.l}</span><span class="tc-val">${c.v}</span></span></div>`;
 }
+function setCrumbAction(html){
+  var bc=el('admin-breadcrumb'); if(!bc) return;
+  var old=bc.querySelector('#crumb-action'); if(old) old.remove();
+  if(html) bc.insertAdjacentHTML('beforeend','<span id="crumb-action" style="margin-left:auto;display:inline-flex">'+html+'</span>');
+}
+function totShowBtn(view){ return `<button class="btn btn-outline btn-sm" style="height:26px;font-size:12px;border-radius:9999px" onclick="toggleTots('${view}')">${I.eye} Show totals</button>`; }
 function totStrip(view, cards){
-  if(totHidden[view]) return `<div style="display:flex;justify-content:flex-end;margin-bottom:12px"><button class="btn btn-outline btn-sm" style="height:28px;font-size:12px;border-radius:9999px" onclick="toggleTots('${view}')">${I.eye} Show totals</button></div>`;
+  if(totHidden[view]) return '';
   return `<div class="kc-tots">${cards.map(function(c,i){ return totCard(c) + (c.big && i===0 ? '<span class="tot-sep"></span>' : ''); }).join('')}<button class="tot-hide" title="Hide totals" onclick="toggleTots('${view}')">${I.eyeOff} Hide</button></div>`;
 }
 function toggleTots(view){ totHidden[view]=!totHidden[view]; ({'articles-search':renderArticlesSearch,'feedbacks-search':renderFeedbacksSearch})[view](); }
@@ -2104,7 +2111,7 @@ function renderArticlesSearch(){
       <td class="cols-mobile-hidden">00/00/0000</td>
       <td class="cols-mobile-hidden">${artStatusBadge(st)}</td>
       <td class="cols-mobile-hidden" style="white-space:nowrap"><span style="display:inline-flex;gap:14px;align-items:center"><span style="display:inline-flex;gap:4px;align-items:center">${I.comment}000</span><span style="display:inline-flex;gap:4px;align-items:center">${I.eye}000</span></span></td>
-      <td style="width:96px;text-align:center;white-space:nowrap"><span style="display:inline-flex;align-items:center;gap:8px"><button class="kebab" title="Open article" style="color:var(--color-primary)" onclick="openArticleModal('view','article','${st}')">${I.enter}</button><button class="kebab" title="Edit article" style="color:var(--color-primary)" onclick="openArticleModal('edit','article','${st}')">${I.pencil}</button></span></td>
+      <td style="width:48px;text-align:center"><button class="kebab" title="Edit article" style="color:var(--color-primary)" onclick="openArticleModal('edit','article','${st}')">${I.pencil}</button></td>
     </tr>`; }).join('');
   const tbl = pageState==='empty' ? tableEmptyState('articles-search') : `<div class="tbl-bleed" style="overflow-x:auto"><table class="tbl perm-tbl">
       <thead><tr>
@@ -2116,11 +2123,12 @@ function renderArticlesSearch(){
         <th class="cols-mobile-hidden">VERSION DATE</th>
         <th class="cols-mobile-hidden">STATUS</th>
         <th class="cols-mobile-hidden"></th>
-        <th style="width:96px"></th>
+        <th style="width:48px"></th>
       </tr></thead>
       <tbody>${rows}</tbody>
     </table></div>${pagination(131)}`;
   el('admin-view').innerHTML = `${tots}${searchToolbar()}${tbl}`;
+  setCrumbAction(totHidden['articles-search'] ? totShowBtn('articles-search') : '');
 }
 
 /* ----- Feedbacks search ----- */
@@ -2135,7 +2143,7 @@ function renderFeedbacksSearch(){
     {ic:'<span style="display:inline-flex;transform:rotate(180deg)">'+I.like+'</span>', c:'#EC221F', bg:'#FDE7E7', l:'Negative', v:'35', on:"setFbTotFilter('negative')", act:fbTotFilter==='negative'},
     {ic:I.cal, c:'#A07D12', bg:'#FDF3D6', l:'Last 30 days', v:'27', on:"setFbTotFilter('recent')", act:fbTotFilter==='recent'}
   ]);
-  const fbAll=[{k:'positive',r:true,cat:'Suggestion'},{k:'negative',r:false,cat:'Incorrect content'},{k:'positive',r:true,cat:'Other'},{k:'positive',r:false,cat:'Suggestion'},{k:'negative',r:true,cat:'Outdated'},{k:'positive',r:false,cat:'Missing information'},{k:'negative',r:false,cat:'Incorrect content'},{k:'positive',r:true,cat:'Suggestion'},{k:'positive',r:false,cat:'Other'},{k:'negative',r:true,cat:'Outdated'}];
+  const fbAll=[{k:'positive',r:true,cat:'Missing details'},{k:'negative',r:false,cat:'Incorrect information'},{k:'positive',r:true,cat:'Other'},{k:'positive',r:false,cat:'Missing details'},{k:'negative',r:true,cat:'Outdated'},{k:'positive',r:false,cat:'Confusing or poorly explained'},{k:'negative',r:false,cat:"Didn't solve my problem"},{k:'positive',r:true,cat:'Incorrect information'},{k:'positive',r:false,cat:'Other'},{k:'negative',r:true,cat:'Outdated'}];
   const fbList=fbAll.filter(function(f){ if(!fbTotFilter) return true; if(fbTotFilter==='recent') return f.r; return f.k===fbTotFilter; });
   const rows = fbList.map(f=>`
     <tr>
@@ -2146,7 +2154,6 @@ function renderFeedbacksSearch(){
       <td class="cols-mobile-hidden"><span style="display:inline-flex;align-items:center;gap:8px">${avatar(20)} User name</span></td>
       <td class="cols-mobile-hidden"><span style="background:#e9eaee;color:#555;border-radius:8px;padding:4px 10px;font-size:12px;font-weight:600;white-space:nowrap">${f.cat}</span></td>
       <td class="cols-mobile-hidden">00/00/0000</td>
-      <td style="width:48px;text-align:center"><button class="kebab" title="Open feedback" style="color:var(--color-primary)" onclick="openArticleModal('view','feedbacks')">${I.enter}</button></td>
     </tr>`).join('');
   const tbl = pageState==='empty' ? tableEmptyState('feedbacks-search') : `<div class="tbl-bleed" style="overflow-x:auto"><table class="tbl perm-tbl">
       <thead><tr>
@@ -2157,11 +2164,11 @@ function renderFeedbacksSearch(){
         <th class="cols-mobile-hidden">USER</th>
         <th class="cols-mobile-hidden">CATEGORY</th>
         <th class="cols-mobile-hidden">DATE</th>
-        <th style="width:48px"></th>
       </tr></thead>
       <tbody>${rows}</tbody>
     </table></div>${pagination(131)}`;
   el('admin-view').innerHTML = `${tots}${searchToolbar(feedbackLangSelector())}${tbl}`;
+  setCrumbAction(totHidden['feedbacks-search'] ? totShowBtn('feedbacks-search') : '');
 }
 
 /* ----- Settings: inline edit + form helpers ----- */
@@ -2394,10 +2401,8 @@ function regModalBody(v,item){
     f += lbl('Category') + `<button class="select-trigger" data-fld="Category" data-sel style="width:100%" onclick="openFilterDD(this,'Category')"><span class="flt-val">${catVal}</span>${I.chevDown}</button>`;
   }
   if(v==='tag-reg'){
-    const sel = item ? [tagGroups[item._grp||0].name] : [];
-    fltSel['Tag categories'] = sel.slice();
-    const tcatVal = fltValInner('Tag categories','Select');
-    f += lbl('Categories') + `<button class="select-trigger" data-fld="Tag categories" data-sel style="width:100%" onclick="openFilterDD(this,'Tag categories',true)"><span class="flt-val">${tcatVal}</span>${I.chevDown}</button>`;
+    const catValT = item ? `<span style="color:#1c1c1c">${tagGroups[item._grp||0].name}</span>` : `<span class="flt-ph">Select</span>`;
+    f += lbl('Category') + `<button class="select-trigger" data-fld="Tag categories" data-sel style="width:100%" onclick="openFilterDD(this,'Tag categories')"><span class="flt-val">${catValT}</span>${I.chevDown}</button>`;
   }
   f += sec('Status',true) + `<div style="display:flex;align-items:center;gap:12px"><button class="switch" id="reg-f-active" aria-checked="${item?String(item.active):'true'}" onclick="toggleSwitch(this)"><span class="thumb"></span></button><span style="font-size:14px;color:#1c1c1c">Active</span></div>`;
   return f;
@@ -2431,8 +2436,8 @@ function saveRegModal(){
     if(!catEl || catEl.querySelector('.flt-ph') || !catEl.textContent.trim()){ showToast('Select a category','error'); return; }
   }
   if(v==='tag-reg'){
-    const selT=fltSel['Tag categories']||[];
-    if(!selT.length){ showToast('Select a category','error'); return; }
+    const catElT = document.querySelector('#reg-modal [data-fld="Tag categories"] .flt-val');
+    if(!catElT || catElT.querySelector('.flt-ph') || !catElT.textContent.trim()){ showToast('Select a category','error'); return; }
   }
   const active = el('reg-f-active').getAttribute('aria-checked')==='true';
   const editing = !!regModal.id;
@@ -2448,11 +2453,11 @@ function saveRegModal(){
   } else if(v==='subcategory-reg'){
     if(!editing) subGroups[0].subs.unshift(item);
   } else if(v==='tag-reg'){
-    const sel = fltSel['Tag categories']||[];
     if(!editing){
-      let added=false;
-      tagGroups.forEach(function(grp){ if(sel.indexOf(grp.name)>=0){ grp.tags.unshift({id:++regSeq, name:name, active:active}); added=true; } });
-      if(!added) tagGroups[0].tags.unshift(item);
+      const catElT2 = document.querySelector('#reg-modal [data-fld="Tag categories"] .flt-val');
+      const gname = catElT2 ? catElT2.textContent.trim() : '';
+      const grp = tagGroups.find(function(g){ return g.name===gname; }) || tagGroups[0];
+      grp.tags.unshift(item);
     }
   }
   closeRegModal();
@@ -2938,7 +2943,7 @@ function allArticles(){
 function articleCard(a){
   const tEsc=(a.t||'').replace(/"/g,'&quot;');
   return `<div class="article-card" onclick="openArticle(&quot;${(a.t||'').replace(/"/g,'')}&quot;)" style="cursor:pointer">
-    <div class="thumb" style="background-image:url('${a.img}')"></div>
+    <div class="thumb" style="background-image:url('${a.img||HERO}')"></div>
     <div style="padding:18px;display:flex;flex-direction:column;gap:10px">
       <div style="display:flex;align-items:flex-start;justify-content:space-between;gap:8px">
         <div class="ac-title" title="${tEsc}">${a.t}</div>
@@ -3096,7 +3101,7 @@ function renderKcArticle(){
        <div style="display:flex;align-items:center;gap:8px;color:var(--color-primary);font-weight:700;margin-bottom:16px">${I.book}Related articles</div>
        <div class="grid-resp-2" style="display:grid;grid-template-columns:repeat(4,1fr);gap:18px">
          ${RELATED.map(a=>`<div class="article-card" onclick="openArticle(&quot;${(a.t||'').replace(/"/g,'')}&quot;)" style="cursor:pointer">
-           <div class="thumb" style="height:120px;background-image:url('${a.img}')"></div>
+           <div class="thumb" style="height:120px;background-image:url('${a.img||HERO}')"></div>
            <div style="padding:14px;display:flex;flex-direction:column;gap:8px">
              <div style="color:var(--color-primary);font-weight:700;font-size:14px;line-height:1.3">${a.t}</div>
              <div style="color:#5a5f6b;font-size:12px;line-height:1.5">${a.d}</div>
@@ -3283,7 +3288,6 @@ function articleHeader(){
       ${field('Subcategory'+(isView?'':REQ), isView?`<div style="padding-top:4px">${(Array.isArray(artSel.subcategory)?artSel.subcategory.join(', '):artSel.subcategory)||'Label'}</div>`:selTrigger('subcategory'))}
     </div>
     <div style="margin-top:18px">${field('Tags'+(isView?'':REQ), tags)}</div>
-    <div style="display:flex;align-items:center;gap:6px;color:#666;font-size:13px;margin-top:14px">${I.clock}<span>Read time: 20 minutes</span></div>
     <div style="margin-top:16px">${coverArea()}</div>
     <div style="background:#dfe1f1;border-radius:10px;padding:14px 16px;margin-top:18px;display:grid;grid-template-columns:1fr 1fr;gap:16px">
       <div><label class="lbl-field" style="font-size:12px">Creation date</label><div class="input" style="display:flex;align-items:center;justify-content:space-between;background:#fff">00/00/0000 ${I.cal}</div></div>
