@@ -378,10 +378,13 @@
   .gd-btn .gd-badge{ position:absolute; top:2px; right:7px; min-width:15px; height:15px; border-radius:9999px; background:#E22A2E; color:#fff; font-size:10px; font-weight:700; display:flex; align-items:center; justify-content:center; padding:0 3px }
   .gd-btn.gd-util{ width:30px }
   .gd-btn.gd-handle{ cursor:grab; touch-action:none }
-  .gd-nub{ display:none; align-items:center; justify-content:center; width:52px; height:52px; border-radius:9999px; color:#fff; background:var(--color-primary); border:1px solid rgba(0,19,145,.22); box-shadow:0 16px 40px rgba(0,19,145,.28); cursor:pointer }
-  .gd-nub svg{ width:26px; height:26px }
-  .glass-dock.collapsed .gd-bar{ display:none }
-  .glass-dock.collapsed .gd-nub{ display:flex }
+  .gd-nub{ display:none; align-items:center; justify-content:center; width:26px; height:26px; border-radius:9999px; color:var(--color-primary); background:#fff; border:1px solid #E0E0FF; box-shadow:0 3px 10px rgba(0,5,36,.28); cursor:pointer; padding:0 }
+  .gd-nub svg{ width:15px; height:15px }
+  .glass-dock.collapsed .gd-bar{ background:transparent; border:0; box-shadow:none; -webkit-backdrop-filter:none; backdrop-filter:none; padding:0; height:auto }
+  .glass-dock.collapsed .gd-bar > *:not(.gd-circles){ display:none !important }
+  .glass-dock.collapsed .gd-circles{ margin:0 }
+  .glass-dock.collapsed .gd-circle-menu{ display:none }
+  .glass-dock.collapsed .gd-nub{ display:flex; position:absolute; top:-9px; right:-9px; z-index:3 }
   #shell .scroll-area{ padding-bottom:96px }
   @media (max-width:640px){
     .topbar-search{ display:none }
@@ -1064,7 +1067,7 @@
       <button class="gd-btn" onclick="openAppDrawer('Feed')" aria-label="Feed"><svg width="21" height="21" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"><path d="M21 15a2 2 0 0 1-2 2H7l-4 4V5a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2z"/><path d="M8 8h8M8 12h5"/></svg><span class="gd-badge">8</span><span class="gd-lbl">Feed</span></button>
       <button class="gd-btn gd-util gd-collapse" onclick="toggleDock()" title="Ocultar barra" aria-label="Ocultar barra"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><path d="m6 9 6 6 6-6"/></svg></button>
     </div>
-    <button class="gd-nub" title="Mostrar barra" aria-label="Mostrar barra" onclick="toggleDock()"><svg viewBox="0 0 24 24" fill="currentColor"><rect x="3" y="3" width="7.5" height="7.5" rx="1.6"></rect><rect x="13.5" y="3" width="7.5" height="7.5" rx="1.6"></rect><rect x="3" y="13.5" width="7.5" height="7.5" rx="1.6"></rect><rect x="13.5" y="13.5" width="7.5" height="7.5" rx="1.6"></rect></svg></button>
+    <button class="gd-nub" title="Mostrar barra" aria-label="Mostrar barra" onclick="toggleDock()"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round"><path d="m18 15-6-6-6 6"/></svg></button>
   </div>
 </div>
 
