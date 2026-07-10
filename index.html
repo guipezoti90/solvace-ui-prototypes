@@ -763,11 +763,12 @@
     /* rodapé do artigo: só no mobile usa reação+share em ícones juntos à direita */
     .kc-help-full{ display:none !important }
     .kc-help-compact{ display:inline-flex !important }
-    /* dashboard header: cabe em 1 linha sem cortar o botão de filtros */
-    .dash-head{ overflow-x:visible !important }
+    /* dashboard header: cabe em 1 linha sem cortar o botão de filtros (só o período encolhe) */
+    .dash-head{ overflow-x:visible !important; gap:6px !important }
     .dash-head span[style*="margin-left:auto"]{ display:none !important }
-    .dash-head .dash-sel{ white-space:nowrap; font-size:13px }
-    .dash-head .btn-primary{ padding:0 12px }
+    .dash-head .dash-sel{ flex:0 1 auto; min-width:0; white-space:nowrap; overflow:hidden; text-overflow:ellipsis; font-size:12px; padding:0 8px }
+    .dash-head .btn-primary{ flex:0 0 auto; font-size:13px; padding:0 10px }
+    .dash-head .flt-btn{ flex:0 0 40px !important }
   }
 </style>
 </head>
