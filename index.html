@@ -769,6 +769,13 @@
     .dash-head .dash-sel{ flex:0 1 auto; min-width:0; white-space:nowrap; overflow:hidden; text-overflow:ellipsis; font-size:12px; padding:0 8px }
     .dash-head .btn-primary{ flex:0 0 auto; font-size:13px; padding:0 10px }
     .dash-head .flt-btn{ flex:0 0 40px !important }
+    /* totalizadores das telas de busca: 1 linha com rolagem lateral */
+    .kc-tots{ flex-wrap:nowrap !important; overflow-x:auto; -webkit-overflow-scrolling:touch; padding-bottom:4px }
+    .kc-tots .tot-card{ flex:0 0 auto !important; min-width:160px }
+    .kc-tots .tot-sep{ display:none }
+    /* filtro das telas de busca: só ícone no mobile */
+    .flt-btn .flt-lbl{ display:none }
+    .flt-btn{ width:40px !important; padding:0 !important; justify-content:center; flex:0 0 auto }
   }
 </style>
 </head>
@@ -2255,7 +2262,7 @@ function searchToolbar(left,right){
     ${left||''}
     <div class="search-box" style="flex:1"><input class="input" style="padding-left:40px" placeholder="Search"><span class="s-ico" style="right:auto;left:12px;color:#717182">${I.search}</span></div>
     ${right||''}
-    <button class="btn btn-outline flt-btn${fltApplied[currentView]?' flt-on':''}" style="border-radius:9999px;height:38px" onclick="openFilter(currentView)">${I.filter} Filters ${I.chevDownSm}</button>
+    <button class="btn btn-outline flt-btn${fltApplied[currentView]?' flt-on':''}" style="border-radius:9999px;height:38px" onclick="openFilter(currentView)">${I.filter}<span class="flt-lbl"> Filters ${I.chevDownSm}</span></button>
     <button class="kebab" title="More options" onclick="openExportMenu(this)">${I.kebab}</button>
   </div>`;
 }
