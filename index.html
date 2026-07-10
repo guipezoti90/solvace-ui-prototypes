@@ -753,6 +753,21 @@
     .dialog.open{ display:flex !important; flex-direction:column !important }
     .dialog > *:not(.dialog-head):not(:last-child){ flex:1 1 auto; min-height:0; overflow-y:auto; max-height:none !important }
     .dialog > *:last-child{ flex:0 0 auto; border-top:1px solid var(--color-input); background:#fff }
+    /* KC home (hero): KAI só ícone à direita da busca; tags em linha única com rolagem lateral */
+    .kc-hero-search{ flex-wrap:nowrap !important }
+    .kc-hero-search .search-box{ min-width:0 !important }
+    .kc-hero-search .btn{ flex:0 0 auto; width:44px; padding:0; justify-content:center }
+    .kc-hero-search .kai-lbl{ display:none }
+    .kc-hero-tags{ flex-wrap:nowrap !important; overflow-x:auto; justify-content:flex-start !important; padding-bottom:6px; -webkit-overflow-scrolling:touch }
+    .kc-hero-tags .tag{ flex:0 0 auto }
+    /* rodapé do artigo: só no mobile usa reação+share em ícones juntos à direita */
+    .kc-help-full{ display:none !important }
+    .kc-help-compact{ display:inline-flex !important }
+    /* dashboard header: cabe em 1 linha sem cortar o botão de filtros */
+    .dash-head{ overflow-x:visible !important }
+    .dash-head span[style*="margin-left:auto"]{ display:none !important }
+    .dash-head .dash-sel{ white-space:nowrap; font-size:13px }
+    .dash-head .btn-primary{ padding:0 12px }
   }
 </style>
 </head>
@@ -3191,11 +3206,11 @@ function renderKcHome(){
     <div style="max-width:760px;margin:28px auto 0;text-align:center">
       <h1 class="kc-hero-title">How can we help you today?</h1>
       <p style="color:#8a8f9b;margin:8px 0 26px">Search across all documentation, guides and videos tutorials</p>
-      <div style="display:flex;gap:12px;justify-content:center;align-items:center;flex-wrap:wrap">
+      <div class="kc-hero-search" style="display:flex;gap:12px;justify-content:center;align-items:center;flex-wrap:wrap">
         <div class="search-box" style="flex:1;min-width:280px;max-width:520px"><input class="input" placeholder="Search" onkeydown="if(event.key==='Enter')searchByQuery(this.value)"><span class="s-ico" style="cursor:pointer" onclick="searchByQuery(this.parentElement.querySelector('input').value)">${I.search}</span></div>
-        <button class="btn btn-outline" onclick="askKai()">${I.kai} Ask KAI</button>
+        <button class="btn btn-outline" onclick="askKai()" title="Ask KAI">${I.kai} <span class="kai-lbl">Ask KAI</span></button>
       </div>
-      <div style="display:flex;gap:8px;justify-content:center;flex-wrap:wrap;margin-top:18px">${tagPills()}</div>
+      <div class="kc-hero-tags" style="display:flex;gap:8px;justify-content:center;flex-wrap:wrap;margin-top:18px">${tagPills()}</div>
     </div>
     <div style="max-width:1180px;margin:32px auto 0">
       <div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:18px">
@@ -3387,9 +3402,21 @@ function renderKcArticle(){
        <div style="display:flex;align-items:center;justify-content:space-between;border-top:1px solid var(--color-input);border-bottom:1px solid var(--color-input);padding:16px 0;margin:26px 0;flex-wrap:wrap;gap:12px">
          <div style="display:flex;align-items:center;gap:12px">
            <span style="font-size:14px;color:#444">Was this article helpful?</span>
-           <button class="btn btn-outline btn-sm" onclick="openReactionMenu(this)" title="Rate this article" style="width:40px;padding:0;justify-content:center">${I.like}</button>
+           <span class="kc-help-full" style="display:inline-flex;gap:10px">
+             <button class="btn btn-outline btn-sm" onclick="showToast('Obrigado pelo seu feedback!')">${I.like} Yes</button>
+             <button class="btn btn-outline btn-sm" onclick="openFeedback()"><svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" style="transform:rotate(180deg)"><path d="M7 10v12M15 5.88 14 10h5.83a2 2 0 0 1 1.92 2.56l-2.33 8A2 2 0 0 1 17.5 22H4a2 2 0 0 1-2-2v-8a2 2 0 0 1 2-2h2.76a2 2 0 0 0 1.79-1.11L12 2a3.13 3.13 0 0 1 3 3.88Z"/></svg> Not</button>
+           </span>
          </div>
-         <button class="btn btn-outline btn-sm" onclick="openShareMenu(this)" title="Share" style="width:40px;padding:0;justify-content:center">${I.share}</button>
+         <div style="display:flex;align-items:center;gap:10px">
+           <span class="kc-help-full" style="display:inline-flex;gap:10px">
+             <button class="btn btn-outline btn-sm" onclick="copyArticleLink()"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M10 13a5 5 0 0 0 7.07 0l1.41-1.41a5 5 0 0 0-7.07-7.07L10 6"/><path d="M14 11a5 5 0 0 0-7.07 0L5.5 12.4a5 5 0 0 0 7.07 7.07L14 18"/></svg> Copy link</button>
+             <button class="btn btn-outline btn-sm" onclick="openShare()">${I.share} Share</button>
+           </span>
+           <span class="kc-help-compact" style="display:none;align-items:center;gap:8px">
+             <button class="btn btn-outline btn-sm" onclick="openReactionMenu(this)" title="Rate this article" style="width:40px;padding:0;justify-content:center">${I.like}</button>
+             <button class="btn btn-outline btn-sm" onclick="openShareMenu(this)" title="Share" style="width:40px;padding:0;justify-content:center">${I.share}</button>
+           </span>
+         </div>
        </div>
 
        <div style="display:flex;align-items:center;gap:8px;color:var(--color-primary);font-weight:700;margin-bottom:16px">${I.book}Related articles</div>
