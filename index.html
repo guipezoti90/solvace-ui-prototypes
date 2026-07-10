@@ -482,6 +482,7 @@
   .btn-white{ background:#fff; color:var(--color-primary) }
   .icon-btn{ width:40px;height:40px;border-radius:8px;display:inline-flex;align-items:center;justify-content:center;background:#fff;border:1px solid var(--color-primary);color:var(--color-primary) }
   .kebab{ background:transparent;border:0;color:#444;padding:6px;border-radius:6px } .kebab:hover{ background:var(--color-muted) }
+  .flt-btn{ border-radius:8px }   /* padrão do botão de filtro em todo o sistema */
 
   /* ---- badges / tags / status ---- */
   .tag{ display:inline-flex;align-items:center;background:var(--color-tag-bg);color:var(--color-primary);font-size:13px;font-weight:600;padding:5px 12px;border-radius:6px;line-height:1 }
@@ -2262,7 +2263,7 @@ function searchToolbar(left,right){
     ${left||''}
     <div class="search-box" style="flex:1"><input class="input" style="padding-left:40px" placeholder="Search"><span class="s-ico" style="right:auto;left:12px;color:#717182">${I.search}</span></div>
     ${right||''}
-    <button class="btn btn-outline flt-btn${fltApplied[currentView]?' flt-on':''}" style="border-radius:9999px;height:38px" onclick="openFilter(currentView)">${I.filter}<span class="flt-lbl"> Filters ${I.chevDownSm}</span></button>
+    <button class="btn btn-outline flt-btn${fltApplied[currentView]?' flt-on':''}" style="height:38px" onclick="openFilter(currentView)">${I.filter}<span class="flt-lbl"> Filters ${I.chevDownSm}</span></button>
     <button class="kebab" title="More options" onclick="openExportMenu(this)">${I.kebab}</button>
   </div>`;
 }
@@ -3018,7 +3019,7 @@ function renderDashboard(){
      <button class="dash-sel" onclick="openDashPeriodMenu(this)">${DASH_PERIOD_LBL[dashPeriod]} ${I.chevDownSm}</button>
      <span style="margin-left:auto"></span>
      <button class="btn btn-primary" onclick="switchView('articles-search')">Show Articles</button>
-     <button class="btn btn-outline flt-btn${fltApplied['dashboard']?' flt-on':''}" style="border-radius:9999px;height:38px" onclick="openFilter('dashboard')">${I.filter}<span class="dash-flt-lbl"> Filters ${I.chevDownSm}</span></button>
+     <button class="btn btn-outline flt-btn${fltApplied['dashboard']?' flt-on':''}" style="height:38px" onclick="openFilter('dashboard')">${I.filter}<span class="dash-flt-lbl"> Filters ${I.chevDownSm}</span></button>
      <button class="kebab" title="More options" onclick="openExportMenu(this)">${I.kebab}</button>
    </div>
 
