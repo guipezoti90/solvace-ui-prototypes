@@ -293,7 +293,7 @@
   .top-loc .loc-chev{ color:#6b7280 }
   .top-icon{ position:relative; width:40px; height:40px; display:flex; align-items:center; justify-content:center; border-radius:10px; background:transparent; border:0; color:#0d122f; cursor:pointer }
   .top-icon:hover{ background:#f4f4f6 }
-  .top-badge{ position:absolute; top:2px; right:3px; min-width:16px; height:16px; padding:0 4px; border-radius:9999px; background:#E22A2E; color:#fff; font-size:10px; font-weight:700; display:flex; align-items:center; justify-content:center; line-height:1; border:2px solid #fff }
+  .top-badge{ position:absolute; top:1px; right:1px; min-width:18px; height:18px; padding:0 5px; border-radius:9999px; background:#E22A2E; color:#fff; font-size:11px; font-weight:700; display:flex; align-items:center; justify-content:center; line-height:1; border:2px solid #fff }
   .top-kc{ border:1px solid var(--color-input) }
   .top-kc:hover{ background:#f4f4f6; border-color:var(--color-primary); color:var(--color-primary) }
 
@@ -303,8 +303,8 @@
   .dash-flt{ position:relative;width:40px;height:40px;border-radius:8px;background:var(--color-primary);color:#fff;border:0;display:flex;align-items:center;justify-content:center;cursor:pointer;box-shadow:0 1px 2px rgba(16,24,40,.05) }
   .dash-flt:hover{ background:#001072 }
   .dash-flt .n{ position:absolute;top:-6px;right:-6px;min-width:16px;height:16px;padding:0 3px;border-radius:9999px;background:#fff;border:1px solid var(--color-primary);color:var(--color-primary);font-size:10px;font-weight:700;display:flex;align-items:center;justify-content:center }
-  .kpi-grid{ display:grid;grid-template-columns:repeat(3,1fr);gap:16px;margin-bottom:16px }
-  .kpi-card{ background:#fff;border:1px solid #EAECF0;border-radius:14px;padding:20px 22px;display:flex;align-items:center;gap:18px;min-height:150px;box-shadow:0 1px 4px rgba(0,5,36,.05) }
+  .kpi-grid{ display:grid;grid-template-columns:repeat(4,1fr);gap:16px;margin-bottom:16px }
+  .kpi-card{ background:#eef1fb;border:1px solid #dfe4f7;border-radius:14px;padding:20px 22px;display:flex;align-items:center;gap:18px;min-height:150px }
   .kpi-card.red{ background:#FDE7E7;border-color:#f6c6c6 }
   .kpi-tile{ width:64px;height:64px;border-radius:14px;background:#EC221F;color:#fff;display:flex;align-items:center;justify-content:center;flex:0 0 64px }
   .kpi-big{ font-size:30px;font-weight:800;color:#0D122F;line-height:1.1 }
@@ -328,6 +328,9 @@
   .hbars{ flex:1;display:flex;flex-direction:column;gap:3px }
   .hbar{ height:10px;border-radius:0 4px 4px 0;position:relative;min-width:4px;transition:width .3s }
   .hval{ font-size:11px;font-weight:700;color:#0D122F;width:26px }
+  .hrow .hl.hl-2{ display:flex;flex-direction:column;align-items:flex-end;gap:1px;white-space:normal;line-height:1.2 }
+  .hrow .hl.hl-2 .hl-main{ max-width:100%;overflow:hidden;text-overflow:ellipsis;white-space:nowrap }
+  .hrow .hl.hl-2 .hl-sub{ font-size:10px;color:#9aa0ac;max-width:100%;overflow:hidden;text-overflow:ellipsis;white-space:nowrap }
   .haxis{ display:flex;margin-left:120px;font-size:10px;color:#999BA7;justify-content:space-between }
   .btn-tint{ display:inline-flex;align-items:center;gap:8px;height:36px;padding:0 14px;border-radius:8px;background:#F5F5FF;border:1px solid #E0E0FF;color:var(--color-primary);font-size:13px;font-weight:700;cursor:pointer }
   .btn-tint:hover{ background:#eaeaff }
@@ -375,7 +378,7 @@
   .gd-btn{ position:relative; width:56px; height:48px; border:0; background:transparent; border-radius:10px; display:flex; flex-direction:column; align-items:center; justify-content:center; gap:3px; color:#001391; cursor:pointer; padding:0 }
   .gd-btn:hover{ background:rgba(255,255,255,.4) }
   .gd-btn .gd-lbl{ font-size:10px; font-weight:600; line-height:1 }
-  .gd-btn .gd-badge{ position:absolute; top:2px; right:7px; min-width:15px; height:15px; border-radius:9999px; background:#E22A2E; color:#fff; font-size:10px; font-weight:700; display:flex; align-items:center; justify-content:center; padding:0 3px }
+  .gd-btn .gd-badge{ position:absolute; top:2px; right:6px; min-width:17px; height:17px; border-radius:9999px; background:#E22A2E; color:#fff; font-size:11px; font-weight:700; display:flex; align-items:center; justify-content:center; padding:0 4px }
   .gd-btn.gd-util{ width:30px }
   .gd-btn.gd-handle{ cursor:grab; touch-action:none }
   .gd-nub{ display:none; align-items:center; justify-content:center; width:26px; height:26px; border-radius:9999px; color:var(--color-primary); background:#fff; border:1px solid #E0E0FF; box-shadow:0 3px 10px rgba(0,5,36,.28); cursor:pointer; padding:0 }
@@ -389,6 +392,57 @@
   @media (max-width:640px){
     .topbar-search{ display:none }
     .glass-dock{ bottom:16px }
+
+    /* barra flutuante fixa: sem os botões de mover/ocultar */
+    .gd-handle, .gd-collapse{ display:none !important }
+    /* FAB "New article" no canto direito (16px), só ícone, 16px acima da barra flutuante */
+    .fab{ right:16px; bottom:88px; padding:0; width:48px; justify-content:center }
+    .fab .fab-lbl{ display:none }
+
+    /* nunca exibir o kebab de exportação (cadastro/busca/dashboard) */
+    [onclick*="openExportMenu"], [onclick*="openChartMenu"]{ display:none !important }
+
+    /* todo modal em fullscreen */
+    .modal-article, .big-modal, .dialog, .menu-pop{
+      left:0 !important; top:0 !important; right:auto !important; bottom:auto !important;
+      transform:none !important; width:100vw !important; max-width:100vw !important;
+      height:100dvh !important; max-height:100dvh !important; border-radius:0 !important;
+    }
+    .dialog{ overflow-y:auto }
+    .drawer{ width:100vw !important; max-width:100vw !important }
+
+    /* top bar: localização vai para o menu do avatar + caber em 375px */
+    .top-loc{ display:none }
+    .topbar{ gap:6px }
+    .topbar-logo svg{ height:20px; width:auto }
+    .topbar-right{ gap:10px }
+    .top-icon{ width:36px; height:36px }
+    .top-kc{ padding:0 9px !important; gap:5px !important }
+    .top-avatar{ cursor:pointer; width:32px; height:32px; font-size:11px }
+
+    /* dashboard: indicadores em linha com rolagem lateral */
+    .kpi-grid{ display:flex !important; flex-wrap:nowrap; overflow-x:auto; gap:12px; -webkit-overflow-scrolling:touch; padding-bottom:4px }
+    .kpi-card{ flex:0 0 250px; min-height:132px; padding:18px 16px }
+    /* dashboard header em uma linha; filtro só ícone */
+    .dash-head{ flex-wrap:nowrap; gap:8px; overflow-x:auto }
+    .dash-head .dash-flt-lbl{ display:none }
+    .dash-head .flt-btn{ padding:0 !important; width:40px; flex:0 0 40px; justify-content:center }
+    /* gráficos sem cortar na tela */
+    .card-pad{ padding:16px 12px }
+    .vchart{ height:170px; gap:6px }
+    .vy{ width:22px; flex:0 0 22px }
+    .vbars{ gap:4px; padding:0 2px }
+    .vval{ display:none }               /* muitos valores estouram a largura no mobile */
+    .vlbls{ margin-left:28px }          /* alinha rótulos ao plot (vy 22 + gap 6) */
+    .vlbls span{ font-size:9px }
+    .hrow{ gap:8px }
+    .hrow .hl{ width:76px; flex:0 0 76px; font-size:11px }
+    .hbar{ min-width:2px }
+    .hval{ width:22px; font-size:10px }
+
+    /* notification: toggles empilhados na mesma coluna */
+    .notif-switches{ flex-direction:column !important; align-items:flex-start; gap:10px }
+    .notif-switches > span{ margin-right:0 !important }
   }
 
   /* ---- main / breadcrumb ---- */
@@ -443,7 +497,7 @@
   /* ---- access permissions (redesign) ---- */
   .perm-toolbar{ display:flex;align-items:center;gap:32px;margin:0 -24px 16px;padding:12px 24px;background:var(--color-table-head) }
   .perm-toolbar .btn{ border-radius:12px;box-shadow:0 1px 2px rgba(16,24,40,.05) }
-  .perm-tbl tbody tr:nth-child(even){ background:#f8f9fb }
+  table.tbl tbody tr:nth-child(even){ background:#f8f9fb }
   .perm-tbl tbody td{ padding:18px 16px }
   /* ---- KC home: % de conteúdo lido por categoria ---- */
   .read-pill{ display:inline-flex;align-items:center;gap:6px;font-size:12px;font-weight:600;color:var(--color-primary);background:#eef1fb;border-radius:9999px;padding:3px 10px;white-space:nowrap }
@@ -683,6 +737,14 @@
     .grid-resp-3,.grid-resp-2{ grid-template-columns:1fr !important }
     .dash-grid{ grid-template-columns:1fr !important }
   }
+
+  /* mobile ≤640: regras que precisam vencer as bases definidas mais abaixo (fab/card-pad/dialog) */
+  @media (max-width:640px){
+    .fab{ right:16px !important; bottom:92px !important; padding:0 !important; width:48px !important; justify-content:center !important; z-index:45 !important }
+    .fab .fab-lbl{ display:none !important }
+    .card-pad{ padding:16px 12px !important }
+    .dialog{ overflow-y:auto !important }
+  }
 </style>
 </head>
 <body data-rv-context="view:dashboard">
@@ -768,8 +830,8 @@
       <div class="topbar-right">
         <button class="top-loc" title="Location"><svg width="18" height="18" viewBox="0 0 24 24" fill="currentColor"><path d="M12 2a7 7 0 0 0-7 7c0 5.25 7 13 7 13s7-7.75 7-13a7 7 0 0 0-7-7z"></path><circle cx="12" cy="9" r="2.6" fill="#fff"></circle></svg><span>Curitiba</span><svg class="loc-chev" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="m6 9 6 6 6-6"></path></svg></button>
         <button class="top-icon" title="Notifications"><svg width="21" height="21" viewBox="0 0 24 24" fill="currentColor"><path d="M12 2a6 6 0 0 0-6 6c0 7-3 9-3 9h18s-3-2-3-9a6 6 0 0 0-6-6Z"></path><path d="M10.3 21a2 2 0 0 0 3.4 0Z"></path></svg><span class="top-badge">3</span></button>
-        <span class="top-avatar">NU</span>
-        <button class="top-icon top-kc" onclick="goPublic(&#39;kc-home&#39;)" title="Knowledge Center"><svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M2 3h6a4 4 0 0 1 4 4v14a3 3 0 0 0-3-3H2z"></path><path d="M22 3h-6a4 4 0 0 0-4 4v14a3 3 0 0 1 3-3h7z"></path></svg></button>
+        <span class="top-avatar" onclick="openAvatarMenu(this)" style="cursor:pointer" title="Account">NU</span>
+        <button class="top-icon top-kc" onclick="goPublic(&#39;kc-home&#39;)" title="Knowledge Center · Help" style="width:auto;gap:7px;padding:0 12px;border-radius:9999px"><svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M2 3h6a4 4 0 0 1 4 4v14a3 3 0 0 0-3-3H2z"></path><path d="M22 3h-6a4 4 0 0 0-4 4v14a3 3 0 0 1 3-3h7z"></path></svg><span style="font-size:13px;font-weight:600">Help</span></button>
       </div>
     </header>
 
@@ -1061,7 +1123,7 @@
       <button class="gd-btn gd-util gd-handle" onpointerdown="dockDragStart(event)" title="Mover barra" aria-label="Mover barra"><svg width="18" height="18" viewBox="0 0 24 24" fill="currentColor"><circle cx="9" cy="5" r="1.7"/><circle cx="15" cy="5" r="1.7"/><circle cx="9" cy="12" r="1.7"/><circle cx="15" cy="12" r="1.7"/><circle cx="9" cy="19" r="1.7"/><circle cx="15" cy="19" r="1.7"/></svg></button>
       <button class="gd-btn" onclick="openAppDrawer('Tasks')" aria-label="Tasks"><svg width="21" height="21" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"><path d="M16 4h2a2 2 0 0 1 2 2v14a2 2 0 0 1-2 2H6a2 2 0 0 1-2-2V6a2 2 0 0 1 2-2h2"/><rect x="8" y="2" width="8" height="4" rx="1"/><path d="m9 14 2 2 4-4"/></svg><span class="gd-badge">3</span><span class="gd-lbl">Tasks</span></button>
       <div class="gd-circles">
-        <button class="gd-circle gd-circle-menu" data-label="Menu" onclick="openMenuModal()" aria-label="Menu"><svg width="25" height="25" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"><rect x="3.5" y="3.5" width="7" height="7" rx="1.3"/><rect x="13.5" y="3.5" width="7" height="7" rx="1.3"/><rect x="3.5" y="13.5" width="7" height="7" rx="1.3"/><rect x="13.5" y="13.5" width="7" height="7" rx="1.3"/></svg></button>
+        <button class="gd-circle gd-circle-menu" data-label="Menu" onclick="openMenuModal()" aria-label="Menu"><svg width="36" height="36" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"><rect x="3.5" y="3.5" width="7" height="7" rx="1.3"/><rect x="13.5" y="3.5" width="7" height="7" rx="1.3"/><rect x="3.5" y="13.5" width="7" height="7" rx="1.3"/><rect x="13.5" y="13.5" width="7" height="7" rx="1.3"/></svg></button>
         <button class="gd-circle gd-circle-kai" data-label="KAI" onclick="openKaiPanel()" onmouseenter="kaiHoverAnim()" aria-label="KAI"><span class="gd-kai-ico" id="gd-kai-slot"></span></button>
       </div>
       <button class="gd-btn" onclick="openAppDrawer('Feed')" aria-label="Feed"><svg width="21" height="21" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"><path d="M21 15a2 2 0 0 1-2 2H7l-4 4V5a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2z"/><path d="M8 8h8M8 12h5"/></svg><span class="gd-badge">8</span><span class="gd-lbl">Feed</span></button>
@@ -1106,7 +1168,7 @@
 </div>
 
 <!-- Filter drawer (right side) -->
-<div class="menu-pop" id="menu-modal">
+<div class="drawer drawer-left" id="menu-modal">
   <div style="display:flex;align-items:center;gap:10px;padding:16px 18px 0">
     <div class="search-box" style="flex:1"><input class="input" id="menu-search" style="padding-left:40px;background:#fff" placeholder="Search modules" oninput="menuQ=this.value;renderMenuModal(true)"><span class="s-ico" style="right:auto;left:12px;color:#717182"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="11" cy="11" r="7"/><path d="m21 21-4-4"/></svg></span></div>
     <button class="kebab" onclick="closeMenuModal()" title="Close"><svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M18 6 6 18M6 6l12 12"/></svg></button>
@@ -1115,7 +1177,7 @@
     <div id="menu-tabs" style="display:flex;gap:22px;flex:1;overflow:hidden"></div>
     <button class="kebab" id="menu-tabs-more" data-sel style="display:none;color:#5a5f6b;padding:2px 4px;margin-bottom:5px" title="More tabs" onclick="openMenuTabsDD(this)"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="m6 9 6 6 6-6"/></svg></button>
   </div>
-  <div id="menu-grid" style="padding:14px 18px 18px;display:grid;grid-template-columns:repeat(3,1fr);gap:10px;flex:1;overflow-y:auto;overflow-x:hidden;align-content:start"></div>
+  <div id="menu-grid" style="padding:14px 18px 18px;display:grid;grid-template-columns:repeat(2,1fr);gap:10px;flex:1;overflow-y:auto;overflow-x:hidden;align-content:start"></div>
 </div>
 
 <div class="drawer drawer-left" id="kai-drawer">
@@ -1238,7 +1300,7 @@
 <!-- State preview switcher removido -->
 
 <!-- ARTICLE-MODE FAB -->
-<button class="fab" id="fab" onclick="openArticleModal(&#39;creation&#39;)" style="display: flex;"><span class="fab-plus"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round"><path d="M12 5v14M5 12h14"></path></svg></span>New article</button>
+<button class="fab" id="fab" onclick="openArticleModal(&#39;creation&#39;)" style="display: flex;"><span class="fab-plus"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round"><path d="M12 5v14M5 12h14"></path></svg></span><span class="fab-lbl">New article</span></button>
 
 <script>
 /* ============================================================
@@ -1623,18 +1685,8 @@ function openMenuModal(){
   renderMenuModal();
   var si=el('menu-search'); if(si){ si.value=''; }
   el('overlay').classList.add('open');
-  var mm=el('menu-modal'); mm.classList.add('open');
+  el('menu-modal').classList.add('open');
   (window.requestAnimationFrame||setTimeout)(layoutMenuTabs);
-  /* ancora o painel logo acima da floating bar (que pode ter sido arrastada) */
-  var bar=el('bottombar'), r=bar?bar.getBoundingClientRect():null;
-  if(r && r.top>0){
-    mm.style.bottom=(window.innerHeight - r.top + 14)+'px';
-    mm.style.top='auto';
-    var w=mm.offsetWidth||680;
-    mm.style.left=Math.max(12, Math.min(window.innerWidth-w-12, r.left + r.width/2 - w/2))+'px';
-  } else {
-    mm.style.bottom='110px'; mm.style.left='50%'; mm.style.marginLeft='-340px';
-  }
   if(si) si.focus();
 }
 function closeMenuModal(){ el('menu-modal').classList.remove('open'); el('sel-dd').classList.remove('open'); maybeCloseOverlay(); }
@@ -1752,8 +1804,8 @@ function closeAllModals(){
 /* ---------- FILTERS (drawer = colunas da tabela) ---------- */
 const FILTER_FIELDS = {
   'articles-search':[['Category','multiselect'],['Subcategory','multiselect'],['Tags','multiselect'],['Originator','multiselect'],['Participants','multiselect'],['Version date','date']],
-  'feedbacks-search':[['Article','text'],['Client','select'],['Site','select'],['Date','date']],
-  'dashboard':[['Period','select'],['Article','text'],['Client','select'],['Start date','date'],['End date','date']],
+  'feedbacks-search':[['Article','text'],['Client','select'],['Site','select'],['Feedback category','multiselect'],['Date','date']],
+  'dashboard':[['Article','text'],['Client','select']],
 };
 const FFILTER_FIELDS = [['Client','select'],['Site','select'],['Date','date']];
 /* opções dos droplists de filtro (por coluna) */
@@ -1768,6 +1820,7 @@ const FILTER_OPTS={
   'Participants':['User name','Fernando Alex','Renato Basso','Evandro Silva'],
   'Tag categories':['Configuration','System','Notifications','Getting Started','Data Management','Integrations'],
   'Period':['Day','Month','Year'],
+  'Feedback category':['Missing details','Incorrect information','Outdated','Confusing or poorly explained',"Didn't solve my problem",'Other'],
 };
 let fltTrgEl=null;
 let fltMulti=false, fltLabel=null, fltSel={};
@@ -2010,6 +2063,12 @@ function clearFilterFields(bodyId){ var body=el(bodyId); if(!body) return;
 /* menu Exportar (3 pontinhos das telas de busca) */
 const ICO_XLS='<svg width="18" height="18" viewBox="0 0 24 24" fill="#4a4a4a"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8l-6-6z"/><rect x="8" y="12" width="8" height="1.7" rx=".8" fill="#fff"/><rect x="8" y="15.4" width="8" height="1.7" rx=".8" fill="#fff"/></svg>';
 const ICO_PDF='<svg width="18" height="18" viewBox="0 0 24 24" fill="#4a4a4a"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8l-6-6z"/><path d="M12 10.5 15.2 17H8.8z" fill="#fff"/><circle cx="12" cy="15" r="1.1" fill="#4a4a4a"/></svg>';
+function openAvatarMenu(trg){
+  var m=el('kebab-menu'); m.style.width='210px';
+  m.innerHTML = '<button class="km-item"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M12 2a7 7 0 0 0-7 7c0 5.25 7 13 7 13s7-7.75 7-13a7 7 0 0 0-7-7z"/><circle cx="12" cy="9" r="2.6"/></svg> Curitiba</button>';
+  var r=trg.getBoundingClientRect(); m.style.left=Math.max(8, r.right-210)+'px'; m.style.top=(r.bottom+6)+'px';
+  m.classList.add('open'); setTimeout(function(){document.addEventListener('click',closeKebabOnce);},0);
+}
 function openExportMenu(trg){
   const m=el('kebab-menu');
   m.style.width='200px';
@@ -2019,6 +2078,20 @@ function openExportMenu(trg){
     <button class="km-item" onclick="el('kebab-menu').classList.remove('open');showToast('Exportando para PDF…')">${ICO_PDF} Export to PDF</button>`;
   const r=trg.getBoundingClientRect();
   m.style.left=Math.max(8, r.right-200)+'px';
+  m.style.top=(r.bottom+6)+'px';
+  m.classList.add('open');
+  setTimeout(()=>document.addEventListener('click',closeKebabOnce),0);
+}
+/* menu de opções dos gráficos do dashboard (Embed + Export) — pino #106 */
+function openChartMenu(trg){
+  const m=el('kebab-menu');
+  m.style.width='210px';
+  m.innerHTML = `
+    <button class="km-item" onclick="el('kebab-menu').classList.remove('open');showToast('Embed code copied')"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" style="margin-right:6px"><path d="m16 18 6-6-6-6"/><path d="m8 6-6 6 6 6"/></svg> Embed chart</button>
+    <div style="height:1px;background:var(--color-input);margin:4px 2px"></div>
+    <button class="km-item" onclick="el('kebab-menu').classList.remove('open');showToast('Exportando imagem…')">${ICO_XLS} Export image</button>`;
+  const r=trg.getBoundingClientRect();
+  m.style.left=Math.max(8, r.right-210)+'px';
   m.style.top=(r.bottom+6)+'px';
   m.classList.add('open');
   setTimeout(()=>document.addEventListener('click',closeKebabOnce),0);
@@ -2152,10 +2225,11 @@ function totStrip(view, cards){
   return `<div class="kc-tots">${cards.map(function(c,i){ return totCard(c) + (c.big && i===0 ? '<span class="tot-sep"></span>' : ''); }).join('')}<button class="tot-hide" title="Hide totals" onclick="toggleTots('${view}')">${I.eyeOff} Hide</button></div>`;
 }
 function toggleTots(view){ totHidden[view]=!totHidden[view]; ({'articles-search':renderArticlesSearch,'feedbacks-search':renderFeedbacksSearch})[view](); }
-function searchToolbar(left){
+function searchToolbar(left,right){
   return `<div style="display:flex;align-items:center;gap:12px;margin-bottom:16px">
     ${left||''}
     <div class="search-box" style="flex:1"><input class="input" style="padding-left:40px" placeholder="Search"><span class="s-ico" style="right:auto;left:12px;color:#717182">${I.search}</span></div>
+    ${right||''}
     <button class="btn btn-outline flt-btn${fltApplied[currentView]?' flt-on':''}" style="border-radius:9999px;height:38px" onclick="openFilter(currentView)">${I.filter} Filters ${I.chevDownSm}</button>
     <button class="kebab" title="More options" onclick="openExportMenu(this)">${I.kebab}</button>
   </div>`;
@@ -2209,7 +2283,7 @@ function setFbTotFilter(key){ fbTotFilter = (fbTotFilter===key||!key) ? null : k
 function renderFeedbacksSearch(){
   const tots = totStrip('feedbacks-search', [
     {ic:I.comment, c:'#001391', bg:'#F5F5FF', l:'Total', v:'131', on:"setFbTotFilter(null)", act:false, big:true},
-    {ic:I.like, c:'#14AE5C', bg:'#DCF5E6', l:'Positive', v:'96', on:"setFbTotFilter('positive')", act:fbTotFilter==='positive'},
+    {ic:I.like, c:'#14AE5C', bg:'#DCF5E6', l:'Positive', v:'96', on:null, act:false},
     {ic:'<span style="display:inline-flex;transform:rotate(180deg)">'+I.like+'</span>', c:'#EC221F', bg:'#FDE7E7', l:'Negative', v:'35', on:"setFbTotFilter('negative')", act:fbTotFilter==='negative'},
     {ic:I.cal, c:'#A07D12', bg:'#FDF3D6', l:'Last 30 days', v:'27', on:"setFbTotFilter('recent')", act:fbTotFilter==='recent'}
   ]);
@@ -2237,7 +2311,7 @@ function renderFeedbacksSearch(){
       </tr></thead>
       <tbody>${rows}</tbody>
     </table></div>${pagination(131)}`;
-  el('admin-view').innerHTML = `${tots}${searchToolbar(feedbackLangSelector())}${tbl}`;
+  el('admin-view').innerHTML = `${tots}${searchToolbar('', feedbackLangSelector())}${tbl}`;
   setCrumbAction(totHidden['feedbacks-search'] ? totShowBtn('feedbacks-search') : '');
 }
 
@@ -2572,12 +2646,12 @@ function renderAccessPermissions(){
       <td class="cols-mobile-hidden"></td>
       <td style="text-align:center"><button class="switch" aria-checked="${p.admin}" onclick="togglePerm(${p.id},'admin',this)"><span class="thumb"></span></button></td>
       <td style="text-align:center"><button class="switch" aria-checked="${p.redator}" onclick="togglePerm(${p.id},'redator',this)"><span class="thumb"></span></button></td>
-      <td style="text-align:center"><button class="kebab" title="Delete" style="color:#4d4d4d" onclick="confirmDeletePerm(${p.id})">${I.trash}</button></td>
+      <td style="text-align:center"><button class="kebab" title="Delete" style="color:var(--color-primary)" onclick="confirmDeletePerm(${p.id})">${I.trash}</button></td>
     </tr>`).join('');
   const tbl = (pageState==='empty' || !permUsers.length) ? tableEmptyState('access-permissions') : `<div class="tbl-bleed" style="overflow-x:auto"><table class="tbl perm-tbl"><thead><tr>
-      <th style="width:220px">NAME</th>
-      <th class="cols-mobile-hidden" style="width:250px">EMAIL</th>
-      <th class="cols-mobile-hidden" style="width:180px">USER</th>
+      <th style="width:260px">NAME</th>
+      <th class="cols-mobile-hidden" style="width:300px">EMAIL</th>
+      <th class="cols-mobile-hidden" style="width:240px">USER</th>
       <th class="cols-mobile-hidden"></th>
       <th style="width:96px;text-align:center">ADMIN</th>
       <th style="width:113px;text-align:center">REDATOR</th>
@@ -2711,8 +2785,8 @@ function renderNotificationMgmt(){
   const list = notifRules.filter(function(r){ return !notifQuery || r.rule.toLowerCase().includes(notifQuery.toLowerCase()); });
   const rows = list.map(function(r){ return `
     <tr>
-      <td><span style="display:inline-flex;align-items:center;gap:8px">${r.rule}<span class="kc-tip" data-tip="${r.tip}">${I.info}</span></span></td>
-      <td style="white-space:nowrap">${notifSwitch(r.id,'web','Web')}${notifSwitch(r.id,'mobile','Mobile')}${notifSwitch(r.id,'mail','Mail')}</td>
+      <td><span style="display:inline-flex;align-items:center;gap:8px">${r.rule}<span class="kc-tip" data-tip="${r.tip}" style="color:#b0b4bd">${I.info}</span></span></td>
+      <td><div class="notif-switches" style="display:flex;align-items:center">${notifSwitch(r.id,'web','Web')}${notifSwitch(r.id,'mobile','Mobile')}${notifSwitch(r.id,'mail','Mail')}</div></td>
       <td style="text-align:center">${r.param===null?'':`<input class="input" style="width:75px;height:36px;padding:0 10px;text-align:left" value="${r.param}" oninput="setNotifParam(${r.id},this.value)">`}</td>
     </tr>`; }).join('');
   const tbl = (pageState==='empty' || !notifRules.length) ? tableEmptyState('notification-mgmt') : `<div class="tbl-bleed" style="overflow-x:auto"><table class="tbl perm-tbl"><thead><tr>
@@ -2824,19 +2898,30 @@ function kpiDonut(){
       <text x="56" y="63" text-anchor="middle" font-size="24" font-weight="800" fill="#0D122F">${pct}%</text>
     </svg>
     <div style="display:flex;flex-direction:column;gap:6px">
-      <span class="kpi-lbl">Read completion</span>
+      <span class="kpi-lbl" style="display:inline-flex;align-items:center;gap:6px">Read completion <span class="kc-tip" data-tip="% of readers who finished the article, out of those who opened it, in the selected period.">${I.info}</span></span>
       <span class="kpi-trend" style="color:#14AE5C">${I.trendUp} +1.5%</span>
       <span class="kpi-sub">vs previous period</span>
     </div>
   </div>`;
 }
 function kpiNegative(){
-  return `<div class="kpi-card red">
+  return `<div class="kpi-card">
     <div class="kpi-tile"><svg width="30" height="30" viewBox="0 0 24 24" fill="none" stroke="#fff" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="m21.73 18-8-14a2 2 0 0 0-3.48 0l-8 14A2 2 0 0 0 4 21h16a2 2 0 0 0 1.73-3Z"/><path d="M12 9v4"/><path d="M12 17h.01"/></svg></div>
     <div style="display:flex;flex-direction:column;gap:4px">
-      <span class="kpi-lbl" style="color:#B71C1C">Negative feedbacks</span>
-      <span class="kpi-big">14</span>
+      <span class="kpi-lbl" style="color:#B71C1C;display:inline-flex;align-items:center;gap:6px">Negative feedbacks <span class="kc-tip" data-tip="Number of negative feedbacks received in the selected period.">${I.info}</span></span>
+      <span class="kpi-big" style="color:#B71C1C">14</span>
       <span class="kpi-sub" style="color:#B71C1C">1 more vs previous period</span>
+    </div>
+  </div>`;
+}
+/* indicador numérico (fundo azul, estilo dos totalizadores das telas de busca) */
+function kpiStat(iconSvg, tileBg, label, value, tooltip){
+  return `<div class="kpi-card">
+    <div class="kpi-tile" style="background:${tileBg}">${iconSvg}</div>
+    <div style="display:flex;flex-direction:column;gap:4px">
+      <span class="kpi-lbl" style="display:inline-flex;align-items:center;gap:6px">${label} <span class="kc-tip" data-tip="${tooltip}">${I.info}</span></span>
+      <span class="kpi-big">${value}</span>
+      <span class="kpi-sub">vs previous period</span>
     </div>
   </div>`;
 }
@@ -2855,7 +2940,7 @@ function kpiFeedbacks(P){
   }).join('');
   return `<div class="kpi-card" style="align-items:stretch">
     <div class="sb-wrap">
-      <span class="kpi-lbl">Feedbacks</span>
+      <span class="kpi-lbl" style="display:inline-flex;align-items:center;gap:6px">Feedbacks <span class="kc-tip" data-tip="Positive, neutral and negative feedbacks per period.">${I.info}</span></span>
       <div class="sb-cols">${cols}</div>
       <div class="sb-lbls">${labels.map(l=>'<span>'+l+'</span>').join('')}</div>
       <div class="sb-leg">
@@ -2867,14 +2952,21 @@ function kpiFeedbacks(P){
   </div>`;
 }
 function clientBars(){
-  const rowLabel = dashViewsTab==='Client' ? 'Client name' : 'Site name';
+  const isSite = dashViewsTab==='Site';
   const data=[9,8,7,6,5,4,4,3], fb=[7,6,5,5,4,3,2,2], max=10;
+  /* site = cidade da planta; mostra o cliente p/ desambiguar sites de mesmo nome */
+  const clients=['Acme Foods','Beta Corp','Acme Foods','Delta Ind.','Beta Corp','Omega SA','Delta Ind.','Acme Foods'];
   const rows = data.map(function(v,i){
-    return '<div class="hrow" onclick="openDrill(\'views\',\''+rowLabel+'\')" title="Open details">'
-      +'<span class="hl">'+rowLabel+' '+(i+1)+'</span>'
+    var name = isSite ? ('Site name '+(i+1)) : ('Client name '+(i+1));
+    var label = isSite
+      ? '<span class="hl hl-2"><span class="hl-main">'+name+'</span><span class="hl-sub">'+clients[i]+'</span></span>'
+      : '<span class="hl">'+name+'</span>';
+    var drill = isSite ? (name+' · '+clients[i]) : name;
+    return '<div class="hrow" title="Open details">'
+      + label
       +'<div class="hbars">'
-      +'<div style="display:flex;align-items:center;gap:8px"><div class="hbar" style="width:'+(v/max*100)+'%;background:var(--color-primary)"></div><span class="hval">'+v*2+'</span></div>'
-      +'<div style="display:flex;align-items:center;gap:8px"><div class="hbar" style="width:'+(fb[i]/max*100)+'%;background:#a8aede"></div><span class="hval" style="color:#4D5166">'+fb[i]*2+'</span></div>'
+      +'<div style="display:flex;align-items:center;gap:8px;cursor:pointer" onclick="openDrill(\'views\',\''+drill+'\')"><div class="hbar" style="width:'+(v/max*100)+'%;background:var(--color-primary)"></div><span class="hval">'+v*2+'</span></div>'
+      +'<div style="display:flex;align-items:center;gap:8px;cursor:pointer" onclick="openDrill(\'feedbacks\',\''+drill+'\')"><div class="hbar" style="width:'+(fb[i]/max*100)+'%;background:#a8aede"></div><span class="hval" style="color:#4D5166">'+fb[i]*2+'</span></div>'
       +'</div></div>';
   }).join('');
   return rows;
@@ -2886,32 +2978,37 @@ function renderDashboard(){
       <td style="overflow:hidden;text-overflow:ellipsis;white-space:nowrap">Lorem Ipsum is simply dummy text of the printing and typesetting industry…</td>
       <td class="cols-mobile-hidden">Category</td>
       <td class="cols-mobile-hidden">Subcategory</td>
-      <td class="cols-mobile-hidden">Client name</td>
-      <td class="cols-mobile-hidden">Site name</td>
       <td><span style="display:inline-flex;gap:5px;align-items:center">${I.eye}000</span></td></tr>`).join('');
   const fbRows=Array.from({length:10}).map(()=>`
-    <tr><td style="overflow:hidden;text-overflow:ellipsis;white-space:nowrap">Lorem Ipsum is simply dummy text of the printing and typesetting industry…</td><td><span class="row-link" style="cursor:pointer" onclick="openArticleModal('view','feedbacks')">ART-99</span></td><td class="cols-mobile-hidden">Client name</td><td class="cols-mobile-hidden">Site name</td><td style="text-align:left">00/00/0000</td></tr>`).join('');
+    <tr><td style="overflow:hidden;text-overflow:ellipsis;white-space:nowrap">Lorem Ipsum is simply dummy text of the printing and typesetting industry…</td><td><span class="row-link" style="cursor:pointer" onclick="openArticleModal('view','feedbacks')">ART-99</span></td><td style="text-align:left">00/00/0000</td></tr>`).join('');
   el('admin-view').innerHTML = `
    <div class="dash-head">
      <button class="dash-sel" onclick="openDashPeriodMenu(this)">${DASH_PERIOD_LBL[dashPeriod]} ${I.chevDownSm}</button>
      <span style="margin-left:auto"></span>
      <button class="btn btn-primary" onclick="switchView('articles-search')">Show Articles</button>
-     <button class="dash-sel" onclick="openExportMenu(this)">Export ${I.chevDownSm}</button>
-     <button class="dash-flt" title="Filter" onclick="openFilter('dashboard')">${I.filter}${fltApplied['dashboard']?'<span class="n">1</span>':''}</button>
+     <button class="btn btn-outline flt-btn${fltApplied['dashboard']?' flt-on':''}" style="border-radius:9999px;height:38px" onclick="openFilter('dashboard')">${I.filter}<span class="dash-flt-lbl"> Filters ${I.chevDownSm}</span></button>
+     <button class="kebab" title="More options" onclick="openExportMenu(this)">${I.kebab}</button>
    </div>
 
    <div class="kpi-grid">
      ${kpiDonut()}
+     ${kpiStat('<svg width="30" height="30" viewBox="0 0 24 24" fill="none" stroke="#fff" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M2 12s3.5-7 10-7 10 7 10 7-3.5 7-10 7-10-7-10-7Z"/><circle cx="12" cy="12" r="3"/></svg>', '#001391', 'Total views', P.views.reduce((a,b)=>a+b,0).toLocaleString('en-US'), 'Total article views in the selected period.')}
+     ${kpiStat('<svg width="30" height="30" viewBox="0 0 24 24" fill="none" stroke="#fff" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M21 15a2 2 0 0 1-2 2H7l-4 4V5a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2z"/></svg>', '#5A63C9', 'Total feedbacks', P.fb.reduce((a,b)=>a+b,0).toLocaleString('en-US'), 'Total feedbacks received in the selected period.')}
      ${kpiNegative()}
-     ${kpiFeedbacks(P)}
    </div>
 
    <div class="chart2 dash-grid">
      <div class="card card-pad">
        <div class="card-head"><span class="ttl">Views</span>
          <span class="sb-leg" style="margin-left:auto"><span><span class="dot" style="background:var(--color-primary)"></span>Views</span></span>
+         <button class="kebab" title="Chart options" style="margin-left:8px" onclick="openChartMenu(this)">${I.kebab}</button>
        </div>
        ${barChart(P.views,false,P.labels,P.range)}
+       <div class="card-head" style="margin-top:26px"><span class="ttl">Feedbacks</span>
+         <span class="sb-leg" style="margin-left:auto"><span><span class="dot" style="background:var(--color-primary)"></span>Feedbacks</span></span>
+         <button class="kebab" title="Chart options" style="margin-left:8px" onclick="openChartMenu(this)">${I.kebab}</button>
+       </div>
+       ${barChart(P.fb,true,P.labels,P.range)}
      </div>
      <div class="card card-pad">
        <div class="card-head"><span class="ttl">Views & feedbacks by ${dashViewsTab.toLowerCase()}</span>
@@ -2919,6 +3016,7 @@ function renderDashboard(){
            <span><span class="dot" style="background:var(--color-primary)"></span>Views</span>
            <span><span class="dot" style="background:#a8aede"></span>Feedbacks</span>
          </span>
+         <button class="kebab" title="Chart options" style="margin-left:8px" onclick="openChartMenu(this)">${I.kebab}</button>
        </div>
        <div style="display:flex;justify-content:center;gap:24px;border-bottom:1px solid var(--color-input);padding-bottom:10px;margin-bottom:16px;font-size:14px">
          ${viewsTab('Client')}${viewsTab('Site')}
@@ -2932,22 +3030,18 @@ function renderDashboard(){
      <div class="card card-pad">
        <div class="card-head">
          <span class="ttl">Top view articles</span>
-         <div class="card-search" style="margin-left:auto">${I.search||''}<svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="11" cy="11" r="7"/><path d="m21 21-4-4"/></svg><input placeholder="Search" oninput="dashTopFilter(this.value)"></div>
-         <button class="btn-tint" onclick="openExportMenu(this)"><svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/><polyline points="7 10 12 15 17 10"/><line x1="12" y1="15" x2="12" y2="3"/></svg> Export</button>
        </div>
        <div style="overflow-x:auto"><table class="tbl" style="table-layout:fixed;width:100%"><thead><tr>
          <th style="width:9%"><span class="th-sort">NUMBER ${I.chevDownSm}</span></th>
-         <th style="width:28%"><span class="th-sort">ARTICLE ${I.chevDownSm}</span></th>
+         <th style="width:55%"><span class="th-sort">ARTICLE ${I.chevDownSm}</span></th>
          <th class="cols-mobile-hidden" style="width:15%">CATEGORY</th>
          <th class="cols-mobile-hidden" style="width:15%">SUBCATEGORY</th>
-         <th class="cols-mobile-hidden" style="width:14%">CLIENT</th>
-         <th class="cols-mobile-hidden" style="width:13%">SITE</th>
          <th style="width:6%">VIEWS</th>
        </tr></thead><tbody id="dash-top-body">${topRows}</tbody></table></div>
      </div>
      <div class="card card-pad">
        <div class="card-head"><span class="ttl">Last 30 days feedbacks</span></div>
-       <table class="tbl" style="table-layout:fixed;width:100%"><thead><tr><th style="width:45%"><span class="th-sort">FEEDBACK ${I.chevDownSm}</span></th><th style="width:12%"><span class="th-sort">SOURCE ${I.chevDownSm}</span></th><th class="cols-mobile-hidden" style="width:15%">CLIENT</th><th class="cols-mobile-hidden" style="width:15%">SITE</th><th style="width:13%;text-align:left">DATE</th></tr></thead>
+       <table class="tbl" style="table-layout:fixed;width:100%"><thead><tr><th style="width:64%"><span class="th-sort">FEEDBACK ${I.chevDownSm}</span></th><th style="width:18%"><span class="th-sort">SOURCE ${I.chevDownSm}</span></th><th style="width:18%;text-align:left">DATE</th></tr></thead>
          <tbody>${fbRows}</tbody></table>
        ${pagination(131)}
      </div>
@@ -3077,13 +3171,12 @@ function renderKcHome(){
       <div style="display:flex;align-items:flex-start;justify-content:space-between;margin-bottom:14px">
         <span class="kc-cat-ico">${CAT_ICON[c.ico]}</span>
         <span style="display:inline-flex;align-items:center;gap:8px">
-          <span class="tag">10 articles</span>
           <span class="read-pill${(c.read||0)>=100?' done':''}" title="${c.read||0}% of this category's content already read"><span class="read-bar"><span style="width:${c.read||0}%"></span></span>${c.read||0}% read</span>
         </span>
       </div>
       <div style="font-weight:700;font-size:16px;margin-bottom:8px">${c.t}</div>
       <div style="color:#5a5f6b;font-size:14px;line-height:1.5;flex:1">${c.d}</div>
-      <a onclick="event.stopPropagation();viewAllArticles()" style="color:var(--color-primary);font-weight:600;font-size:14px;display:inline-flex;align-items:center;gap:8px;margin-top:18px;cursor:pointer">View articles ${I.arrow}</a>
+      <a onclick="event.stopPropagation();viewAllArticles()" style="color:var(--color-primary);font-weight:600;font-size:14px;display:inline-flex;align-items:center;gap:8px;margin-top:18px;cursor:pointer">View articles (10) ${I.arrow}</a>
     </div>`).join('');
   el('public-view').innerHTML=`
     <div style="max-width:760px;margin:28px auto 0;text-align:center">
@@ -3317,6 +3410,7 @@ const SEL_OPTS={
   category:    {multi:false, opts:['System Settings','Getting Started','Data Management','Troubleshooting','Updates','Integrations']},
   subcategory: {multi:false, opts:['Subcategory 1','Subcategory 2','Subcategory 3']},
   tags:        {multi:true,  opts:TAGS},
+  related:     {multi:true,  opts:['How to set up the notification system','Managing user permissions','Troubleshooting login & access','Data import best practices','Setting up integrations','Configuring notification rules','Understanding roles & permissions','Exporting reports','Bulk importing articles','Managing tags & categories']},
 };
 function selChip(key,o){
   const rm=`<span onclick="event.stopPropagation();removeSelChip('${key}','${o}')" style="cursor:pointer;display:inline-flex">${I.x}</span>`;
@@ -3341,13 +3435,22 @@ function selTriggerInner(key){
 function selTrigger(key){ return `<button class="select-trigger" data-sel="${key}" onclick="openSelDD(this,'${key}')">${selTriggerInner(key)}</button>`; }
 let selTrgEl=null, selKey=null;
 function openSelDD(trg,key){
-  selTrgEl=trg; selKey=key; selUserQ='';
+  selTrgEl=trg; selKey=key; selUserQ=''; relQ='';
   const dd=el('sel-dd'); const r=trg.getBoundingClientRect();
   dd.style.left=r.left+'px'; dd.style.top=(r.bottom+6)+'px'; dd.style.width=Math.max(r.width,240)+'px';
   renderSelList(); dd.classList.add('open');
   const si=el('sel-user-search'); if(si) si.focus();
 }
 var selUserQ='';
+var relQ='';
+function renderRelList(){
+  const box=el('sel-rel-list'); if(!box) return;
+  const q=relQ.trim().toLowerCase();
+  const sel=artSel.related||[];
+  const opts=SEL_OPTS.related.opts.filter(function(o){ return o.toLowerCase().includes(q); });
+  box.innerHTML = opts.map(function(o){ return '<div class="idd-item" onclick="pickSel(\''+o.replace(/'/g,"\\'")+'\')"><span class="cbx" aria-checked="'+(sel.indexOf(o)>=0?'true':'false')+'">'+I.check+'</span><span style="flex:1">'+o+'</span></div>'; }).join('')
+    || '<div class="idd-item" style="color:#9aa0ac;cursor:default">No articles found</div>';
+}
 function renderSelUserList(){
   const box=el('sel-user-list'); if(!box) return;
   const hint=userSearchHint(selUserQ);
@@ -3377,6 +3480,12 @@ function renderSelList(){
     renderSelUserList();
     return;
   }
+  if(selKey==='related'){                                         /* artigos relacionados: multiseleção com busca (pino #112) */
+    el('sel-dd-list').innerHTML = '<div style="padding:8px 8px 4px"><div style="display:flex;align-items:center;gap:8px;height:36px;padding:0 10px;border:1px solid #E9EAEC;border-radius:8px;background:#fff"><svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="#999BA7" stroke-width="2"><circle cx="11" cy="11" r="7"/><path d="m21 21-4-4"/></svg><input id="sel-rel-search" placeholder="Search articles" oninput="relQ=this.value;renderRelList()" style="border:0;outline:0;flex:1;font-size:13px;background:transparent"></div></div><div id="sel-rel-list"></div>';
+    const sr=el('sel-rel-search'); if(sr) sr.value=relQ;
+    renderRelList();
+    return;
+  }
   el('sel-dd-list').innerHTML = cfg.opts.map(o=>{
     const sel = cfg.multi ? (artSel[selKey]||[]).includes(o) : artSel[selKey]===o;
     if(cfg.multi){
@@ -3390,7 +3499,7 @@ function pickSel(opt){
   if(cfg.multi){
     const arr=artSel[selKey]||(artSel[selKey]=[]);
     const i=arr.indexOf(opt); if(i>=0) arr.splice(i,1); else arr.push(opt);
-    if(selKey==='participants') renderSelUserList(); else renderSelList();
+    if(selKey==='participants') renderSelUserList(); else if(selKey==='related') renderRelList(); else renderSelList();
   } else {
     artSel[selKey] = (artSel[selKey]===opt) ? '' : opt;           /* clicar no item já selecionado desseleciona */
     el('sel-dd').classList.remove('open');
@@ -3410,7 +3519,7 @@ function removeSelChip(key,opt){
 function openSelAll(key){
   window.__selAllKey=key;
   const arr=artSel[key]||[];
-  const titles={tags:'Tags', participants:'Participants'};
+  const titles={tags:'Tags', participants:'Participants', related:'Related articles'};
   el('dialog-title').textContent = (titles[key]||'Selected')+' ('+arr.length+')';
   el('dialog-desc').innerHTML = `<div style="display:flex;flex-wrap:wrap;gap:8px;max-height:300px;overflow:auto;padding:4px 0">${arr.map(o=>selChip(key,o)).join('')||'<span style="color:#9aa0ac">No items selected</span>'}</div>`;
   el('dialog-actions').innerHTML = `<button class="btn btn-primary btn-sm" onclick="closeDialog()">Done</button>`;
@@ -3445,7 +3554,7 @@ function onCoverFile(input){
   input.value='';
   renderArticleModal(); showToast('Image uploaded: '+artCover.name);
 }
-function openCover(){ if(artCover && artCover.url) window.open(artCover.url,'_blank'); }
+function openCover(){ if(artCover && artCover.url) openLightbox(artCover.url); }
 function removeCover(){ artCover=null; renderArticleModal(); showToast('Image removed'); }
 
 /* shared header form (Title..dates) */
@@ -3454,7 +3563,7 @@ function articleHeader(){
   const titleVal = isCreate ? (artSel.title||'') : (artSel.title||'How to set up the notification system');
   const number = isCreate ? 'ART-' : 'ART-000';
   let participants;
-  if(isView) participants = `<div style="display:flex;align-items:center;gap:14px;padding-top:2px">${avatar(24)} User name ${avatar(24)} User name ${avatar(24)} User name <span style="background:var(--color-primary);color:#fff;border-radius:9999px;width:26px;height:26px;display:inline-flex;align-items:center;justify-content:center;font-size:11px;font-weight:600">+5</span></div>`;
+  if(isView){ var _pcs=(artSel.participants&&artSel.participants.length)?artSel.participants:['User name','User name','User name']; participants = `<div class="chip-row" style="display:flex;align-items:center;gap:12px;flex-wrap:nowrap;overflow:hidden;min-width:0;padding-top:2px">`+_pcs.map(function(p){return '<span class="sel-chip" data-name="'+p+'" style="display:inline-flex;align-items:center;gap:6px;flex:none;white-space:nowrap">'+avatar(24)+' '+p+'</span>';}).join('')+`<span class="sel-more" style="display:none"></span></div>`; }
   else participants = selTrigger('participants');
   let tags;
   if(isView) tags = `<div style="display:flex;gap:6px;align-items:center;flex-wrap:wrap;padding-top:4px">${(artSel.tags||[]).map(t=>`<span class="tag">${t}</span>`).join('')||'<span class="tag">Configuration</span><span class="tag">Notifications</span><span class="tag">System</span>'}</div>`;
@@ -3472,10 +3581,11 @@ function articleHeader(){
       ${field('Subcategory'+(isView?'':REQ), isView?`<div style="padding-top:4px">${(Array.isArray(artSel.subcategory)?artSel.subcategory.join(', '):artSel.subcategory)||'Label'}</div>`:selTrigger('subcategory'))}
     </div>
     <div style="margin-top:18px">${field('Tags'+(isView?'':REQ), tags)}</div>
+    <div style="margin-top:18px">${field('Related articles', isView ? `<div style="display:flex;gap:6px;align-items:center;flex-wrap:wrap;padding-top:4px">${(artSel.related||[]).map(t=>`<span class="tag">${t}</span>`).join('')||'<span style="color:#9aa0ac">—</span>'}</div>` : selTrigger('related'))}</div>
     <div style="margin-top:16px">${coverArea()}</div>
     <div style="background:#dfe1f1;border-radius:10px;padding:14px 16px;margin-top:18px;display:grid;grid-template-columns:1fr 1fr;gap:16px">
       <div><label class="lbl-field" style="font-size:12px">Creation date</label><div class="input" style="display:flex;align-items:center;justify-content:space-between;background:#fff">00/00/0000 ${I.cal}</div></div>
-      <div><label class="lbl-field" style="font-size:12px">Last modification</label><div class="input" style="display:flex;align-items:center;justify-content:space-between;background:#fff">—</div></div>
+      <div><label class="lbl-field" style="font-size:12px">Last change date</label><div class="input" style="display:flex;align-items:center;justify-content:space-between;background:#fff">—</div></div>
     </div>`;
 }
 
@@ -3493,7 +3603,7 @@ function articleTabs(){
 }
 
 function articleReaderContent(){
-  return `<div style="height:300px;border-radius:10px;margin:0 0 18px;background:url('${HERO}') center/cover, #f0e000"></div>
+  return `<div style="height:300px;border-radius:10px;margin:0 0 18px;background:url('${HERO}') center/cover, #f0e000;cursor:zoom-in" title="Click to expand" onclick="openLightbox('${HERO}')"></div>
     <p style="line-height:1.7;color:#333"><a style="color:var(--color-primary);font-weight:600">Notifications are the heartbeat of modern team collaboration.</a> In this comprehensive guide, we'll walk you through setting up Solvace's notification system to ensure your team stays informed, engaged, and productive—without the noise.</p>
     <p style="line-height:1.7;color:#333">Whether you're managing a small team or coordinating across multiple departments, <a style="color:#e0a500;font-weight:600">proper notification configuration</a> can make the difference between seamless collaboration and constant interruption. Let's dive in!</p>
     <h4 style="font-weight:700;margin:18px 0 6px">Watch: Quick Setup Tutorial</h4>
@@ -3547,6 +3657,7 @@ function renderArticleModal(){
   } else {
     foot.innerHTML = `<button class="kebab" style="color:#fff" onclick="openArtKebab(this)">${I.kebab}</button><button class="btn btn-outline btn-sm" style="border-color:#fff;color:#fff;background:transparent" onclick="closeArticleModal()">Cancel</button><button class="btn btn-white btn-sm" onclick="artSave()">Save</button>`;
   }
+  scheduleChipFit();
 }
 function setArtTab(tab){ artTab=tab; renderArticleModal(); rvSyncContext(); }
 function openArticleModal(mode, tab, status){
