@@ -2310,7 +2310,7 @@ function renderArticlesSearch(){
 
 /* ----- Feedbacks search ----- */
 /* seletor de idioma p/ tradução automática dos feedbacks (mock) */
-function feedbackLangSelector(){ return `<select class="input" style="width:auto;min-width:170px;height:38px;padding:0 10px;flex:none" title="Auto-translate feedbacks" onchange="if(this.value)showToast('Feedbacks translated to '+this.value)"><option value="">Original language</option><option>English</option><option>Português</option><option>Español</option><option>Français</option><option>Deutsch</option><option>Italiano</option></select>`; }
+function feedbackLangSelector(){ return `<select class="input" style="width:auto;min-width:120px;height:38px;padding:0 10px;flex:none" title="Translate feedbacks" onchange="if(this.value)showToast('Feedbacks translated to '+this.value)"><option value="">Language</option><option>English</option><option>Português</option><option>Español</option><option>Français</option><option>Deutsch</option><option>Italiano</option></select>`; }
 var fbTotFilter = null;
 function setFbTotFilter(key){ fbTotFilter = (fbTotFilter===key||!key) ? null : key; renderFeedbacksSearch(); }
 function renderFeedbacksSearch(){
