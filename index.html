@@ -748,11 +748,11 @@
     .kc-filt-btn{ display:inline-flex !important }
     .kc-filters-wrap{ display:none !important }
     .kc-filters-wrap.open{ display:flex !important }
-    /* modais: header e botões de ação fixos; corpo rola */
-    .dialog{ overflow-y:auto !important }
-    .dialog .dialog-head{ position:sticky; top:0; background:#fff; z-index:2 }
-    .dialog > div:nth-child(2){ max-height:none !important }
-    .dialog > div:last-child{ position:sticky; bottom:0; background:#fff; border-top:1px solid var(--color-input); z-index:2 }
+    /* modais: botões de ação sempre fixos no rodapé; corpo preenche e rola */
+    .dialog{ overflow:hidden !important }
+    .dialog.open{ display:flex !important; flex-direction:column !important }
+    .dialog > *:not(.dialog-head):not(:last-child){ flex:1 1 auto; min-height:0; overflow-y:auto; max-height:none !important }
+    .dialog > *:last-child{ flex:0 0 auto; border-top:1px solid var(--color-input); background:#fff }
   }
 </style>
 </head>
