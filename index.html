@@ -3250,11 +3250,11 @@ function kcSidePanels(showBack){
       <div class="kc-side-panel">
         ${showBack?`<a onclick="switchPublic('kc-home')" style="display:inline-flex;align-items:center;gap:6px;color:var(--color-primary);font-weight:600;cursor:pointer;margin-bottom:14px">${I.back} Back</a>`:''}
         <div style="display:flex;align-items:center;gap:8px;color:var(--color-primary);font-weight:700;margin-bottom:12px">${I.search} Knowledge Search</div>
-        <div class="kc-search-row" style="display:flex;gap:8px;margin-bottom:10px">
+        <div class="kc-search-row" style="display:flex;gap:8px">
           <div class="search-box" style="flex:1"><input class="input" placeholder="Search" onkeydown="if(event.key==='Enter')searchByQuery(this.value)"><span class="s-ico" style="cursor:pointer" onclick="searchByQuery(this.parentElement.querySelector('input').value)">${I.search}</span></div>
+          <button class="btn btn-outline" onclick="askKai()" title="Ask KAI" style="flex:0 0 auto;width:44px;padding:0;border-radius:8px">${I.kai}</button>
           <button class="btn btn-outline kc-filt-btn" onclick="toggleKcFilters()" title="Filters" style="flex:0 0 auto;width:44px;padding:0;border-radius:8px">${I.filter}</button>
         </div>
-        <button class="btn btn-outline" style="width:100%" onclick="askKai()">${I.kai} Ask KAI</button>
       </div>
       <div id="kc-filters" class="kc-filters-wrap" style="display:flex;flex-direction:column;gap:20px">
       <div class="kc-side-panel">
