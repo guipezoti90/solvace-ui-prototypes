@@ -1,0 +1,615 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+<meta charset="UTF-8"><meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Solvace — Widget de Número</title>
+<link rel="preconnect" href="https://fonts.googleapis.com"><link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&family=Space+Grotesk:wght@500;600;700&display=swap" rel="stylesheet">
+<style>
+  *{ box-sizing:border-box }
+  body{ margin:0; font-family:Inter,-apple-system,'Segoe UI',Roboto,sans-serif; font-size:14px; color:#0d122f; background:#f3f4f6; }
+  button{ font-family:inherit; cursor:pointer }
+  .font-display{ font-family:"Space Grotesk",Inter,sans-serif; }
+
+  /* ---- page showcase ---- */
+  #app{ padding:28px 32px 80px; }
+  .pg-h{ margin:0 0 4px; font-size:22px; font-weight:700; }
+  .pg-sub{ margin:0 0 26px; color:#6b7280; font-size:14px; }
+  .modes{ display:flex; gap:28px; flex-wrap:wrap; align-items:flex-start; }
+  .mode{ width:320px; }
+  .mode-lbl{ display:flex; align-items:center; gap:8px; margin-bottom:10px; font-size:13px; font-weight:700; text-transform:uppercase; letter-spacing:.04em; color:#8a90a6; }
+  .mode-lbl .dot{ width:8px; height:8px; border-radius:99px; background:#001391; }
+  .mode-stage{ position:relative; height:300px; background:#fff; border:1px dashed #d7dae4; border-radius:14px; padding:16px; }
+  .mode-hint{ margin-top:10px; font-size:12px; color:#8a90a6; }
+  .zbtn-row{ margin-top:14px; display:flex; gap:10px; flex-wrap:wrap; }
+
+  /* ---- buttons (board tokens) ---- */
+  .zbtn{ display:inline-flex; align-items:center; justify-content:center; gap:6px; white-space:nowrap; border-radius:8px; border:1px solid transparent; font-size:14px; font-weight:500; transition:all .15s; outline:none; user-select:none; cursor:pointer; height:32px; padding:0 12px; flex-shrink:0; background-clip:padding-box; }
+  .zbtn-outline{ border-color:#eeeff1; background:#fff; color:#0d122f; } .zbtn-outline:hover{ background:#f9f9fa; }
+  .zbtn-soft{ background:#ececff; color:#001391; border-color:transparent; } .zbtn-soft:hover{ background:#e0e0ff; }
+  .zbtn-default{ background:#001391; color:#f5f5ff; } .zbtn-default:hover{ background:#0000d6; }
+  .zbtn svg{ width:16px; height:16px; }
+
+  /* ---- widget card (board verbatim) ---- */
+  .wcard{ position:relative; overflow:hidden; background:#fff; border:1px solid #eeeff1; border-radius:12px; box-shadow:0 1px 2px 0 rgba(0,5,36,.05); padding:20px; display:flex; flex-direction:column; gap:14px; height:100%; }
+  .wcard-head{ display:flex; align-items:flex-start; justify-content:space-between; gap:8px; }
+  .wcard-head>div:first-child{ min-width:0; }
+  .wcard-title{ white-space:nowrap; overflow:hidden; text-overflow:ellipsis; font-size:13px; font-weight:600; line-height:15px; color:#0d122f; }
+  .wcard-sub{ font-size:12px; color:#6b7280; margin-top:0; line-height:1.2; }
+  .expand{ cursor:pointer; color:#8a90a6; flex:0 0 auto; display:inline-flex; padding:2px; border-radius:6px; } .expand:hover{ background:#f2f2f4; color:#001391; } .expand svg{ width:15px; height:15px; }
+  .w-foot{ display:flex; align-items:center; justify-content:space-between; margin-top:auto; padding-top:6px; flex:0 0 auto; }
+  .w-foot-l{ display:inline-flex; align-items:center; gap:9px; min-width:0; }
+  .w-andon{ width:16px; height:16px; border-radius:99px; background:#ec221f; color:#fff; font-size:9px; font-weight:700; display:inline-flex; align-items:center; justify-content:center; flex:0 0 auto; }
+  .w-meta{ display:inline-flex; align-items:center; gap:3px; font-size:10px; font-weight:600; color:#8a90a6; cursor:pointer; } .w-meta svg{ width:12px; height:12px; } .w-meta:hover{ color:#001391; }
+  .w-av{ width:16px; height:16px; border-radius:99px; font-size:8px; font-weight:600; display:inline-flex; align-items:center; justify-content:center; flex:0 0 auto; }
+
+  /* number widget body */
+  .num2{ flex:1; display:flex; align-items:center; justify-content:center; background:#f2f3f5; border-radius:12px; container-type:size; overflow:hidden; padding:8px; }
+  .num2-val{ font-size:clamp(22px,min(26cqw,40cqh),130px); font-weight:700; line-height:1; color:#14ae5c; white-space:nowrap; max-width:100%; }
+
+  /* ---- update mode (board verbatim, scoped by [data-state="update"]) ---- */
+  [data-state="update"] .wcard.up-editable{ border:2px solid #4d63d0; background:#f4f6ff; box-shadow:0 0 0 3px rgba(0,19,145,.12), 0 10px 24px rgba(0,19,145,.12); }
+  [data-state="update"] .wcard.up-editable .wcard-title::before{ content:"\270E"; margin-right:5px; color:#001391; font-weight:700; }
+  [data-state="update"] .wcard.up-editable:hover{ border-color:#001391; }
+  [data-state="update"] .up-editable .num2-val{ cursor:pointer; }
+  [data-state="update"] .up-editable .num2:hover{ box-shadow:inset 0 0 0 2px rgba(0,19,145,.35); }
+  /* per-widget update actions (import/export + zoom — só no Update) */
+  .up-acts{ display:none; gap:6px; align-items:center; }
+  [data-state="update"] .up-acts{ display:flex; }
+  .up-acts .zbtn{ height:28px; padding:0 8px; font-size:12px; }
+
+  /* ---- modals (board verbatim) ---- */
+  .edit-modal{ position:fixed; inset:0; z-index:80; display:none; background:rgba(10,12,25,.45); }
+  .edit-modal.open{ display:flex; align-items:stretch; justify-content:center; padding:32px 40px 96px; }
+  .em-stage{ display:flex; align-items:stretch; justify-content:center; gap:72px; width:100%; max-width:1340px; }
+  .em-widget{ flex:1 1 auto; min-width:0; display:flex; align-items:center; justify-content:center; overflow:hidden; }
+  .em-widget .wcard{ position:static; box-shadow:0 24px 60px rgba(0,0,0,.20); overflow:hidden; width:520px; height:70vh; max-height:640px; }
+  .em-widget .num2-val{ font-size:clamp(40px,min(26cqw,40cqh),150px); }
+  .em-widget.fv-mode{ flex-direction:column; gap:12px; }
+  .fv-wtools{ display:flex; gap:6px; align-items:center; flex:0 0 auto; background:rgba(198,201,255,0.95); -webkit-backdrop-filter:blur(20px) saturate(1.8); backdrop-filter:blur(20px) saturate(1.8); border:1px solid rgba(0,19,145,0.34); border-radius:10px; padding:6px; box-shadow:0 14px 36px rgba(0,19,145,.20); }
+  .fv-wtools .zbtn{ background:transparent; border-color:transparent; color:#001391; } .fv-wtools .zbtn:hover{ background:rgba(255,255,255,0.55); }
+  .fv-stage{ flex:1; min-height:0; width:100%; display:flex; align-items:center; justify-content:center; }
+
+  .edit-drawer{ position:relative; flex:0 0 530px; width:530px; max-width:46%; align-self:stretch; background:#fff; border:1px solid #eeeff1; border-radius:14px; box-shadow:0 24px 60px rgba(0,0,0,.22); display:flex; flex-direction:column; overflow:hidden; }
+  .ed-head{ display:flex; align-items:flex-start; justify-content:space-between; padding:20px 22px 12px; }
+  .ed-title{ font-size:18px; font-weight:600; color:#0d122f; }
+  .ed-tag{ color:#ec221f; font-weight:600; }
+  .ed-sub{ font-size:13px; color:#4d5166; margin-top:4px; }
+  .ed-close{ background:none; border:none; cursor:pointer; color:#4d5166; width:28px; height:28px; border-radius:8px; display:inline-flex; align-items:center; justify-content:center; } .ed-close:hover{ background:#f2f2f4; }
+  .ed-tabs{ display:flex; gap:14px; padding:0 20px; border-bottom:1px solid #eeeff1; overflow-x:auto; overflow-y:hidden; flex:0 0 auto; }
+  .ed-tab{ background:none; border:none; padding:10px 0; font-size:14px; font-weight:500; color:#4d5166; cursor:pointer; white-space:nowrap; border-bottom:2px solid transparent; margin-bottom:-1px; display:inline-flex; align-items:center; gap:6px; }
+  .ed-tab.active{ color:#001391; font-weight:600; border-bottom-color:#001391; }
+  .ed-badge{ background:#e7e9f5; color:#001391; border-radius:99px; font-size:11px; padding:1px 6px; }
+  .ed-body{ padding:18px 22px; overflow:auto; flex:1; scrollbar-width:thin; scrollbar-color:#c2c6d6 transparent; }
+  .ed-sec{ font-size:16px; font-weight:600; color:#0d122f; margin:20px 0 12px; padding-top:16px; border-top:1px solid #eeeff1; }
+  .ed-body>.ed-panel>.ed-sec:first-child{ border-top:none; padding-top:0; margin-top:0; }
+  .ed-label{ font-size:13px; color:#4d5166; display:block; margin-bottom:6px; }
+  .ed-input{ height:38px; width:100%; border:1px solid #eeeff1; border-radius:8px; padding:0 12px; font-size:14px; color:#0d122f; outline:none; } .ed-input:focus{ border-color:#001391; }
+  .ed-row{ display:flex; align-items:center; gap:12px; margin-bottom:16px; } .ed-row .ed-input{ flex:1; }
+  .ed-grid2{ display:grid; grid-template-columns:1fr 1fr; gap:16px; margin-bottom:8px; }
+  .ed-select{ height:38px; border:1px solid #eeeff1; border-radius:8px; display:flex; align-items:center; justify-content:space-between; padding:0 12px; font-size:14px; color:#0d122f; cursor:pointer; background:#fff; } .ed-select svg{ width:16px; height:16px; color:#4d5166; }
+  .ed-chips{ display:flex; flex-wrap:wrap; gap:8px; }
+  .ed-chip{ border:1px solid #eeeff1; background:#fff; border-radius:8px; padding:8px 12px; font-size:13px; color:#0d122f; cursor:pointer; } .ed-chip:hover{ background:#f9f9fa; } .ed-chip.active{ border-color:#001391; color:#001391; background:#f5f5ff; }
+  .swatch{ width:16px; height:16px; border-radius:4px; background:#14ae5c; display:inline-block; }
+  .ed-panel{ display:none; } .ed-panel.active{ display:block; }
+  .ed-foot{ display:flex; justify-content:flex-end; gap:10px; padding:14px 22px; border-top:1px solid #eeeff1; flex:0 0 auto; }
+  .zswitch{ position:relative; width:44px; height:24px; border-radius:99px; background:#cccdd3; border:none; cursor:pointer; padding:0; flex:0 0 auto; transition:background .15s; }
+  .zswitch::after{ content:""; position:absolute; top:2px; left:2px; width:20px; height:20px; border-radius:99px; background:#fff; box-shadow:0 1px 3px rgba(0,0,0,.25); transition:transform .15s; }
+  .zswitch.on{ background:#001391; } .zswitch.on::after{ transform:translateX(20px); }
+
+  /* full-view + config sizing (board verbatim) */
+  #fullModal .em-stage{ position:absolute; inset:0; display:block; max-width:none; gap:0; }
+  #fullModal .em-widget.fv-mode{ position:absolute; top:0; bottom:0; left:0; right:572px; padding:48px; gap:16px; justify-content:center; }
+  #fullModal .edit-drawer{ position:absolute; top:24px; bottom:24px; right:32px; width:520px; max-width:none; flex:none; }
+  #fullModal .ed-tabs{ gap:12px; }
+  #editModal .em-stage{ position:absolute; inset:0; display:block; max-width:none; gap:0; }
+  #editModal .em-widget{ position:absolute; top:0; bottom:0; left:0; right:580px; padding:40px; justify-content:center; }
+  #editModal .edit-drawer{ position:absolute; top:24px; bottom:24px; right:32px; flex:none; }
+
+  /* ---- datapoint editor (update popover, board verbatim #91) ---- */
+  #dpEdit{ position:fixed; z-index:9650; display:none; background:#fff; border:1px solid #e2e5ec; border-radius:12px; box-shadow:0 18px 44px rgba(13,18,47,.24); padding:12px; width:200px; }
+  #dpEdit.open{ display:block; }
+  #dpEdit .dpe-lbl{ font-size:12px; font-weight:600; color:#6b7280; margin-bottom:8px; }
+  #dpEdit .dpe-in{ width:100%; border:1px solid #d0d5dd; border-radius:8px; padding:8px 10px; font-size:14px; color:#0d122f; outline:none; } #dpEdit .dpe-in:focus{ border-color:#001391; }
+  #dpEdit .dpe-acts{ display:flex; justify-content:flex-end; gap:8px; margin-top:10px; }
+  #dpEdit .dpe-acts button{ border-radius:8px; padding:7px 14px; font-size:13px; font-weight:600; cursor:pointer; border:1px solid transparent; }
+  #dpEdit .dpe-cancel{ background:#fff; border-color:#eeeff1; color:#0d122f; }
+  #dpEdit .dpe-save{ background:#001391; color:#fff; }
+
+  @media (max-width:900px){ #editModal .em-widget, #fullModal .em-widget.fv-mode{ position:relative; right:auto; inset:auto; padding:20px; } .edit-modal.open{ overflow:auto; } }
+
+  /* ---- full-view drawer: Feed (feed2) + cards (rcard) — board verbatim ---- */
+  .feed2{ display:flex; flex-direction:column; gap:14px; }
+  .feed2-compose{ display:flex; align-items:center; gap:10px; }
+  .feed2-input{ flex:1; height:44px; border:1px solid #eeeff1; border-radius:99px; padding:0 18px; background:#fafafa; font-size:14px; color:#0d122f; outline:none; }
+  .feed2-input::placeholder{ color:#9ba0a3; } .feed2-input:focus{ border-color:#001391; background:#fff; }
+  .feed2-send{ width:44px; height:44px; border-radius:99px; background:#001391; color:#fff; border:none; cursor:pointer; display:flex; align-items:center; justify-content:center; flex:0 0 auto; } .feed2-send:hover{ background:#0000d6; } .feed2-send svg{ width:18px; height:18px; }
+  .feed2-more{ width:40px; height:40px; border-radius:99px; background:#f2f2f4; color:#4d5166; border:none; cursor:pointer; display:flex; align-items:center; justify-content:center; flex:0 0 auto; } .feed2-more:hover{ background:#e7e9ee; } .feed2-more svg{ width:18px; height:18px; }
+  .feed2-card{ border-radius:12px; padding:16px; background:#fff; border:1px solid #f0f2f5; } .feed2-card.hl{ background:#f5f5ff; border-color:#e7e9f7; }
+  .feed2-head{ display:flex; align-items:center; gap:10px; margin-bottom:10px; }
+  .feed2-av{ width:34px; height:34px; border-radius:99px; background:#dfe3ea; color:#4d5166; font-size:12px; font-weight:600; display:flex; align-items:center; justify-content:center; flex:0 0 auto; overflow:hidden; }
+  .feed2-name{ font-size:14px; font-weight:700; color:#0d122f; line-height:18px; } .feed2-time{ font-size:12px; color:#999ba7; }
+  .feed2-text{ font-size:14px; line-height:20px; color:#0d122f; }
+  .feed2-actions{ font-size:12px; color:#9ba0a3; margin-top:12px; display:flex; gap:8px; align-items:center; } .feed2-actions span{ cursor:pointer; } .feed2-actions span:hover{ color:#001391; } .feed2-actions i{ color:#e4e7ea; font-style:normal; }
+  .wrca{ display:flex; flex-direction:column; gap:8px; padding-top:4px; }
+  .rcard{ border:1px solid #eeeff1; border-radius:11px; padding:10px; }
+  .rcard-top{ display:flex; align-items:center; justify-content:space-between; gap:8px; }
+  .rcode{ font-size:12px; font-weight:700; color:#001391; cursor:pointer; white-space:nowrap; } .rcode:hover{ text-decoration:underline; }
+  .rbadge{ font-size:11px; font-weight:600; padding:1px 8px; border-radius:99px; flex:0 0 auto; display:inline-block; white-space:nowrap; }
+  .rbadge.bad{ background:#fde7e7; color:#ec221f; } .rbadge.ok{ background:#dcf5e6; color:#14ae5c; }
+  .rtxt{ font-size:13px; font-weight:500; color:#0d122f; margin-top:8px; line-height:1.3; }
+  .rsrc{ font-size:11px; color:#6b7280; margin-top:4px; }
+  .rmeta{ display:flex; align-items:center; justify-content:space-between; margin-top:8px; font-size:11px; color:#999ba7; } .rmeta .rmc{ display:inline-flex; align-items:center; gap:4px; } .rmeta .rmc svg{ width:13px; height:13px; }
+  .rwarn{ color:#ec221f; display:inline-flex; } .rwarn svg{ width:14px; height:14px; }
+  .apleft{ display:inline-flex; align-items:center; gap:6px; }
+  .apav-sm{ width:22px; height:22px; border-radius:99px; font-size:8px; font-weight:600; display:inline-flex; align-items:center; justify-content:center; flex:0 0 auto; }
+
+  /* ---- config drawer extra controls (board verbatim) ---- */
+  .ed-tr{ display:flex; align-items:center; gap:10px; margin-bottom:14px; font-size:14px; color:#0d122f; }
+  .ed-grid4{ display:grid; grid-template-columns:repeat(4,1fr); gap:10px; margin-top:6px; }
+  .ed-empty{ font-size:13px; color:#999ba7; padding:10px 12px; border:1px dashed #e4e7ea; border-radius:8px; }
+  .ed-addbtn{ margin-top:10px; color:#001391; }
+  .ed-select.sm{ padding:0 8px; }
+  .ed-addrow{ width:26px; height:26px; border-radius:50%; border:none; background:#001391; color:#fff; display:inline-flex; align-items:center; justify-content:center; cursor:pointer; margin-bottom:10px; } .ed-addrow svg{ width:15px; height:15px; }
+  .ed-tbl-wrap{ overflow-x:auto; margin-top:2px; }
+  .ed-tbl{ width:100%; border-collapse:collapse; font-size:13px; }
+  .ed-tbl th{ text-align:left; font-size:11px; font-weight:600; color:#6b7280; letter-spacing:.02em; background:#ececec; padding:9px 10px; white-space:nowrap; }
+  .ed-tbl td{ padding:7px 8px; vertical-align:middle; border-bottom:1px solid #f0f2f5; }
+  .ed-tbl td.ed-tdtext{ color:#0d122f; padding:11px 10px; }
+  .ed-cell{ width:100%; border:1px solid #d0d5dd; border-radius:8px; padding:8px 10px; font-size:13px; color:#0d122f; outline:none; background:#fff; } .ed-cell:focus{ border-color:#001391; }
+  .ed-chipcell{ display:inline-flex; align-items:center; gap:6px; background:#eef0f4; border:1px solid #e2e5ec; border-radius:8px; padding:6px 8px; font-size:13px; color:#0d122f; }
+  .ed-chipcell .cx{ cursor:pointer; width:16px; height:16px; border-radius:50%; background:#c2c6d2; color:#fff; display:inline-flex; align-items:center; justify-content:center; flex:0 0 auto; } .ed-chipcell .cx svg{ width:9px; height:9px; }
+  .ed-trash{ border:none; background:none; color:#6b7280; cursor:pointer; padding:4px; display:inline-flex; border-radius:6px; } .ed-trash:hover{ background:#fee2e2; color:#dc2626; } .ed-trash svg{ width:18px; height:18px; }
+  .andon-add{ width:26px; height:26px; border-radius:50%; border:none; background:#001391; color:#fff; display:inline-flex; align-items:center; justify-content:center; cursor:pointer; margin-bottom:14px; } .andon-add svg{ width:15px; height:15px; }
+  .andon-row{ display:grid; grid-template-columns:128px minmax(150px,1fr) 116px minmax(160px,1.4fr) 38px 28px; gap:14px; align-items:end; margin-bottom:16px; }
+  .andon-f label{ display:block; font-size:12px; color:#6b7280; margin-bottom:6px; } .andon-f .ed-input{ width:100%; }
+  .andon-series{ background:#f1f1f3; border:1px solid #e2e5ec; border-radius:8px; padding:9px 12px; font-size:13px; color:#667085; }
+  .andon-bellck{ display:flex; flex-direction:column; align-items:center; gap:8px; padding-bottom:2px; }
+  .andon-bell{ border:none; background:none; color:#001391; cursor:pointer; padding:0; display:inline-flex; } .andon-bell svg{ width:20px; height:20px; }
+  .andon-ck{ width:18px; height:18px; accent-color:#001391; cursor:pointer; }
+  .andon-del{ border:none; background:none; color:#001391; cursor:pointer; padding:0 0 4px; display:inline-flex; align-items:flex-end; } .andon-del:hover{ color:#dc2626; } .andon-del svg{ width:20px; height:20px; }
+
+  /* ---- batch update (modo Update ampliado — board verbatim) ---- */
+  .wtable{ width:100%; border-collapse:collapse; font-size:13px; }
+  .wtable th{ text-align:left; font-size:11px; font-weight:600; color:#4d5166; padding:8px; background:#f3f3f3; }
+  .wtable td{ padding:9px 8px; color:#0d122f; border-top:1px solid #f0f2f5; }
+  .batch-modes{ display:inline-flex; background:#f2f3f7; border-radius:9px; padding:3px; gap:2px; }
+  .batch-modes .bm{ border:none; background:none; padding:6px 12px; border-radius:7px; font-size:12.5px; font-weight:600; color:#4d5166; cursor:pointer; }
+  .batch-modes .bm.active{ background:#fff; color:#001391; box-shadow:0 1px 2px rgba(0,5,36,.12); }
+  .batch-wrap{ max-height:320px; overflow:auto; }
+  .batch-table{ font-size:12px; min-width:max-content; }
+  .batch-table th, .batch-table td{ min-width:76px; white-space:nowrap; }
+  .batch-table th{ position:sticky; top:0; z-index:1; background:#f7f8fb; font-size:10px; text-align:center; padding:7px 6px; }
+  .batch-table td{ text-align:center; padding:6px 6px; }
+  .batch-table th:first-child, .batch-table td.bt-date{ position:sticky; left:0; z-index:2; background:#fff; min-width:100px; text-align:left; font-weight:600; box-shadow:1px 0 0 #eeeff1; }
+  .batch-table th:first-child{ z-index:3; background:#f7f8fb; }
+  .batch-table .bt-th{ display:inline-flex; align-items:center; gap:3px; justify-content:center; max-width:100%; }
+  .batch-table .bt-kebab{ color:#b4b8c4; cursor:pointer; display:inline-flex; width:13px; height:13px; flex:0 0 auto; } .batch-table .bt-kebab svg{ width:13px; height:13px; } .batch-table .bt-kebab:hover{ color:#001391; }
+  .fbatch-h{ font-size:13px; color:#4d5166; margin-bottom:10px; } .fbatch-h b{ color:#0d122f; font-weight:600; }
+  .fbatch-modes{ display:flex; margin:2px 0 12px; }
+  .fbatch-wrap{ max-height:none; border:1px solid #eeeff1; border-radius:10px; }
+  .fbatch .batch-table td[contenteditable]{ cursor:cell; position:relative; } .fbatch .batch-table td[contenteditable]:hover{ background:#f1f3ff; box-shadow:inset 0 0 0 1px #c7ccf5; }
+  .fbatch .batch-table td.bt-active{ box-shadow:inset 0 0 0 2px #001391; }
+  .fbatch .batch-table td.bt-fill{ background:#eef1ff; box-shadow:inset 0 0 0 1px #c7ccf5; }
+  .fill-handle{ position:absolute; right:-3px; bottom:-3px; width:8px; height:8px; background:#001391; border:1px solid #fff; cursor:crosshair; z-index:5; }
+  #batchModal .em-stage{ position:absolute; inset:0; display:block; max-width:none; gap:0; }
+  #batchModal .em-widget.fv-mode{ position:absolute; top:0; bottom:0; left:0; right:572px; padding:48px; gap:16px; justify-content:center; }
+  #batchModal .edit-drawer{ position:absolute; top:24px; bottom:24px; right:32px; width:520px; max-width:none; flex:none; }
+
+  /* ---- number status background (verde/amarelo/vermelho vs target) ---- */
+  .num2.pos{ background:#e7f8ee; } .num2.pos .num2-val{ color:#14ae5c; }
+  .num2.on{ background:#fdf3d6; } .num2.on .num2-val{ color:#A07D12; }
+  .num2.neg{ background:#fdeceb; } .num2.neg .num2-val{ color:#ec221f; }
+  /* ---- config extra grids (Figma General/Advanced) ---- */
+  .ed-grid3{ display:grid; grid-template-columns:repeat(3,1fr); gap:16px; margin-bottom:8px; align-items:start; }
+  .ed-inbox{ min-height:38px; border:1px solid #eeeff1; border-radius:8px; padding:5px 8px; display:flex; align-items:center; }
+</style>
+</head>
+<body>
+<div id="app">
+  <h1 class="pg-h">Widget de Número</h1>
+  <p class="pg-sub">O mesmo widget nos 3 modos — Normal, Update e Zoom — mais os modais de Zoom, Configurações e edição de datapoint (Update).</p>
+
+  <div class="modes">
+    <!-- MODO NORMAL -->
+    <div class="mode">
+      <div class="mode-lbl"><span class="dot"></span>Normal</div>
+      <div class="mode-stage">
+        <section class="wcard">
+          <div class="wcard-head">
+            <div><div class="wcard-title" title="Units Today">Units Today</div><div class="wcard-sub">vs target 3.000</div></div>
+            <span class="expand" title="Open full view" onclick="openFull()"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polyline points="15 3 21 3 21 9"/><polyline points="9 21 3 21 3 15"/><line x1="21" x2="14" y1="3" y2="10"/><line x1="3" x2="10" y1="21" y2="14"/></svg></span>
+          </div>
+          <div class="num2"><span class="num2-val font-display" id="valNormal">3,420</span></div>
+          <div class="w-foot">
+            <span class="w-foot-l">
+              <span class="w-andon" title="Andon alert">!</span>
+              <span class="w-meta" title="4 action plans"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect width="8" height="4" x="8" y="2" rx="1"/><path d="M16 4h2a2 2 0 0 1 2 2v14a2 2 0 0 1-2 2H6a2 2 0 0 1-2-2V6a2 2 0 0 1 2-2h2"/></svg>4</span>
+              <span class="w-meta" title="2 comments in feed"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M21 15a2 2 0 0 1-2 2H7l-4 4V5a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2z"/></svg>2</span>
+            </span>
+            <span class="w-av" title="Nick Usk" style="background:#ffd8a8;color:#9a4a00">NU</span>
+          </div>
+        </section>
+      </div>
+      <div class="mode-hint">Estado de leitura. O ícone de expandir abre o Zoom.</div>
+    </div>
+
+    <!-- MODO UPDATE -->
+    <div class="mode" data-state="update">
+      <div class="mode-lbl"><span class="dot"></span>Update</div>
+      <div class="mode-stage">
+        <section class="wcard up-editable">
+          <div class="wcard-head">
+            <div><div class="wcard-title" title="Units Today">Units Today</div><div class="wcard-sub">vs target 3.000</div></div>
+            <span class="up-acts">
+              <button class="zbtn zbtn-outline" title="Download da base"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/><polyline points="7 10 12 15 17 10"/><line x1="12" x2="12" y1="15" y2="3"/></svg></button>
+              <button class="zbtn zbtn-outline" title="Upload"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/><polyline points="17 8 12 3 7 8"/><line x1="12" x2="12" y1="3" y2="15"/></svg></button>
+              <button class="zbtn zbtn-outline" title="Zoom (batch update)" onclick="openBatch()"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polyline points="15 3 21 3 21 9"/><polyline points="9 21 3 21 3 15"/><line x1="21" x2="14" y1="3" y2="10"/><line x1="3" x2="10" y1="21" y2="14"/></svg></button>
+            </span>
+          </div>
+          <div class="num2"><span class="num2-val font-display" id="valUpdate" onclick="openDpe()">3,420</span></div>
+          <div class="w-foot">
+            <span class="w-foot-l">
+              <span class="w-andon" title="Andon alert">!</span>
+              <span class="w-meta" title="4 action plans"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect width="8" height="4" x="8" y="2" rx="1"/><path d="M16 4h2a2 2 0 0 1 2 2v14a2 2 0 0 1-2 2H6a2 2 0 0 1-2-2V6a2 2 0 0 1 2-2h2"/></svg>4</span>
+              <span class="w-meta" title="2 comments in feed"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M21 15a2 2 0 0 1-2 2H7l-4 4V5a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2z"/></svg>2</span>
+            </span>
+            <span class="w-av" title="Nick Usk" style="background:#ffd8a8;color:#9a4a00">NU</span>
+          </div>
+        </section>
+      </div>
+      <div class="mode-hint">Editável: clique no número para abrir o editor de datapoint. Import/export e zoom aparecem só no Update.</div>
+    </div>
+
+    <!-- MODO ZOOM -->
+    <div class="mode">
+      <div class="mode-lbl"><span class="dot"></span>Zoom</div>
+      <div class="mode-stage" style="display:flex;align-items:center;justify-content:center;text-align:center;">
+        <div>
+          <div class="num2" style="width:210px;height:150px;margin:0 auto 16px"><span class="num2-val font-display">3,420</span></div>
+          <button class="zbtn zbtn-default" onclick="openFull()">Abrir Zoom (tela cheia)</button>
+        </div>
+      </div>
+      <div class="mode-hint">Visão ampliada com barra de ações (Download/Upload/Links) e drawer lateral (Feed, Action plan, RCA…).</div>
+    </div>
+  </div>
+
+  <div class="zbtn-row">
+    <button class="zbtn zbtn-soft" onclick="openEdit()">⚙ Abrir modal de Configurações</button>
+    <button class="zbtn zbtn-soft" onclick="openFull()">⤢ Abrir modal de Zoom</button>
+    <button class="zbtn zbtn-soft" onclick="openDpe()">✎ Abrir editor de datapoint (Update)</button>
+    <button class="zbtn zbtn-soft" onclick="openBatch()">⤢ Abrir modo Update (batch)</button>
+  </div>
+</div>
+
+<!-- =============== MODAL: ZOOM (full view) =============== -->
+<div class="edit-modal" id="fullModal">
+  <div class="em-stage">
+    <div class="em-widget fv-mode" id="fullWidget">
+      <div class="fv-wtools">
+        <button class="zbtn zbtn-outline"><svg viewBox="0 0 24 24" width="16" height="16" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/><polyline points="7 10 12 15 17 10"/><line x1="12" x2="12" y1="15" y2="3"/></svg> Download</button>
+        <button class="zbtn zbtn-outline"><svg viewBox="0 0 24 24" width="16" height="16" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/><polyline points="17 8 12 3 7 8"/><line x1="12" x2="12" y1="3" y2="15"/></svg> Upload</button>
+        <button class="zbtn zbtn-outline"><svg viewBox="0 0 24 24" width="16" height="16" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M10 13a5 5 0 0 0 7.54.54l3-3a5 5 0 0 0-7.07-7.07l-1.72 1.71"/><path d="M14 11a5 5 0 0 0-7.54-.54l-3 3a5 5 0 0 0 7.07 7.07l1.71-1.71"/></svg> Links <svg viewBox="0 0 24 24" width="14" height="14" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="m6 9 6 6 6-6"/></svg></button>
+      </div>
+      <div class="fv-stage">
+        <section class="wcard" style="width:680px;max-width:100%;height:520px;max-height:100%;">
+          <div class="wcard-head"><div><div class="wcard-title">Units Today</div><div class="wcard-sub">vs target 3.000</div></div></div>
+          <div class="num2"><span class="num2-val font-display">3,420</span></div>
+          <div class="w-foot"><span class="w-foot-l"><span class="w-andon" title="Andon alert">!</span><span class="w-meta"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect width="8" height="4" x="8" y="2" rx="1"/><path d="M16 4h2a2 2 0 0 1 2 2v14a2 2 0 0 1-2 2H6a2 2 0 0 1-2-2V6a2 2 0 0 1 2-2h2"/></svg>4</span><span class="w-meta"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M21 15a2 2 0 0 1-2 2H7l-4 4V5a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2z"/></svg>2</span></span><span class="w-av" style="background:#ffd8a8;color:#9a4a00">NU</span></div>
+        </section>
+      </div>
+    </div>
+    <aside class="edit-drawer" id="fullDrawer">
+      <div class="ed-head">
+        <div><div class="ed-title">Units Today</div><div class="ed-sub">Full view</div></div>
+        <button class="ed-close" onclick="closeFull()"><svg viewBox="0 0 24 24" width="18" height="18" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M18 6 6 18"/><path d="m6 6 12 12"/></svg></button>
+      </div>
+      <div class="ed-tabs" data-tabs="full">
+        <button class="ed-tab active" data-tab="feed">Feed <span class="ed-badge">3</span></button>
+        <button class="ed-tab" data-tab="plan">Action plan <span class="ed-badge">4</span></button>
+        <button class="ed-tab" data-tab="rca">RCA <span class="ed-badge">2</span></button>
+        <button class="ed-tab" data-tab="kaizen">Kaizen <span class="ed-badge">1</span></button>
+        <button class="ed-tab" data-tab="projects">Projects <span class="ed-badge">2</span></button>
+      </div>
+      <div class="ed-body" data-body="full">
+        <!-- Feed -->
+        <div class="ed-panel active" data-panel="feed">
+          <div class="feed2">
+            <div class="feed2-compose">
+              <input class="feed2-input" type="text" placeholder="Comment...">
+              <button class="feed2-send" title="Send"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><line x1="5" x2="19" y1="12" y2="12"/><polyline points="12 5 19 12 12 19"/></svg></button>
+              <button class="feed2-more" title="More"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="1"/><circle cx="19" cy="12" r="1"/><circle cx="5" cy="12" r="1"/></svg></button>
+            </div>
+            <div class="feed2-card hl">
+              <div class="feed2-head"><span class="feed2-av">NU</span><div><div class="feed2-name">User name</div><div class="feed2-time">5:02 am</div></div></div>
+              <div class="feed2-text">Lorem ipsum dolor sit amet, consectetur adipiscing elit. Sed do eiusmod.</div>
+              <div class="feed2-actions"><span>React</span><i>|</i><span>Reply</span><i>|</i><span>Translate</span><i>|</i><span>Delete</span></div>
+            </div>
+            <div class="feed2-card">
+              <div class="feed2-head"><span class="feed2-av" style="background:linear-gradient(135deg,#f97316,#a855f7)"></span><div><div class="feed2-name">Ana Silva</div><div class="feed2-time">Yesterday, 4:20 pm</div></div></div>
+              <div class="feed2-text">Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi.</div>
+              <div class="feed2-actions"><span>React</span><i>|</i><span>Reply</span><i>|</i><span>Translate</span><i>|</i><span>Delete</span></div>
+            </div>
+            <div class="feed2-card">
+              <div class="feed2-head"><span class="feed2-av">CV</span><div><div class="feed2-name">Carlos Vega</div><div class="feed2-time">Yesterday, 09:12 am</div></div></div>
+              <div class="feed2-text">Excepteur sint occaecat cupidatat non proident, sunt in culpa qui officia.</div>
+              <div class="feed2-actions"><span>React</span><i>|</i><span>Reply</span><i>|</i><span>Translate</span><i>|</i><span>Delete</span></div>
+            </div>
+          </div>
+        </div>
+        <!-- Action plan -->
+        <div class="ed-panel" data-panel="plan">
+          <div class="wrca">
+            <div class="rcard"><div class="rcard-top"><span class="apleft"><span class="apav-sm" style="background:#d7e9ff;color:#17457a">CV</span><span class="rcode">ACP-499</span><span class="rwarn"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M10.29 3.86 1.82 18a2 2 0 0 0 1.71 3h16.94a2 2 0 0 0 1.71-3L13.71 3.86a2 2 0 0 0-3.42 0z"/><line x1="12" y1="9" x2="12" y2="13"/><line x1="12" y1="17" x2="12.01" y2="17"/></svg></span></span><span class="rbadge bad">Delayed</span></div><div class="rtxt">Clean maneuver area</div><div class="rmeta"><span class="rmc"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="4" width="18" height="18" rx="2"/><path d="M3 10h18M8 2v4M16 2v4"/></svg>603 days</span><span class="rmc"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M21 15a2 2 0 0 1-2 2H7l-4 4V5a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2z"/></svg>3</span></div></div>
+            <div class="rcard"><div class="rcard-top"><span class="apleft"><span class="apav-sm" style="background:#e7e9f5;color:#3a4790">OO</span><span class="rcode">ACP-607</span></span><span class="rbadge bad">Delayed</span></div><div class="rtxt">Information required on OEE below target</div><div class="rsrc">OEE Shift 2</div><div class="rmeta"><span class="rmc"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="4" width="18" height="18" rx="2"/><path d="M3 10h18M8 2v4M16 2v4"/></svg>423 days</span></div></div>
+            <div class="rcard"><div class="rcard-top"><span class="apleft"><span class="apav-sm" style="background:#dcf5e6;color:#2d6a4f">JS</span><span class="rcode">ACP-562</span></span><span class="rbadge bad">Delayed</span></div><div class="rtxt">Train operators on the new procedure</div><div class="rmeta"><span class="rmc"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="4" width="18" height="18" rx="2"/><path d="M3 10h18M8 2v4M16 2v4"/></svg>463 days</span><span class="rmc"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M21 15a2 2 0 0 1-2 2H7l-4 4V5a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2z"/></svg>1</span></div></div>
+          </div>
+        </div>
+        <!-- RCA -->
+        <div class="ed-panel" data-panel="rca">
+          <div class="wrca">
+            <div class="rcard"><div class="rcard-top"><span class="apleft"><span class="apav-sm" style="background:#fde7e7;color:#c0392b">!</span><span class="rcode">RCA-57</span></span></div><div class="rtxt">Operator from shift 1 slipped and almost fell on the floor</div><div class="rsrc">Incident Shift 1</div></div>
+            <div class="rcard"><div class="rcard-top"><span class="apleft"><span class="apav-sm" style="background:#fdf3d6;color:#a07d12">!</span><span class="rcode">RCA-58</span></span></div><div class="rtxt">Case packer stopped working for 1,5h</div><div class="rsrc">OEE Shift 1</div></div>
+          </div>
+        </div>
+        <!-- Kaizen -->
+        <div class="ed-panel" data-panel="kaizen">
+          <div class="wrca">
+            <div class="rcard"><div class="rcard-top"><span class="apleft"><span class="rcode">KZ-21</span></span><span class="rbadge ok">Deployed</span></div><div class="rtxt">Eliminate double handling</div><div class="rsrc">Line 2 team · est. gain 8%</div></div>
+          </div>
+        </div>
+        <!-- Projects -->
+        <div class="ed-panel" data-panel="projects">
+          <div class="wrca">
+            <div class="rcard"><div class="rcard-top"><span class="apleft"><span class="rcode">PRJ-08</span></span><span class="rbadge ok">On track</span></div><div class="rtxt">OEE improvement program</div><div class="rsrc">Plant Curitiba</div></div>
+            <div class="rcard"><div class="rcard-top"><span class="apleft"><span class="rcode">PRJ-12</span></span><span class="rbadge bad">At risk</span></div><div class="rtxt">Line 2 retrofit</div><div class="rsrc">Engineering</div></div>
+          </div>
+        </div>
+      </div>
+      <div class="ed-foot"><button class="zbtn zbtn-outline" onclick="closeFull()">Close</button><button class="zbtn zbtn-default" id="fullPrimary" style="display:none">New message</button></div>
+    </aside>
+  </div>
+</div>
+
+<!-- =============== MODAL: CONFIGURAÇÕES =============== -->
+<div class="edit-modal" id="editModal">
+  <div class="em-stage">
+    <div class="em-widget" id="emWidget">
+      <section class="wcard" style="width:100%;max-width:520px;height:70vh;max-height:640px;">
+        <div class="wcard-head"><div><div class="wcard-title" id="cfgPrevTitle">Units Today</div><div class="wcard-sub" id="cfgPrevSub">vs target 3.000</div></div></div>
+        <div class="num2"><span class="num2-val font-display">3,420</span></div>
+        <div class="w-foot"><span class="w-foot-l"><span class="w-andon">!</span></span><span class="w-av" style="background:#ffd8a8;color:#9a4a00">NU</span></div>
+      </section>
+    </div>
+    <aside class="edit-drawer" id="editDrawer">
+      <div class="ed-head">
+        <div><div class="ed-title">Edit Number widget <span class="ed-tag">[Editing drawer]</span></div><div class="ed-sub">Number description</div></div>
+        <button class="ed-close" onclick="closeEdit()"><svg viewBox="0 0 24 24" width="18" height="18" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M18 6 6 18"/><path d="m6 6 12 12"/></svg></button>
+      </div>
+      <div class="ed-tabs" data-tabs="edit">
+        <button class="ed-tab active" data-tab="general">General</button>
+        <button class="ed-tab" data-tab="advanced">Advanced</button>
+        <button class="ed-tab" data-tab="sources">Source</button>
+        <button class="ed-tab" data-tab="links">Links</button>
+        <button class="ed-tab" data-tab="related">Related Widgets <span class="ed-badge">0</span></button>
+        <button class="ed-tab" data-tab="andon">Andon</button>
+      </div>
+      <div class="ed-body" data-body="edit">
+        <!-- GENERAL (Figma 1233-19722) -->
+        <div class="ed-panel active" data-panel="general">
+          <div class="ed-grid4">
+            <div><label class="ed-label">Show Title</label><button class="zswitch on" type="button" onclick="tSw(this)"></button></div>
+            <div><label class="ed-label">Title</label><input class="ed-input" id="cfgTitle" value="Units Today" oninput="syncPrev()"></div>
+            <div><label class="ed-label">Size</label><div class="ed-inbox"><span class="ed-chipcell">Small <span class="cx"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round"><path d="M18 6 6 18M6 6l12 12"/></svg></span></span></div></div>
+            <div><label class="ed-label">Color</label><div class="ed-select"><span class="swatch" style="background:#0a0a0b"></span><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="m6 9 6 6 6-6"/></svg></div></div>
+          </div>
+          <label class="ed-label" style="margin-top:14px">Decimal places</label>
+          <div class="ed-chips" data-single><button class="ed-chip active">None</button><button class="ed-chip">One</button><button class="ed-chip">Two</button><button class="ed-chip">Three</button></div>
+          <div class="ed-grid2" style="margin-top:16px">
+            <div class="ed-tr" style="margin:0"><button class="zswitch" type="button" onclick="tSw(this)"></button><span>Show Target</span></div>
+            <div class="ed-tr" style="margin:0"><button class="zswitch" type="button" onclick="tSw(this)"></button><span>Apply Conditional Formatting</span></div>
+          </div>
+          <div class="ed-grid4" style="margin-top:14px">
+            <div><label class="ed-label">Below Goal</label><div class="ed-select sm"><span class="swatch" style="background:#567714"></span><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="m6 9 6 6 6-6"/></svg></div></div>
+            <div><label class="ed-label">On Target</label><div class="ed-select sm"><span class="swatch" style="background:#e8b931"></span><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="m6 9 6 6 6-6"/></svg></div></div>
+            <div><label class="ed-label">Above Goal</label><div class="ed-select sm"><span class="swatch" style="background:#ec221f"></span><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="m6 9 6 6 6-6"/></svg></div></div>
+            <div><label class="ed-label">Andon</label><input class="ed-input"></div>
+          </div>
+          <div class="ed-grid2" style="margin-top:10px">
+            <div><label class="ed-label">Objective Tolerance</label><input class="ed-input" value="0,00"></div>
+            <div><label class="ed-label">&nbsp;</label><div class="ed-select sm"><span class="swatch" style="background:#0a0a0b"></span><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="m6 9 6 6 6-6"/></svg></div></div>
+          </div>
+          <label class="ed-label" style="margin-top:14px">display format</label>
+          <div class="ed-inbox"><span class="ed-chipcell">Standard <span class="cx"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round"><path d="M18 6 6 18M6 6l12 12"/></svg></span></span></div>
+        </div>
+
+        <!-- ADVANCED (Figma 1233-20029) -->
+        <div class="ed-panel" data-panel="advanced">
+          <div class="ed-grid3">
+            <div><label class="ed-label">Show Caption</label><button class="zswitch" type="button" onclick="tSw(this)"></button></div>
+            <div><label class="ed-label">Legend</label><input class="ed-input"></div>
+            <div><label class="ed-label">Color</label><div class="ed-select"><span class="swatch" style="background:#9aa0ac"></span><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="m6 9 6 6 6-6"/></svg></div></div>
+          </div>
+          <div class="ed-grid3">
+            <div><label class="ed-label">Show Unit</label><button class="zswitch on" type="button" onclick="tSw(this)"></button></div>
+            <div><label class="ed-label">Unit</label><input class="ed-input" value="min"></div>
+            <div></div>
+          </div>
+          <div class="ed-grid3">
+            <div><label class="ed-label">Show Tip</label><button class="zswitch" type="button" onclick="tSw(this)"></button></div>
+            <div><label class="ed-label">Tip</label><input class="ed-input"></div>
+            <div></div>
+          </div>
+          <div class="ed-grid3">
+            <div><label class="ed-label">Transparent Border</label><button class="zswitch" type="button" onclick="tSw(this)"></button></div>
+            <div><label class="ed-label">Transparent background</label><button class="zswitch" type="button" onclick="tSw(this)"></button></div>
+            <div><label class="ed-label">Background Color</label><div class="ed-select"><span class="swatch" style="background:#f2f3f5"></span><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="m6 9 6 6 6-6"/></svg></div></div>
+          </div>
+          <div class="ed-grid3">
+            <div><label class="ed-label">Automatic Update</label><button class="zswitch" type="button" onclick="tSw(this)"></button></div>
+            <div><label class="ed-label">show mobile</label><button class="zswitch on" type="button" onclick="tSw(this)"></button></div>
+            <div></div>
+          </div>
+          <label class="ed-label" style="margin-top:6px">Topic</label>
+          <div class="ed-inbox"><span class="ed-chipcell">Others <span class="cx"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round"><path d="M18 6 6 18M6 6l12 12"/></svg></span></span></div>
+          <label class="ed-label" style="margin-top:14px">Owner</label>
+          <input class="ed-input">
+        </div>
+
+        <!-- SOURCES -->
+        <div class="ed-panel" data-panel="sources">
+          <div class="ed-sec" style="border-top:none;padding-top:0;margin-top:0">Data source</div>
+          <label class="ed-label">Source type</label>
+          <div class="ed-chips" data-single><button class="ed-chip active">Manual</button><button class="ed-chip">Indicator</button><button class="ed-chip">Module</button><button class="ed-chip">Formula</button></div>
+          <div class="ed-sec">Series</div>
+          <div class="ed-empty">No series yet — add a series to plot data.</div>
+          <button class="zbtn zbtn-outline ed-addbtn"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M5 12h14"/><path d="M12 5v14"/></svg> Add series</button>
+        </div>
+
+        <!-- LINKS -->
+        <div class="ed-panel" data-panel="links">
+          <button class="ed-addrow" title="Add link"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round"><path d="M5 12h14M12 5v14"/></svg></button>
+          <div class="ed-tbl-wrap">
+            <table class="ed-tbl"><thead><tr><th>NAME</th><th>ROOM</th><th>BOARD</th><th>WIDGET</th><th></th></tr></thead>
+              <tbody>
+                <tr><td><input class="ed-cell" value="teste"></td><td><span class="ed-chipcell">(DOB-1) Line 1 <span class="cx"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round"><path d="M18 6 6 18M6 6l12 12"/></svg></span></span></td><td><span class="ed-chipcell">13 periods <span class="cx"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round"><path d="M18 6 6 18M6 6l12 12"/></svg></span></span></td><td><span class="ed-chipcell">Daily <span class="cx"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round"><path d="M18 6 6 18M6 6l12 12"/></svg></span></span></td><td><button class="ed-trash" title="Remove"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M3 6h18"/><path d="M19 6v14a2 2 0 0 1-2 2H7a2 2 0 0 1-2-2V6m3 0V4a2 2 0 0 1 2-2h4a2 2 0 0 1 2 2v2"/></svg></button></td></tr>
+                <tr><td><input class="ed-cell"></td><td><input class="ed-cell"></td><td><input class="ed-cell"></td><td><input class="ed-cell"></td><td><button class="ed-trash" title="Remove"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M3 6h18"/><path d="M19 6v14a2 2 0 0 1-2 2H7a2 2 0 0 1-2-2V6m3 0V4a2 2 0 0 1 2-2h4a2 2 0 0 1 2 2v2"/></svg></button></td></tr>
+              </tbody>
+            </table>
+          </div>
+        </div>
+
+        <!-- RELATED WIDGETS -->
+        <div class="ed-panel" data-panel="related">
+          <div class="ed-tbl-wrap">
+            <table class="ed-tbl"><thead><tr><th>SITE</th><th>ROOM</th><th>BOARD</th><th>WIDGET</th></tr></thead>
+              <tbody>
+                <tr><td class="ed-tdtext">Detroit</td><td class="ed-tdtext">(DOB-1) Line 1</td><td class="ed-tdtext">DDS Line 1</td><td class="ed-tdtext">Incident Shift 1</td></tr>
+              </tbody>
+            </table>
+          </div>
+        </div>
+
+        <!-- ANDON -->
+        <div class="ed-panel" data-panel="andon">
+          <button class="andon-add" title="Add rule"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round"><path d="M5 12h14M12 5v14"/></svg></button>
+          <div class="andon-row">
+            <div class="andon-f"><label>With</label><div class="andon-series">Series</div></div>
+            <div class="andon-f"><label>Regarding Target for</label><input class="ed-input"></div>
+            <div class="andon-f"><label>in (units)</label><input class="ed-input"></div>
+            <div class="andon-f"><label>Notify</label><input class="ed-input"></div>
+            <div class="andon-bellck"><button class="andon-bell" title="Notification"><svg viewBox="0 0 24 24" fill="currentColor"><path d="M12 2a6 6 0 0 0-6 6c0 7-3 9-3 9h18s-3-2-3-9a6 6 0 0 0-6-6z"/><path d="M10.5 21a1.5 1.5 0 0 0 3 0z"/></svg></button><input class="andon-ck" type="checkbox" checked></div>
+            <button class="andon-del" title="Remove"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M3 6h18"/><path d="M19 6v14a2 2 0 0 1-2 2H7a2 2 0 0 1-2-2V6m3 0V4a2 2 0 0 1 2-2h4a2 2 0 0 1 2 2v2"/></svg></button>
+          </div>
+        </div>
+      </div>
+      <div class="ed-foot"><button class="zbtn zbtn-outline" onclick="closeEdit()">Cancel</button><button class="zbtn zbtn-default" onclick="closeEdit()">Apply</button></div>
+    </aside>
+  </div>
+</div>
+
+<!-- =============== MODAL: MODO UPDATE (batch / editar valores em massa) =============== -->
+<div class="edit-modal" id="batchModal">
+  <div class="em-stage">
+    <div class="em-widget fv-mode">
+      <div class="fv-wtools">
+        <button class="zbtn zbtn-outline"><svg viewBox="0 0 24 24" width="16" height="16" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/><polyline points="7 10 12 15 17 10"/><line x1="12" x2="12" y1="15" y2="3"/></svg> Download</button>
+        <button class="zbtn zbtn-outline"><svg viewBox="0 0 24 24" width="16" height="16" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/><polyline points="17 8 12 3 7 8"/><line x1="12" x2="12" y1="3" y2="15"/></svg> Upload</button>
+      </div>
+      <div class="fv-stage">
+        <section class="wcard" style="width:680px;max-width:100%;height:520px;max-height:100%;">
+          <div class="wcard-head"><div><div class="wcard-title">Units Today</div><div class="wcard-sub">vs target 3.000</div></div></div>
+          <div class="num2"><span class="num2-val font-display">3,420</span></div>
+          <div class="w-foot"><span class="w-foot-l"><span class="w-andon" title="Andon alert">!</span></span><span class="w-av" style="background:#ffd8a8;color:#9a4a00">NU</span></div>
+        </section>
+      </div>
+    </div>
+    <aside class="edit-drawer">
+      <div class="ed-head">
+        <div><div class="ed-title">Units Today</div><div class="ed-sub">Batch update</div></div>
+        <button class="ed-close" onclick="closeBatch()"><svg viewBox="0 0 24 24" width="18" height="18" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M18 6 6 18"/><path d="m6 6 12 12"/></svg></button>
+      </div>
+      <div class="ed-body">
+        <div class="fbatch">
+          <div class="fbatch-h">Edit <b>Units Today</b> values in bulk</div>
+          <div class="fbatch-modes"><div class="batch-modes" role="group" aria-label="Update mode"><button type="button" class="bm active" onclick="bMode(this,'result')">Result</button><button type="button" class="bm" onclick="bMode(this,'objective')">Objective</button></div></div>
+          <div class="batch-wrap fbatch-wrap"><table class="wtable batch-table"><thead><tr><th>DATE</th><th><span class="bt-th"><span id="bLbl">RESULT</span><span class="bt-kebab" title="Column options"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="5" r="1.4"/><circle cx="12" cy="12" r="1.4"/><circle cx="12" cy="19" r="1.4"/></svg></span></span></th></tr></thead><tbody id="bRows"></tbody></table></div>
+        </div>
+      </div>
+      <div class="ed-foot"><button class="zbtn zbtn-outline" onclick="closeBatch()">Cancel</button><button class="zbtn zbtn-default" onclick="closeBatch()">Apply</button></div>
+    </aside>
+  </div>
+</div>
+
+<!-- =============== POPOVER: DATAPOINT (Update, #91) =============== -->
+<div id="dpEdit">
+  <div class="dpe-lbl">Datapoint</div>
+  <input class="dpe-in" id="dpeIn" type="number" value="3420">
+  <div class="dpe-acts"><button class="dpe-cancel" onclick="closeDpe()">Cancel</button><button class="dpe-save" onclick="saveDpe()">Save</button></div>
+</div>
+
+<script>
+"use strict";
+function openFull(){ var m=document.getElementById('fullModal'); var tabs=m.querySelectorAll('.ed-tabs .ed-tab'); Array.prototype.forEach.call(tabs, function(t,i){ t.classList.toggle('active', i===0); }); m.querySelectorAll('.ed-body[data-body="full"] .ed-panel').forEach(function(p){ p.classList.toggle('active', p.getAttribute('data-panel')==='feed'); }); var fp=document.getElementById('fullPrimary'); if(fp) fp.style.display='none'; m.classList.add('open'); }
+function closeFull(){ document.getElementById('fullModal').classList.remove('open'); }
+function openEdit(){ document.getElementById('editModal').classList.add('open'); }
+function closeEdit(){ document.getElementById('editModal').classList.remove('open'); }
+function openDpe(){ var el=document.getElementById('valUpdate'); var ed=document.getElementById('dpEdit'), inp=document.getElementById('dpeIn'); inp.value=(el.textContent||'').replace(/[^0-9.-]/g,'')||'0'; ed.classList.add('open'); var r=el.getBoundingClientRect(); ed.style.left=Math.min(window.innerWidth-210, Math.max(8, r.left+r.width/2-100))+'px'; var top=r.top-ed.offsetHeight-10; ed.style.top=(top>8?top:r.bottom+10)+'px'; inp.focus(); inp.select(); }
+function closeDpe(){ document.getElementById('dpEdit').classList.remove('open'); }
+function saveDpe(){ var n=Number(document.getElementById('dpeIn').value||0); var s=n.toLocaleString('en-US'); document.getElementById('valUpdate').textContent=s; document.getElementById('valNormal').textContent=s; applyNumStates(); closeDpe(); }
+
+/* batch update (modo Update ampliado) */
+var B_DATES=['15/06/2026','16/06/2026','17/06/2026','18/06/2026','19/06/2026','20/06/2026','21/06/2026','22/06/2026','23/06/2026','24/06/2026','25/06/2026','26/06/2026','27/06/2026','28/06/2026'];
+var B_RES=[1,8,6,4,2,9,7,5,3,1,8,6,4,2], B_OBJ=[8,8,8,8,8,8,8,8,8,8,8,8,8,8];
+function bRows(mode){ var a=(mode==='result')?B_RES:B_OBJ; return B_DATES.map(function(d,i){ return '<tr><td class="bt-date">'+d+'</td><td contenteditable="true">'+a[i]+'</td></tr>'; }).join(''); }
+function bMode(btn,mode){ Array.prototype.forEach.call(btn.parentNode.querySelectorAll('.bm'), function(b){ b.classList.toggle('active', b===btn); }); document.getElementById('bLbl').textContent=mode.toUpperCase(); document.getElementById('bRows').innerHTML=bRows(mode); }
+function openBatch(){ document.getElementById('bRows').innerHTML=bRows('result'); document.getElementById('bLbl').textContent='RESULT'; var bms=document.querySelectorAll('#batchModal .bm'); Array.prototype.forEach.call(bms, function(b,i){ b.classList.toggle('active', i===0); }); document.getElementById('batchModal').classList.add('open'); }
+function closeBatch(){ document.getElementById('batchModal').classList.remove('open'); }
+/* Excel-like fill: arrastar a alça da célula para copiar para baixo */
+(function(){
+  var rows=document.getElementById('bRows'); if(!rows) return;
+  var handle=document.createElement('div'); handle.className='fill-handle'; handle.style.display='none';
+  var active=null, dragging=false, startIdx=-1;
+  function cells(){ return Array.prototype.slice.call(rows.querySelectorAll('td[contenteditable]')); }
+  function setActive(td){ if(active) active.classList.remove('bt-active'); active=td; if(!td){ handle.style.display='none'; return; } td.classList.add('bt-active'); td.appendChild(handle); handle.style.display='block'; }
+  rows.addEventListener('click', function(e){ var td=e.target.closest('td[contenteditable]'); if(td) setActive(td); });
+  rows.addEventListener('input', function(){ /* mantém valor atualizado ao editar */ });
+  handle.addEventListener('mousedown', function(e){ e.preventDefault(); e.stopPropagation(); if(!active) return; dragging=true; handle.style.pointerEvents='none'; startIdx=cells().indexOf(active); });
+  document.addEventListener('mousemove', function(e){ if(!dragging) return; var cs=cells(); cs.forEach(function(c){ c.classList.remove('bt-fill'); }); var el=document.elementFromPoint(e.clientX,e.clientY); var td=(el&&el.closest)?el.closest('td[contenteditable]'):null; var idx=td?cs.indexOf(td):startIdx; if(idx<startIdx) idx=startIdx; for(var i=startIdx+1;i<=idx;i++){ if(cs[i]) cs[i].classList.add('bt-fill'); } });
+  document.addEventListener('mouseup', function(){ if(!dragging) return; dragging=false; handle.style.pointerEvents=''; var val=active?active.textContent:''; cells().forEach(function(c){ if(c.classList.contains('bt-fill')){ c.textContent=val; c.classList.remove('bt-fill'); } }); });
+})();
+
+/* tab switching (Feed/config) */
+var FV_PRIMARY={ feed:'', plan:'New action plan', rca:'New RCA', kaizen:'New Kaizen', projects:'New project' };
+document.querySelectorAll('.ed-tabs').forEach(function(tabs){
+  var body=document.querySelector('.ed-body[data-body="'+tabs.getAttribute('data-tabs')+'"]');
+  tabs.querySelectorAll('.ed-tab').forEach(function(tab){
+    tab.addEventListener('click', function(){
+      tabs.querySelectorAll('.ed-tab').forEach(function(t){ t.classList.remove('active'); }); tab.classList.add('active');
+      var key=tab.getAttribute('data-tab');
+      body.querySelectorAll('.ed-panel').forEach(function(p){ p.classList.toggle('active', p.getAttribute('data-panel')===key); });
+      if(tabs.getAttribute('data-tabs')==='full'){ var fp=document.getElementById('fullPrimary'); if(fp){ if(FV_PRIMARY[key]){ fp.style.display='inline-flex'; fp.textContent=FV_PRIMARY[key]; } else { fp.style.display='none'; } } }
+    });
+  });
+});
+/* chips single-select */
+document.querySelectorAll('.ed-chips[data-single]').forEach(function(g){
+  g.querySelectorAll('.ed-chip').forEach(function(c){ c.addEventListener('click', function(){ g.querySelectorAll('.ed-chip').forEach(function(x){ x.classList.remove('active'); }); c.classList.add('active'); }); });
+});
+/* switches */
+function tSw(b){ b.classList.toggle('on'); }
+/* config preview live sync */
+function syncPrev(){ document.getElementById('cfgPrevTitle').textContent=document.getElementById('cfgTitle').value; }
+/* number status color: verde (acima do target), amarelo (no target), vermelho (abaixo) */
+var NUM_TARGET=3000;
+function numState(v){ if(v>NUM_TARGET) return 'pos'; if(v<NUM_TARGET) return 'neg'; return 'on'; }
+function applyNumStates(){ document.querySelectorAll('.num2').forEach(function(n){ var val=n.querySelector('.num2-val'); if(!val) return; var v=Number((val.textContent||'').replace(/[^0-9.-]/g,''))||0; n.classList.remove('pos','neg','on'); n.classList.add(numState(v)); }); }
+applyNumStates();
+/* close on backdrop / Esc */
+['fullModal','editModal','batchModal'].forEach(function(id){ document.getElementById(id).addEventListener('click', function(e){ if(e.target===this) this.classList.remove('open'); }); });
+document.getElementById('dpEdit').addEventListener('mousedown', function(e){ e.stopPropagation(); });
+document.addEventListener('mousedown', function(e){ var ed=document.getElementById('dpEdit'); if(!ed.classList.contains('open')) return; if(e.target.closest && (e.target.closest('#dpEdit')||e.target.id==='valUpdate')) return; closeDpe(); });
+document.addEventListener('keydown', function(e){ if(e.key==='Escape'){ closeFull(); closeEdit(); closeDpe(); closeBatch(); } });
+</script>
+</body>
+</html>
