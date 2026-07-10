@@ -678,6 +678,7 @@
   .article-card .thumb{ height:150px;background:#dfe3ee;background-size:cover;background-position:center }
   .step-num{ width:24px;height:24px;border-radius:9999px;background:#1f7a3d;color:#fff;font-size:12px;font-weight:700;display:flex;align-items:center;justify-content:center;flex:0 0 24px }
   .kc-side-panel{ background:#fff;border:1px solid var(--color-input);border-radius:12px;padding:18px }
+  .kc-filt-btn{ display:none }
   .rc-tree a{ display:flex;align-items:center;gap:8px;padding:7px 10px;border-radius:8px;font-size:14px;color:var(--color-primary);cursor:pointer }
   .rc-tree a:hover{ background:var(--color-muted) }
   .rc-tree a.active{ background:rgba(0,19,145,.10); color:var(--color-primary); font-weight:600 }
@@ -743,7 +744,15 @@
     .fab{ right:16px !important; bottom:92px !important; padding:0 !important; width:48px !important; justify-content:center !important; z-index:45 !important }
     .fab .fab-lbl{ display:none !important }
     .card-pad{ padding:16px 12px !important }
+    /* filtros da tela de resultados (Tags + Related Content) atrás do botão ao lado da busca */
+    .kc-filt-btn{ display:inline-flex !important }
+    .kc-filters-wrap{ display:none !important }
+    .kc-filters-wrap.open{ display:flex !important }
+    /* modais: header e botões de ação fixos; corpo rola */
     .dialog{ overflow-y:auto !important }
+    .dialog .dialog-head{ position:sticky; top:0; background:#fff; z-index:2 }
+    .dialog > div:nth-child(2){ max-height:none !important }
+    .dialog > div:last-child{ position:sticky; bottom:0; background:#fff; border-top:1px solid var(--color-input); z-index:2 }
   }
 </style>
 </head>
@@ -3241,9 +3250,13 @@ function kcSidePanels(showBack){
       <div class="kc-side-panel">
         ${showBack?`<a onclick="switchPublic('kc-home')" style="display:inline-flex;align-items:center;gap:6px;color:var(--color-primary);font-weight:600;cursor:pointer;margin-bottom:14px">${I.back} Back</a>`:''}
         <div style="display:flex;align-items:center;gap:8px;color:var(--color-primary);font-weight:700;margin-bottom:12px">${I.search} Knowledge Search</div>
-        <div class="search-box" style="margin-bottom:10px"><input class="input" placeholder="Search" onkeydown="if(event.key==='Enter')searchByQuery(this.value)"><span class="s-ico" style="cursor:pointer" onclick="searchByQuery(this.parentElement.querySelector('input').value)">${I.search}</span></div>
+        <div class="kc-search-row" style="display:flex;gap:8px;margin-bottom:10px">
+          <div class="search-box" style="flex:1"><input class="input" placeholder="Search" onkeydown="if(event.key==='Enter')searchByQuery(this.value)"><span class="s-ico" style="cursor:pointer" onclick="searchByQuery(this.parentElement.querySelector('input').value)">${I.search}</span></div>
+          <button class="btn btn-outline kc-filt-btn" onclick="toggleKcFilters()" title="Filters" style="flex:0 0 auto;width:44px;padding:0;border-radius:8px">${I.filter}</button>
+        </div>
         <button class="btn btn-outline" style="width:100%" onclick="askKai()">${I.kai} Ask KAI</button>
       </div>
+      <div id="kc-filters" class="kc-filters-wrap" style="display:flex;flex-direction:column;gap:20px">
       <div class="kc-side-panel">
         <div style="display:flex;align-items:center;gap:8px;color:var(--color-primary);font-weight:700;margin-bottom:12px"><svg width="16" height="16" viewBox="0 0 24 24" fill="currentColor"><path d="M20 10.5 13.5 4H6a2 2 0 0 0-2 2v7.5L10.5 20a2 2 0 0 0 2.8 0l6.7-6.7a2 2 0 0 0 0-2.8Z"/></svg>Tags</div>
         <div style="display:flex;gap:8px;flex-wrap:wrap">${tagPills()}</div>
@@ -3252,8 +3265,10 @@ function kcSidePanels(showBack){
         <div style="display:flex;align-items:center;gap:8px;color:var(--color-primary);font-weight:700;margin-bottom:12px">${I.book}Related Content</div>
         <div class="rc-tree">${rc}</div>
       </div>
+      </div>
     </div>`;
 }
+function toggleKcFilters(){ var w=document.getElementById('kc-filters'); if(w) w.classList.toggle('open'); }
 
 function renderKcResults(){
   // cards e cabeçalho conforme o modo
