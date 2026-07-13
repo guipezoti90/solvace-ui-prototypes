@@ -573,6 +573,7 @@
   .agd{ flex:1; display:flex; flex-direction:column; min-height:0; }
   /* #118 — compact agenda header so more agenda items fit in the list */
   .agd-timer{ display:flex; align-items:center; justify-content:center; gap:8px; margin-top:2px; }
+  .agd-stop.agd-off{ opacity:.4; pointer-events:none; }
   .agd-rec{ width:9px; height:9px; border-radius:50%; background:#cdd1dd; flex:0 0 auto; }
   .agd.rec .agd-rec{ background:#ec221f; animation:rvpulse 1s infinite; }
   @keyframes rvpulse{ 0%,100%{opacity:1} 50%{opacity:.3} }
@@ -1981,7 +1982,7 @@
         </div>
         <div class="apt-foot">
           <button class="zbtn zbtn-outline" id="aptCloseBtn">Cancel</button>
-          <button class="zbtn zbtn-default" id="aptInclude">Apply (4)</button>
+          <button class="zbtn zbtn-default" id="aptInclude">Include (4)</button>
         </div>
       </div>
     </div>
@@ -2637,7 +2638,7 @@
     return '<div class="agd">'
       +'<div class="agd-timer"><span class="agd-rec"></span><span class="agd-time">00:00</span></div>'
       +'<div class="agd-prog"><i style="width:0%"></i></div>'
-      +'<div class="agd-ctrl"><button class="agd-play" title="Start meeting">'+play+'</button><button class="agd-stop" title="End & summarize">'+stop+'</button><button class="agd-refr" title="Reset">'+refr+'</button><button class="agd-hist" title="Summary history">'+hist+'</button></div>'
+      +'<div class="agd-ctrl"><button class="agd-play" title="Start meeting">'+play+'</button><button class="agd-stop agd-off" title="End & summarize">'+stop+'</button><button class="agd-refr" title="Reset">'+refr+'</button><button class="agd-hist" title="Summary history">'+hist+'</button></div>'
       +'<div class="agd-list">'+rows+'</div></div>';
   }
   function gRadial(seed){
@@ -2744,7 +2745,7 @@
     {l:1420,t:80,w:370,h:270,type:'presence',title:'Presence'},
     {l:20,t:270,w:390,h:370,type:'video',title:'Safety Briefing'},
     {l:420,t:270,w:180,h:180,type:'chart',title:'Incident Shift 1',red:1},
-    {l:620,t:270,w:190,h:180,type:'chart',title:'Incident Shift 2',alt:1},
+    {l:620,t:270,w:190,h:180,type:'chart',title:'Incident Shift 2',red:1},
     {l:820,t:270,w:190,h:180,type:'chart',title:'Incident Shift 3'},
     {l:1020,t:360,w:390,h:850,type:'action',title:'Action Plan'},
     {l:1420,t:360,w:370,h:370,type:'message',title:'Team messages',sub:'Click a cell to update'},
@@ -3508,7 +3509,7 @@
     function two(n){ return ('0'+n).slice(-2); }
     function fmt(s){ return two(Math.floor(s/60))+':'+two(s%60); }
     function agEl(){ return document.querySelector('.board-page.active .agd') || document.querySelector('.agd'); }
-    function paint(a){ if(!a) return; var t=a.querySelector('.agd-time'); if(t) t.textContent=fmt(agSec); var pr=a.querySelector('.agd-prog i'); if(pr) pr.style.width=Math.min(100, agSec/300*100)+'%'; var rows=a.querySelectorAll('.agd-row'), idx=Math.min(rows.length-1, Math.floor(agSec/60)), i; for(i=0;i<rows.length;i++){ rows[i].classList.toggle('done', i<idx); rows[i].classList.toggle('current', i===idx); } }
+    function paint(a){ if(!a) return; var st=a.querySelector('.agd-stop'); if(st) st.classList.toggle('agd-off', !(agT||agSec>0)); var t=a.querySelector('.agd-time'); if(t) t.textContent=fmt(agSec); var pr=a.querySelector('.agd-prog i'); if(pr) pr.style.width=Math.min(100, agSec/300*100)+'%'; var rows=a.querySelectorAll('.agd-row'), idx=Math.min(rows.length-1, Math.floor(agSec/60)), i; for(i=0;i<rows.length;i++){ rows[i].classList.toggle('done', i<idx); rows[i].classList.toggle('current', i===idx); } }
     function renderTrans(){ var box=document.getElementById('recTrans'); if(!box) return; var L=TRANSCRIPT[lang]||TRANSCRIPT.pt, n=Math.min(L.length, Math.floor(agSec/5)+1), h='', i; for(i=0;i<n;i++){ h+='<div class="rec-tl"><b>['+L[i][0]+']</b> '+L[i][1]+'</div>'; } box.innerHTML=h; box.scrollTop=box.scrollHeight; }
     function paintDrop(){ var pt=document.getElementById('recPillT'); if(pt) pt.textContent=fmt(agSec); var bt=document.getElementById('recBigT'); if(bt){ var d=two(Math.floor(agSec/60))+two(agSec%60); bt.innerHTML='<span>'+d[0]+'</span><span>'+d[1]+'</span><b>:</b><span>'+d[2]+'</span><span>'+d[3]+'</span>'; } var pr=document.getElementById('recProg'); if(pr) pr.style.width=Math.min(100, agSec/300*100)+'%'; renderTrans(); }
     function tick(){ if(paused) return; agSec++; paint(agEl()); if(recording) paintDrop(); if(agSec>=300) end(); }   // schedule ends (5 min) -> auto-open summary
@@ -3520,7 +3521,7 @@
       var a=e.target.closest && e.target.closest('.agd');
       if(a){
         if(e.target.closest('.agd-play')){ if(!agT){ if(recAsk){ recAsk.classList.add('open'); } else { startPlain(); } } return; }
-        if(e.target.closest('.agd-stop')){ end(); return; }
+        if(e.target.closest('.agd-stop')){ if(agT || agSec>0){ end(); } return; }   // #179 — Stop só age se o play foi iniciado
         if(e.target.closest('.agd-refr')){ reset(); return; }
         if(e.target.closest('.agd-hist')){ if(meetModal) meetModal.classList.add('open'); return; }
       }
@@ -3575,7 +3576,7 @@
     function clearChip(sel){ var k=kindOf(sel); sel.innerHTML='<span class="apt-ph">'+(k==='wid'?'Optional':'Select')+'</span>'+CVSVG; }
     function closeMenus(){ var m=modal.querySelectorAll('.apt-menu'); for(var i=0;i<m.length;i++){ var p=m[i].parentNode; p.classList.remove('open'); p.removeChild(m[i]); } }
     function openMenu(sel){ closeMenus(); var k=kindOf(sel); var menu=document.createElement('div'); menu.className='apt-menu open'; OPTS[k].forEach(function(o){ var mi=document.createElement('div'); mi.className='mi'; mi.innerHTML=(k==='resp'?avaHtml(o):'')+'<span>'+o+'</span>'; mi.addEventListener('click',function(ev){ ev.stopPropagation(); setChip(sel,o); closeMenus(); }); menu.appendChild(mi); }); sel.appendChild(menu); sel.classList.add('open'); }
-    function count(){ var c=modal.querySelectorAll('.apt-row > .apt-ck input:checked').length; var b=document.getElementById('aptInclude'); if(b) b.textContent='Apply ('+c+')'; }
+    function count(){ var c=modal.querySelectorAll('.apt-row > .apt-ck input:checked').length; var b=document.getElementById('aptInclude'); if(b) b.textContent='Include ('+c+')'; }
     function open(){ modal.classList.add('open'); count(); }
     function close(){ closeMenus(); modal.classList.remove('open'); }
     var sp=document.getElementById('meetSeePlans'); if(sp) sp.addEventListener('click', open);
