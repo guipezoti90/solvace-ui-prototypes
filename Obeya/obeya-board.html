@@ -240,11 +240,11 @@
   .img-maint svg{ width:42px; height:42px; }
   .img-maint span{ font-size:12px; color:#6b7190; }
   .w-av{ width:16px; height:16px; border-radius:99px; font-size:8px; font-weight:600; display:inline-flex; align-items:center; justify-content:center; flex:0 0 auto; }
-  .gauge2{ flex:1; display:flex; flex-direction:column; align-items:center; justify-content:center; }
-  .gauge2 svg{ width:100%; max-width:260px; height:auto; }
+  .gauge2{ flex:1 1 0; min-height:0; display:flex; flex-direction:column; align-items:center; justify-content:center; width:100%; }
+  .gauge2 svg{ width:auto; max-width:260px; height:auto; max-height:calc(100% - 20px); margin:0 auto; }
   .gauge2 .scale{ display:flex; width:170px; max-width:90%; justify-content:space-between; align-items:baseline; font-size:11px; color:#999ba7; margin-top:2px; }
   .gauge2 .scale span:nth-child(2){ font-size:14px; line-height:1; }
-  .wcard.sm .gauge2 svg{ width:178px; }
+  .wcard.sm .gauge2 svg{ width:auto; max-width:178px; }
   .wcard.sm .gauge2 .scale{ width:150px; font-size:11px; }
   .num2{ flex:1; display:flex; align-items:center; justify-content:center; background:#f2f3f5; border-radius:12px; container-type:size; overflow:hidden; padding:8px; }
   .num2-val{ font-size:clamp(22px,min(26cqw,40cqh),130px); font-weight:700; line-height:1; color:#14ae5c; white-space:nowrap; max-width:100%; }
@@ -435,6 +435,14 @@
   /* Defect (mapa + itens) */
   .wdefect{ flex:1; display:flex; flex-direction:column; gap:8px; min-height:0; }
   .wdefect-head{ display:flex; align-items:center; justify-content:space-between; gap:8px; flex:0 0 auto; padding:8px 10px; border:1px solid #eceef4; border-radius:10px; background:#fafbff; }
+  .wdh-hide{ border:0; background:none; cursor:pointer; color:#8a90a6; padding:3px; border-radius:6px; display:inline-flex; align-items:center; margin-left:2px; flex:0 0 auto; }
+  .wdh-hide svg{ width:15px; height:15px; }
+  .wdh-hide:hover{ background:#eef0f4; color:#4d5166; }
+  .wdh-show{ display:none; align-items:center; gap:6px; align-self:flex-start; border:1px solid #eceef4; background:#fafbff; border-radius:9999px; padding:4px 12px; font-size:11px; font-weight:600; color:#4d5166; cursor:pointer; flex:0 0 auto; margin-bottom:2px; }
+  .wdh-show svg{ width:14px; height:14px; }
+  .wdh-show:hover{ background:#eef0f4; border-color:#dfe2ea; }
+  .wdefect.tots-hidden .wdefect-head{ display:none; }
+  .wdefect.tots-hidden .wdh-show{ display:inline-flex; }
   .wdh-l{ display:flex; align-items:center; gap:9px; min-width:0; }
   .wdh-ic{ width:34px; height:34px; flex:0 0 auto; border-radius:9px; background:#ececff; color:#001391; display:inline-flex; align-items:center; justify-content:center; }
   .wdh-ic svg{ width:19px; height:19px; }
@@ -464,8 +472,7 @@
   .wdefect-bar .ic.pri{ background:#001391; color:#fff; }
   .wdefect-bar .ic.out{ border:1px solid #eeeff1; color:#4d5166; }
   .wdefect-bar .ic svg{ width:15px; height:15px; }
-  .wdefect-bar .ic.pri{ display:none; }
-  #app[data-state="update"] .wdefect-bar .ic.pri{ display:inline-flex; }
+  .wdefect-bar .ic.pri{ display:inline-flex; }
   .wdefect-bar .srch{ flex:1; position:relative; display:flex; align-items:center; }
   .wdefect-bar .srch input{ width:100%; height:30px; border:1px solid #eeeff1; border-radius:8px; padding:0 8px 0 28px; font-size:12px; color:#0d122f; outline:none; }
   .wdefect-bar .srch svg{ position:absolute; left:8px; width:14px; height:14px; color:#999ba7; }
@@ -2669,9 +2676,9 @@
     for(i=0;i<Math.min(rows,it.length);i++){ var c=it[i]; o+='<div class="rcard"><div class="rcard-top"><span class="rid">'+c[0]+'</span><span class="rbadge '+c[3]+'">'+c[2]+'</span></div><div class="rtxt">'+c[1]+'</div><div class="rmeta"><span class="rmc"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M21 15a2 2 0 0 1-2 2H7l-4 4V5a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2z"/></svg>'+c[4]+'</span><span>Age: '+c[5]+'</span></div></div>'; }
     var dIc='<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M12 2 2 7v6c0 5 4 8 10 9 6-1 10-4 10-9V7Z"/><path d="M9 12l2 2 4-4"/></svg>';
     var order=['bad','warn','info','ok'], stLbl={bad:'Overdue',warn:'Opened',info:'Open',ok:'Closed'}, rc='', oi; for(oi=0;oi<order.length;oi++){ var kk=order[oi]; if(!dcount[kk]) continue; rc+='<span class="wdh-st '+kk+'" data-st="'+kk+'" title="'+stLbl[kk]+'"><i class="wdh-dot"></i><b>'+dcount[kk]+'</b></span>'; }
-    var head='<div class="wdefect-head"><div class="wdh-l"><span class="wdh-ic">'+dIc+'</span><div class="wdh-tx"><b>'+total+'</b><span>RCA 1-pager</span></div></div><div class="wdh-r">'+rc+'</div></div>';
+    var head='<div class="wdefect-head"><div class="wdh-l"><span class="wdh-ic">'+dIc+'</span><div class="wdh-tx"><b>'+total+'</b><span>RCA 1-pager</span></div></div><div class="wdh-r">'+rc+'<button class="wdh-hide" title="Hide totals"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M9.9 4.24A9.12 9.12 0 0 1 12 4c7 0 10 8 10 8a13.16 13.16 0 0 1-1.67 2.68"/><path d="M6.61 6.61A13.526 13.526 0 0 0 2 12s3 8 10 8a9.74 9.74 0 0 0 5.39-1.61"/><line x1="2" x2="22" y1="2" y2="22"/></svg></button></div></div>';
     var bar='<div class="wdefect-bar"><span class="ic pri">'+plus+'</span><span class="srch">'+srch+'<input placeholder="Search"></span><span class="ic out">'+filt+'</span></div>';
-    return '<div class="wdefect">'+head+bar+'<div class="wrca">'+o+'</div></div>'; }
+    return '<div class="wdefect"><button class="wdh-show" title="Show totals"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M2 12s3-8 10-8 10 8 10 8-3 8-10 8-10-8-10-8Z"/><circle cx="12" cy="12" r="3"/></svg> Show totals</button>'+head+bar+'<div class="wrca">'+o+'</div></div>'; }
   function gDefect(dat, img){ function pin(c){ return '<svg viewBox="0 0 24 24" fill="'+c+'" stroke="#fff" stroke-width="1.2"><path d="M20 10c0 6-8 12-8 12s-8-6-8-12a8 8 0 0 1 16 0Z"/><circle cx="12" cy="10" r="2.6" fill="#fff"/></svg>'; } var fct='<svg viewBox="0 0 24 24" fill="#fff" stroke="none"><path d="M2 20h20V9l-6 4V9l-6 4V4H2z"/></svg>'; var map=img?('<div class="wdefect-map has-photo" style="background-image:url('+img+');background-size:cover;background-position:center"><span class="pin" style="left:28%;top:14px">'+pin('#ec221f')+'</span><span class="pin" style="left:54%;top:34px">'+pin('#001391')+'</span><span class="pin" style="left:76%;top:10px">'+pin('#ec221f')+'</span><span class="fct">'+fct+'</span></div>'):'';
     var plus='<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><path d="M12 5v14M5 12h14"/></svg>', srch='<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><circle cx="11" cy="11" r="7"/><path d="m21 21-4.3-4.3"/></svg>', cal='<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="4" width="18" height="18" rx="2"/><path d="M3 10h18M8 2v4M16 2v4"/></svg>', calck='<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="4" width="18" height="18" rx="2"/><path d="M3 10h18M8 2v4M16 2v4"/><path d="m9 16 2 2 4-4"/></svg>';
     var bar='<div class="wdefect-bar"><span class="ic pri">'+plus+'</span><span class="srch">'+srch+'<input placeholder="Search"></span><span class="ic out">'+calck+'</span><span class="ic out">'+cal+'</span></div>';
@@ -2681,8 +2688,8 @@
     var dcount={ok:0,bad:0,info:0,warn:0}, total=0; if(dat){ total=dat.r.length; for(var di=0;di<dat.r.length;di++){ var sc=(dat.r[di][dat.r[di].length-1]||'').toLowerCase(), cc='warn'; if(/solved|complet|execut|on time|\bok\b|conclu|done/.test(sc)) cc='ok'; else if(/late|atrasad|delay|overdue|fail|reprov/.test(sc)) cc='bad'; else if(/cmms|open|abert|\bnew\b|novo/.test(sc)) cc='info'; dcount[cc]++; } }
     var dIcTag='<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M12 2 2 7v6c0 5 4 8 10 9 6-1 10-4 10-9V7Z"/><path d="M9 12l2 2 4-4"/></svg>';
     var stLbl={ bad:'Overdue', warn:'Pending', info:'CMMS / Open', ok:'Solved' };
-    var head=''; if(dat){ var rc='', order=['bad','warn','info','ok'], oi; for(oi=0;oi<order.length;oi++){ var kk=order[oi]; rc+='<span class="wdh-st '+kk+'" data-st="'+kk+'" title="'+stLbl[kk]+' — click to filter"><i class="wdh-dot"></i><b>'+dcount[kk]+'</b></span>'; } head='<div class="wdefect-head"><div class="wdh-l"><span class="wdh-ic">'+dIcTag+'</span><div class="wdh-tx"><b>'+total+'</b><span>Defect tags</span></div></div><div class="wdh-r">'+rc+'</div></div>'; }
-    return '<div class="wdefect">'+head+map+bar+tbl+pg+'</div>'; }
+    var head=''; if(dat){ var rc='', order=['bad','warn','info','ok'], oi; for(oi=0;oi<order.length;oi++){ var kk=order[oi]; rc+='<span class="wdh-st '+kk+'" data-st="'+kk+'" title="'+stLbl[kk]+' — click to filter"><i class="wdh-dot"></i><b>'+dcount[kk]+'</b></span>'; } head='<div class="wdefect-head"><div class="wdh-l"><span class="wdh-ic">'+dIcTag+'</span><div class="wdh-tx"><b>'+total+'</b><span>Defect tags</span></div></div><div class="wdh-r">'+rc+'<button class="wdh-hide" title="Hide totals"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M9.9 4.24A9.12 9.12 0 0 1 12 4c7 0 10 8 10 8a13.16 13.16 0 0 1-1.67 2.68"/><path d="M6.61 6.61A13.526 13.526 0 0 0 2 12s3 8 10 8a9.74 9.74 0 0 0 5.39-1.61"/><line x1="2" x2="22" y1="2" y2="22"/></svg></button></div></div>'; }
+    return '<div class="wdefect"><button class="wdh-show" title="Show totals"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M2 12s3-8 10-8 10 8 10 8-3 8-10 8-10-8-10-8Z"/><circle cx="12" cy="12" r="3"/></svg> Show totals</button>'+head+map+bar+tbl+pg+'</div>'; }
   function gCal(seed){ var o='', i; var _n=new Date(), _mm=('0'+(_n.getMonth()+1)).slice(-2), _yy=_n.getFullYear(); for(i=1;i<=31;i++){ var r=(seed*13+i*7)%10; var c=r<2?'r':(r<4?'g':(r===4?'y':'')); var tgt=80, col=c==='r'?'#ec221f':(c==='g'?'#14ae5c':(c==='y'?'#e8b931':'#8b91b5')), val=c==='r'?(40+(i*7)%14):(c==='g'?(84+(i*5)%14):(c==='y'?(72+(i*3)%7):tgt)), pct=Math.round(val/tgt*100); var ds=('0'+i).slice(-2)+'/'+_mm+'/'+_yy; o+='<span class="cd'+(c?' '+c:'')+'" data-d="'+ds+'" data-v="'+val+'" data-p="'+pct+'" data-t="'+tgt+'" data-col="'+col+'">'+i+'</span>'; } return '<div class="wcal">'+o+'</div>'; }
   function gTrend(seed){ var s=seed||1; var paths=['M0 40 C20 30 30 24 45 30 S70 46 90 40 115 24 135 30 160 36 160 36','M0 30 C24 36 40 44 60 38 S104 26 124 34 160 30 160 30','M0 48 C24 40 40 30 60 36 S104 50 124 40 160 34 160 34']; var pth=paths[s%paths.length]; return '<div class="trend2"><div class="trend2-cap">Chart title</div><svg viewBox="0 0 160 78" preserveAspectRatio="none"><rect x="0" y="0" width="160" height="39" fill="#ec221f" opacity="0.92"/><rect x="0" y="39" width="160" height="39" fill="#14ae5c" opacity="0.92"/><path d="'+pth+'" fill="none" stroke="#111" stroke-width="2.5"/></svg></div>'; }
   function numState(v,t){ return v>t?'pos':(v<t?'neg':'on'); }
@@ -2831,7 +2838,8 @@
       var grand={ok:0,nok:0,cells:{}};
       order.forEach(function(k){ var g=G[k]; grand.ok+=g.ok; grand.nok+=g.nok; mons.forEach(function(m){ var cc=g.cells[m]||{ok:0,nok:0}; grand.cells[m]=grand.cells[m]||{ok:0,nok:0}; grand.cells[m].ok+=cc.ok; grand.cells[m].nok+=cc.nok; }); });
       var colsList=mons.concat(['__T']), HEAD='#1a1aff', CORNER='#1414cc';
-      function valcells(node){ var s=''; colsList.forEach(function(m,ix){ var c=m==='__T'?{ok:node.ok,nok:node.nok}:(node.cells[m]||{ok:0,nok:0}); var bl=ix===0?'border-left:0':(m==='__T'?'border-left:2px solid #cdd3f0':'border-left:1px solid #e9ebef'); s+='<td style="'+bl+';border-bottom:1px solid #eef0f3;padding:4px 8px;text-align:right">'+(c.ok?fmt(c.ok):'–')+'</td>'; s+='<td style="border-bottom:1px solid #eef0f3;padding:4px 8px;text-align:right;color:'+(c.nok?'#ec221f':'#c7ccd6')+'">'+fmt(c.nok)+'</td>'; }); return s; }
+      var maxOK=0; order.forEach(function(k){ if(G[k].ok>maxOK) maxOK=G[k].ok; });
+      function valcells(node){ var s=''; colsList.forEach(function(m,ix){ var c=m==='__T'?{ok:node.ok,nok:node.nok}:(node.cells[m]||{ok:0,nok:0}); var bl=ix===0?'border-left:0':(m==='__T'?'border-left:2px solid #cdd3f0':'border-left:1px solid #e9ebef'); if(m==='__T'){ var frac=maxOK>0?Math.max(0,Math.min(1,c.ok/maxOK)):0; s+='<td style="'+bl+';border-bottom:1px solid #eef0f3;padding:0"><span style="position:relative;display:block;padding:4px 8px;text-align:right"><span style="position:absolute;top:3px;bottom:3px;left:4px;width:calc('+(frac*100).toFixed(1)+'% - 8px);min-width:'+(c.ok?'2px':'0')+';background:rgba(20,174,92,.18);border-radius:3px"></span><span style="position:relative;font-variant-numeric:tabular-nums">'+(c.ok?fmt(c.ok):'–')+'</span></span></td>'; } else { s+='<td style="'+bl+';border-bottom:1px solid #eef0f3;padding:4px 8px;text-align:right">'+(c.ok?fmt(c.ok):'–')+'</td>'; } s+='<td style="border-bottom:1px solid #eef0f3;padding:4px 8px;text-align:right;color:'+(c.nok?'#ec221f':'#c7ccd6')+'">'+fmt(c.nok)+'</td>'; }); return s; }
       var th='<tr style="background:'+HEAD+';color:#fff">';
       th+='<th rowspan="2" style="position:sticky;left:0;z-index:3;background:'+CORNER+';color:#fff;text-align:left;padding:6px 10px;font-weight:600;min-width:148px">'+cfg.label[0]+' / '+cfg.label[1]+'</th>';
       mons.forEach(function(m){ th+='<th colspan="2" style="border-left:1px solid rgba(255,255,255,.25);padding:6px 8px;text-align:center;font-weight:600;white-space:nowrap">'+m+'</th>'; });
@@ -3403,6 +3411,13 @@
       rows.forEach(function(r){ tb.appendChild(r); });
     });
   })();
+  // Register-widget totalizer: hide / show toggle (matches search-screen pattern)
+  document.addEventListener('click', function(e){
+    var h=e.target.closest && e.target.closest('.wdh-hide');
+    if(h){ e.stopPropagation(); var w=h.closest('.wdefect'); if(w) w.classList.add('tots-hidden'); return; }
+    var s=e.target.closest && e.target.closest('.wdh-show');
+    if(s){ e.stopPropagation(); var w2=s.closest('.wdefect'); if(w2) w2.classList.remove('tots-hidden'); }
+  });
   // #173 — clicking a widget's "delayed action plan" alert opens the Action Plan widget
   document.addEventListener('click', function(e){ var al=e.target.closest && e.target.closest('.w-apalert'); if(!al) return; e.stopPropagation(); var ap=null; var cs=document.querySelectorAll('.wcard'); for(var i=0;i<cs.length;i++){ var t=cs[i].querySelector('.wcard-title'); if(t&&/action plan/i.test(t.textContent)){ ap=cs[i]; break; } } if(ap){ var ex=ap.querySelector('.expand'); if(ex){ ex.click(); } else { ap.scrollIntoView({behavior:'smooth',block:'center'}); } } });
   // #14 — period selector on big charts (single-select)
