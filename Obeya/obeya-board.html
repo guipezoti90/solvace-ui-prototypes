@@ -504,8 +504,8 @@
   .wdefect .wtable td:first-child{ white-space:nowrap; }
   .dfimg{ display:inline-block; width:28px; height:20px; border-radius:5px; vertical-align:middle; margin-right:6px; box-shadow:inset 0 0 0 1px rgba(0,0,0,.06); }
   /* RCA (cards) */
-  .wrca{ flex:1; display:flex; flex-direction:column; gap:8px; overflow:auto; min-height:0; padding-top:4px; }
-  .rcard{ border:1px solid #eeeff1; border-radius:11px; padding:10px; }
+  .wrca{ flex:1; display:flex; flex-direction:column; gap:6px; overflow:auto; min-height:0; padding-top:4px; }
+  .rcard{ border:1px solid #eeeff1; border-radius:11px; padding:8px 10px; }
   .rcard-top{ display:flex; align-items:center; justify-content:space-between; gap:8px; }
   .rid{ font-size:12px; font-weight:600; color:#001391; cursor:pointer; }
   .rid:hover{ text-decoration:underline; }
@@ -514,8 +514,8 @@
   .rbadge{ font-size:11px; font-weight:600; padding:1px 8px; border-radius:99px; flex:0 0 auto; display:inline-block; white-space:nowrap; }
   .rbadge.info{ background:#e7e9f5; color:#3a4790; }
   .rbadge.warn{ background:#fdf3d6; color:#a07d12; } .rbadge.ok{ background:#dcf5e6; color:#14ae5c; }
-  .rtxt{ font-size:13px; font-weight:500; color:#0d122f; margin-top:8px; line-height:1.3; }
-  .rmeta{ display:flex; align-items:center; justify-content:space-between; margin-top:8px; font-size:11px; color:#999ba7; }
+  .rtxt{ font-size:13px; font-weight:500; color:#0d122f; margin-top:5px; line-height:1.3; }
+  .rmeta{ display:flex; align-items:center; justify-content:space-between; margin-top:5px; font-size:11px; color:#999ba7; }
   .rmeta .rmc{ display:inline-flex; align-items:center; gap:4px; }
   .rmeta .rmc-over{ margin-left:auto; }
   .rmeta .rmc svg{ width:13px; height:13px; }
@@ -1221,6 +1221,17 @@
   .em-widget .wtable th{ font-size:12px; }
   .em-widget .wtable td{ font-size:14px; }
   .em-widget .skel span{ height:11px; }
+  /* #204 — message widget zoom should be much bigger */
+  .em-widget .wmsg{ gap:14px; }
+  .em-widget .wmsg-card{ padding:22px; }
+  .em-widget .wmsg-ttl{ font-size:22px; margin-bottom:12px; }
+  .em-widget .wmsg-photo{ max-height:min(48vh,480px); aspect-ratio:16/10; margin-bottom:14px; }
+  .em-widget .wmsg-body{ font-size:16px; line-height:1.6; }
+  .em-widget .wmsg-foot{ gap:14px; }
+  .em-widget .wmsg-eye svg{ width:22px; height:22px; }
+  .em-widget .wmsg-avs .ava{ width:30px; height:30px; margin-left:-8px; }
+  #fullModal .em-widget .wmsg-ttl{ font-size:26px; }
+  #fullModal .em-widget .wmsg-body{ font-size:17px; }
   #fullModal .wf-title{ font-size:28px; }
   /* #124 — full view was scaling content fonts larger than the board; bring them back closer to the board sizes */
   #fullModal .em-widget .num2-val{ font-size:clamp(40px,min(26cqw,40cqh),130px); }
