@@ -405,16 +405,24 @@
     .viewtog{ display:none }
     .viewdd-wrap{ display:inline-flex }
     .toolbar .kebab, .perm-toolbar .kebab{ display:none !important }
-    .tbl-wrap, .tbl-bleed{ margin:0 -12px }
-    /* action plans table: only fav/lock, N°, action plan, status (no lateral scroll) */
+    /* never horizontal scroll on any table (mobile) */
+    .tbl-wrap, #settingsView .tbl-bleed, #settingsView .tbl-open, .tbl-open, .tbl-bleed{ overflow-x:hidden !important; margin-left:0 !important; margin-right:0 !important }
+    .tbl{ width:100% !important; table-layout:fixed }
+    .tbl th, .tbl td{ white-space:normal; word-break:break-word }
+    /* action plans table: fav/lock, N°, action plan, status, edit (no lateral scroll) */
     .tbl-wrap-ap{ overflow-x:hidden; margin:0 }
     .tbl-ap th:nth-child(4), .tbl-ap td:nth-child(4),
     .tbl-ap th:nth-child(5), .tbl-ap td:nth-child(5),
     .tbl-ap th:nth-child(6), .tbl-ap td:nth-child(6),
     .tbl-ap th:nth-child(7), .tbl-ap td:nth-child(7),
-    .tbl-ap th:nth-child(9), .tbl-ap td:nth-child(9),
-    .tbl-ap th:nth-child(10), .tbl-ap td:nth-child(10){ display:none }
+    .tbl-ap th:nth-child(9), .tbl-ap td:nth-child(9){ display:none }
     .tbl-ap td.ap-title{ white-space:normal; display:-webkit-box; -webkit-line-clamp:2; -webkit-box-orient:vertical; overflow:hidden; max-width:0 }
+    /* rooms table: fav/lock, Number, Room, Status, edit (no lateral scroll) */
+    .tbl-wrap-rooms{ overflow-x:hidden; margin:0 }
+    .tbl-rooms th:nth-child(4), .tbl-rooms td:nth-child(4),
+    .tbl-rooms th:nth-child(5), .tbl-rooms td:nth-child(5),
+    .tbl-rooms th:nth-child(6), .tbl-rooms td:nth-child(6){ display:none }
+    .tbl-rooms td.room-title{ white-space:normal; display:-webkit-box; -webkit-line-clamp:2; -webkit-box-orient:vertical; overflow:hidden; max-width:0 }
     /* notification management: stacked toggles, left-aligned, single column */
     .notif-sws{ display:flex; flex-direction:column; align-items:flex-start; gap:8px }
     /* access permissions: hide USER column */
@@ -777,13 +785,13 @@ function renderViewKeep(){
 function cardsMore(){ if(SCREEN!=='rooms'||view!=='card') return; var total=filtered().length; if(cardsShown>=total) return; cardsShown=Math.min(cardsShown+CARDS_BATCH,total); renderViewKeep(); }
 
 function renderTable(rows){
-  el('view').innerHTML = `<div class="tbl-wrap"><table class="tbl"><thead><tr>
+  el('view').innerHTML = `<div class="tbl-wrap tbl-wrap-rooms"><table class="tbl tbl-rooms"><thead><tr>
       <th style="width:52px"></th>${th('Number','id')}${th('Room','name')}${th('Type','type')}${th('Owner','owner')}<th>Boards / Members</th>${th('Status','st')}<th style="width:60px"></th>
     </tr></thead><tbody>${rows.map(r=>`
       <tr>
         <td><span style="display:inline-flex;flex-direction:column;align-items:center;gap:6px">${favBtn(r,'fav')}${r.conf?`<span class="lock" title="Confidential">${I.lock}</span>`:''}</span></td>
         <td><span class="row-link" title="Open board in a new tab" onclick="openBoard('${r.id}')">${r.id}</span></td>
-        <td style="max-width:300px;overflow:hidden;text-overflow:ellipsis;white-space:nowrap">${r.name}</td>
+        <td class="room-title" style="max-width:300px;overflow:hidden;text-overflow:ellipsis;white-space:nowrap" title="${r.name.replace(/"/g,'&quot;')}">${r.name}</td>
         <td>${r.type}</td>
         <td><span style="display:inline-flex;align-items:center;gap:8px"><span class="avatar">${ini(r.owner)}</span>${r.owner}</span></td>
         <td><span class="cnt"><span title="Boards">${I.layers}${r.boards}</span><span title="Members">${I.users}${r.members}</span></span></td>
