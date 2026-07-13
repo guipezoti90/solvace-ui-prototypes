@@ -147,7 +147,8 @@
   .wcard:hover .tooltip{ opacity:1; }
   /* unified hover tooltip for green/red indicators (date · series · result % · target) */
   #barTip{ position:fixed; z-index:9600; background:#1c2434; color:#fff; border-radius:8px; padding:8px 10px; font-size:11px; line-height:1.35; box-shadow:0 8px 22px rgba(0,0,0,.28); pointer-events:none; transform:translate(-50%,-100%); margin-top:-10px; min-width:130px; font-family:Inter,system-ui,Arial,sans-serif; }
-  #barTip .bt-date{ font-weight:600; margin-bottom:5px; }
+  #barTip .bt-title{ font-weight:700; margin-bottom:2px; color:#fff; white-space:nowrap; }
+  #barTip .bt-date{ font-weight:500; margin-bottom:5px; color:#cdd3e0; }
   #barTip .bt-row{ display:flex; align-items:center; justify-content:space-between; gap:16px; padding:1px 0; }
   #barTip .bt-l{ display:inline-flex; align-items:center; gap:6px; color:#cdd3e0; white-space:nowrap; }
   #barTip .bt-dot{ width:8px; height:8px; border-radius:50%; flex:0 0 auto; }
@@ -653,7 +654,7 @@
   /* KAI bottom-left (real SVG extracted from Figma) */
   .kai-wrap{ position:absolute; left:24px; bottom:18px; display:flex; flex-direction:column; align-items:center; gap:4px; z-index:20; }
   .kai-svg{ width:56px; height:56px; display:block; filter:drop-shadow(0 6px 16px rgba(0,19,145,.3)); }
-  .kai-label{ font-size:12px; font-weight:600; color:#001391; }
+  .kai-label{ font-size:12px; font-weight:600; color:#001391; background:#fff; border:1px solid #E0E0FF; border-radius:9999px; padding:2px 12px; box-shadow:0 2px 8px rgba(0,5,36,.12); }
 
   /* Bottom-right floating cluster */
   /* Bottom cluster is now centred: zoom controls + update-mode toggle */
@@ -2482,7 +2483,7 @@
     placeAlignBar();
   }
   (function(){ var ab=alignBar.querySelectorAll('button'); function bind(btn){ btn.addEventListener('mousedown', function(e){ e.stopPropagation(); }); btn.addEventListener('click', function(e){ e.stopPropagation(); alignGroup(btn.getAttribute('data-al')); }); } for(var i=0;i<ab.length;i++) bind(ab[i]); })();
-  boardArea.addEventListener('mousedown', function(e){ var d=e.target.closest && e.target.closest('.wcont-del'); if(d){ e.stopPropagation(); var box=d.closest('.wcontainer'); if(box) box.parentNode.removeChild(box); } }, true);
+  boardArea.addEventListener('mousedown', function(e){ var d=e.target.closest && e.target.closest('.wcont-del'); if(d){ e.stopPropagation(); var box=d.closest('.wcontainer'); if(box && confirm('Remove this container? The widgets inside will stay on the board.')) box.parentNode.removeChild(box); } }, true);
   // ---- #26: clicar numa cor de status filtra a lista de defeitos ----
   document.addEventListener('click', function(e){
     var chip=e.target.closest && e.target.closest('.wdh-st'); if(!chip) return;
@@ -2622,7 +2623,7 @@
     var stLbl={ bad:'Overdue', warn:'Pending', info:'CMMS / Open', ok:'Solved' };
     var head=''; if(dat){ var rc='', order=['bad','warn','info','ok'], oi; for(oi=0;oi<order.length;oi++){ var kk=order[oi]; rc+='<span class="wdh-st '+kk+'" data-st="'+kk+'" title="'+stLbl[kk]+' — click to filter"><i class="wdh-dot"></i><b>'+dcount[kk]+'</b></span>'; } head='<div class="wdefect-head"><div class="wdh-l"><span class="wdh-ic">'+dIcTag+'</span><div class="wdh-tx"><b>'+total+'</b><span>Defect tags</span></div></div><div class="wdh-r">'+rc+'</div></div>'; }
     return '<div class="wdefect">'+head+map+bar+tbl+pg+'</div>'; }
-  function gCal(seed){ var o='', i; for(i=1;i<=31;i++){ var r=(seed*13+i*7)%10; var c=r<2?'r':(r<4?'g':(r===4?'y':'')); var tgt=80, col=c==='r'?'#ec221f':(c==='g'?'#14ae5c':(c==='y'?'#e8b931':'#8b91b5')), val=c==='r'?(40+(i*7)%14):(c==='g'?(84+(i*5)%14):(c==='y'?(72+(i*3)%7):tgt)), pct=Math.round(val/tgt*100); o+='<span class="cd'+(c?' '+c:'')+'" data-d="Day '+i+'" data-v="'+val+'" data-p="'+pct+'" data-t="'+tgt+'" data-col="'+col+'">'+i+'</span>'; } return '<div class="wcal">'+o+'</div>'; }
+  function gCal(seed){ var o='', i; var _n=new Date(), _mm=('0'+(_n.getMonth()+1)).slice(-2), _yy=_n.getFullYear(); for(i=1;i<=31;i++){ var r=(seed*13+i*7)%10; var c=r<2?'r':(r<4?'g':(r===4?'y':'')); var tgt=80, col=c==='r'?'#ec221f':(c==='g'?'#14ae5c':(c==='y'?'#e8b931':'#8b91b5')), val=c==='r'?(40+(i*7)%14):(c==='g'?(84+(i*5)%14):(c==='y'?(72+(i*3)%7):tgt)), pct=Math.round(val/tgt*100); var ds=('0'+i).slice(-2)+'/'+_mm+'/'+_yy; o+='<span class="cd'+(c?' '+c:'')+'" data-d="'+ds+'" data-v="'+val+'" data-p="'+pct+'" data-t="'+tgt+'" data-col="'+col+'">'+i+'</span>'; } return '<div class="wcal">'+o+'</div>'; }
   function gTrend(seed){ var s=seed||1; var paths=['M0 40 C20 30 30 24 45 30 S70 46 90 40 115 24 135 30 160 36 160 36','M0 30 C24 36 40 44 60 38 S104 26 124 34 160 30 160 30','M0 48 C24 40 40 30 60 36 S104 50 124 40 160 34 160 34']; var pth=paths[s%paths.length]; return '<div class="trend2"><div class="trend2-cap">Chart title</div><svg viewBox="0 0 160 78" preserveAspectRatio="none"><rect x="0" y="0" width="160" height="39" fill="#ec221f" opacity="0.92"/><rect x="0" y="39" width="160" height="39" fill="#14ae5c" opacity="0.92"/><path d="'+pth+'" fill="none" stroke="#111" stroke-width="2.5"/></svg></div>'; }
   function numState(v,t){ return v>t?'pos':(v<t?'neg':'on'); }
   function gNumber(val,target){ var v=parseFloat(String(val==null?'':val).replace(/[^0-9.-]/g,''))||0; var t=(target!=null&&target!=='')?parseFloat(target):v; if(isNaN(t)) t=v; return '<div class="num2 '+numState(v,t)+'" data-t="'+t+'"><span class="num2-val font-display">'+(val||'0')+'</span></div>'; }
@@ -3283,17 +3284,21 @@
 
   // ---- hover tooltip for green/red indicators (chart bars): date · series · result(%) · target ----
   var barTip=document.createElement('div'); barTip.id='barTip'; barTip.style.display='none'; document.body.appendChild(barTip);
-  function showBarTip(mb){
-    var card=mb.closest('.wcard'); var tEl=card&&card.querySelector('.wcard-title'); var series=tEl?tEl.textContent.trim():'Series';
-    var g=mb.classList.contains('g'), col=g?'#14ae5c':'#ec221f';
-    barTip.innerHTML='<div class="bt-date">'+(mb.getAttribute('data-d')||'')+'</div>'+
-      '<div class="bt-row"><span class="bt-l"><i class="bt-dot" style="background:'+col+'"></i>'+series+'</span><b>'+(mb.getAttribute('data-v')||'')+' ('+(mb.getAttribute('data-p')||'')+'%)</b></div>'+
-      '<div class="bt-row"><span class="bt-l"><i class="bt-dot" style="background:#8b91b5"></i>Target</span><b>'+(mb.getAttribute('data-t')||'')+'</b></div>'+
+  function btSeries(el){ var card=el.closest('.wcard'); var tEl=card&&card.querySelector('.wcard-title'); return tEl?tEl.textContent.trim():'Series'; }
+  function btHTML(series,d,col,v,p,t){
+    return '<div class="bt-title">'+series+'</div>'+
+      (d?'<div class="bt-date">'+d+'</div>':'')+
+      '<div class="bt-row"><span class="bt-l"><i class="bt-dot" style="background:'+col+'"></i>Actual</span><b>'+v+(p!==''&&p!=null?' ('+p+'%)':'')+'</b></div>'+
+      '<div class="bt-row"><span class="bt-l"><i class="bt-dot" style="background:#8b91b5"></i>Target</span><b>'+(t||'—')+'</b></div>'+
       '<div class="bt-arrow"></div>';
+  }
+  function showBarTip(mb){
+    var g=mb.classList.contains('g'), col=g?'#14ae5c':'#ec221f';
+    barTip.innerHTML=btHTML(btSeries(mb), mb.getAttribute('data-d')||'', col, mb.getAttribute('data-v')||'', mb.getAttribute('data-p')||'', mb.getAttribute('data-t')||'');
     barTip.style.display='block';
     var r=mb.getBoundingClientRect(); barTip.style.left=(r.left+r.width/2)+'px'; barTip.style.top=r.top+'px';
   }
-  function showDataTip(el){ var card=el.closest('.wcard'); var series=(card&&card.querySelector('.wcard-title'))?card.querySelector('.wcard-title').textContent.trim():'Series'; var col=el.getAttribute('data-col')||'#8b91b5', v=el.getAttribute('data-v')||'', p=el.getAttribute('data-p')||'', t=el.getAttribute('data-t')||'', d=el.getAttribute('data-d')||''; barTip.innerHTML='<div class="bt-date">'+d+'</div><div class="bt-row"><span class="bt-l"><i class="bt-dot" style="background:'+col+'"></i>'+series+'</span><b>'+v+(p!==''?' ('+p+'%)':'')+'</b></div><div class="bt-row"><span class="bt-l"><i class="bt-dot" style="background:#8b91b5"></i>Target</span><b>'+t+'</b></div><div class="bt-arrow"></div>'; barTip.style.display='block'; var rr=el.getBoundingClientRect(); barTip.style.left=(rr.left+rr.width/2)+'px'; barTip.style.top=rr.top+'px'; }
+  function showDataTip(el){ var col=el.getAttribute('data-col')||'#8b91b5'; barTip.innerHTML=btHTML(btSeries(el), el.getAttribute('data-d')||'', col, el.getAttribute('data-v')||'', el.getAttribute('data-p')||'', el.getAttribute('data-t')||''); barTip.style.display='block'; var rr=el.getBoundingClientRect(); barTip.style.left=(rr.left+rr.width/2)+'px'; barTip.style.top=rr.top+'px'; }
   document.addEventListener('mouseover', function(e){ var mb=e.target.closest && e.target.closest('.minibars .mb'); if(mb) showBarTip(mb); });
   document.addEventListener('mouseout', function(e){ var mb=e.target.closest && e.target.closest('.minibars .mb'); if(mb) barTip.style.display='none'; });
   // ---- hover tooltip for the radial (ring) segments: day + status ----
