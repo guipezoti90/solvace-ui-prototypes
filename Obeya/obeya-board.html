@@ -653,7 +653,7 @@
   .wcont-name{ cursor:default; user-select:none; }
   .wcont-name.editing{ cursor:text; user-select:text; background:#fff; box-shadow:0 0 0 2px rgba(0,19,145,.35); }
   /* system tooltip (not native) for container controls */
-  .wcont-bar [data-tip], .wcont-rz[data-tip]{ position:relative; }
+  .wcont-bar [data-tip]{ position:relative; }
   .wcont-bar [data-tip]:hover::after, .wcont-rz[data-tip]:hover::after{ content:attr(data-tip); position:absolute; bottom:calc(100% + 8px); left:50%; transform:translateX(-50%); background:#0d122f; color:#fff; font-size:11px; font-weight:500; line-height:1; letter-spacing:.1px; padding:6px 8px; border-radius:6px; white-space:nowrap; pointer-events:none; z-index:9700; box-shadow:0 4px 12px rgba(13,18,47,.30); }
   .wcont-bar [data-tip]:hover::before, .wcont-rz[data-tip]:hover::before{ content:""; position:absolute; bottom:calc(100% + 3px); left:50%; transform:translateX(-50%); border:5px solid transparent; border-top-color:#0d122f; pointer-events:none; z-index:9700; }
   #contColor{ position:absolute; display:none; z-index:9002; background:#fff; border:1px solid #e2e5ec; border-radius:12px; box-shadow:0 18px 44px rgba(13,18,47,.24); padding:12px; width:210px; font-family:Inter,system-ui,Arial,sans-serif; }
