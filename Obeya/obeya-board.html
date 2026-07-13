@@ -645,9 +645,11 @@
   .wcont-btn:hover{ background:#eef0ff; color:#001391; }
   .wcont-btn svg{ width:14px; height:14px; }
   .wcont-del{ margin-left:0; }
-  .wcont-rz{ position:absolute; right:-2px; bottom:-2px; width:20px; height:20px; border-radius:6px; background:#fff; border:1px solid #b9bdf0; color:#001391; cursor:nwse-resize; display:none; align-items:center; justify-content:center; pointer-events:auto; z-index:3; }
-  .wcont-rz svg{ width:12px; height:12px; }
+  .wcont-rz{ position:absolute; right:6px; bottom:6px; width:22px; height:22px; border-radius:7px; background:#fff; border:1px solid #001391; color:#001391; cursor:nwse-resize; display:none; align-items:center; justify-content:center; pointer-events:auto; z-index:40; box-shadow:0 2px 6px rgba(0,19,145,.22); }
+  .wcont-rz svg{ width:13px; height:13px; }
   #app[data-state="edit"] .wcontainer .wcont-rz{ display:inline-flex; }
+  /* in edit mode raise the container so its bar + bottom-right resize handle sit above the (translucent) widgets and stay clickable */
+  #app[data-state="edit"] .wcontainer{ z-index:30; }
   .wcont-name{ cursor:default; user-select:none; }
   .wcont-name.editing{ cursor:text; user-select:text; background:#fff; box-shadow:0 0 0 2px rgba(0,19,145,.35); }
   /* system tooltip (not native) for container controls */
