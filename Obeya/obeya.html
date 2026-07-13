@@ -377,12 +377,11 @@
     #menu-modal{ width:100vw !important; max-width:100vw !important }
     .drawer{ width:100vw; max-width:100vw }
     .rs{ width:100vw !important; max-width:100vw !important }
-    .rg-modal, .dlg-modal{ padding:0 !important }
+    .rg-modal{ padding:0 !important }
     .rg, #auModal .rg{ width:100vw !important; max-width:100vw !important; height:100vh !important; max-height:100vh !important; border-radius:0 !important; display:flex !important; flex-direction:column !important; overflow:hidden !important }
     .rg .rg-body{ flex:1 1 auto; overflow:auto }
     .rg .rg-foot{ flex:0 0 auto; border-top:1px solid var(--border) }
-    .dlg{ width:100vw !important; max-width:100vw !important; height:100vh !important; border-radius:0 !important; display:flex !important; flex-direction:column !important }
-    .dlg .dlg-acts{ margin-top:auto }
+    /* delete-confirm dialog stays centered (NOT fullscreen) */
     /* top bar */
     .topbar{ padding:0 12px }
     .topbar-search{ display:none }
@@ -426,7 +425,13 @@
     /* notification management: stacked toggles, left-aligned, single column */
     .notif-sws{ display:flex; flex-direction:column; align-items:flex-start; gap:8px }
     /* access permissions: hide USER column */
-    .tbl-acc .acc-user{ display:none }
+    .tbl-acc .acc-user, .tbl-acc .acc-email{ display:none }
+    /* settings toolbars: New user/type/topic + Save become icon-only */
+    .perm-newlbl{ display:none }
+    .perm-toolbar .btn{ padding:0 12px }
+    /* notification management: hide PARAMETER, NOTIFICATION becomes 2nd/last column */
+    .tbl-notif th:nth-child(3), .tbl-notif td:nth-child(3){ display:none }
+    .tbl-notif th:nth-child(2){ width:46% !important }
   }
 </style>
 </head>
@@ -1123,7 +1128,7 @@ function renderReg(v){
   var cfg=REG[v], q=(regQ[v]||'').toLowerCase();
   var list=regData(v).filter(function(c){ return c.name.toLowerCase().indexOf(q)>=0; });
   var rows=list.map(function(c){ return '<tr><td>'+c.name+'</td><td>'+statusBadge(c.active)+'</td><td style="width:96px;text-align:center;white-space:nowrap"><span style="display:inline-flex;gap:8px"><button class="kebab" style="color:var(--primary)" title="Edit" onclick="openReg(\''+v+'\','+c.id+')">'+I.pencil+'</button><button class="kebab" style="color:var(--primary)" title="Delete" onclick="delReg(\''+v+'\','+c.id+')">'+I.trash+'</button></span></td></tr>'; }).join('');
-  el('settingsView').innerHTML='<div class="perm-toolbar"><button class="btn btn-outline" onclick="openReg(\''+v+'\')">'+I.plus+' '+cfg.newLabel+'</button><div class="set-search"><span class="s-ico">'+I.search+'</span><input placeholder="Search" value="'+(regQ[v]||'')+'" oninput="regSearch(\''+v+'\',this.value)"></div><button class="kebab" title="More options" onclick="openKebab(this)">'+I.kebab+'</button></div><div class="tbl-bleed"><table class="tbl"><thead><tr><th>'+cfg.col+'</th><th style="width:120px">STATUS</th><th style="width:96px"></th></tr></thead><tbody>'+(rows||'<tr><td colspan="3" style="text-align:center;color:#8a90a6;padding:40px">No records found</td></tr>')+'</tbody></table></div>'+pag(list.length);
+  el('settingsView').innerHTML='<div class="perm-toolbar"><button class="btn btn-outline perm-new" onclick="openReg(\''+v+'\')">'+I.plus+'<span class="perm-newlbl"> '+cfg.newLabel+'</span></button><div class="set-search"><span class="s-ico">'+I.search+'</span><input placeholder="Search" value="'+(regQ[v]||'')+'" oninput="regSearch(\''+v+'\',this.value)"></div><button class="kebab" title="More options" onclick="openKebab(this)">'+I.kebab+'</button></div><div class="tbl-bleed"><table class="tbl"><thead><tr><th>'+cfg.col+'</th><th style="width:120px">STATUS</th><th style="width:96px"></th></tr></thead><tbody>'+(rows||'<tr><td colspan="3" style="text-align:center;color:#8a90a6;padding:40px">No records found</td></tr>')+'</tbody></table></div>'+pag(list.length);
 }
 function regSearch(v,q){ regQ[v]=q; renderReg(v); var i=el('settingsView').querySelector('.set-search input'); if(i){ i.focus(); i.setSelectionRange(i.value.length,i.value.length); } }
 var regEdit=null;
@@ -1151,7 +1156,7 @@ function renderNotif(){
   var q=notifQ.toLowerCase(), list=notifRules.filter(function(r){ return r.rule.toLowerCase().indexOf(q)>=0; });
   function sw(r,k,l){ return '<span class="notif-sw"><button class="switch" aria-checked="'+r[k]+'" onclick="toggleNotif('+r.id+',\''+k+'\',this)"><span class="thumb"></span></button>'+l+'</span>'; }
   var rows=list.map(function(r){ return '<tr><td><span style="display:inline-flex;align-items:center;gap:8px">'+r.rule+'<span class="kc-tip" data-tip="'+r.tip+'">'+I.info+'</span></span></td><td style="white-space:nowrap"><span class="notif-sws">'+sw(r,'web','Web')+sw(r,'mobile','Mobile')+sw(r,'mail','Mail')+'</span></td><td style="text-align:center">'+(r.param===null?'':'<input class="param-in" value="'+r.param+'" oninput="setParam('+r.id+',this.value)">')+'</td></tr>'; }).join('');
-  el('settingsView').innerHTML='<div class="perm-toolbar"><div class="set-search"><span class="s-ico">'+I.search+'</span><input placeholder="Search" value="'+notifQ+'" oninput="notifSearch(this.value)"></div><button class="btn btn-primary" onclick="toast(\'Changes saved successfully\')">'+I.save+' Save</button><button class="kebab" title="More options" onclick="openKebab(this)">'+I.kebab+'</button></div><div class="tbl-open"><table class="tbl"><thead><tr><th>RULE</th><th style="width:355px">NOTIFICATION</th><th style="width:134px;text-align:center">PARAMETER</th></tr></thead><tbody>'+rows+'</tbody></table></div>';
+  el('settingsView').innerHTML='<div class="perm-toolbar"><div class="set-search"><span class="s-ico">'+I.search+'</span><input placeholder="Search" value="'+notifQ+'" oninput="notifSearch(this.value)"></div><button class="btn btn-primary" onclick="toast(\'Changes saved successfully\')">'+I.save+' Save</button><button class="kebab" title="More options" onclick="openKebab(this)">'+I.kebab+'</button></div><div class="tbl-open"><table class="tbl tbl-notif"><thead><tr><th>RULE</th><th style="width:355px">NOTIFICATION</th><th style="width:134px;text-align:center">PARAMETER</th></tr></thead><tbody>'+rows+'</tbody></table></div>';
 }
 function notifSearch(q){ notifQ=q; renderNotif(); var i=el('settingsView').querySelector('.set-search input'); if(i){ i.focus(); i.setSelectionRange(i.value.length,i.value.length); } }
 function toggleNotif(id,k,b){ var r=notifRules.find(function(x){return x.id===id;}); r[k]=!r[k]; b.setAttribute('aria-checked',String(r[k])); }
@@ -1164,8 +1169,8 @@ function accAr(k){ return accSort.k===k?'<span class="sort-ar">'+(accSort.d>0?'â
 function renderAccess(){
   var q=permQ.toLowerCase(), list=permUsers.filter(function(p){ return (p.n+' '+p.e+' '+p.u).toLowerCase().indexOf(q)>=0; });
   if(accSort.k){ list=list.slice().sort(function(a,b){ var x=(a[accSort.k]||'').toLowerCase(), y=(b[accSort.k]||'').toLowerCase(); return (x<y?-1:x>y?1:0)*accSort.d; }); }
-  var rows=list.map(function(p){ return '<tr><td><span style="display:inline-flex;align-items:center;gap:8px"><span class="set-av">'+p.av+'</span>'+p.n+'</span></td><td>'+p.e+'</td><td class="acc-user">'+p.u+'</td><td></td><td style="text-align:center"><button class="switch" aria-checked="'+p.admin+'" onclick="togglePerm('+p.id+',\'admin\',this)"><span class="thumb"></span></button></td><td style="text-align:center"><button class="kebab" style="color:var(--primary)" title="Delete" onclick="delPerm('+p.id+')">'+I.trash+'</button></td></tr>'; }).join('');
-  el('settingsView').innerHTML='<div class="perm-toolbar"><button class="btn btn-outline" onclick="openAddUser()">'+I.plus+' Add user</button><div class="set-search"><span class="s-ico">'+I.search+'</span><input placeholder="Search" value="'+permQ+'" oninput="permSearch(this.value)"></div><button class="btn btn-primary" onclick="toast(\'Changes saved successfully\')">'+I.save+' Save</button><button class="kebab" title="More options" onclick="openKebab(this)">'+I.kebab+'</button></div><div class="tbl-bleed"><table class="tbl tbl-acc"><thead><tr><th class="sortable" style="width:220px" onclick="setAccSort(\'n\')">NAME'+accAr('n')+'</th><th class="sortable" style="width:250px" onclick="setAccSort(\'e\')">EMAIL'+accAr('e')+'</th><th class="sortable acc-user" style="width:180px" onclick="setAccSort(\'u\')">USER'+accAr('u')+'</th><th></th><th style="width:110px;text-align:center">ADMIN</th><th style="width:72px"></th></tr></thead><tbody>'+rows+'</tbody></table></div>';
+  var rows=list.map(function(p){ return '<tr><td><span style="display:inline-flex;align-items:center;gap:8px"><span class="set-av">'+p.av+'</span>'+p.n+'</span></td><td class="acc-email">'+p.e+'</td><td class="acc-user">'+p.u+'</td><td></td><td style="text-align:center"><button class="switch" aria-checked="'+p.admin+'" onclick="togglePerm('+p.id+',\'admin\',this)"><span class="thumb"></span></button></td><td style="text-align:center"><button class="kebab" style="color:var(--primary)" title="Delete" onclick="delPerm('+p.id+')">'+I.trash+'</button></td></tr>'; }).join('');
+  el('settingsView').innerHTML='<div class="perm-toolbar"><button class="btn btn-outline perm-new" onclick="openAddUser()">'+I.plus+'<span class="perm-newlbl"> Add user</span></button><div class="set-search"><span class="s-ico">'+I.search+'</span><input placeholder="Search" value="'+permQ+'" oninput="permSearch(this.value)"></div><button class="btn btn-primary perm-save" onclick="toast(\'Changes saved successfully\')">'+I.save+'<span class="perm-newlbl"> Save</span></button><button class="kebab" title="More options" onclick="openKebab(this)">'+I.kebab+'</button></div><div class="tbl-bleed"><table class="tbl tbl-acc"><thead><tr><th class="sortable" style="width:220px" onclick="setAccSort(\'n\')">NAME'+accAr('n')+'</th><th class="sortable acc-email" style="width:250px" onclick="setAccSort(\'e\')">EMAIL'+accAr('e')+'</th><th class="sortable acc-user" style="width:180px" onclick="setAccSort(\'u\')">USER'+accAr('u')+'</th><th></th><th style="width:110px;text-align:center">ADMIN</th><th style="width:72px"></th></tr></thead><tbody>'+rows+'</tbody></table></div>';
 }
 function permSearch(q){ permQ=q; renderAccess(); var i=el('settingsView').querySelector('.set-search input'); if(i){ i.focus(); i.setSelectionRange(i.value.length,i.value.length); } }
 function togglePerm(id,k,b){ var p=permUsers.find(function(x){return x.id===id;}); p[k]=!p[k]; b.setAttribute('aria-checked',String(p[k])); }
