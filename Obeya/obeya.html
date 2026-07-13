@@ -160,7 +160,12 @@
   .topbar{ height:64px; flex:0 0 64px; display:flex; align-items:center; padding:0 24px; background:#fff; border-bottom:1px solid var(--color-input) }
   .topbar-logo{ display:flex; align-items:center; gap:8px; font-size:22px; font-weight:600; color:#0a0a0a }
   .topbar-right{ margin-left:auto; display:flex; align-items:center; gap:18px; color:var(--color-primary) }
-  .top-avatar{ width:36px;height:36px;border-radius:9999px;background:#2b2f42;color:#fff;display:flex;align-items:center;justify-content:center;font-size:12px;font-weight:600;flex:0 0 auto }
+  .top-avatar{ width:36px;height:36px;border-radius:9999px;background:#2b2f42;color:#fff;display:flex;align-items:center;justify-content:center;font-size:12px;font-weight:600;flex:0 0 auto;border:0;padding:0;cursor:pointer }
+  .top-avatar-wrap{ position:relative; flex:0 0 auto }
+  .avatar-menu{ position:absolute; top:46px; right:0; min-width:200px; background:#fff; border:1px solid var(--color-input); border-radius:12px; box-shadow:0 8px 24px rgba(13,18,47,.12); padding:6px; display:none; z-index:120 }
+  .avatar-menu.open{ display:block }
+  .avatar-menu-item{ width:100%; display:flex; align-items:center; gap:8px; height:38px; padding:0 10px; border:0; background:transparent; border-radius:8px; color:#0d122f; font-size:14px; font-weight:500; cursor:pointer } .avatar-menu-item:hover{ background:#f4f4f6 }
+  .avatar-menu-item .loc-chev{ margin-left:auto; color:#6b7280 }
   .topbar-search{ flex:0 1 620px; display:flex; align-items:center; gap:8px; height:40px; padding:0 14px; margin-left:24px; background:#fff; border:1px solid var(--color-input); border-radius:10px; color:#999ba7 }
   .topbar-search input{ flex:1; min-width:0; border:0; outline:0; background:transparent; font-size:15px; color:#0d122f; font-family:inherit }
   .topbar-search input::placeholder{ color:#999ba7 }
@@ -357,6 +362,35 @@
   .flt-clear{ width:100%; margin-top:4px; border:0; background:none; color:var(--primary); font-size:12px; font-weight:600; cursor:pointer; padding:6px; border-radius:6px } .flt-clear:hover{ background:#eef1ff }
   .tbl thead th.sortable{ cursor:pointer; user-select:none } .tbl thead th.sortable:hover{ color:var(--primary) }
   .tbl thead th .sort-ar{ font-size:10px; color:var(--primary); margin-left:4px }
+  /* ===== Floating bar — mobile (≤640px) ===== */
+  @media (max-width:640px){
+    .gd-handle, .gd-collapse{ display:none !important }
+    .glass-dock{ left:50% !important; bottom:16px }
+    #menu-modal{ width:100vw !important; max-width:100vw !important }
+    .drawer{ width:100vw; max-width:100vw }
+    .fb-fab{ right:16px !important; bottom:92px !important; width:48px !important; height:48px !important; padding:0 !important; justify-content:center !important; z-index:57 !important }
+    .fb-fab #fab-label{ display:none !important }
+    /* search screen */
+    .page{ padding:16px 12px 60px }
+    .kc-tots{ flex-wrap:nowrap; overflow-x:auto; gap:12px; -webkit-overflow-scrolling:touch }
+    .kc-tots .tot-card{ flex:0 0 auto; min-width:160px }
+    .kc-tots .tot-sep{ display:none }
+    .toolbar{ flex-wrap:wrap; row-gap:10px }
+    .toolbar .search-box{ flex:1 1 100%; order:-1 }
+    .flt-txt{ display:none }
+    .toolbar .kebab, .perm-toolbar .kebab{ display:none !important }
+    .tbl-wrap, .tbl-bleed{ margin:0 -12px }
+    /* top bar */
+    .topbar{ padding:0 12px }
+    .topbar-search{ display:none }
+    .top-loc{ display:none }
+    .topbar-logo svg{ height:20px; width:auto }
+    .topbar-right{ gap:10px }
+    .top-icon{ width:36px; height:36px }
+    .top-kc{ padding:0 9px; gap:5px }
+    .top-avatar{ width:32px; height:32px }
+    .top-badge{ min-width:18px; height:18px; font-size:11px }
+  }
 </style>
 </head>
 <body>
@@ -423,7 +457,12 @@
       <div class="topbar-right">
         <button class="top-loc" title="Location"><svg width="18" height="18" viewBox="0 0 24 24" fill="currentColor"><path d="M12 2a7 7 0 0 0-7 7c0 5.25 7 13 7 13s7-7.75 7-13a7 7 0 0 0-7-7z"></path><circle cx="12" cy="9" r="2.6" fill="#fff"></circle></svg><span>Curitiba</span><svg class="loc-chev" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="m6 9 6 6 6-6"></path></svg></button>
         <button class="top-icon" title="Notifications"><svg width="21" height="21" viewBox="0 0 24 24" fill="currentColor"><path d="M12 2a6 6 0 0 0-6 6c0 7-3 9-3 9h18s-3-2-3-9a6 6 0 0 0-6-6Z"></path><path d="M10.3 21a2 2 0 0 0 3.4 0Z"></path></svg><span class="top-badge">3</span></button>
-        <span class="top-avatar">NU</span>
+        <div class="top-avatar-wrap">
+          <button class="top-avatar" id="avatarBtn" onclick="toggleAvatarMenu(event)" aria-haspopup="true" aria-expanded="false" title="Account">NU</button>
+          <div class="avatar-menu" id="avatarMenu" role="menu">
+            <button class="avatar-menu-item" role="menuitem" title="Location"><svg width="16" height="16" viewBox="0 0 24 24" fill="currentColor"><path d="M12 2a7 7 0 0 0-7 7c0 5.25 7 13 7 13s7-7.75 7-13a7 7 0 0 0-7-7z"></path><circle cx="12" cy="9" r="2.6" fill="#fff"></circle></svg><span>Curitiba</span><svg class="loc-chev" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="m6 9 6 6 6-6"></path></svg></button>
+          </div>
+        </div>
         <button class="top-icon top-kc" title="Knowledge Center"><svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M2 3h6a4 4 0 0 1 4 4v14a3 3 0 0 0-3-3H2z"></path><path d="M22 3h-6a4 4 0 0 0-4 4v14a3 3 0 0 1 3-3h7z"></path></svg></button>
       </div>
     </header>
@@ -452,12 +491,12 @@
       <button class="gd-circle gd-circle-kai" data-label="KAI" onclick="openKaiPanel()" onmouseenter="kaiHoverAnim()" aria-label="KAI"><span class="gd-kai-ico" id="gd-kai-slot"></span></button>
     </div>
     <button class="gd-btn" onclick="openAppDrawer('Feed')" aria-label="Feed"><svg width="21" height="21" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"><path d="M21 15a2 2 0 0 1-2 2H7l-4 4V5a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2z"/><path d="M8 8h8M8 12h5"/></svg><span class="gd-badge">8</span><span class="gd-lbl">Feed</span></button>
-    <button class="gd-btn gd-util" onclick="toggleDock()" title="Hide bar" aria-label="Hide bar"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><path d="m6 9 6 6 6-6"/></svg></button>
+    <button class="gd-btn gd-util gd-collapse" onclick="toggleDock()" title="Hide bar" aria-label="Hide bar"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><path d="m6 9 6 6 6-6"/></svg></button>
   </div>
   <button class="gd-nub" title="Show bar" aria-label="Show bar" onclick="toggleDock()"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round"><path d="m18 15-6-6-6 6"/></svg></button>
 </div>
 <button class="fb-fab" id="fab" onclick="newRecord()"><span class="fab-plus"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round"><path d="M12 5v14M5 12h14"/></svg></span><span id="fab-label">New record</span></button>
-<div class="menu-pop" id="menu-modal">
+<div class="drawer drawer-left" id="menu-modal" style="width:420px">
   <div style="display:flex;align-items:center;gap:10px;padding:16px 18px 0">
     <div class="fb-sb" style="flex:1"><span class="s-ico"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="11" cy="11" r="7"/><path d="m21 21-4-4"/></svg></span><input class="fb-in" id="menu-search" placeholder="Search modules" oninput="menuQ=this.value;renderMenuModal(true)"></div>
     <button class="kebab" onclick="closeMenuModal()" title="Close"><svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M18 6 6 18M6 6l12 12"/></svg></button>
@@ -466,7 +505,7 @@
     <div id="menu-tabs" style="display:flex;gap:22px;flex:1;overflow:hidden"></div>
     <button class="kebab" id="menu-tabs-more" data-sel style="display:none;color:#5a5f6b;padding:2px 4px;margin-bottom:5px" title="More tabs" onclick="openMenuTabsDD(this)"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="m6 9 6 6 6-6"/></svg></button>
   </div>
-  <div id="menu-grid" style="padding:14px 18px 18px;display:grid;grid-template-columns:repeat(3,1fr);gap:10px;flex:1;overflow-y:auto;overflow-x:hidden;align-content:start"></div>
+  <div id="menu-grid" style="padding:14px 18px 18px;display:grid;grid-template-columns:repeat(2,1fr);gap:10px;flex:1;overflow-y:auto;overflow-x:hidden;align-content:start"></div>
 </div>
 <div class="drawer drawer-left" id="kai-drawer">
   <div class="drawer-head"><span style="display:inline-flex;align-items:center;gap:10px"><span id="kai-drawer-logo" style="display:inline-flex;line-height:0"></span>KAI</span><button class="kebab" onclick="closeKaiPanel()"><svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M18 6 6 18M6 6l12 12"/></svg></button></div>
@@ -516,6 +555,8 @@ function toggleAcc(btn){ const open = btn.getAttribute('aria-expanded')==='true'
 function toggleSidebar(){ const sb=document.getElementById('sidebar'); const c=sb.getAttribute('data-collapsed')==='true'; sb.setAttribute('data-collapsed', c?'false':'true'); document.body.classList.toggle('sb-collapsed', !c); }
 function openMobileSidebar(){ document.getElementById('sidebar').classList.add('mobile-open'); document.getElementById('sidebar-backdrop').classList.add('open'); }
 function closeMobileSidebar(){ document.getElementById('sidebar').classList.remove('mobile-open'); document.getElementById('sidebar-backdrop').classList.remove('open'); }
+function toggleAvatarMenu(e){ if(e){ e.stopPropagation(); } var menu=document.getElementById('avatarMenu'), btn=document.getElementById('avatarBtn'); var open=menu.classList.toggle('open'); if(btn) btn.setAttribute('aria-expanded', open?'true':'false'); }
+document.addEventListener('click', function(ev){ if(!ev.target.closest('.top-avatar-wrap')){ var menu=document.getElementById('avatarMenu'); if(menu) menu.classList.remove('open'); var btn=document.getElementById('avatarBtn'); if(btn) btn.setAttribute('aria-expanded','false'); } });
 function selectView(a){ document.querySelectorAll('.side-sublink').forEach(x=>x.classList.remove('active')); a.classList.add('active'); closeMobileSidebar(); }
 const I = {
   plus:'<svg viewBox="0 0 24 24" width="16" height="16" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><path d="M12 5v14M5 12h14"/></svg>',
@@ -552,12 +593,12 @@ const I = {
 /* ===== M CONTRACT — Digital Obeya (rooms) ===== */
 const ROOMS_MODULE = {
   entity: 'room',
-  statuses: { Active:{solid:'#14AE5C',tint:'#DCF5E6'}, Inactive:{solid:'#EC221F',tint:'#FDE7E7'} },
+  statuses: { Active:{solid:'#14AE5C',tint:'#DCF5E6'}, Inactive:{solid:'#5A5F6B',tint:'#EEF0F4'} },
   editable: true,
   totals: [
     { key:null,       label:'Total',        value:48, icon:I.room,   solid:'#001391', tint:'#F5F5FF' },
     { key:'Active',   label:'Active',       value:40, icon:I.check,  solid:'#14AE5C', tint:'#DCF5E6' },
-    { key:'Inactive', label:'Inactive',     value:8,  icon:I.minusC, solid:'#EC221F', tint:'#FDE7E7' },
+    { key:'Inactive', label:'Inactive',     value:8,  icon:I.minusC, solid:'#5A5F6B', tint:'#EEF0F4' },
     { key:'conf',     label:'Confidential', value:9,  icon:I.lockC,  solid:'#001391', tint:'#F5F5FF' }
   ]
 };
@@ -636,8 +677,8 @@ function setTotFilter(key){ totFilter = (totFilter===key) ? null : key; renderTo
 function renderToolbar(){
   el('toolbar').innerHTML = `
     <div class="search-box"><input class="input" placeholder="Search" value="${query.replace(/"/g,'&quot;')}" oninput="query=this.value;renderView()"><span class="s-ico">${I.search}</span></div>
-    <div class="flt-wrap"><button class="btn btn-outline${fltCount()?' on':''}" onclick="toggleFlt(event)">${I.filter} Filters${fltCount()?` (${fltCount()})`:''} ${I.chevDown}</button><div class="flt-pop${fltOpen?' open':''}" id="fltPop">${fltPopHTML()}</div></div>
-    <button class="btn btn-outline${favOnly?' on':''}" onclick="favOnly=!favOnly;renderToolbar();renderView()">${favOnly?I.starFill:I.star} Favorites</button>
+    <div class="flt-wrap"><button class="btn btn-outline${fltCount()?' on':''}" onclick="toggleFlt(event)">${I.filter}<span class="flt-txt"> Filters</span>${fltCount()?` (${fltCount()})`:''}<span class="flt-txt"> ${I.chevDown}</span></button><div class="flt-pop${fltOpen?' open':''}" id="fltPop">${fltPopHTML()}</div></div>
+    <button class="btn btn-outline${favOnly?' on':''}" onclick="favOnly=!favOnly;renderToolbar();renderView()">${favOnly?I.starFill:I.star}<span class="flt-txt"> Favorites</span></button>
     <div class="viewtog">${viewTogHTML()}</div>
     ${view==='card' ? '' : `<button class="kebab" title="More options" onclick="openKebab(this)">${I.kebab}</button>`}`;
 }
@@ -726,9 +767,12 @@ function apEng(r){ var n=apNum(r.id); var likes=(n%6)+1, comm=(n%4)+1, views=(n%
     +'<span class="eng-i" title="Views">'+I.eye+views+'</span>'
     +'<span class="eng-i'+(al?' eng-al':'')+'" title="Alerts">'+I.alert+al+'</span>'
   +'</span>'; }
+function apEditBtn(r){ return r.mine
+  ? '<button class="act-btn" title="Edit action plan" onclick="toast(\'Opening '+r.id+' for editing…\')">'+I.pencil+'</button>'
+  : '<button class="act-btn" disabled title="You don\'t have editor access">'+I.pencil+'</button>'; }
 function renderApTable(rows){
   el('view').innerHTML = `<div class="tbl-wrap"><table class="tbl"><thead><tr>
-      <th style="width:52px"></th>${th('N°','id')}${th('Action plan','title')}<th>System</th>${th('Source','source')}${th('Responsible','resp')}${th('Age','age')}${th('Status','st')}<th style="width:172px">Engagement</th>
+      <th style="width:52px"></th>${th('N°','id')}${th('Action plan','title')}<th>System</th>${th('Source','source')}${th('Responsible','resp')}${th('Age','age')}${th('Status','st')}<th style="width:172px">Engagement</th><th style="width:56px"></th>
     </tr></thead><tbody>${rows.map(r=>`
       <tr>
         <td><span style="display:inline-flex;flex-direction:column;align-items:center;gap:6px">${favBtn(r,'fav')}${r.conf?`<span class="lock" title="Confidential">${I.lock}</span>`:''}</span></td>
@@ -740,6 +784,7 @@ function renderApTable(rows){
         <td style="white-space:nowrap">${r.age} days</td>
         <td>${pill(r.st)}</td>
         <td>${apEng(r)}</td>
+        <td>${apEditBtn(r)}</td>
       </tr>`).join('')}</tbody></table></div>${pager(rows.length)}`;
 }
 var kbDragId=null;
@@ -970,7 +1015,7 @@ var MODULES=[]; (function(){ var G={ 'Performance Management':['Digital Obeya','
 var MOD_LINK_ICO='<svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M15 3h6v6"/><path d="M10 14 21 3"/><path d="M18 13v6a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V8a2 2 0 0 1 2-2h6"/></svg>';
 var menuQ='', menuTab='', kcFavMods=[]; try{ kcFavMods=JSON.parse(localStorage.getItem('obeya_fav_mods')||'[]'); }catch(e){ kcFavMods=[]; }
 function menuGroups(){ var gs=[]; MODULES.forEach(function(m){ if(gs.indexOf(m.g)<0) gs.push(m.g); }); return kcFavMods.length?['Favorites'].concat(gs):gs; }
-function openMenuModal(){ menuQ=''; var gs=menuGroups(); if(gs.indexOf(menuTab)<0) menuTab=gs[0]; renderMenuModal(); var si=el('menu-search'); if(si) si.value=''; el('overlay').classList.add('open'); var mm=el('menu-modal'); mm.classList.add('open'); (window.requestAnimationFrame||setTimeout)(layoutMenuTabs); var bar=el('bottombar'), r=bar?bar.getBoundingClientRect():null; if(r&&r.top>0){ mm.style.bottom=(window.innerHeight-r.top+14)+'px'; mm.style.top='auto'; var w=mm.offsetWidth||680; mm.style.left=Math.max(12,Math.min(window.innerWidth-w-12, r.left+r.width/2-w/2))+'px'; } else { mm.style.bottom='110px'; mm.style.left='50%'; mm.style.marginLeft='-340px'; } if(si) si.focus(); }
+function openMenuModal(){ menuQ=''; var gs=menuGroups(); if(gs.indexOf(menuTab)<0) menuTab=gs[0]; renderMenuModal(); var si=el('menu-search'); if(si) si.value=''; el('overlay').classList.add('open'); el('menu-modal').classList.add('open'); (window.requestAnimationFrame||setTimeout)(layoutMenuTabs); if(si) si.focus(); }
 function closeMenuModal(){ el('menu-modal').classList.remove('open'); el('sel-dd').classList.remove('open'); fbMaybeOverlay(); }
 function setMenuTab(g){ menuTab=g; renderMenuModal(); }
 var menuHiddenTabs=[];
