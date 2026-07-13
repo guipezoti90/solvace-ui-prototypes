@@ -51,6 +51,10 @@
   .kebab{ background:transparent; border:0; color:#444; padding:6px; border-radius:6px; cursor:pointer } .kebab:hover{ background:#eef0f4 }
   /* view toggle */
   .viewtog{ display:inline-flex; gap:6px }
+  .viewdd-wrap{ display:none; position:relative; flex:0 0 auto }
+  .viewdd-btn{ height:40px; padding:0 10px; gap:4px } .viewdd-btn svg{ width:18px; height:18px }
+  .viewdd-menu{ position:absolute; top:calc(100% + 6px); right:0; min-width:170px; background:#fff; border:1px solid var(--input); border-radius:10px; box-shadow:0 10px 30px rgba(0,0,0,.16); padding:6px; display:none; z-index:80 } .viewdd-menu.open{ display:block }
+  .viewdd-item{ width:100%; display:flex; align-items:center; gap:10px; height:38px; padding:0 10px; border:0; background:transparent; border-radius:8px; color:var(--text); font-size:14px; cursor:pointer } .viewdd-item:hover{ background:#f2f2f4 } .viewdd-item.on{ color:var(--primary); font-weight:600 }
   .vt{ width:38px; height:38px; border-radius:9px; border:1px solid var(--input); background:#fff; color:var(--muted-2); cursor:pointer; display:inline-flex; align-items:center; justify-content:center }
   .vt:hover{ background:#f4f6ff }
   .vt.on{ border-color:var(--primary); color:var(--primary); background:var(--blue-tint) }
@@ -364,22 +368,21 @@
   .tbl thead th .sort-ar{ font-size:10px; color:var(--primary); margin-left:4px }
   /* ===== Floating bar — mobile (≤640px) ===== */
   @media (max-width:640px){
+    /* floating bar */
     .gd-handle, .gd-collapse{ display:none !important }
     .glass-dock{ left:50% !important; bottom:16px }
-    #menu-modal{ width:100vw !important; max-width:100vw !important }
-    .drawer{ width:100vw; max-width:100vw }
     .fb-fab{ right:16px !important; bottom:92px !important; width:48px !important; height:48px !important; padding:0 !important; justify-content:center !important; z-index:57 !important }
     .fb-fab #fab-label{ display:none !important }
-    /* search screen */
-    .page{ padding:16px 12px 60px }
-    .kc-tots{ flex-wrap:nowrap; overflow-x:auto; gap:12px; -webkit-overflow-scrolling:touch }
-    .kc-tots .tot-card{ flex:0 0 auto; min-width:160px }
-    .kc-tots .tot-sep{ display:none }
-    .toolbar{ flex-wrap:wrap; row-gap:10px }
-    .toolbar .search-box{ flex:1 1 100%; order:-1 }
-    .flt-txt{ display:none }
-    .toolbar .kebab, .perm-toolbar .kebab{ display:none !important }
-    .tbl-wrap, .tbl-bleed{ margin:0 -12px }
+    /* drawers + modals fullscreen with footer pinned */
+    #menu-modal{ width:100vw !important; max-width:100vw !important }
+    .drawer{ width:100vw; max-width:100vw }
+    .rs{ width:100vw !important; max-width:100vw !important }
+    .rg-modal, .dlg-modal{ padding:0 !important }
+    .rg, #auModal .rg{ width:100vw !important; max-width:100vw !important; height:100vh !important; max-height:100vh !important; border-radius:0 !important; display:flex !important; flex-direction:column !important; overflow:hidden !important }
+    .rg .rg-body{ flex:1 1 auto; overflow:auto }
+    .rg .rg-foot{ flex:0 0 auto; border-top:1px solid var(--border) }
+    .dlg{ width:100vw !important; max-width:100vw !important; height:100vh !important; border-radius:0 !important; display:flex !important; flex-direction:column !important }
+    .dlg .dlg-acts{ margin-top:auto }
     /* top bar */
     .topbar{ padding:0 12px }
     .topbar-search{ display:none }
@@ -390,6 +393,32 @@
     .top-kc{ padding:0 9px; gap:5px }
     .top-avatar{ width:32px; height:32px }
     .top-badge{ min-width:18px; height:18px; font-size:11px }
+    /* search screen: search + buttons on ONE line, view as dropdown */
+    .page{ padding:16px 12px 60px }
+    .kc-tots{ flex-wrap:nowrap; overflow-x:auto; gap:12px; -webkit-overflow-scrolling:touch }
+    .kc-tots .tot-card{ flex:0 0 auto; min-width:160px }
+    .kc-tots .tot-sep{ display:none }
+    .toolbar{ flex-wrap:nowrap; gap:8px }
+    .toolbar .search-box{ flex:1 1 auto; min-width:0 }
+    .toolbar .btn{ padding:0 10px }
+    .flt-txt{ display:none }
+    .viewtog{ display:none }
+    .viewdd-wrap{ display:inline-flex }
+    .toolbar .kebab, .perm-toolbar .kebab{ display:none !important }
+    .tbl-wrap, .tbl-bleed{ margin:0 -12px }
+    /* action plans table: only fav/lock, N°, action plan, status (no lateral scroll) */
+    .tbl-wrap-ap{ overflow-x:hidden; margin:0 }
+    .tbl-ap th:nth-child(4), .tbl-ap td:nth-child(4),
+    .tbl-ap th:nth-child(5), .tbl-ap td:nth-child(5),
+    .tbl-ap th:nth-child(6), .tbl-ap td:nth-child(6),
+    .tbl-ap th:nth-child(7), .tbl-ap td:nth-child(7),
+    .tbl-ap th:nth-child(9), .tbl-ap td:nth-child(9),
+    .tbl-ap th:nth-child(10), .tbl-ap td:nth-child(10){ display:none }
+    .tbl-ap td.ap-title{ white-space:normal; display:-webkit-box; -webkit-line-clamp:2; -webkit-box-orient:vertical; overflow:hidden; max-width:0 }
+    /* notification management: stacked toggles, left-aligned, single column */
+    .notif-sws{ display:flex; flex-direction:column; align-items:flex-start; gap:8px }
+    /* access permissions: hide USER column */
+    .tbl-acc .acc-user{ display:none }
   }
 </style>
 </head>
@@ -650,7 +679,7 @@ const AP_STATUS_ORDER = ['Delayed','On Time','In Approval','Completed','Canceled
 
 /* ===== shared search-engine state (rooms / aps) ===== */
 var SCREEN='rooms', M=ROOMS_MODULE, DATA=ROOMS_ROWS;
-var fltStatus={}, fltOpen=false, sortKey=null, sortDir=1;
+var fltStatus={}, fltOpen=false, sortKey=null, sortDir=1, viewDDOpen=false;
 let totFilter=null, query='', totsHidden=false, view='list', tab='all', favOnly=false;
 const CARDS_BATCH=6; let cardsShown=CARDS_BATCH;
 const el = id => document.getElementById(id);
@@ -679,14 +708,19 @@ function renderToolbar(){
     <div class="search-box"><input class="input" placeholder="Search" value="${query.replace(/"/g,'&quot;')}" oninput="query=this.value;renderView()"><span class="s-ico">${I.search}</span></div>
     <div class="flt-wrap"><button class="btn btn-outline${fltCount()?' on':''}" onclick="toggleFlt(event)">${I.filter}<span class="flt-txt"> Filters</span>${fltCount()?` (${fltCount()})`:''}<span class="flt-txt"> ${I.chevDown}</span></button><div class="flt-pop${fltOpen?' open':''}" id="fltPop">${fltPopHTML()}</div></div>
     <button class="btn btn-outline${favOnly?' on':''}" onclick="favOnly=!favOnly;renderToolbar();renderView()">${favOnly?I.starFill:I.star}<span class="flt-txt"> Favorites</span></button>
-    <div class="viewtog">${viewTogHTML()}</div>
+    <div class="viewtog">${viewTogHTML()}</div><div class="viewdd-wrap">${viewDDHTML()}</div>
     ${view==='card' ? '' : `<button class="kebab" title="More options" onclick="openKebab(this)">${I.kebab}</button>`}`;
 }
-function viewTogHTML(){
-  var b=function(v,t,ic){ return '<button class="vt'+(view===v?' on':'')+'" title="'+t+'" onclick="view=\''+v+'\';renderToolbar();renderView()">'+ic+'</button>'; };
-  if(SCREEN==='aps') return b('list','List view',I.rows)+b('kanban','Kanban view','<svg viewBox="0 0 24 24" width="18" height="18" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="4" width="5" height="16" rx="1"/><rect x="10" y="4" width="5" height="10" rx="1"/><rect x="17" y="4" width="4" height="13" rx="1"/></svg>')+b('calendar','Calendar view','<svg viewBox="0 0 24 24" width="18" height="18" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="4" width="18" height="18" rx="2"/><path d="M3 10h18M8 2v4M16 2v4"/></svg>');
-  return b('list','List view',I.rows)+b('card','Card view',I.grid);
-}
+var KANBAN_ICO='<svg viewBox="0 0 24 24" width="18" height="18" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="4" width="5" height="16" rx="1"/><rect x="10" y="4" width="5" height="10" rx="1"/><rect x="17" y="4" width="4" height="13" rx="1"/></svg>';
+var CAL_ICO='<svg viewBox="0 0 24 24" width="18" height="18" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="4" width="18" height="18" rx="2"/><path d="M3 10h18M8 2v4M16 2v4"/></svg>';
+function viewList(){ return SCREEN==='aps'
+  ? [{v:'list',t:'List view',ico:I.rows},{v:'kanban',t:'Kanban view',ico:KANBAN_ICO},{v:'calendar',t:'Calendar view',ico:CAL_ICO}]
+  : [{v:'list',t:'List view',ico:I.rows},{v:'card',t:'Card view',ico:I.grid}]; }
+function setViewMode(v){ view=v; viewDDOpen=false; renderToolbar(); renderView(); }
+function viewTogHTML(){ return viewList().map(function(o){ return '<button class="vt'+(view===o.v?' on':'')+'" title="'+o.t+'" onclick="setViewMode(\''+o.v+'\')">'+o.ico+'</button>'; }).join(''); }
+function viewDDHTML(){ var cur=viewList().filter(function(o){return o.v===view;})[0]||viewList()[0];
+  return '<button class="btn btn-outline viewdd-btn" title="View" onclick="toggleViewDD(event)">'+cur.ico+' '+I.chevDown+'</button><div class="viewdd-menu'+(viewDDOpen?' open':'')+'">'+viewList().map(function(o){ return '<button class="viewdd-item'+(view===o.v?' on':'')+'" onclick="setViewMode(\''+o.v+'\')">'+o.ico+'<span>'+o.t+'</span></button>'; }).join('')+'</div>'; }
+function toggleViewDD(e){ if(e) e.stopPropagation(); viewDDOpen=!viewDDOpen; renderToolbar(); }
 function renderTabs(){
   var lbl=SCREEN==='aps'?['All action plans','My action plans']:['All rooms','My rooms'];
   el('tabs').innerHTML = `
@@ -719,6 +753,7 @@ function toggleFlt(e){ if(e) e.stopPropagation(); fltOpen=!fltOpen; renderToolba
 function setFlt(s,on){ if(on) fltStatus[s]=true; else delete fltStatus[s]; renderView(); renderToolbar(); }
 function clearFlt(){ fltStatus={}; renderView(); renderToolbar(); }
 document.addEventListener('mousedown', function(e){ if(!fltOpen) return; if(e.target.closest && e.target.closest('.flt-wrap')) return; fltOpen=false; renderToolbar(); });
+document.addEventListener('mousedown', function(e){ if(!viewDDOpen) return; if(e.target.closest && e.target.closest('.viewdd-wrap')) return; viewDDOpen=false; renderToolbar(); });
 /* column sorting */
 function setSort(k){ if(sortKey===k){ sortDir=-sortDir; } else { sortKey=k; sortDir=1; } renderView(); }
 function sortAr(k){ return sortKey===k ? '<span class="sort-ar">'+(sortDir>0?'▲':'▼')+'</span>' : ''; }
@@ -771,13 +806,13 @@ function apEditBtn(r){ return r.mine
   ? '<button class="act-btn" title="Edit action plan" onclick="toast(\'Opening '+r.id+' for editing…\')">'+I.pencil+'</button>'
   : '<button class="act-btn" disabled title="You don\'t have editor access">'+I.pencil+'</button>'; }
 function renderApTable(rows){
-  el('view').innerHTML = `<div class="tbl-wrap"><table class="tbl"><thead><tr>
+  el('view').innerHTML = `<div class="tbl-wrap tbl-wrap-ap"><table class="tbl tbl-ap"><thead><tr>
       <th style="width:52px"></th>${th('N°','id')}${th('Action plan','title')}<th>System</th>${th('Source','source')}${th('Responsible','resp')}${th('Age','age')}${th('Status','st')}<th style="width:172px">Engagement</th><th style="width:56px"></th>
     </tr></thead><tbody>${rows.map(r=>`
       <tr>
         <td><span style="display:inline-flex;flex-direction:column;align-items:center;gap:6px">${favBtn(r,'fav')}${r.conf?`<span class="lock" title="Confidential">${I.lock}</span>`:''}</span></td>
         <td><span class="row-link" title="Open action plan">${r.id}</span></td>
-        <td style="max-width:360px">${r.title}</td>
+        <td class="ap-title" style="max-width:360px" title="${r.title.replace(/"/g,'&quot;')}">${r.title}</td>
         <td>Obeya Digital</td>
         <td><span class="row-link" title="Open board in a new tab" onclick="openBoard('${r.source}')">${r.source}</span></td>
         <td><span style="display:inline-flex;align-items:center;gap:8px"><span class="avatar">${ini(r.resp)}</span>${r.resp}</span></td>
@@ -1055,8 +1090,8 @@ var topicData=[
 var regQ={types:'',topics:''};
 var _nid=0;
 var notifRules=[
-  ['Room Creation',true,true,true,null,'When creating the room a notification is sent to all members.'],
-  ['Off-target indicator notification',true,true,true,'1','The system sends notifications to active users and teams about specific events or conditions related to the widgets target.']
+  ['Room Creation',true,true,true,null,'When a room is created, a notification is sent to all its members.'],
+  ['Off-target indicator notification',true,true,true,'1','Sends notifications to the active users and teams whenever a widget indicator goes off its target.']
 ].map(function(r){ return {id:++_nid,rule:r[0],web:r[1],mobile:r[2],mail:r[3],param:r[4],tip:r[5]}; });
 var notifQ='';
 var _pid=0;
@@ -1107,7 +1142,7 @@ function toggleSw(b){ b.setAttribute('aria-checked', String(b.getAttribute('aria
 function renderNotif(){
   var q=notifQ.toLowerCase(), list=notifRules.filter(function(r){ return r.rule.toLowerCase().indexOf(q)>=0; });
   function sw(r,k,l){ return '<span class="notif-sw"><button class="switch" aria-checked="'+r[k]+'" onclick="toggleNotif('+r.id+',\''+k+'\',this)"><span class="thumb"></span></button>'+l+'</span>'; }
-  var rows=list.map(function(r){ return '<tr><td><span style="display:inline-flex;align-items:center;gap:8px">'+r.rule+'<span class="kc-tip" data-tip="'+r.tip+'">'+I.info+'</span></span></td><td style="white-space:nowrap">'+sw(r,'web','Web')+sw(r,'mobile','Mobile')+sw(r,'mail','Mail')+'</td><td style="text-align:center">'+(r.param===null?'':'<input class="param-in" value="'+r.param+'" oninput="setParam('+r.id+',this.value)">')+'</td></tr>'; }).join('');
+  var rows=list.map(function(r){ return '<tr><td><span style="display:inline-flex;align-items:center;gap:8px">'+r.rule+'<span class="kc-tip" data-tip="'+r.tip+'">'+I.info+'</span></span></td><td style="white-space:nowrap"><span class="notif-sws">'+sw(r,'web','Web')+sw(r,'mobile','Mobile')+sw(r,'mail','Mail')+'</span></td><td style="text-align:center">'+(r.param===null?'':'<input class="param-in" value="'+r.param+'" oninput="setParam('+r.id+',this.value)">')+'</td></tr>'; }).join('');
   el('settingsView').innerHTML='<div class="perm-toolbar"><div class="set-search"><span class="s-ico">'+I.search+'</span><input placeholder="Search" value="'+notifQ+'" oninput="notifSearch(this.value)"></div><button class="btn btn-primary" onclick="toast(\'Changes saved successfully\')">'+I.save+' Save</button><button class="kebab" title="More options" onclick="openKebab(this)">'+I.kebab+'</button></div><div class="tbl-open"><table class="tbl"><thead><tr><th>RULE</th><th style="width:355px">NOTIFICATION</th><th style="width:134px;text-align:center">PARAMETER</th></tr></thead><tbody>'+rows+'</tbody></table></div>';
 }
 function notifSearch(q){ notifQ=q; renderNotif(); var i=el('settingsView').querySelector('.set-search input'); if(i){ i.focus(); i.setSelectionRange(i.value.length,i.value.length); } }
@@ -1121,8 +1156,8 @@ function accAr(k){ return accSort.k===k?'<span class="sort-ar">'+(accSort.d>0?'�
 function renderAccess(){
   var q=permQ.toLowerCase(), list=permUsers.filter(function(p){ return (p.n+' '+p.e+' '+p.u).toLowerCase().indexOf(q)>=0; });
   if(accSort.k){ list=list.slice().sort(function(a,b){ var x=(a[accSort.k]||'').toLowerCase(), y=(b[accSort.k]||'').toLowerCase(); return (x<y?-1:x>y?1:0)*accSort.d; }); }
-  var rows=list.map(function(p){ return '<tr><td><span style="display:inline-flex;align-items:center;gap:8px"><span class="set-av">'+p.av+'</span>'+p.n+'</span></td><td>'+p.e+'</td><td>'+p.u+'</td><td></td><td style="text-align:center"><button class="switch" aria-checked="'+p.admin+'" onclick="togglePerm('+p.id+',\'admin\',this)"><span class="thumb"></span></button></td><td style="text-align:center"><button class="kebab" style="color:var(--primary)" title="Delete" onclick="delPerm('+p.id+')">'+I.trash+'</button></td></tr>'; }).join('');
-  el('settingsView').innerHTML='<div class="perm-toolbar"><button class="btn btn-outline" onclick="openAddUser()">'+I.plus+' Add user</button><div class="set-search"><span class="s-ico">'+I.search+'</span><input placeholder="Search" value="'+permQ+'" oninput="permSearch(this.value)"></div><button class="btn btn-primary" onclick="toast(\'Changes saved successfully\')">'+I.save+' Save</button><button class="kebab" title="More options" onclick="openKebab(this)">'+I.kebab+'</button></div><div class="tbl-bleed"><table class="tbl"><thead><tr><th class="sortable" style="width:220px" onclick="setAccSort(\'n\')">NAME'+accAr('n')+'</th><th class="sortable" style="width:250px" onclick="setAccSort(\'e\')">EMAIL'+accAr('e')+'</th><th class="sortable" style="width:180px" onclick="setAccSort(\'u\')">USER'+accAr('u')+'</th><th></th><th style="width:110px;text-align:center">ADMIN</th><th style="width:72px"></th></tr></thead><tbody>'+rows+'</tbody></table></div>';
+  var rows=list.map(function(p){ return '<tr><td><span style="display:inline-flex;align-items:center;gap:8px"><span class="set-av">'+p.av+'</span>'+p.n+'</span></td><td>'+p.e+'</td><td class="acc-user">'+p.u+'</td><td></td><td style="text-align:center"><button class="switch" aria-checked="'+p.admin+'" onclick="togglePerm('+p.id+',\'admin\',this)"><span class="thumb"></span></button></td><td style="text-align:center"><button class="kebab" style="color:var(--primary)" title="Delete" onclick="delPerm('+p.id+')">'+I.trash+'</button></td></tr>'; }).join('');
+  el('settingsView').innerHTML='<div class="perm-toolbar"><button class="btn btn-outline" onclick="openAddUser()">'+I.plus+' Add user</button><div class="set-search"><span class="s-ico">'+I.search+'</span><input placeholder="Search" value="'+permQ+'" oninput="permSearch(this.value)"></div><button class="btn btn-primary" onclick="toast(\'Changes saved successfully\')">'+I.save+' Save</button><button class="kebab" title="More options" onclick="openKebab(this)">'+I.kebab+'</button></div><div class="tbl-bleed"><table class="tbl tbl-acc"><thead><tr><th class="sortable" style="width:220px" onclick="setAccSort(\'n\')">NAME'+accAr('n')+'</th><th class="sortable" style="width:250px" onclick="setAccSort(\'e\')">EMAIL'+accAr('e')+'</th><th class="sortable acc-user" style="width:180px" onclick="setAccSort(\'u\')">USER'+accAr('u')+'</th><th></th><th style="width:110px;text-align:center">ADMIN</th><th style="width:72px"></th></tr></thead><tbody>'+rows+'</tbody></table></div>';
 }
 function permSearch(q){ permQ=q; renderAccess(); var i=el('settingsView').querySelector('.set-search input'); if(i){ i.focus(); i.setSelectionRange(i.value.length,i.value.length); } }
 function togglePerm(id,k,b){ var p=permUsers.find(function(x){return x.id===id;}); p[k]=!p[k]; b.setAttribute('aria-checked',String(p[k])); }
