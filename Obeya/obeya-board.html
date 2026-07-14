@@ -1029,6 +1029,12 @@
   #apPlanTable.open{ display:flex; align-items:center; justify-content:center; }
   .apt-modal{ background:#fff; border-radius:14px; margin:24px; width:100%; max-width:1120px; max-height:88vh; display:flex; flex-direction:column; box-shadow:0 24px 60px rgba(0,0,0,.25); overflow:hidden; }
   .apt-head{ display:flex; align-items:center; justify-content:space-between; padding:18px 22px; border-bottom:1px solid #eeeff1; flex:0 0 auto; }
+  .apt-head-actions{ display:inline-flex; align-items:center; gap:4px; }
+  .apt-mini{ display:none; position:fixed; left:16px; bottom:16px; z-index:9500; align-items:center; gap:10px; background:#fff; border:1px solid #e2e5ec; border-radius:12px; box-shadow:0 10px 30px rgba(13,18,47,.20); padding:10px 12px 10px 14px; cursor:pointer; }
+  .apt-mini:hover{ background:#f7f8ff; }
+  .apt-mini .apt-mini-ic{ display:inline-flex; color:#a07d12; flex:0 0 auto; } .apt-mini .apt-mini-ic svg{ width:22px; height:22px; }
+  .apt-mini .apt-mini-t{ font-size:14px; font-weight:600; color:#0d122f; }
+  .apt-mini .apt-mini-exp{ border:0; background:none; cursor:pointer; color:#4d5166; display:inline-flex; padding:2px; } .apt-mini .apt-mini-exp svg{ width:19px; height:19px; }
   .apt-title{ font-size:18px; font-weight:700; color:#0d122f; }
   .apt-body{ flex:1; overflow:auto; padding:14px 22px 4px; }
   .apt-foot{ display:flex; justify-content:flex-end; gap:10px; padding:14px 22px; border-top:1px solid #eeeff1; flex:0 0 auto; }
@@ -1969,7 +1975,10 @@
       <div class="apt-modal">
         <div class="apt-head">
           <div class="apt-title">Action plans</div>
-          <button class="ed-close" id="aptClose"><svg viewBox="0 0 24 24" width="18" height="18" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M18 6 6 18"/><path d="m6 6 12 12"/></svg></button>
+          <div class="apt-head-actions">
+            <button class="ed-close" id="aptMinimize" title="Minimize (continue later)"><svg viewBox="0 0 24 24" width="18" height="18" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M5 12h14"/></svg></button>
+            <button class="ed-close" id="aptClose" title="Close"><svg viewBox="0 0 24 24" width="18" height="18" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M18 6 6 18"/><path d="m6 6 12 12"/></svg></button>
+          </div>
         </div>
         <div class="apt-body">
 
@@ -3721,9 +3730,12 @@
     function closeMenus(){ var m=modal.querySelectorAll('.apt-menu'); for(var i=0;i<m.length;i++){ var p=m[i].parentNode; p.classList.remove('open'); p.removeChild(m[i]); } }
     function openMenu(sel){ closeMenus(); var k=kindOf(sel); var menu=document.createElement('div'); menu.className='apt-menu open'; OPTS[k].forEach(function(o){ var mi=document.createElement('div'); mi.className='mi'; mi.innerHTML=(k==='resp'?avaHtml(o):'')+'<span>'+o+'</span>'; mi.addEventListener('click',function(ev){ ev.stopPropagation(); setChip(sel,o); closeMenus(); }); menu.appendChild(mi); }); sel.appendChild(menu); sel.classList.add('open'); }
     function count(){ var c=modal.querySelectorAll('.apt-row > .apt-ck input:checked').length; var b=document.getElementById('aptInclude'); if(b) b.textContent='Include ('+c+')'; }
-    function open(){ modal.classList.add('open'); count(); }
-    function close(){ closeMenus(); modal.classList.remove('open'); }
+    function ensureMini(){ var d=document.getElementById('aptMini'); if(d) return d; d=document.createElement('div'); d.id='aptMini'; d.className='apt-mini'; d.innerHTML='<span class="apt-mini-ic"><svg viewBox="0 0 24 24" fill="currentColor"><path d="M12 2a10 10 0 1 0 0 20 10 10 0 0 0 0-20zm0 15.2a1.3 1.3 0 1 1 0-2.6 1.3 1.3 0 0 1 0 2.6zm1.1-5.1a1.1 1.1 0 0 1-2.2 0V7.6a1.1 1.1 0 0 1 2.2 0z"/></svg></span><span class="apt-mini-t">Action plans</span><button class="apt-mini-exp" title="Continue"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polyline points="15 3 21 3 21 9"/><polyline points="9 21 3 21 3 15"/><line x1="21" x2="14" y1="3" y2="10"/><line x1="3" x2="10" y1="21" y2="14"/></svg></button>'; document.body.appendChild(d); d.addEventListener('click', function(){ d.style.display='none'; modal.classList.add('open'); count(); }); return d; }
+    function open(){ var mn=document.getElementById('aptMini'); if(mn) mn.style.display='none'; modal.classList.add('open'); count(); }
+    function close(){ closeMenus(); modal.classList.remove('open'); var mn=document.getElementById('aptMini'); if(mn) mn.style.display='none'; }
+    function minimize(){ closeMenus(); modal.classList.remove('open'); ensureMini().style.display='inline-flex'; }
     var sp=document.getElementById('meetSeePlans'); if(sp) sp.addEventListener('click', open);
+    var mzb=document.getElementById('aptMinimize'); if(mzb) mzb.addEventListener('click', minimize);
     ['aptClose','aptCloseBtn','aptInclude'].forEach(function(id){ var el=document.getElementById(id); if(el) el.addEventListener('click', close); });
     modal.addEventListener('mousedown', function(e){ if(e.target===modal) close(); });
     modal.addEventListener('click', function(e){
