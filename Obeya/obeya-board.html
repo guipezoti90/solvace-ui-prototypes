@@ -3015,7 +3015,8 @@
       var red=(d.type==='gauge'||d.type==='chart'||d.type==='calendar'||d.type==='radial')?'':' no-ind';
       var a=AV[i%3];
       var titleHTML=d.badge?('<div style="display:flex;align-items:center;min-width:0"><div class="wcard-title" title="'+d.title+'">'+d.title+'</div><span class="w-badge">'+d.badge+'</span></div>'):('<div class="wcard-title" title="'+d.title+'">'+d.title+'</div>');
-      var head=d.type==='title'?'':'<div class="wcard-head"><div>'+titleHTML+(d.sub?'<div class="wcard-sub">'+d.sub+'</div>':'')+'</div>'+G_EXP+'</div>';
+      var noZoom=/^(agenda|team|video|feed|message|presence|defect|rca|action|checklist|table)$/.test(d.type);   // widgets sem zoom (decisão do PO): registros + informativos abrem em tela/modal próprios, não no zoom genérico
+      var head=d.type==='title'?'':'<div class="wcard-head"><div>'+titleHTML+(d.sub?'<div class="wcard-sub">'+d.sub+'</div>':'')+'</div>'+(noZoom?'':G_EXP)+'</div>';
       var np=((i*3+2)%6)+1, nc=(i*5)%4;
       var mplan='<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect width="8" height="4" x="8" y="2" rx="1"/><path d="M16 4h2a2 2 0 0 1 2 2v14a2 2 0 0 1-2 2H6a2 2 0 0 1-2-2V6a2 2 0 0 1 2-2h2"/></svg>';
       var mchat='<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M21 15a2 2 0 0 1-2 2H7l-4 4V5a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2z"/></svg>';
