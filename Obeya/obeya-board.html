@@ -1277,11 +1277,20 @@
   .kb-colh{ display:flex; align-items:center; justify-content:space-between; padding:2px 4px; }
   .kb-count{ font-size:12px; font-weight:700; color:#6b7280; }
   .kb-list{ display:flex; flex-direction:column; gap:10px; }
-  .kb-card{ background:#fff; border:1px solid #eeeff1; border-radius:10px; padding:12px; box-shadow:0 1px 2px rgba(0,5,36,.05); }
-  .kb-id{ font-size:11px; font-weight:700; color:#001391; }
-  .kb-txt{ font-size:13px; color:#0d122f; margin:6px 0 10px; line-height:1.35; }
-  .kb-foot{ display:flex; align-items:center; justify-content:space-between; }
+  .kb-card{ background:#fff; border:1px solid #eeeff1; border-radius:10px; padding:10px 12px; box-shadow:0 1px 2px rgba(0,5,36,.05); }
+  .kb-crow{ display:flex; align-items:flex-start; gap:9px; }
+  .kb-crow .apav-sm{ flex:0 0 auto; }
+  .kb-cmain{ flex:1; min-width:0; }
+  .kb-idrow{ display:flex; align-items:center; gap:5px; }
+  .kb-id{ font-size:12px; font-weight:700; color:#001391; }
+  .kb-alert{ width:14px; height:14px; flex:0 0 auto; }
+  .kb-txt{ font-size:13px; color:#0d122f; margin:3px 0 3px; line-height:1.3; }
+  .kb-src{ font-size:11px; color:#8a90a6; }
+  .kb-cside{ display:flex; flex-direction:column; align-items:flex-end; gap:5px; flex:0 0 auto; }
+  .kb-cside .kb-cmt{ display:inline-flex; align-items:center; gap:3px; font-size:11px; color:#6b7280; }
+  .kb-cside .kb-cmt svg{ width:13px; height:13px; }
   .kb-due{ font-size:11px; color:#6b7280; }
+  .kb-foot{ display:flex; align-items:center; justify-content:space-between; }
   .kb-add{ background:none; border:1px dashed #c7ccf5; color:#001391; border-radius:8px; padding:8px; font-size:12px; font-weight:600; cursor:pointer; }
   .kb-add:hover{ background:#eef0fb; }
 
@@ -2857,12 +2866,19 @@
     return bar+'<div class="wtable-wrap"><table class="wtable"><thead><tr><th>N°</th><th>CHECK</th><th style="text-align:center">INS.</th><th style="text-align:center">STATUS</th></tr></thead><tbody>'+b+'</tbody></table></div>';
   }
   function apKanbanHTML(){
+    // card: [id, text, avInit, avBg, avColor, dueText, source, comments]
     var cols=[
-      ['On time','warn',[['ACP-499','Clean maneuver area','OO','#dcf5e6','#2d6a4f','Due in 5d'],['ACP-562','Train operators on the new procedure','ND','#ffe3c2','#9a4a00','Due in 2d']]],
-      ['Delayed','bad',[['ACP-564','Organize office files','RC','#ffe0e0','#c0392b','Overdue 12d'],['ACP-607','Information required on OEE below target','AR','#d7e9ff','#17457a','Overdue 4d'],['ACP-620','Analyse downtime root causes','VQ','#e9d8fd','#6b21a8','Overdue 8d']]],
-      ['Done','ok',[['ACP-609','How to scale an action plan within your own Site','AR','#d7e9ff','#17457a','Closed'],['ACP-700','Replace film rollers on line 2','JM','#ffe3c2','#9a4a00','Closed']]]
+      ['On time','warn',[['ACP-499','Clean maneuver area','OO','#dcf5e6','#2d6a4f','Due in 5d','Calendário XYZ',1],['ACP-562','Train operators on the new procedure','ND','#ffe3c2','#9a4a00','Due in 2d','Gráfico XYZ',0]]],
+      ['Delayed','bad',[['ACP-564','Organize office files','RC','#ffe0e0','#c0392b','36 dias','Calendário XYZ',1],['ACP-607','Information required on OEE below target','AR','#d7e9ff','#17457a','4 dias','Gráfico XYZ',2],['ACP-620','Analyse downtime root causes','VQ','#e9d8fd','#6b21a8','8 dias','Gráfico XYZ',0]]],
+      ['Done','ok',[['ACP-609','How to scale an action plan within your own Site','AR','#d7e9ff','#17457a','Closed','Calendário XYZ',1],['ACP-700','Replace film rollers on line 2','JM','#ffe3c2','#9a4a00','Closed','Gráfico XYZ',0]]]
     ];
-    var h='', i, j; for(i=0;i<cols.length;i++){ var col=cols[i], cards=''; for(j=0;j<col[2].length;j++){ var c=col[2][j]; cards+='<div class="kb-card"><div class="kb-id">'+c[0]+'</div><div class="kb-txt">'+c[1]+'</div><div class="kb-foot"><span class="apav-sm" title="'+c[2]+'" style="background:'+c[3]+';color:'+c[4]+'">'+c[2]+'</span><span class="kb-due">'+c[5]+'</span></div></div>'; } h+='<div class="kb-col"><div class="kb-colh"><span class="rbadge '+col[1]+'">'+col[0]+'</span><span class="kb-count">'+col[2].length+'</span></div><div class="kb-list">'+cards+'<button class="kb-add">+ Add</button></div></div>'; } return '<div class="kb-board">'+h+'</div>';
+    var alert='<svg class="kb-alert" viewBox="0 0 24 24" fill="#ec221f"><path d="M12 2a10 10 0 1 0 0 20 10 10 0 0 0 0-20zm0 15.2a1.3 1.3 0 1 1 0-2.6 1.3 1.3 0 0 1 0 2.6zm1.1-5.1a1.1 1.1 0 0 1-2.2 0V7.6a1.1 1.1 0 0 1 2.2 0z"/></svg>';
+    var cmt='<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M21 15a2 2 0 0 1-2 2H7l-4 4V5a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2z"/></svg>';
+    var h='', i, j; for(i=0;i<cols.length;i++){ var col=cols[i], isDel=(col[1]==='bad'), cards=''; for(j=0;j<col[2].length;j++){ var c=col[2][j]; cards+='<div class="kb-card"><div class="kb-crow">'
+      +'<span class="apav-sm" title="'+c[2]+'" style="background:'+c[3]+';color:'+c[4]+'">'+c[2]+'</span>'
+      +'<div class="kb-cmain"><div class="kb-idrow"><a class="kb-id">'+c[0]+'</a>'+(isDel?alert:'')+'</div><div class="kb-txt">'+c[1]+'</div><div class="kb-src">'+c[6]+'</div></div>'
+      +'<div class="kb-cside">'+(c[7]?'<span class="kb-cmt">'+cmt+c[7]+'</span>':'')+'<span class="rbadge '+col[1]+'">'+col[0]+'</span>'+(col[1]!=='ok'?'<span class="kb-due">'+c[5]+'</span>':'')+'</div>'
+      +'</div></div>'; } h+='<div class="kb-col"><div class="kb-colh"><span class="rbadge '+col[1]+'">'+col[0]+'</span><span class="kb-count">'+col[2].length+'</span></div><div class="kb-list">'+cards+'<button class="kb-add">+ Add</button></div></div>'; } return '<div class="kb-board">'+h+'</div>';
   }
   // ===== Pivot Table (portado da Galeria de Widgets — motor de pivô mock, sem dependências) =====
   var PV=(function(){
