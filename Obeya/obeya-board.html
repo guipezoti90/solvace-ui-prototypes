@@ -387,7 +387,8 @@
   .wcard.sm .wcard-sub{ font-size:11px; }
   .wcard.sm .w-foot{ padding-top:6px; }
   .wf-title{ flex:1; display:flex; align-items:center; overflow:hidden; font-family:'Space Grotesk',Inter,sans-serif; font-weight:600; font-size:26px; letter-spacing:-.5px; color:#0d122f; }
-  .chartbox{ flex:1; display:flex; flex-direction:column; min-height:0; padding-top:8px; }
+  .chartbox{ flex:1; display:flex; flex-direction:column; min-height:0; padding-top:2px; }
+  .wcard:has(.chartbox){ gap:6px; }
   .minibars{ position:relative; flex:1; display:flex; align-items:flex-end; justify-content:space-between; gap:6px; min-height:0; }
   .chart-target{ position:absolute; left:-2px; right:-2px; height:2px; border:0; background:repeating-linear-gradient(90deg,#001391 0 5px,transparent 5px 9px); opacity:.7; pointer-events:none; z-index:1; }
   .chart-target::after{ display:none; }
@@ -412,7 +413,7 @@
   .wperiod .wp{ font-size:10px; padding:2px 8px; border-radius:6px; border:1px solid #c7ccf5; background:#fff; color:#001391; cursor:pointer; font-weight:600; }
   .wperiod .wp.active{ background:#001391; color:#fff; border-color:#001391; }
   .em-widget .wperiod .wp{ font-size:13px; padding:4px 12px; }
-  .minibars-x{ display:flex; justify-content:space-between; gap:6px; padding:5px 1px 0; }
+  .minibars-x{ display:flex; justify-content:space-between; gap:6px; padding:2px 1px 0; }
   .minibars-x span{ flex:1; text-align:center; font-size:10px; line-height:1; color:#999ba7; }
   /* Pizza (pie/donut) widget */
   .wpie{ flex:1; display:flex; align-items:center; justify-content:center; min-height:0; padding:4px; }
