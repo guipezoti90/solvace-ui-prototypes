@@ -243,7 +243,7 @@
   .gauge2{ flex:1 1 0; min-height:0; display:flex; flex-direction:column; align-items:center; justify-content:center; width:100%; }
   .gauge2 svg{ width:auto; max-width:260px; height:auto; max-height:calc(100% - 20px); margin:0 auto; }
   .gauge2 .scale{ display:flex; width:170px; max-width:90%; justify-content:space-between; align-items:baseline; font-size:11px; color:#999ba7; margin-top:2px; }
-  .gauge2 .scale span:nth-child(2){ font-size:14px; line-height:1; }
+  .gauge2 .scale span:nth-child(2){ font-size:17px; line-height:1; }
   .wcard.sm .gauge2 svg{ width:auto; max-width:178px; }
   .wcard.sm .gauge2 .scale{ width:150px; font-size:11px; }
   .num2{ flex:1; display:flex; align-items:center; justify-content:center; background:#f2f3f5; border-radius:12px; container-type:size; overflow:hidden; padding:8px; }
@@ -1230,6 +1230,8 @@
   .em-widget .wmsg-foot{ gap:14px; }
   .em-widget .wmsg-eye svg{ width:22px; height:22px; }
   .em-widget .wmsg-avs .ava{ width:30px; height:30px; margin-left:-8px; }
+  .em-widget .wmsg-open{ display:none; }
+  .wmsg-more{ cursor:default; }
   #fullModal .em-widget .wmsg-ttl{ font-size:26px; }
   #fullModal .em-widget .wmsg-body{ font-size:17px; }
   #fullModal .wf-title{ font-size:28px; }
@@ -2132,9 +2134,8 @@
       <div class="em-stage">
         <div class="em-widget fv-mode" id="fullWidget">
           <div class="fv-wtools">
-            <button class="zbtn zbtn-outline"><svg viewBox="0 0 24 24" width="16" height="16" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/><polyline points="7 10 12 15 17 10"/><line x1="12" x2="12" y1="15" y2="3"/></svg> Download</button>
-            <button class="zbtn zbtn-outline"><svg viewBox="0 0 24 24" width="16" height="16" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/><polyline points="17 8 12 3 7 8"/><line x1="12" x2="12" y1="3" y2="15"/></svg> Upload</button>
-            <button class="zbtn zbtn-outline"><svg viewBox="0 0 24 24" width="16" height="16" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M10 13a5 5 0 0 0 7.54.54l3-3a5 5 0 0 0-7.07-7.07l-1.72 1.71"/><path d="M14 11a5 5 0 0 0-7.54-.54l-3 3a5 5 0 0 0 7.07 7.07l1.71-1.71"/></svg> Links <svg viewBox="0 0 24 24" width="14" height="14" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="m6 9 6 6 6-6"/></svg></button>
+            <button class="zbtn zbtn-outline fvw-download"><svg viewBox="0 0 24 24" width="16" height="16" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/><polyline points="7 10 12 15 17 10"/><line x1="12" x2="12" y1="15" y2="3"/></svg> Download</button>
+            <button class="zbtn zbtn-outline fvw-links"><svg viewBox="0 0 24 24" width="16" height="16" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M10 13a5 5 0 0 0 7.54.54l3-3a5 5 0 0 0-7.07-7.07l-1.72 1.71"/><path d="M14 11a5 5 0 0 0-7.54-.54l-3 3a5 5 0 0 0 7.07 7.07l1.71-1.71"/></svg> Links <svg viewBox="0 0 24 24" width="14" height="14" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="m6 9 6 6 6-6"/></svg></button>
           </div>
           <div class="fv-stage" id="fullWidgetInner"></div>
         </div>
@@ -2764,7 +2765,7 @@
     var eye='<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M2 12s3-7 10-7 10 7 10 7-3 7-10 7-10-7-10-7Z"/><circle cx="12" cy="12" r="3"/></svg>';
     var cL='<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="m15 18-6-6 6-6"/></svg>';
     var cR='<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="m9 18 6-6-6-6"/></svg>';
-    var MAVN=['Marina S.','Pedro A.','Lucas R.','Bia M.','Caio T.','Nina F.','Rafa L.','Duda P.']; var avs=''; for(k=0;k<m.avs.length;k++) avs+='<span class="ava" title="'+MAVN[m.avs[k]%MAVN.length]+'" style="background-image:url(https://i.pravatar.cc/56?img='+m.avs[k]+')"></span>'; if(m.more) avs+='<span class="wmsg-more">'+m.more+'</span>';
+    var MAVN=['Marina S.','Pedro A.','Lucas R.','Bia M.','Caio T.','Nina F.','Rafa L.','Duda P.']; var avs='', seen=[]; for(k=0;k<m.avs.length;k++){ var nmk=MAVN[m.avs[k]%MAVN.length]; seen.push(nmk); avs+='<span class="ava" title="'+nmk+'" style="background-image:url(https://i.pravatar.cc/56?img='+m.avs[k]+')"></span>'; } var moreN=m.more?(parseInt(String(m.more).replace(/[^0-9]/g,''),10)||0):0; for(k=0;k<moreN;k++) seen.push(MAVN[(m.avs.length+k+2)%MAVN.length]); if(m.more) avs+='<span class="wmsg-more" data-viewers="'+seen.join(' • ')+'" title="">'+m.more+'</span>';
     var dots=''; for(k=0;k<MSGS.length;k++) dots+='<i'+(k===i?' class="on"':'')+'></i>';
     return '<div class="wmsg-card"><h3 class="wmsg-ttl">'+m.ttl+'</h3><div class="wmsg-photo" style="background-image:url('+m.img+')"></div><p class="wmsg-body">'+m.body+'</p></div>'+
       '<div class="wmsg-foot"><span class="wmsg-eye">'+eye+'</span><span class="wmsg-avs">'+avs+'</span><a class="wmsg-open">Open full message</a></div>'+
@@ -3431,6 +3432,9 @@
   // ---- hover tooltip for calendar cells (same format as the chart) ----
   document.addEventListener('mouseover', function(e){ var cd=e.target.closest && e.target.closest('.wcal .cd'); if(cd) showDataTip(cd); });
   document.addEventListener('mouseout', function(e){ var cd=e.target.closest && e.target.closest('.wcal .cd'); if(cd) barTip.style.display='none'; });
+  // #204 — hover the "+N" viewers badge shows everyone who saw the message (system tooltip)
+  document.addEventListener('mouseover', function(e){ var mm=e.target.closest && e.target.closest('.wmsg-more[data-viewers]'); if(!mm) return; var names=(mm.getAttribute('data-viewers')||'').split(' • ').filter(Boolean); barTip.innerHTML='<div style="font-weight:600;color:#fff;margin-bottom:4px">Viewed by ('+names.length+')</div>'+names.map(function(n){return '<div class="bt-row"><span class="bt-l">'+n+'</span></div>';}).join('')+'<div class="bt-arrow"></div>'; barTip.style.display='block'; var r=mm.getBoundingClientRect(); barTip.style.left=(r.left+r.width/2)+'px'; barTip.style.top=r.top+'px'; });
+  document.addEventListener('mouseout', function(e){ var mm=e.target.closest && e.target.closest('.wmsg-more[data-viewers]'); if(mm) barTip.style.display='none'; });
   // pie segment tooltip (legend on hover)
   document.addEventListener('mouseover', function(e){ var sg=e.target.closest && e.target.closest('.wpie .pie-seg'); if(sg){ barTip.innerHTML='<div class="bt-row"><span class="bt-l"><i class="bt-dot" style="background:'+(sg.getAttribute('data-col')||'#001391')+'"></i>'+(sg.getAttribute('data-d')||'')+'</span><b>'+(sg.getAttribute('data-v')||'')+'%</b></div><div class="bt-arrow"></div>'; barTip.style.display='block'; var r=sg.getBoundingClientRect(); barTip.style.left=(r.left+r.width/2)+'px'; barTip.style.top=r.top+'px'; } });
   document.addEventListener('mouseout', function(e){ var sg=e.target.closest && e.target.closest('.wpie .pie-seg'); if(sg) barTip.style.display='none'; });
@@ -4001,6 +4005,11 @@
     var fcb=document.getElementById('fullCloseBtn');
     if(isBatch){ if(fTabs) fTabs.style.display='none'; startFullBatch(fullTitle.textContent); if(sub) sub.textContent='Batch update'; if(fullPrimary){ fullPrimary.style.display='inline-flex'; fullPrimary.textContent='Apply'; } if(fcb) fcb.textContent='Cancel'; }
     else { fbState=null; if(fTabs) fTabs.style.display=''; if(fullBodyEl) fullBodyEl.innerHTML=fullBodyHTML; if(sub) sub.textContent='Full view'; if(fcb) fcb.textContent='Close'; setFullTab('feed'); }
+    // #192 — presence zoom is just the big widget + Links (no side drawer, no download/upload)
+    var noDrawer = !isBatch && /^presence$/.test(typ);
+    if(fullDrawer) fullDrawer.style.display = noDrawer ? 'none' : '';
+    fullModal.classList.toggle('fv-solo', !!noDrawer);
+    var _dl=fullModal.querySelector('.fvw-download'); if(_dl) _dl.style.display = noDrawer ? 'none' : '';
     var clone=card.cloneNode(true); clone.classList.remove('selected','dragging','sm'); clone.removeAttribute('style');
     clone.style.position='static';
     var rs=clone.querySelector('.wresize'); if(rs && rs.parentNode) rs.parentNode.removeChild(rs);
