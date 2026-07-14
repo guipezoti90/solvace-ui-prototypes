@@ -216,9 +216,9 @@
   .feed-item{ padding-top:4px; }
   .feed-top{ display:flex; align-items:center; gap:8px; }
   .feed-av{ width:24px; height:24px; border-radius:99px; background:#e9eaf0; flex:0 0 auto; display:flex; align-items:center; justify-content:center; overflow:hidden; }
-  .feed-name{ font-size:14px; font-weight:600; color:#0d122f; }
-  .feed-time{ margin-left:auto; font-size:12px; color:#999ba7; }
-  .feed-bubble{ background:#f5f5ff; border-radius:10px; padding:12px 14px; font-size:13px; line-height:19px; color:#4d5166; margin-top:8px; }
+  .feed-name{ font-size:12px; font-weight:600; color:#0d122f; }
+  .feed-time{ margin-left:auto; font-size:11px; color:#999ba7; }
+  .feed-bubble{ background:#f5f5ff; border-radius:10px; padding:10px 12px; font-size:12px; line-height:17px; color:#4d5166; margin-top:8px; }
   .feed-actions{ display:flex; align-items:center; gap:18px; margin-top:8px; }
   .feed-link{ font-size:13px; font-weight:600; color:#001391; cursor:pointer; }
   .feed-actions .reply{ margin-left:auto; }
@@ -283,7 +283,7 @@
   .wtable-wrap::-webkit-scrollbar-thumb, .wlist::-webkit-scrollbar-thumb, .wrca::-webkit-scrollbar-thumb, .wfeed-list::-webkit-scrollbar-thumb, .agd-list::-webkit-scrollbar-thumb, .wpres-grid::-webkit-scrollbar-thumb, .wteam::-webkit-scrollbar-thumb, .batch-wrap::-webkit-scrollbar-thumb, .ed-body::-webkit-scrollbar-thumb, .apt-body::-webkit-scrollbar-thumb, .apt-accbody::-webkit-scrollbar-thumb{ background:#c2c6d6; border-radius:99px; border:2px solid transparent; background-clip:padding-box; }
   .wtable-wrap::-webkit-scrollbar-thumb:hover, .wlist::-webkit-scrollbar-thumb:hover, .wrca::-webkit-scrollbar-thumb:hover, .wfeed-list::-webkit-scrollbar-thumb:hover, .agd-list::-webkit-scrollbar-thumb:hover, .batch-wrap::-webkit-scrollbar-thumb:hover, .ed-body::-webkit-scrollbar-thumb:hover, .apt-body::-webkit-scrollbar-thumb:hover{ background:#9aa0b8; }
   .wtable{ width:100%; border-collapse:collapse; font-size:13px; }
-  .wtable th{ text-align:left; font-size:11px; font-weight:600; color:#4d5166; padding:8px; background:#f3f3f3; white-space:normal; cursor:pointer; user-select:none; }
+  .wtable th{ text-align:left; font-size:11px; font-weight:600; color:#4d5166; padding:8px; background:#f3f3f3; white-space:normal; cursor:pointer; user-select:none; text-transform:uppercase; letter-spacing:.02em; }
   .wtable th .sc{ font-size:9px; margin-left:4px; opacity:.35; }
   .wtable th.sorted-asc .sc, .wtable th.sorted-desc .sc{ opacity:1; color:#001391; }
   .wtable td{ padding:9px 8px; color:#0d122f; border-top:1px solid #f0f2f5; white-space:normal; overflow-wrap:anywhere; }
@@ -545,7 +545,7 @@
   .apstack{ display:flex; margin:0; flex:0 0 auto; gap:12px; }
   .apstack .apav{ position:relative; width:30px; height:30px; border-radius:99px; font-size:9px; font-weight:600; display:inline-flex; align-items:center; justify-content:center; border:2px solid #fff; margin-left:0; }
   .apstack .apav:first-child{ margin-left:0; }
-  .apstack .apcount{ position:absolute; bottom:-2px; right:-3px; min-width:14px; height:14px; padding:0 2px; box-sizing:border-box; border-radius:99px; border:2px solid #fff; font-size:8px; font-weight:700; display:inline-flex; align-items:center; justify-content:center; color:#fff; }
+  .apstack .apcount{ position:absolute; bottom:-3px; right:-4px; min-width:18px; height:18px; padding:0 3px; box-sizing:border-box; border-radius:99px; border:2px solid #fff; font-size:10px; font-weight:700; display:inline-flex; align-items:center; justify-content:center; color:#fff; }
   .apstack .apcount.bad{ background:#ec221f; }
   .apstack .apcount.warn{ background:#e8b931; color:#5a4500; }
   .apleft{ display:inline-flex; align-items:center; gap:6px; }
@@ -686,6 +686,10 @@
   .wcont-bar.grabbing .wcont-grip{ cursor:grabbing; }
   .wcont-name{ font-size:12px; font-weight:700; color:#001391; background:#eef0ff; border-radius:6px; padding:3px 10px; outline:none; max-width:70%; overflow:hidden; text-overflow:ellipsis; white-space:nowrap; }
   .wcont-name:focus{ box-shadow:0 0 0 2px rgba(0,19,145,.35); background:#fff; }
+  .wcont-nameconf{ display:inline-flex; align-items:center; gap:3px; margin-left:6px; }
+  .wcont-nameconf button{ width:20px; height:20px; border:1px solid #d6dae8; background:#fff; border-radius:6px; cursor:pointer; font-size:12px; font-weight:700; line-height:1; display:inline-flex; align-items:center; justify-content:center; }
+  .wcont-nameconf .wcn-ok{ color:#14ae5c; } .wcont-nameconf .wcn-cancel{ color:#ec221f; }
+  .wcont-nameconf button:hover{ background:#f4f6ff; }
   .wcont-del{ margin-left:auto; width:22px; height:22px; border:none; border-radius:6px; background:rgba(255,255,255,.85); color:#8a90a6; font-size:16px; line-height:1; cursor:pointer; display:none; }
   .wcontainer:hover .wcont-del{ display:inline-flex; align-items:center; justify-content:center; }
   .wcont-del:hover{ background:#fdecec; color:#ec221f; }
@@ -1023,13 +1027,13 @@
   #apPostMenu{ position:fixed; z-index:9400; min-width:230px; }
   #apBatchDrawer .apb-wrap{ overflow:auto; max-height:46vh; border:1px solid #eeeff1; border-radius:10px; }
   .apb-table{ width:100%; border-collapse:collapse; font-size:13px; }
-  .apb-table th{ text-align:left; font-size:11px; color:#4d5166; font-weight:600; padding:9px 8px; border-bottom:1px solid #eeeff1; position:sticky; top:0; background:#f7f8fb; white-space:nowrap; }
+  .apb-table th{ text-align:left; font-size:11px; color:#4d5166; font-weight:600; padding:9px 8px; border-bottom:1px solid #eeeff1; position:sticky; top:0; background:#f7f8fb; white-space:nowrap; text-transform:uppercase; letter-spacing:.02em; }
   .apb-table td{ padding:6px 8px; border-bottom:1px solid #f0f2f5; vertical-align:middle; }
   .apb-table input, .apb-table select{ width:100%; border:1px solid #eeeff1; border-radius:7px; padding:7px 8px; font-size:13px; background:#fff; outline:none; color:#0d122f; }
   .apb-table input:focus, .apb-table select:focus{ border-color:#001391; }
   /* Action plans batch table (Figma 27451-13385) — opens from agenda Copilot banner */
   #apPlanTable.open{ display:flex; align-items:center; justify-content:center; }
-  .apt-modal{ background:#fff; border-radius:14px; margin:24px; width:100%; max-width:1120px; max-height:88vh; display:flex; flex-direction:column; box-shadow:0 24px 60px rgba(0,0,0,.25); overflow:hidden; }
+  .apt-modal{ background:#fff; border-radius:14px; margin:24px; width:100%; max-width:1280px; max-height:90vh; display:flex; flex-direction:column; box-shadow:0 24px 60px rgba(0,0,0,.25); overflow:hidden; }
   .apt-head{ display:flex; align-items:center; justify-content:space-between; padding:18px 22px; border-bottom:1px solid #eeeff1; flex:0 0 auto; }
   .apt-head-actions{ display:inline-flex; align-items:center; gap:4px; }
   .apt-mini{ display:none; position:fixed; left:16px; bottom:16px; z-index:9500; align-items:center; gap:10px; background:#fff; border:1px solid #e2e5ec; border-radius:12px; box-shadow:0 10px 30px rgba(13,18,47,.20); padding:10px 12px 10px 14px; cursor:pointer; }
@@ -1075,7 +1079,7 @@
   .apt-row.ghost .apt-area textarea{ color:#98a2b3; }
   .apt-acchead-row{ display:flex; align-items:center; gap:8px; }
   .meet-copilot a.apt-link{ color:#001391; font-weight:700; text-decoration:underline; cursor:pointer; }
-  .apb-del{ background:none; border:none; cursor:pointer; color:#ec221f; padding:4px; display:inline-flex; }
+  .apb-del{ background:none; border:none; cursor:pointer; color:#001391; padding:4px; display:inline-flex; }
   .apb-del svg{ width:16px; height:16px; }
   /* user droplist with selected-user avatars */
   .usel .usel-l{ display:flex; align-items:center; gap:8px; min-width:0; }
@@ -1940,7 +1944,7 @@
 
     <!-- Add multiple action plans — right-side drawer (batch creation) -->
     <div class="room-modal" id="apBatchModal">
-      <aside class="room-drawer" id="apBatchDrawer" style="width:720px;max-width:90%">
+      <aside class="room-drawer" id="apBatchDrawer" style="width:900px;max-width:94%">
         <div class="ed-head">
           <div><div class="ed-title">Add multiple action plans</div><div class="ed-sub">Create action plans in batch</div></div>
           <div class="apt-head-actions">
@@ -1949,7 +1953,7 @@
           </div>
         </div>
         <div class="ed-body">
-          <div class="apb-wrap"><table class="apb-table"><thead><tr><th>Action plan</th><th>Responsible</th><th>Area</th><th>Due date</th><th>Status</th><th></th></tr></thead><tbody id="apBatchRows"></tbody></table></div>
+          <div class="apb-wrap"><table class="apb-table"><thead><tr><th>Action plan</th><th>Responsible</th><th>Due date</th><th></th></tr></thead><tbody id="apBatchRows"></tbody></table></div>
           <button class="zbtn zbtn-outline" id="apBatchAdd" style="margin-top:12px"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M5 12h14"/><path d="M12 5v14"/></svg> Add action plan</button>
         </div>
         <div class="ed-footer">
@@ -2637,9 +2641,11 @@
     else { contColor.style.display='none'; contMenu.style.left=Math.max(6,(r.right-ba.left-184))+'px'; contMenu.style.top=(r.bottom-ba.top+6)+'px'; contMenu.style.display='block'; }
   }, true);
   contMenu.addEventListener('click', function(e){ var mi=e.target.closest('.mi'); if(!mi||!_ccBox) return; e.stopPropagation(); if(mi.getAttribute('data-cl')==='front') _ccBox.style.zIndex=(++zCounter); else _ccBox.style.zIndex=0; contMenu.style.display='none'; });
-  boardArea.addEventListener('dblclick', function(e){ var nm=e.target.closest && e.target.closest('.wcont-name'); if(!nm) return; if(app.getAttribute('data-state')!=='edit') return; e.stopPropagation(); nm.setAttribute('contenteditable','true'); nm.classList.add('editing'); nm.focus(); var sel=window.getSelection(), rg=document.createRange(); rg.selectNodeContents(nm); sel.removeAllRanges(); sel.addRange(rg); });
-  boardArea.addEventListener('keydown', function(e){ var nm=e.target.closest && e.target.closest('.wcont-name.editing'); if(!nm) return; if(e.key==='Enter'){ e.preventDefault(); nm.blur(); } });
-  boardArea.addEventListener('blur', function(e){ var nm=e.target.closest && e.target.closest('.wcont-name'); if(!nm) return; nm.removeAttribute('contenteditable'); nm.classList.remove('editing'); }, true);
+  function nmCleanup(nm){ nm.removeAttribute('contenteditable'); nm.classList.remove('editing'); var p=nm.parentNode; var conf=p&&p.querySelector('.wcont-nameconf'); if(conf&&conf.parentNode) conf.parentNode.removeChild(conf); }
+  boardArea.addEventListener('dblclick', function(e){ var nm=e.target.closest && e.target.closest('.wcont-name'); if(!nm) return; if(app.getAttribute('data-state')!=='edit') return; e.stopPropagation(); nm.dataset.orig=nm.textContent; nm.setAttribute('contenteditable','true'); nm.classList.add('editing'); if(!nm.parentNode.querySelector('.wcont-nameconf')){ var conf=document.createElement('span'); conf.className='wcont-nameconf'; conf.innerHTML='<button class="wcn-ok" title="Confirm">✓</button><button class="wcn-cancel" title="Cancel">✕</button>'; nm.parentNode.insertBefore(conf, nm.nextSibling); } nm.focus(); var sel=window.getSelection(), rg=document.createRange(); rg.selectNodeContents(nm); sel.removeAllRanges(); sel.addRange(rg); });
+  boardArea.addEventListener('keydown', function(e){ var nm=e.target.closest && e.target.closest('.wcont-name.editing'); if(!nm) return; if(e.key==='Enter'){ e.preventDefault(); nmCleanup(nm); nm.blur(); } else if(e.key==='Escape'){ e.preventDefault(); nm.textContent=nm.dataset.orig||nm.textContent; nmCleanup(nm); nm.blur(); } });
+  boardArea.addEventListener('mousedown', function(e){ var b=e.target.closest && e.target.closest('.wcn-ok,.wcn-cancel'); if(!b) return; e.preventDefault(); var conf=b.closest('.wcont-nameconf'); var nm=conf&&conf.parentNode?conf.parentNode.querySelector('.wcont-name'):null; if(!nm) return; if(b.classList.contains('wcn-cancel')) nm.textContent=nm.dataset.orig||nm.textContent; nmCleanup(nm); });
+  boardArea.addEventListener('blur', function(e){ var nm=e.target.closest && e.target.closest('.wcont-name.editing'); if(!nm) return; setTimeout(function(){ if(document.activeElement!==nm) nmCleanup(nm); },120); }, true);
   document.addEventListener('mousedown', function(e){ if(!e.target.closest('#contColor') && !e.target.closest('.wcont-color')) contColor.style.display='none'; if(!e.target.closest('#contMenu') && !e.target.closest('.wcont-layers')) contMenu.style.display='none'; }, true);
   boardArea.addEventListener('mousedown', function(e){ var h=e.target.closest && e.target.closest('.wcont-rz'); if(!h) return; e.stopPropagation(); e.preventDefault(); var box=h.closest('.wcontainer'); if(!box) return; var mem=contMembers(box); var ol=parseInt(box.style.left)||0, ot=parseInt(box.style.top)||0, ow=parseInt(box.style.width)||box.offsetWidth, oh=parseInt(box.style.height)||box.offsetHeight; var m=mem.map(function(el){ return {el:el, ol:parseInt(el.style.left)||0, ot:parseInt(el.style.top)||0, ow:parseInt(el.style.width)||el.offsetWidth, oh:parseInt(el.style.height)||el.offsetHeight}; }); ptr={ mode:'cresize', el:box, sx:e.clientX, sy:e.clientY, ol:ol, ot:ot, ow:ow, oh:oh, m:m }; }, true);
   // ---- #26/#172: clicar num status (chip antigo ou card tot-card) filtra a lista ----
@@ -3650,11 +3656,9 @@
     var apMenu=document.getElementById('apPostMenu'), apModal=document.getElementById('apBatchModal'), apRows=document.getElementById('apBatchRows');
     if(!apMenu||!apModal||!apRows) return;
     function rowHTML(){ return '<tr>'+
-      '<td><input placeholder="Describe the action plan"></td>'+
-      '<td><select><option value="">Responsible</option><option>Jardel F.</option><option>Maria R.</option><option>Ana S.</option><option>Marcus L.</option></select></td>'+
-      '<td><select><option value="">Area</option><option>Safety</option><option>Quality</option><option>Cost</option><option>Delivery</option></select></td>'+
+      '<td><input placeholder="Type here"></td>'+
+      '<td><select><option value="">Select</option><option>Jardel F.</option><option>Maria R.</option><option>Ana S.</option><option>Marcus L.</option></select></td>'+
       '<td><input placeholder="dd/mm/yyyy"></td>'+
-      '<td><select><option>Planned</option><option>In progress</option><option>Done</option></select></td>'+
       '<td><button class="apb-del" title="Remove"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M3 6h18"/><path d="M19 6v14a2 2 0 0 1-2 2H7a2 2 0 0 1-2-2V6m3 0V4a2 2 0 0 1 2-2h4a2 2 0 0 1 2 2v2"/></svg></button></td></tr>'; }
     function addRow(){ var t=document.createElement('tbody'); t.innerHTML=rowHTML(); apRows.appendChild(t.firstChild); }
     function dirty(){ var ins=apRows.querySelectorAll('input,select'),i; for(i=0;i<ins.length;i++){ var el=ins[i]; if(el.tagName==='INPUT'){ if((el.value||'').trim()) return true; } else if(el.selectedIndex>0) return true; } return false; }
