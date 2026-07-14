@@ -485,11 +485,12 @@
   /* #172 — totalizador no padrão das telas de busca (tot-card) */
   .wtot{ position:relative; flex:0 0 auto; }
   .wtot-row{ display:flex; gap:6px; overflow-x:auto; padding-bottom:2px; }
-  .wtot-c{ flex:1 1 0; min-width:60px; background:#eef1fb; border-radius:10px; padding:7px 9px; display:flex; flex-direction:column; gap:1px; border:1.5px solid transparent; }
-  .wtot-c.big{ flex:1.3 1 0; background:#e3e8fb; }
+  .wtot-c{ flex:1 0 auto; min-width:64px; background:#eef1fb; border-radius:10px; padding:7px 9px; display:flex; flex-direction:column; gap:1px; border:1.5px solid transparent; }
+  .wtot-c.big{ flex:1.3 0 auto; background:#e3e8fb; }
   .wtot-c .tv{ font-size:16px; font-weight:700; color:#0d122f; line-height:1.1; font-variant-numeric:tabular-nums; }
   .wtot-c.big .tv{ font-size:20px; color:#001391; }
-  .wtot-c .tl{ font-size:9.5px; color:#6b7280; text-transform:uppercase; letter-spacing:.03em; white-space:nowrap; overflow:hidden; text-overflow:ellipsis; }
+  .wtot-c .tl{ font-size:9.5px; color:#6b7280; text-transform:uppercase; letter-spacing:.03em; white-space:nowrap; }
+  .wtot-row::-webkit-scrollbar{ height:6px; } .wtot-row::-webkit-scrollbar-thumb{ background:#c2c6d6; border-radius:99px; }
   .wtot-c.bad .tv{ color:#ec221f; } .wtot-c.warn .tv{ color:#a07d12; } .wtot-c.info .tv{ color:#001391; } .wtot-c.ok .tv{ color:#14ae5c; }
   .wtot-c.tot-click{ cursor:pointer; } .wtot-c.tot-click:hover{ background:#e4e9fa; } .wtot-c.big.tot-click:hover{ background:#d7ddfa; }
   .wtot-c.active{ border-color:#001391; background:#dfe4fb; }
