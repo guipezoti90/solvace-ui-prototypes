@@ -1159,6 +1159,10 @@
   .ed-chip:hover{ background:#f9f9fa; }
   .ed-chip.active{ border-color:#001391; color:#001391; background:#f5f5ff; }
   .ed-tr{ display:flex; align-items:center; gap:10px; margin-bottom:14px; }
+  .ed-check{ display:flex; align-items:center; gap:9px; font-size:14px; color:#0d122f; cursor:pointer; margin:6px 0 4px; }
+  .ed-check input{ width:17px; height:17px; accent-color:#001391; cursor:pointer; }
+  .ed-dep{ margin:0 0 8px; }
+  .ed-dep.disabled{ opacity:.45; } .ed-dep.disabled input{ pointer-events:none; }
   .ed-tr span{ font-size:14px; color:#0d122f; }
   .ed-footer{ display:flex; align-items:center; justify-content:flex-end; gap:10px; padding:14px 22px; border-top:1px solid #eeeff1; }
   .swatch{ width:16px; height:16px; border-radius:4px; background:#0a0a0b; display:inline-block; }
@@ -1947,7 +1951,9 @@
           <input class="ed-input" type="number" min="0" value="8">          <div class="ed-sec">Members</div>
           <label class="ed-label">Members</label>
           <div class="ed-select usel"><span class="usel-l"><span class="usel-avs"><span class="uav" style="background:#d7e9ff;color:#001391">JF</span><span class="uav" style="background:#ffe3c2;color:#9a4a00">MR</span><span class="uav" style="background:#dcf5e6;color:#2d6a4f">AS</span></span><span class="usel-txt">Jardel Florentino, +2</span></span><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="m6 9 6 6 6-6"/></svg></div>
-          <div class="ed-tr" style="margin-top:14px"><button class="zswitch" type="button"></button><span>Confidential</span></div>          <div class="ed-sec">Status</div>
+          <div class="ed-tr" style="margin-top:14px"><button class="zswitch" id="confSwitch" type="button"></button><span>Confidential</span></div>
+          <div class="ed-dep" id="confGuestsWrap" style="display:none"><label class="ed-label">Guests (visitors)</label><div class="ed-select usel"><span class="usel-l"><span class="usel-txt" style="color:#8a90a6">Select guests…</span></span><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="m6 9 6 6 6-6"/></svg></div></div>
+          <div class="ed-sec">Status</div>
           <div class="ed-tr"><button class="zswitch on" type="button"></button><span>Active</span></div>
           <div class="ed-tr"><button class="fav-star" type="button" aria-label="Favorite"><svg viewBox="0 0 24 24" stroke-linecap="round" stroke-linejoin="round"><polygon points="12 2 15.09 8.26 22 9.27 17 14.14 18.18 21.02 12 17.77 5.82 21.02 7 14.14 2 9.27 8.91 8.26 12 2"/></svg></button><span>Favorite</span></div>
         </div>
@@ -1972,12 +1978,11 @@
           <div class="ed-sec">Details</div>
           <label class="ed-label">Name</label>
           <input class="ed-input" id="boardName" value="Dashboard">
-          <div class="ed-grid2" style="margin-top:14px">
-            <div><label class="ed-label">Background color</label><div class="ed-select"><span class="swatch" style="background:#f9f9fa;border:1px solid #eeeff1"></span> <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="m6 9 6 6 6-6"/></svg></div></div>
-            <div><label class="ed-label">Auto-update interval (s)</label><input class="ed-input" value="0"></div>
-          </div>          <div class="ed-sec">Behavior</div>
-          <div class="ed-tr"><button class="zswitch" type="button"></button><span>Auto-update</span></div>
-          <div class="ed-tr"><button class="zswitch on" type="button"></button><span>Mobile responsive</span></div>
+          <div style="margin-top:14px"><label class="ed-label">Background color</label><div class="ed-select" style="max-width:240px"><span class="swatch" style="background:#f9f9fa;border:1px solid #eeeff1"></span> <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="m6 9 6 6 6-6"/></svg></div></div>
+          <div class="ed-sec">Behavior</div>
+          <label class="ed-check"><input type="checkbox" id="boardAutoUpd"><span>Auto-update</span></label>
+          <div class="ed-dep disabled" id="boardAutoUpdWrap"><label class="ed-label">Auto-update interval (s)</label><input class="ed-input" type="number" min="0" placeholder="Type here" disabled></div>
+          <div class="ed-tr" style="margin-top:12px"><button class="zswitch on" type="button"></button><span>Mobile responsive</span></div>
         </div>
         <div class="ed-footer">
           <div style="position:relative">
@@ -4143,6 +4148,10 @@
 
   // switches inside the room/board drawers
   (function(){ var s=document.querySelectorAll('.room-drawer .zswitch'); for(var i=0;i<s.length;i++){ s[i].addEventListener('click', function(){ this.classList.toggle('on'); }); } })();
+  // #293 — Confidential toggles a guest (visitors) droplist
+  (function(){ var cs=document.getElementById('confSwitch'), gw=document.getElementById('confGuestsWrap'); if(cs&&gw) cs.addEventListener('click', function(){ setTimeout(function(){ gw.style.display=cs.classList.contains('on')?'':'none'; },0); }); })();
+  // #296 — Auto-update checkbox enables the dependent interval field
+  (function(){ var ck=document.getElementById('boardAutoUpd'), wp=document.getElementById('boardAutoUpdWrap'); if(ck&&wp){ var inp=wp.querySelector('input'); ck.addEventListener('change', function(){ wp.classList.toggle('disabled', !ck.checked); if(inp){ inp.disabled=!ck.checked; if(ck.checked) inp.focus(); } }); } })();
 
   // ===== Full view (expand a widget in standard/update/andon mode) =====
   var fullModal=document.getElementById('fullModal');
