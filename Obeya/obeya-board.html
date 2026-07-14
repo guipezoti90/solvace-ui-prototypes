@@ -536,6 +536,7 @@
   .rmeta .rmc-over{ margin-left:auto; }
   .rmeta .rmc svg{ width:13px; height:13px; }
   .rbadge.bad{ background:#fde7e7; color:#ec221f; }
+  .rbadge.mut{ background:#eceef4; color:#6b7280; }
   .rcode{ font-size:12px; font-weight:700; color:#001391; cursor:pointer; white-space:nowrap; }
   .rcode:hover{ text-decoration:underline; }
   .wtable td.rnum{ white-space:nowrap; }
@@ -1315,7 +1316,8 @@
   .kb-colh{ display:flex; align-items:center; justify-content:space-between; padding:2px 4px; }
   .kb-count{ font-size:12px; font-weight:700; color:#6b7280; }
   .kb-list{ display:flex; flex-direction:column; gap:10px; }
-  .kb-card{ background:#fff; border:1px solid #eeeff1; border-radius:10px; padding:10px 12px; box-shadow:0 1px 2px rgba(0,5,36,.05); }
+  .kb-card{ background:#fff; border:1px solid #eeeff1; border-radius:10px; padding:10px 12px; box-shadow:0 1px 2px rgba(0,5,36,.05); overflow:hidden; }
+  .kb-photo{ height:72px; border-radius:9px 9px 0 0; margin:-10px -12px 9px; background:#dfe3ea center/cover no-repeat; }
   .kb-crow{ display:flex; align-items:flex-start; gap:9px; }
   .kb-crow .apav-sm{ flex:0 0 auto; }
   .kb-cmain{ flex:1; min-width:0; }
@@ -2920,29 +2922,32 @@
   function apKanbanHTML(){
     // card: [id, text, avInit, avBg, avColor, dueText, source, comments]
     var cols=[
-      ['On time','warn',[['ACP-499','Clean maneuver area','OO','#dcf5e6','#2d6a4f','Due in 5d','Calendário XYZ',1],['ACP-562','Train operators on the new procedure','ND','#ffe3c2','#9a4a00','Due in 2d','Gráfico XYZ',0]]],
       ['Delayed','bad',[['ACP-564','Organize office files','RC','#ffe0e0','#c0392b','36 dias','Calendário XYZ',1],['ACP-607','Information required on OEE below target','AR','#d7e9ff','#17457a','4 dias','Gráfico XYZ',2],['ACP-620','Analyse downtime root causes','VQ','#e9d8fd','#6b21a8','8 dias','Gráfico XYZ',0]]],
-      ['Done','ok',[['ACP-609','How to scale an action plan within your own Site','AR','#d7e9ff','#17457a','Closed','Calendário XYZ',1],['ACP-700','Replace film rollers on line 2','JM','#ffe3c2','#9a4a00','Closed','Gráfico XYZ',0]]]
+      ['On Time','ok',[['ACP-499','Clean maneuver area','OO','#dcf5e6','#2d6a4f','Due in 5d','Calendário XYZ',1],['ACP-562','Train operators on the new procedure','ND','#ffe3c2','#9a4a00','Due in 2d','Gráfico XYZ',0]]],
+      ['In Approval','warn',[['ACP-700','Replace film rollers on line 2','JM','#ffe3c2','#9a4a00','Due in 1d','Gráfico XYZ',0]]],
+      ['Completed','info',[['ACP-609','How to scale an action plan within your own Site','AR','#d7e9ff','#17457a','','Calendário XYZ',1]]],
+      ['Canceled','mut',[['ACP-410','Duplicate maintenance request','VQ','#e9d8fd','#6b21a8','','Gráfico XYZ',0]]]
     ];
     var alert='<svg class="kb-alert" viewBox="0 0 24 24" fill="#ec221f"><path d="M12 2a10 10 0 1 0 0 20 10 10 0 0 0 0-20zm0 15.2a1.3 1.3 0 1 1 0-2.6 1.3 1.3 0 0 1 0 2.6zm1.1-5.1a1.1 1.1 0 0 1-2.2 0V7.6a1.1 1.1 0 0 1 2.2 0z"/></svg>';
     var cmt='<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M21 15a2 2 0 0 1-2 2H7l-4 4V5a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2z"/></svg>';
     var h='', i, j; for(i=0;i<cols.length;i++){ var col=cols[i], isDel=(col[1]==='bad'), cards=''; for(j=0;j<col[2].length;j++){ var c=col[2][j]; cards+='<div class="kb-card"><div class="kb-crow">'
       +'<span class="apav-sm" title="'+c[2]+'" style="background:'+c[3]+';color:'+c[4]+'">'+c[2]+'</span>'
       +'<div class="kb-cmain"><div class="kb-idrow"><a class="kb-id">'+c[0]+'</a>'+(isDel?alert:'')+'</div><div class="kb-txt">'+c[1]+'</div><div class="kb-src">'+c[6]+'</div></div>'
-      +'<div class="kb-cside">'+(c[7]?'<span class="kb-cmt">'+cmt+c[7]+'</span>':'')+'<span class="rbadge '+col[1]+'">'+col[0]+'</span>'+(col[1]!=='ok'?'<span class="kb-due">'+c[5]+'</span>':'')+'</div>'
-      +'</div></div>'; } h+='<div class="kb-col"><div class="kb-colh"><span class="rbadge '+col[1]+'">'+col[0]+'</span><span class="kb-count">'+col[2].length+'</span></div><div class="kb-list">'+cards+'<button class="kb-add">+ Add</button></div></div>'; } return '<div class="kb-board">'+h+'</div>';
+      +'<div class="kb-cside">'+(c[7]?'<span class="kb-cmt">'+cmt+c[7]+'</span>':'')+'<span class="rbadge '+col[1]+'">'+col[0]+'</span>'+(c[5]?'<span class="kb-due">'+c[5]+'</span>':'')+'</div>'
+      +'</div></div>'; } h+='<div class="kb-col"><div class="kb-colh"><span class="rbadge '+col[1]+'">'+col[0]+'</span><span class="kb-count">'+col[2].length+'</span></div><div class="kb-list">'+cards+'</div></div>'; } return '<div class="kb-board">'+h+'</div>';
   }
   // #212 — Defect Tags kanban (columns by status) + calendar, reusing the kanban modal shell
   function defectKanbanHTML(){
     var cols=[
-      ['Overdue','bad',[['DFT-225','Loose Belt Tension','RK','#e9d8fd','#6b21a8','113 days','Case sealer',1],['DFT-164','Broken support','JD','#d7e9ff','#001391','1.071 days','Case sealer',0],['DFT-161','Broken bracket','NU','#ffd8a8','#9a4a00','1.238 days','Case sealer',0]]],
-      ['Pending','warn',[['DFT-129','Steam Leakage','JD','#d7e9ff','#001391','1.684 days','Case sealer',2],['DFT-214','Lack of lubricant in the Kuka Robot','RK','#e9d8fd','#6b21a8','270 days','Kuka Robot 1',0]]],
-      ['CMMS','info',[['DFT-231','Inappropriate tension','NU','#ffd8a8','#9a4a00','19 days','Case sealer',1],['DFT-219','Emergency button getting loose','JD','#d7e9ff','#001391','239 days','Kuka Robot 1',0]]],
-      ['Solved','ok',[['DFT-150','Maintenance materials left near the CNC machine','RK','#e9d8fd','#6b21a8','Closed','Bearing #1',0]]]
+      ['Planned - Late','bad',[['DFT-225','Loose Belt Tension','RK','#e9d8fd','#6b21a8','113 days','Case sealer',1,'case.jpg'],['DFT-164','Broken support','JD','#d7e9ff','#001391','1.071 days','Case sealer',0,'case.jpg'],['DFT-161','Broken bracket','NU','#ffd8a8','#9a4a00','1.238 days','Case sealer',0,'case.jpg']]],
+      ['CMMS','info',[['DFT-231','Inappropriate tension','NU','#ffd8a8','#9a4a00','19 days','Case sealer',1,'case.jpg'],['DFT-219','Emergency button getting loose','JD','#d7e9ff','#001391','239 days','Kuka Robot 1',0,'kuka.jpg']]],
+      ['Pending','warn',[['DFT-129','Steam Leakage','JD','#d7e9ff','#001391','1.684 days','Case sealer',2,'case.jpg'],['DFT-214','Lack of lubricant in the Kuka Robot','RK','#e9d8fd','#6b21a8','270 days','Kuka Robot 1',0,'kuka.jpg']]],
+      ['Planned - On Time','ok',[['DFT-208','Lack of lubrication of the machine','AR','#d7e9ff','#17457a','408 days','Kuka Robot 1',0,'kuka.jpg']]],
+      ['Solved','mut',[['DFT-150','Maintenance materials left near the CNC machine','RK','#e9d8fd','#6b21a8','','Bearing #1',0,'']]]
     ];
     var alert='<svg class="kb-alert" viewBox="0 0 24 24" fill="#ec221f"><path d="M12 2a10 10 0 1 0 0 20 10 10 0 0 0 0-20zm0 15.2a1.3 1.3 0 1 1 0-2.6 1.3 1.3 0 0 1 0 2.6zm1.1-5.1a1.1 1.1 0 0 1-2.2 0V7.6a1.1 1.1 0 0 1 2.2 0z"/></svg>';
     var cmt='<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M21 15a2 2 0 0 1-2 2H7l-4 4V5a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2z"/></svg>';
-    var h='', i, j; for(i=0;i<cols.length;i++){ var col=cols[i], isDel=(col[1]==='bad'), cards=''; for(j=0;j<col[2].length;j++){ var c=col[2][j]; cards+='<div class="kb-card"><div class="kb-crow"><span class="apav-sm" title="'+c[2]+'" style="background:'+c[3]+';color:'+c[4]+'">'+c[2]+'</span><div class="kb-cmain"><div class="kb-idrow"><a class="kb-id">'+c[0]+'</a>'+(isDel?alert:'')+'</div><div class="kb-txt">'+c[1]+'</div><div class="kb-src">'+c[6]+'</div></div><div class="kb-cside">'+(c[7]?'<span class="kb-cmt">'+cmt+c[7]+'</span>':'')+'<span class="rbadge '+col[1]+'">'+col[0]+'</span>'+(col[1]!=='ok'?'<span class="kb-due">'+c[5]+'</span>':'')+'</div></div></div>'; } h+='<div class="kb-col"><div class="kb-colh"><span class="rbadge '+col[1]+'">'+col[0]+'</span><span class="kb-count">'+col[2].length+'</span></div><div class="kb-list">'+cards+'<button class="kb-add">+ Add</button></div></div>'; } return '<div class="kb-board">'+h+'</div>';
+    var h='', i, j; for(i=0;i<cols.length;i++){ var col=cols[i], isDel=(col[1]==='bad'), cards=''; for(j=0;j<col[2].length;j++){ var c=col[2][j]; cards+='<div class="kb-card">'+(c[8]?'<div class="kb-photo" style="background-image:url('+c[8]+')"></div>':'')+'<div class="kb-crow"><span class="apav-sm" title="'+c[2]+'" style="background:'+c[3]+';color:'+c[4]+'">'+c[2]+'</span><div class="kb-cmain"><div class="kb-idrow"><a class="kb-id">'+c[0]+'</a>'+(isDel?alert:'')+'</div><div class="kb-txt">'+c[1]+'</div><div class="kb-src">'+c[6]+'</div></div><div class="kb-cside">'+(c[7]?'<span class="kb-cmt">'+cmt+c[7]+'</span>':'')+'<span class="rbadge '+col[1]+'">'+col[0]+'</span>'+(c[5]?'<span class="kb-due">'+c[5]+'</span>':'')+'</div></div></div>'; } h+='<div class="kb-col"><div class="kb-colh"><span class="rbadge '+col[1]+'">'+col[0]+'</span><span class="kb-count">'+col[2].length+'</span></div><div class="kb-list">'+cards+'</div></div>'; } return '<div class="kb-board">'+h+'</div>';
   }
   function defectCalHTML(){ return '<div class="def-cal-wrap" style="max-width:760px;margin:0 auto;background:#fff;border:1px solid #eeeff1;border-radius:12px;padding:18px">'+gCal(4)+'<div style="display:flex;gap:16px;justify-content:center;margin-top:14px;font-size:12px;color:#4d5166"><span style="display:inline-flex;align-items:center;gap:6px"><i style="width:12px;height:12px;border-radius:3px;background:#ec221f;display:inline-block"></i>Overdue</span><span style="display:inline-flex;align-items:center;gap:6px"><i style="width:12px;height:12px;border-radius:3px;background:#e8b931;display:inline-block"></i>Pending</span><span style="display:inline-flex;align-items:center;gap:6px"><i style="width:12px;height:12px;border-radius:3px;background:#14ae5c;display:inline-block"></i>Solved</span></div></div>'; }
   // ===== Pivot Table (portado da Galeria de Widgets — motor de pivô mock, sem dependências) =====
