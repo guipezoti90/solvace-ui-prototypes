@@ -1941,7 +1941,10 @@
       <aside class="room-drawer" id="apBatchDrawer" style="width:720px;max-width:90%">
         <div class="ed-head">
           <div><div class="ed-title">Add multiple action plans</div><div class="ed-sub">Create action plans in batch</div></div>
-          <button class="ed-close" id="apBatchClose"><svg viewBox="0 0 24 24" width="18" height="18" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M18 6 6 18"/><path d="m6 6 12 12"/></svg></button>
+          <div class="apt-head-actions">
+            <button class="ed-close" id="apBatchMin" title="Minimize (continue later)"><svg viewBox="0 0 24 24" width="18" height="18" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M5 12h14"/></svg></button>
+            <button class="ed-close" id="apBatchClose" title="Close"><svg viewBox="0 0 24 24" width="18" height="18" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M18 6 6 18"/><path d="m6 6 12 12"/></svg></button>
+          </div>
         </div>
         <div class="ed-body">
           <div class="apb-wrap"><table class="apb-table"><thead><tr><th>Action plan</th><th>Responsible</th><th>Area</th><th>Due date</th><th>Status</th><th></th></tr></thead><tbody id="apBatchRows"></tbody></table></div>
@@ -3653,8 +3656,10 @@
       '<td><button class="apb-del" title="Remove"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M3 6h18"/><path d="M19 6v14a2 2 0 0 1-2 2H7a2 2 0 0 1-2-2V6m3 0V4a2 2 0 0 1 2-2h4a2 2 0 0 1 2 2v2"/></svg></button></td></tr>'; }
     function addRow(){ var t=document.createElement('tbody'); t.innerHTML=rowHTML(); apRows.appendChild(t.firstChild); }
     function dirty(){ var ins=apRows.querySelectorAll('input,select'),i; for(i=0;i<ins.length;i++){ var el=ins[i]; if(el.tagName==='INPUT'){ if((el.value||'').trim()) return true; } else if(el.selectedIndex>0) return true; } return false; }
-    function openAP(){ apRows.innerHTML=''; addRow(); addRow(); addRow(); apModal.classList.add('open'); }
-    function closeAP(force){ if(!force && dirty() && !confirm('All content will be lost if you close without saving, do you want to continue?')) return; apModal.classList.remove('open'); }
+    function openAP(){ var mn=document.getElementById('apbMini'); if(mn) mn.style.display='none'; apRows.innerHTML=''; addRow(); addRow(); addRow(); apModal.classList.add('open'); }
+    function closeAP(force){ if(!force && dirty() && !confirm('All content will be lost if you close without saving, do you want to continue?')) return; apModal.classList.remove('open'); var mn=document.getElementById('apbMini'); if(mn) mn.style.display='none'; }
+    function ensureApbMini(){ var d=document.getElementById('apbMini'); if(d) return d; d=document.createElement('div'); d.id='apbMini'; d.className='apt-mini'; d.innerHTML='<span class="apt-mini-ic"><svg viewBox="0 0 24 24" fill="currentColor"><path d="M12 2a10 10 0 1 0 0 20 10 10 0 0 0 0-20zm0 15.2a1.3 1.3 0 1 1 0-2.6 1.3 1.3 0 0 1 0 2.6zm1.1-5.1a1.1 1.1 0 0 1-2.2 0V7.6a1.1 1.1 0 0 1 2.2 0z"/></svg></span><span class="apt-mini-t">Add multiple action plans</span><button class="apt-mini-exp" title="Continue"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polyline points="15 3 21 3 21 9"/><polyline points="9 21 3 21 3 15"/><line x1="21" x2="14" y1="3" y2="10"/><line x1="3" x2="10" y1="21" y2="14"/></svg></button>'; document.body.appendChild(d); d.addEventListener('click', function(){ d.style.display='none'; apModal.classList.add('open'); }); return d; }
+    function minimizeAP(){ apModal.classList.remove('open'); ensureApbMini().style.display='inline-flex'; }
     document.addEventListener('click', function(e){
       var add=e.target.closest && e.target.closest('.ap-add');
       if(add){ e.stopPropagation(); var r=add.getBoundingClientRect(); apMenu.style.left=Math.min(r.left, innerWidth-250)+'px'; apMenu.style.top=(r.bottom+6)+'px'; apMenu.style.display=(apMenu.style.display==='block')?'none':'block'; return; }
@@ -3662,12 +3667,13 @@
     });
     var apN=document.getElementById('apNew'), apM=document.getElementById('apMulti');
     if(apN) apN.addEventListener('click', function(e){ e.stopPropagation(); apMenu.style.display='none'; });
-    if(apM) apM.addEventListener('click', function(e){ e.stopPropagation(); apMenu.style.display='none'; if(window.openAptBatch){ window.openAptBatch(); } else { openAP(); } });
+    if(apM) apM.addEventListener('click', function(e){ e.stopPropagation(); apMenu.style.display='none'; openAP(); });
     document.getElementById('apBatchAdd').addEventListener('click', addRow);
     apRows.addEventListener('click', function(e){ var d=e.target.closest('.apb-del'); if(d){ var tr=d.closest('tr'); if(tr&&tr.parentNode) tr.parentNode.removeChild(tr); } });
     document.getElementById('apBatchClose').addEventListener('click', function(){ closeAP(false); });
     document.getElementById('apBatchCancel').addEventListener('click', function(){ closeAP(false); });
     document.getElementById('apBatchSave').addEventListener('click', function(){ closeAP(true); });
+    (function(){ var abm=document.getElementById('apBatchMin'); if(abm) abm.addEventListener('click', minimizeAP); })();
     apModal.addEventListener('mousedown', function(e){ if(e.target===apModal) closeAP(false); });
   })();
 
