@@ -339,6 +339,30 @@
   .apact-date{ position:relative; display:flex; align-items:center; }
   .apact-date svg{ position:absolute; right:10px; width:18px; height:18px; color:#8a90a6; pointer-events:none; }
   .apact-foot{ display:flex; justify-content:flex-end; gap:10px; padding:14px 18px; border-top:1px solid #eef0f3; }
+  /* #218 checklist analytics modal */
+  .chk-card{ position:relative; width:940px; max-width:100%; max-height:90vh; background:#fff; border-radius:14px; box-shadow:0 30px 70px rgba(0,0,0,.3); display:flex; flex-direction:column; overflow:hidden; }
+  .chk-head{ display:flex; align-items:center; justify-content:space-between; padding:16px 20px; }
+  .chk-head .pvx-t{ font-size:17px; font-weight:700; color:#0d122f; }
+  .chk-tb{ display:flex; align-items:center; gap:10px; padding:0 20px 14px; }
+  .chk-srch{ position:relative; display:flex; align-items:center; width:280px; }
+  .chk-srch svg{ position:absolute; left:11px; width:16px; height:16px; color:#8a90a6; }
+  .chk-srch input{ width:100%; height:38px; border:1px solid #e2e5ec; border-radius:8px; padding:0 12px 0 34px; font-size:13px; outline:none; }
+  .chk-tb-btn{ width:38px; height:38px; border:1px solid #001391; border-radius:8px; background:#fff; color:#001391; cursor:pointer; display:inline-flex; align-items:center; justify-content:center; flex:0 0 auto; }
+  .chk-tb-btn svg{ width:18px; height:18px; }
+  .chk-body{ overflow:auto; min-height:0; }
+  .chk-thead, .chk-row{ display:grid; grid-template-columns:1fr 150px 1.25fr; align-items:center; gap:16px; padding:10px 20px; }
+  .chk-thead{ background:#e9eaee; font-size:12px; font-weight:700; color:#4d5166; text-transform:uppercase; letter-spacing:.02em; position:sticky; top:0; z-index:2; }
+  .chk-thead .chk-ti, .chk-row .chk-ti{ text-align:center; }
+  .chk-gh{ display:flex; align-items:center; gap:8px; padding:10px 20px; background:#f7f8fb; font-size:14px; font-weight:600; color:#0d122f; cursor:pointer; border-top:1px solid #eef0f3; }
+  .chk-gh .chk-cae{ width:18px; height:18px; transition:transform .15s; }
+  .chk-group.collapsed .chk-gh .chk-cae{ transform:rotate(-90deg); }
+  .chk-group.collapsed .chk-rows{ display:none; }
+  .chk-row{ border-top:1px solid #f0f1f5; }
+  .chk-row .chk-q{ font-size:13px; color:#0d122f; padding-left:24px; }
+  .chk-row .chk-ti{ font-size:13px; color:#0d122f; }
+  .chk-bar{ display:flex; align-items:center; height:22px; border-radius:6px; background:#d9dce3; overflow:hidden; font-size:11px; font-weight:700; color:#fff; }
+  .chk-seg{ height:100%; display:inline-flex; align-items:center; justify-content:center; white-space:nowrap; }
+  .chk-seg.chk-g{ background:#14ae5c; } .chk-seg.chk-r{ background:#ec221f; } .chk-seg.chk-na{ background:#d9dce3; color:#4d5166; }
   .w-badge{ font-size:10px; font-weight:700; color:#b6871a; background:#fef6e1; border:1px solid #f3e3b0; border-radius:99px; padding:1px 7px; margin-left:8px; white-space:nowrap; vertical-align:middle; }
   #app[data-state="update"] .up-editable .wtable td:not(.rowtools):hover{ background:#f1f3ff; box-shadow:inset 0 0 0 1px #c7ccf5; }
   .wtable td.editing{ background:#fff; outline:2px solid #001391; outline-offset:-2px; }
@@ -3112,7 +3136,7 @@
       var red=(d.type==='gauge'||d.type==='chart'||d.type==='calendar'||d.type==='radial')?'':' no-ind';
       var a=AV[i%3];
       var titleHTML=d.badge?('<div style="display:flex;align-items:center;min-width:0"><div class="wcard-title" title="'+d.title+'">'+d.title+'</div><span class="w-badge">'+d.badge+'</span></div>'):('<div class="wcard-title" title="'+d.title+'">'+d.title+'</div>');
-      var noZoom=/^(agenda|team|video|feed|presence|defect|rca|action|checklist|table)$/.test(d.type);   // widgets sem zoom (decisão do PO): registros + informativos abrem em tela/modal próprios, não no zoom genérico
+      var noZoom=/^(agenda|team|video|feed|presence|defect|rca|action|table)$/.test(d.type);   // widgets sem zoom (decisão do PO): registros + informativos abrem em tela/modal próprios, não no zoom genérico
       var head=d.type==='title'?'':'<div class="wcard-head"><div>'+titleHTML+(d.sub?'<div class="wcard-sub">'+d.sub+'</div>':'')+'</div>'+(noZoom?'':G_EXP)+'</div>';
       var np=((i*3+2)%6)+1, nc=(i*5)%4;
       var mplan='<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect width="8" height="4" x="8" y="2" rx="1"/><path d="M16 4h2a2 2 0 0 1 2 2v14a2 2 0 0 1-2 2H6a2 2 0 0 1-2-2V6a2 2 0 0 1 2-2h2"/></svg>';
@@ -4203,7 +4227,16 @@
     if(kbF) kbF.addEventListener('click', function(e){ e.stopPropagation(); var ex=document.getElementById('kbFilterPop'); if(ex){ ex.remove(); kbF.classList.remove('on'); return; } kbF.classList.add('on'); var seen={}; document.querySelectorAll('#kbBody .kb-card .apav-sm').forEach(function(a){ var k=(a.getAttribute('title')||a.textContent||'').trim(); if(k && !seen[k]) seen[k]=a.getAttribute('style')||''; }); var pop=document.createElement('div'); pop.id='kbFilterPop'; pop.className='kb-filter-pop'; var html='<div class="kbf-h">Responsible</div>'; Object.keys(seen).forEach(function(k){ html+='<label class="kbf-item"><input type="checkbox" checked data-person="'+k+'"><span class="apav-sm" style="'+seen[k]+'">'+k+'</span><span class="kbf-name">'+k+'</span></label>'; }); html+='<div class="kbf-foot"><button class="kbf-clear" type="button">Clear filters</button></div>'; pop.innerHTML=html; var r=kbF.getBoundingClientRect(); pop.style.top=(r.bottom+6)+'px'; pop.style.left=Math.max(8,Math.round(r.right-244))+'px'; document.body.appendChild(pop); pop.addEventListener('click', function(ev){ ev.stopPropagation(); if(ev.target.closest('.kbf-clear')){ pop.querySelectorAll('input').forEach(function(c){c.checked=true;}); applyKbFilter(); } }); pop.addEventListener('change', applyKbFilter); });
     document.addEventListener('click', function(e){ var pop=document.getElementById('kbFilterPop'); if(pop && !(e.target.closest && (e.target.closest('#kbFilterPop')||e.target.closest('#kbFilter')))){ pop.remove(); var k2=document.getElementById('kbFilter'); if(k2) k2.classList.remove('on'); } }); })();
   // expand icon (outside edit mode) -> open full view (action plan -> kanban)
-  canvas.addEventListener('click', function(e){ var ex=e.target.closest('.expand'); if(!ex) return; if(app.getAttribute('data-state')==='edit') return; var c=ex.closest('.wcard'); if(c) openFullView(c); });
+  canvas.addEventListener('click', function(e){ var ex=e.target.closest('.expand'); if(!ex) return; if(app.getAttribute('data-state')==='edit') return; var c=ex.closest('.wcard'); if(!c) return; var wi=c.getAttribute('data-wi'); var typ=(wi!=null&&typeof FULL!=='undefined'&&FULL[wi])?FULL[wi].type:''; if(typ==='checklist'){ openChkAnalytics(c); return; } openFullView(c); });
+  // #218 — Checklist zoom opens an analytics modal (grouped by area, % bars) like the real product
+  function chkBar(g,r,na){ var gray=Math.max(0,100-g-r); var s='<div class="chk-bar">'; if(g>0) s+='<span class="chk-seg chk-g" style="width:'+g+'%">'+(g>=8?g+'%':'')+'</span>'; if(r>0) s+='<span class="chk-seg chk-r" style="width:'+r+'%">'+(r>=8?r+'%':'')+'</span>'; if(gray>0) s+='<span class="chk-seg chk-na" style="width:'+gray+'%">'+gray+'%</span>'; return s+'</div>'; }
+  function openChkAnalytics(card){ var d=document.getElementById('chkAnalytics'); if(!d){ d=document.createElement('div'); d.id='chkAnalytics'; d.className='pvx-modal'; d.innerHTML='<div class="pvx-back" data-chk-close></div><div class="chk-card"><div class="chk-head"><div class="pvx-t"></div><button class="pvx-close" data-chk-close><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M18 6 6 18M6 6l12 12"/></svg></button></div><div class="chk-tb"><span class="chk-srch"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><circle cx="11" cy="11" r="7"/><path d="m21 21-4.3-4.3"/></svg><input placeholder="Type here"></span><button class="chk-tb-btn" title="Filters"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M22 3H2l8 9.46V19l4 2v-8.54L22 3z"/></svg></button><button class="chk-tb-btn" style="margin-left:auto" title="View"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><line x1="8" y1="6" x2="21" y2="6"/><line x1="8" y1="12" x2="21" y2="12"/><line x1="8" y1="18" x2="21" y2="18"/><line x1="3" y1="6" x2="3.01" y2="6"/><line x1="3" y1="12" x2="3.01" y2="12"/><line x1="3" y1="18" x2="3.01" y2="18"/></svg></button></div><div class="chk-body"></div></div>'; document.body.appendChild(d); d.addEventListener('click', function(ev){ if(ev.target.closest('[data-chk-close]')) d.classList.remove('open'); var gh=ev.target.closest('.chk-gh'); if(gh){ gh.parentNode.classList.toggle('collapsed'); } }); document.addEventListener('keydown', function(ev){ if(ev.key==='Escape') d.classList.remove('open'); }); }
+    var te=card.querySelector('.wcard-title'); d.querySelector('.pvx-t').textContent='CHK-8 - Fire extinguishers inspection';
+    var qs=['Are the fire extinguishers visible and marked?','Are the fire extinguishers free?','Are the fire extinguishers in good condition?','Are the fire extinguishers loaded?','Are the fire extinguishers sealed?'];
+    var groups=[['Distillery',[[4,0],[4,0],[4,0],[4,0],[4,0]]],['Extraction',[[66,9],[7,42],[9,4],[5,2],[5,2]]],['Packaging',[[3,0],[2,0],[3,0],[3,0],[3,0]]]];
+    var body=''; groups.forEach(function(g){ body+='<div class="chk-group"><div class="chk-gh"><svg class="chk-cae" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="m6 9 6 6 6-6"/></svg>'+g[0]+'</div><div class="chk-rows">'; g[1].forEach(function(v,i){ body+='<div class="chk-row"><div class="chk-q">'+qs[i]+'</div><div class="chk-ti">248</div><div class="chk-barwrap">'+chkBar(v[0],v[1])+'</div></div>'; }); body+='</div></div>'; });
+    d.querySelector('.chk-body').innerHTML='<div class="chk-thead"><div class="chk-q">CHECKLIST</div><div class="chk-ti">TOTAL INSPECTIONS</div><div class="chk-barwrap"></div></div>'+body;
+    d.classList.add('open'); }
   // Action Plan kanban opens from the kanban icon in the widget toolbar (next to the filter)
   canvas.addEventListener('click', function(e){ if(app.getAttribute('data-state')==='edit') return; if(e.target.closest && e.target.closest('.ap-kanban')){ openKanban(); e.stopPropagation(); return; } if(e.target.closest && e.target.closest('.def-kanban')){ openKanban('Defect Tags — Kanban', defectKanbanHTML(), false); e.stopPropagation(); return; } if(e.target.closest && e.target.closest('.def-cal')){ openKanban('Defect Tags — Calendar', defectCalHTML(), true); e.stopPropagation(); return; } });
 
