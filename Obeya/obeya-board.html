@@ -159,6 +159,11 @@
   #dpEdit .dpe-lbl{ font-size:12px; font-weight:600; color:#6b7280; margin-bottom:8px; }
   #dpEdit .dpe-in{ width:100%; border:1px solid #d0d5dd; border-radius:8px; padding:8px 10px; font-size:14px; color:#0d122f; outline:none; }
   #dpEdit .dpe-in:focus{ border-color:#001391; }
+  #dpEdit .dpe-in::-webkit-outer-spin-button, #dpEdit .dpe-in::-webkit-inner-spin-button{ -webkit-appearance:none; margin:0; } #dpEdit .dpe-in{ -moz-appearance:textfield; }
+  #dpEdit .dpe-step{ display:flex; align-items:stretch; gap:6px; }
+  #dpEdit .dpe-step .dpe-in{ width:auto; flex:1; text-align:center; }
+  #dpEdit .dpe-mn, #dpEdit .dpe-pl{ width:36px; flex:0 0 36px; border:1px solid #d0d5dd; border-radius:8px; background:#f5f6ff; color:#001391; font-size:18px; font-weight:700; line-height:1; cursor:pointer; display:flex; align-items:center; justify-content:center; }
+  #dpEdit .dpe-mn:hover, #dpEdit .dpe-pl:hover{ background:#eef1ff; border-color:#c7ccf5; }
   #dpEdit .dpe-acts{ display:flex; justify-content:flex-end; gap:8px; margin-top:10px; }
   #dpEdit .dpe-acts button{ border-radius:8px; padding:7px 14px; font-size:13px; font-weight:600; cursor:pointer; border:1px solid transparent; }
   #dpEdit .dpe-cancel{ background:#fff; border-color:#eeeff1; color:#0d122f; }
@@ -2999,6 +3004,7 @@
     viewport.style.backgroundPosition=view.x+'px '+view.y+'px';
     if(zoomLabel) zoomLabel.textContent=Math.round(view.z*100)+'%';
     repositionMenus();
+    if(window.__repositionDp) window.__repositionDp();
     if(typeof rvSync==='function') rvSync();
   }
   function snap(v){ return Math.round(v/10)*10; }            // magnetic 10px grid
@@ -4178,10 +4184,15 @@
   // #91 — click a bar / ring segment in UPDATE mode to edit only that datapoint
   (function(){
     var ed=document.createElement('div'); ed.id='dpEdit'; ed.style.display='none';
-    ed.innerHTML='<div class="dpe-lbl" id="dpeLbl">Datapoint</div><input class="dpe-in" id="dpeIn" type="number"><div class="dpe-acts"><button class="dpe-cancel" id="dpeCancel">Cancel</button><button class="dpe-save" id="dpeSave">Save</button></div>';
+    ed.innerHTML='<div class="dpe-lbl" id="dpeLbl">Datapoint</div><div class="dpe-step"><button type="button" class="dpe-mn" id="dpeMinus" aria-label="Decrease">−</button><input class="dpe-in" id="dpeIn" type="number"><button type="button" class="dpe-pl" id="dpePlus" aria-label="Increase">+</button></div><div class="dpe-acts"><button class="dpe-cancel" id="dpeCancel">Cancel</button><button class="dpe-save" id="dpeSave">Save</button></div>';
     document.body.appendChild(ed);
     var curEl=null;
-    function openDp(el){ curEl=el; document.getElementById('dpeLbl').textContent=el.getAttribute('data-d')||'Datapoint'; var inp=document.getElementById('dpeIn'); inp.value=el.getAttribute('data-v')||''; ed.style.display='block'; barTip.style.display='none'; var r=el.getBoundingClientRect(); ed.style.left=Math.min(window.innerWidth-210, Math.max(8, r.left+r.width/2-100))+'px'; var top=r.top-ed.offsetHeight-10; ed.style.top=(top>8?top:r.bottom+10)+'px'; inp.focus(); inp.select(); }
+    function placeDp(){ if(!curEl) return; var r=curEl.getBoundingClientRect(); ed.style.left=Math.min(window.innerWidth-210, Math.max(8, r.left+r.width/2-100))+'px'; var top=r.top-ed.offsetHeight-10; ed.style.top=(top>8?top:r.bottom+10)+'px'; }
+    function openDp(el){ curEl=el; document.getElementById('dpeLbl').textContent=el.getAttribute('data-d')||'Datapoint'; var inp=document.getElementById('dpeIn'); inp.value=el.getAttribute('data-v')||''; ed.style.display='block'; barTip.style.display='none'; placeDp(); inp.focus(); inp.select(); }
+    window.__repositionDp=function(){ if(ed.style.display==='block' && curEl) placeDp(); };
+    window.addEventListener('scroll', function(){ if(ed.style.display==='block' && curEl) placeDp(); }, true);
+    window.addEventListener('resize', function(){ if(ed.style.display==='block' && curEl) placeDp(); });
+    (function(){ function step(d){ var inp=document.getElementById('dpeIn'); var v=parseFloat(inp.value)||0; v=Math.max(0, Math.round((v+d)*100)/100); inp.value=v; } var mn=document.getElementById('dpeMinus'), pl=document.getElementById('dpePlus'); if(mn) mn.addEventListener('click', function(e){ e.stopPropagation(); step(-1); }); if(pl) pl.addEventListener('click', function(e){ e.stopPropagation(); step(1); }); })();
     function closeDp(){ ed.style.display='none'; curEl=null; }
     document.getElementById('dpeCancel').addEventListener('click', closeDp);
     document.getElementById('dpeSave').addEventListener('click', function(){ if(curEl){ var nv=document.getElementById('dpeIn').value; var ov=parseFloat(curEl.getAttribute('data-v'))||0; curEl.setAttribute('data-v', nv); if(curEl.classList.contains('bar')||curEl.classList.contains('mb')){ var hs=curEl.style.height||''; var num=parseFloat(hs)||0; var unit=(hs.indexOf('%')>=0)?'%':'px'; var nh=(ov>0)? num*(parseFloat(nv)/ov) : num; nh=(unit==='%')?Math.max(1,Math.min(100,nh)):Math.max(2,Math.min(150,nh)); curEl.style.height=nh+unit; } else if(curEl.classList.contains('cd')){ var tg=parseFloat(curEl.getAttribute('data-t'))||80; var pc=Math.round((parseFloat(nv)||0)/tg*100); curEl.setAttribute('data-p', pc); curEl.classList.remove('r','g','y'); curEl.classList.add(pc>=100?'g':(pc>=85?'y':'r')); } } closeDp(); });
