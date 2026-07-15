@@ -1,0 +1,1326 @@
+<!doctype html>
+<html lang="pt-BR">
+<head>
+<meta charset="utf-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1" />
+<title>Digital Obeya — Galeria de Widgets (Zard UI)</title>
+
+<link rel="preconnect" href="https://fonts.googleapis.com" />
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=Space+Grotesk:wght@500;600;700&display=swap" rel="stylesheet" />
+
+<script src="https://cdn.tailwindcss.com"></script>
+<script>
+  tailwind.config = {
+    theme: {
+      extend: {
+        fontFamily: { sans: ['Inter', 'ui-sans-serif', 'system-ui', 'sans-serif'], display: ['"Space Grotesk"', 'Inter', 'sans-serif'] },
+        colors: {
+          border: 'rgb(var(--border) / <alpha-value>)',
+          input: 'rgb(var(--input) / <alpha-value>)',
+          ring: 'rgb(var(--ring) / <alpha-value>)',
+          background: 'rgb(var(--background) / <alpha-value>)',
+          foreground: 'rgb(var(--foreground) / <alpha-value>)',
+          primary: { DEFAULT: 'rgb(var(--primary) / <alpha-value>)', foreground: 'rgb(var(--primary-foreground) / <alpha-value>)' },
+          secondary: { DEFAULT: 'rgb(var(--secondary) / <alpha-value>)', foreground: 'rgb(var(--secondary-foreground) / <alpha-value>)' },
+          destructive: { DEFAULT: 'rgb(var(--destructive) / <alpha-value>)', foreground: 'rgb(var(--destructive-foreground) / <alpha-value>)' },
+          muted: { DEFAULT: 'rgb(var(--muted) / <alpha-value>)', foreground: 'rgb(var(--muted-foreground) / <alpha-value>)' },
+          accent: { DEFAULT: 'rgb(var(--accent) / <alpha-value>)', foreground: 'rgb(var(--accent-foreground) / <alpha-value>)' },
+          card: { DEFAULT: 'rgb(var(--card) / <alpha-value>)', foreground: 'rgb(var(--card-foreground) / <alpha-value>)' },
+          popover: { DEFAULT: 'rgb(var(--popover) / <alpha-value>)', foreground: 'rgb(var(--popover-foreground) / <alpha-value>)' },
+          success: { DEFAULT: 'rgb(var(--success) / <alpha-value>)', foreground: 'rgb(var(--success-foreground) / <alpha-value>)' },
+          warning: { DEFAULT: 'rgb(var(--warning) / <alpha-value>)', foreground: 'rgb(var(--warning-foreground) / <alpha-value>)' },
+          'chart-1': 'rgb(var(--chart-1) / <alpha-value>)',
+          tertiary: 'rgb(var(--tertiary) / <alpha-value>)',
+        },
+        borderColor: { DEFAULT: 'rgb(var(--border) / <alpha-value>)' },
+        borderRadius: { xl: '0.75rem', '2xl': '1rem' },
+        boxShadow: {
+          widget: '0 1px 2px rgba(16,24,40,.05)',
+          'widget-hover': '0 4px 6px -2px rgba(16,24,40,.05), 0 12px 18px -4px rgba(16,24,40,.09)',
+        },
+      },
+    },
+  };
+</script>
+
+<style type="text/tailwindcss">
+  @layer base {
+    :root {
+      --background: 255 255 255;
+      --foreground: 13 18 47;          /* #0d122f  texto principal */
+      --card: 255 255 255;
+      --card-foreground: 13 18 47;
+      --popover: 255 255 255;
+      --popover-foreground: 13 18 47;
+      --primary: 26 26 255;            /* #1a1aff  brand (referência) */
+      --primary-foreground: 255 255 255;
+      --secondary: 243 244 246;
+      --secondary-foreground: 13 18 47;
+      --muted: 243 244 246;            /* #f3f4f6  painéis/inputs */
+      --muted-foreground: 77 81 102;   /* #4d5166  secundário */
+      --tertiary: 153 155 167;         /* #999ba7  terciário */
+      --accent: 238 239 241;           /* #eeeff1 */
+      --accent-foreground: 13 18 47;
+      --destructive: 236 34 31;        /* #ec221f */
+      --destructive-foreground: 255 255 255;
+      --border: 238 239 241;           /* #eeeff1  borda */
+      --input: 226 227 230;            /* #e2e3e6 */
+      --ring: 26 26 255;
+      --success: 20 174 92;            /* #14ae5c */
+      --success-foreground: 255 255 255;
+      --warning: 232 185 49;           /* #e8b931 */
+      --warning-foreground: 82 37 4;   /* #522504 */
+      --chart-1: 26 26 255;            /* brand */
+    }
+    body {
+      @apply text-foreground font-sans antialiased;
+      background:
+        radial-gradient(1100px 560px at 100% -12%, rgba(26,26,255,.05), transparent 60%),
+        #f4f5f7;
+    }
+    * { border-color: rgb(var(--border)); }
+  }
+
+  @layer components {
+    /* ---------- Zard: button ---------- */
+    .z-btn { @apply inline-flex items-center justify-center gap-1.5 whitespace-nowrap rounded-lg border border-transparent text-sm font-medium transition-all disabled:pointer-events-none disabled:opacity-50 shrink-0 outline-none select-none cursor-pointer; }
+    .z-btn-default { @apply bg-primary text-primary-foreground shadow-sm hover:bg-primary/90 hover:shadow active:scale-95; }
+    .z-btn-outline { @apply border-border bg-background hover:bg-muted; }
+    .z-btn-ghost { @apply hover:bg-muted text-foreground; }
+    .z-btn-soft { @apply bg-primary/10 text-primary hover:bg-primary/15 active:scale-95; }
+    .z-btn-sm { @apply h-8 px-3; }
+    .z-btn-icon { @apply size-8 p-0; }
+
+    /* ---------- Zard: badge ---------- */
+    .z-badge { @apply inline-flex items-center justify-center gap-1 border px-2.5 py-0.5 text-[11px] font-semibold w-fit whitespace-nowrap shrink-0 rounded-full overflow-hidden; }
+    .z-badge-primary { @apply border-transparent bg-primary text-primary-foreground; }
+    .z-badge-neutral { @apply bg-[#f3f4f6] text-[#344054] border-[#e4e6ea]; }
+    .z-badge-success { @apply bg-[#e6f6ec] text-[#067647] border-[#b7e4c9]; }
+    .z-badge-warning { @apply bg-[#fff7e0] text-[#975102] border-[#f4da86]; }
+    .z-badge-danger { @apply bg-[#fdecea] text-[#b42318] border-[#f8cbc7]; }
+    .z-badge-outline { @apply bg-background text-foreground border-border; }
+
+    /* ---------- Zard: input ---------- */
+    .z-input { @apply w-full min-w-0 flex rounded-full border border-transparent bg-muted/60 px-3 font-normal transition-all placeholder:text-muted-foreground outline-none focus-visible:bg-card focus-visible:border-ring focus-visible:ring-[3px] focus-visible:ring-ring/40 h-8 py-1 text-sm; }
+
+    /* ---------- Zard: table ---------- */
+    .z-table { @apply w-full caption-bottom text-sm; }
+    .z-th { @apply h-9 px-2 text-left align-middle font-medium text-muted-foreground text-xs; }
+    .z-td { @apply px-2 py-2 align-middle; }
+    .z-tr { @apply border-b transition-colors hover:bg-muted/50; }
+
+    /* ---------- Zard: avatar ---------- */
+    .z-avatar { @apply relative inline-flex items-center justify-center shrink-0 rounded-full bg-muted text-foreground/80 font-semibold overflow-hidden leading-none ring-1 ring-black/[0.04] shadow-sm; }
+
+    /* ---------- Zard: progress bar ---------- */
+    .z-progress { @apply w-full h-2 rounded-full bg-primary/20 overflow-hidden; }
+    .z-progress > i { @apply block h-full rounded-full bg-primary; }
+
+    /* ---------- Widget chrome (Obeya) ---------- */
+    .widget { @apply relative bg-card text-card-foreground flex flex-col rounded-2xl border border-border shadow-widget overflow-hidden transition-all duration-300 ease-out; }
+    .widget:hover { @apply -translate-y-0.5 shadow-widget-hover; }
+    .panel { @apply rounded-xl bg-muted; }
+    .widget-head { @apply flex items-start justify-between gap-2 shrink-0; }
+    .widget-title { @apply text-[15px] font-semibold leading-tight text-card-foreground truncate; }
+    .widget-sub { @apply text-[13px] text-muted-foreground leading-tight truncate; }
+    .widget-menu { @apply -mr-1 -mt-1 p-1 rounded-md text-muted-foreground hover:text-foreground hover:bg-muted transition-colors cursor-pointer; }
+    .widget-foot { @apply flex items-center justify-between shrink-0; }
+    .widget-info { @apply inline-flex items-center justify-center size-5 rounded-full bg-muted text-tertiary text-[11px] font-bold leading-none; }
+
+    /* section helpers */
+    .size-chip { @apply inline-flex items-center gap-1.5 rounded-full border border-border bg-card px-2.5 py-1 text-xs font-medium text-muted-foreground; }
+  }
+</style>
+
+<style>
+  /* exact-pixel utilities the gallery relies on (kept tiny + justified) */
+  .ll { -webkit-line-clamp: 2; -webkit-box-orient: vertical; display: -webkit-box; overflow: hidden; }
+  .ll3 { -webkit-line-clamp: 3; -webkit-box-orient: vertical; display: -webkit-box; overflow: hidden; }
+  .dotgrid { background-image: radial-gradient(rgb(208 213 221 / .6) 1px, transparent 1px); background-size: 16px 16px; }
+  .scrollthin::-webkit-scrollbar { width: 6px; height: 6px; }
+  .scrollthin::-webkit-scrollbar-thumb { background: rgb(208 213 221 / .8); border-radius: 9999px; }
+  .scrollthin::-webkit-scrollbar-track { background: transparent; }
+  [data-lucide] { stroke-width: 2; }
+</style>
+</head>
+
+<body class="min-h-screen">
+
+  <!-- ====================== TOP BAR ====================== -->
+  <header class="sticky top-0 z-30 border-b border-border bg-white/85 backdrop-blur supports-[backdrop-filter]:bg-white/70">
+    <div class="mx-auto max-w-[1180px] px-6 py-4">
+      <div class="flex flex-wrap items-center justify-between gap-4">
+        <div class="flex items-center gap-3">
+          <span class="flex size-9 items-center justify-center rounded-xl bg-primary text-primary-foreground shadow-sm">
+            <i data-lucide="layout-grid" class="size-5"></i>
+          </span>
+          <div>
+            <h1 class="text-lg font-bold leading-tight text-card-foreground">Digital Obeya — Galeria de Widgets</h1>
+            <p class="text-[13px] text-muted-foreground leading-tight">Componentes Zard UI · padrão de tamanhos PP / PM / MP / MM</p>
+          </div>
+        </div>
+        <nav class="flex flex-wrap items-center gap-1.5 text-sm">
+          <a href="#pp" class="z-btn z-btn-ghost z-btn-sm">PP 180×180</a>
+          <a href="#simpl" class="z-btn z-btn-ghost z-btn-sm">Simplificado</a>
+          <a href="#mp" class="z-btn z-btn-ghost z-btn-sm">MP 370×180</a>
+          <a href="#pm" class="z-btn z-btn-ghost z-btn-sm">PM 180×370</a>
+          <a href="#mm" class="z-btn z-btn-ghost z-btn-sm">MM 370×370</a>
+          <a href="#adv" class="z-btn z-btn-default z-btn-sm">Avançados</a>
+        </nav>
+      </div>
+
+      <!-- spec banner (resumo dos quadros verdes) -->
+      <div class="mt-4 flex flex-wrap items-center gap-2">
+        <span class="size-chip"><i data-lucide="ruler" class="size-3.5"></i> Tamanhos padrão</span>
+        <span class="size-chip"><b class="text-foreground">PP</b> 180×180</span>
+        <span class="size-chip"><b class="text-foreground">PM</b> 180×370</span>
+        <span class="size-chip"><b class="text-foreground">MP</b> 370×180</span>
+        <span class="size-chip"><b class="text-foreground">MM</b> 370×370</span>
+        <span class="size-chip text-muted-foreground">Início padrão: <b class="ml-1 text-foreground">PP</b> · alguns iniciam em <b class="ml-1 text-foreground">MP</b></span>
+      </div>
+    </div>
+  </header>
+
+  <main class="mx-auto max-w-[1180px] px-6 py-8">
+
+    <!-- ====================== PP — 180×180 ====================== -->
+    <section id="pp" class="scroll-mt-28">
+      <div class="mb-4 flex items-baseline gap-3">
+        <h2 class="text-base font-bold text-card-foreground">PP — 180 × 180</h2>
+        <span class="text-[13px] text-muted-foreground">Tamanho inicial padrão de todos os widgets</span>
+      </div>
+
+      <div class="flex flex-wrap gap-5">
+
+        <!-- Número (indicador / gauge) -->
+        <article class="widget w-[180px] min-h-[180px] p-3" aria-label="Número">
+          <div class="widget-head">
+            <div class="min-w-0"><div class="widget-title">Número</div></div>
+            <span class="widget-menu"><i data-lucide="maximize-2" class="size-3.5"></i></span>
+          </div>
+          <div class="mt-2 flex-1">
+            <div class="panel flex h-full items-center justify-center">
+              <svg viewBox="0 0 200 118" class="w-[140px]">
+                <path d="M16 104 A84 84 0 0 1 184 104" fill="none" stroke="#e9ebef" stroke-width="16" stroke-linecap="round"/>
+                <path d="M16 104 A84 84 0 0 1 184 104" fill="none" stroke="#14ae5c" stroke-width="16" stroke-linecap="round"/>
+                <text x="100" y="52" text-anchor="middle" class="fill-tertiary" style="font-size:13px;font-weight:500">Meta: 100</text>
+                <text x="100" y="108" text-anchor="middle" class="fill-foreground font-display" style="font-size:42px;font-weight:600;letter-spacing:-2px">100</text>
+              </svg>
+            </div>
+          </div>
+          <div class="widget-foot">
+            <span class="widget-info">!</span>
+            <span class="z-avatar size-6 text-[10px]" style="background:#FFD8A8;color:#9a4a00">NU</span>
+          </div>
+        </article>
+
+        <!-- Calendário (mês) -->
+        <article class="widget w-[180px] min-h-[180px] p-3" aria-label="Calendário">
+          <div class="widget-head">
+            <div class="min-w-0"><div class="widget-title">Calendário</div></div>
+            <span class="widget-menu"><i data-lucide="maximize-2" class="size-3.5"></i></span>
+          </div>
+          <div class="mt-1.5 flex-1">
+            <div class="grid grid-cols-7 gap-[3px] text-[10px] font-medium leading-none">
+              <span class="flex h-[18px] items-center justify-center rounded text-foreground">1</span>
+              <span class="flex h-[18px] items-center justify-center rounded text-foreground">2</span>
+              <span class="flex h-[18px] items-center justify-center rounded text-foreground">3</span>
+              <span class="flex h-[18px] items-center justify-center rounded text-foreground">4</span>
+              <span class="flex h-[18px] items-center justify-center rounded bg-destructive text-white">5</span>
+              <span class="flex h-[18px] items-center justify-center rounded bg-destructive text-white">6</span>
+              <span class="flex h-[18px] items-center justify-center rounded bg-destructive text-white">7</span>
+              <span class="flex h-[18px] items-center justify-center rounded bg-destructive text-white">8</span>
+              <span class="flex h-[18px] items-center justify-center rounded text-foreground">9</span>
+              <span class="flex h-[18px] items-center justify-center rounded bg-destructive text-white">10</span>
+              <span class="flex h-[18px] items-center justify-center rounded bg-destructive text-white">11</span>
+              <span class="flex h-[18px] items-center justify-center rounded bg-destructive text-white">12</span>
+              <span class="flex h-[18px] items-center justify-center rounded bg-destructive text-white">13</span>
+              <span class="flex h-[18px] items-center justify-center rounded bg-success text-white">14</span>
+              <span class="flex h-[18px] items-center justify-center rounded text-foreground">15</span>
+              <span class="flex h-[18px] items-center justify-center rounded bg-success text-white">16</span>
+              <span class="flex h-[18px] items-center justify-center rounded bg-success text-white">17</span>
+              <span class="flex h-[18px] items-center justify-center rounded bg-success text-white">18</span>
+              <span class="flex h-[18px] items-center justify-center rounded bg-success text-white">19</span>
+              <span class="flex h-[18px] items-center justify-center rounded text-foreground">20</span>
+              <span class="flex h-[18px] items-center justify-center rounded text-foreground">21</span>
+              <span class="flex h-[18px] items-center justify-center rounded text-foreground">22</span>
+              <span class="flex h-[18px] items-center justify-center rounded text-foreground">23</span>
+              <span class="flex h-[18px] items-center justify-center rounded text-foreground">24</span>
+              <span class="flex h-[18px] items-center justify-center rounded text-foreground">25</span>
+              <span class="flex h-[18px] items-center justify-center rounded text-foreground">26</span>
+              <span class="flex h-[18px] items-center justify-center rounded text-foreground">27</span>
+              <span class="flex h-[18px] items-center justify-center rounded text-foreground">28</span>
+              <span class="flex h-[18px] items-center justify-center rounded text-foreground">29</span>
+              <span class="flex h-[18px] items-center justify-center rounded text-foreground">30</span>
+              <span class="flex h-[18px] items-center justify-center rounded text-foreground">31</span>
+            </div>
+          </div>
+          <div class="widget-foot pt-1">
+            <span class="widget-info">!</span>
+            <span class="z-avatar size-6 text-[10px]" style="background:#FFD8A8;color:#9a4a00">NU</span>
+          </div>
+        </article>
+
+        <!-- Gráfico (barras) -->
+        <article class="widget w-[180px] min-h-[180px] p-3" aria-label="Gráfico">
+          <div class="widget-head">
+            <div class="min-w-0"><div class="widget-title">Gráfico</div><div class="widget-sub">subtítulo</div></div>
+            <span class="widget-menu"><i data-lucide="maximize-2" class="size-3.5"></i></span>
+          </div>
+          <div class="relative mt-3 flex-1">
+            <div class="absolute inset-0 flex flex-col justify-between">
+              <span class="border-t border-border"></span>
+              <span class="border-t border-border"></span>
+              <span class="border-t border-border"></span>
+              <span class="border-t border-border"></span>
+            </div>
+            <div class="relative flex h-full items-end justify-between gap-1.5 px-0.5">
+              <span class="w-2.5 rounded-full bg-success" style="height:62%"></span>
+              <span class="w-2.5 rounded-full bg-success" style="height:96%"></span>
+              <span class="w-2.5 rounded-full bg-success" style="height:72%"></span>
+              <span class="w-2.5 rounded-full bg-destructive" style="height:44%"></span>
+              <span class="w-2.5 rounded-full bg-destructive" style="height:40%"></span>
+              <span class="w-2.5 rounded-full bg-success" style="height:58%"></span>
+              <span class="w-2.5 rounded-full bg-success" style="height:76%"></span>
+            </div>
+          </div>
+          <div class="mt-1.5 flex justify-between px-0.5 text-[10px] text-muted-foreground">
+            <span>1</span><span>2</span><span>3</span><span>4</span><span>5</span><span>6</span><span>7</span>
+          </div>
+          <div class="widget-foot pt-1.5">
+            <span class="widget-info">!</span>
+            <span class="z-avatar size-6 text-[10px]" style="background:#D7E9FF;color:#17457A">JD</span>
+          </div>
+        </article>
+
+        <!-- Status (semáforo) -->
+        <article class="widget w-[180px] min-h-[180px] p-3" aria-label="Status">
+          <div class="widget-head">
+            <div class="min-w-0"><div class="widget-title">Status</div><div class="widget-sub">subtítulo</div></div>
+            <span class="widget-menu"><i data-lucide="maximize-2" class="size-3.5"></i></span>
+          </div>
+          <div class="mt-2 flex-1">
+            <div class="panel grid h-full grid-cols-3 gap-2 p-2.5">
+              <div class="flex items-center justify-center rounded-xl bg-success text-white shadow-sm"><i data-lucide="check" class="size-6"></i></div>
+              <div class="flex items-center justify-center rounded-xl bg-[#fbf2d0] text-[#d8c684]"><i data-lucide="minus" class="size-6"></i></div>
+              <div class="flex items-center justify-center rounded-xl bg-[#fbe1df] text-[#eaa9a7]"><i data-lucide="x" class="size-6"></i></div>
+            </div>
+          </div>
+          <div class="widget-foot">
+            <span class="widget-info">!</span>
+            <span class="z-avatar size-6 text-[10px]" style="background:#D7E9FF;color:#17457A">JD</span>
+          </div>
+        </article>
+
+        <!-- Imagem -->
+        <article class="widget w-[180px] min-h-[180px] p-3" aria-label="Imagem">
+          <div class="widget-head">
+            <div class="min-w-0"><div class="widget-title">Imagem</div><div class="widget-sub">subtítulo</div></div>
+            <span class="widget-menu"><i data-lucide="maximize-2" class="size-3.5"></i></span>
+          </div>
+          <div class="mt-2 flex-1 flex items-center justify-center rounded-xl bg-muted text-muted-foreground">
+            <i data-lucide="image" class="size-12" style="stroke-width:1.5"></i>
+          </div>
+        </article>
+
+        <!-- HTML -->
+        <article class="widget w-[180px] min-h-[180px] p-3" aria-label="HTML">
+          <div class="widget-head">
+            <div class="min-w-0"><div class="widget-title">HTML</div><div class="widget-sub">subtítulo</div></div>
+            <span class="widget-menu"><i data-lucide="maximize-2" class="size-3.5"></i></span>
+          </div>
+          <div class="flex-1 flex items-center justify-center text-card-foreground">
+            <i data-lucide="link" class="size-12" style="stroke-width:2.2"></i>
+          </div>
+          <div class="widget-foot">
+            <span class="widget-info">!</span>
+            <span class="z-avatar size-6 text-[10px]" style="background:#D7E9FF;color:#17457A">JD</span>
+          </div>
+        </article>
+
+        <!-- Trend -->
+        <article class="widget w-[180px] min-h-[180px] p-3" aria-label="Trend">
+          <div class="widget-head">
+            <div class="min-w-0"><div class="widget-title">Trend</div><div class="widget-sub">subtítulo</div></div>
+            <span class="widget-menu"><i data-lucide="maximize-2" class="size-3.5"></i></span>
+          </div>
+          <div class="mt-1 flex-1 overflow-hidden rounded-lg">
+            <div class="px-0.5 pb-1 text-[11px] font-medium text-card-foreground">Título do gráfico</div>
+            <svg viewBox="0 0 160 78" preserveAspectRatio="none" class="h-[78px] w-full">
+              <defs>
+                <linearGradient id="trendTop" x1="0" y1="0" x2="0" y2="1"><stop offset="0" stop-color="rgb(var(--destructive))" stop-opacity="0.95"/><stop offset="1" stop-color="rgb(var(--destructive))" stop-opacity="0.5"/></linearGradient>
+                <linearGradient id="trendBot" x1="0" y1="0" x2="0" y2="1"><stop offset="0" stop-color="rgb(var(--success))" stop-opacity="0.5"/><stop offset="1" stop-color="rgb(var(--success))" stop-opacity="0.95"/></linearGradient>
+              </defs>
+              <rect x="0" y="0" width="160" height="39" fill="url(#trendTop)"/>
+              <rect x="0" y="39" width="160" height="39" fill="url(#trendBot)"/>
+              <path d="M0 40 C20 30 30 24 45 30 S70 46 90 40 115 24 135 30 160 36 160 36" fill="none" stroke="#fff" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"/>
+            </svg>
+          </div>
+          <div class="widget-foot pt-1.5">
+            <span class="widget-info">!</span>
+            <span class="z-avatar size-6 text-[10px]" style="background:#D7E9FF;color:#17457A">JD</span>
+          </div>
+        </article>
+
+        <!-- Texto -->
+        <article class="widget w-[180px] min-h-[180px] p-3" aria-label="Texto">
+          <div class="widget-head">
+            <div class="min-w-0"><div class="widget-title">Texto</div><div class="widget-sub">subtítulo</div></div>
+            <span class="widget-menu"><i data-lucide="maximize-2" class="size-3.5"></i></span>
+          </div>
+          <div class="mt-2 flex-1 space-y-1.5">
+            <span class="block h-2 w-[90%] rounded bg-muted"></span>
+            <span class="block h-2 w-full rounded bg-muted"></span>
+            <span class="block h-2 w-[75%] rounded bg-muted"></span>
+            <span class="block h-2 w-[85%] rounded bg-muted"></span>
+          </div>
+        </article>
+
+        <!-- Time (equipe) -->
+        <article class="widget w-[180px] min-h-[180px] p-3" aria-label="Time">
+          <div class="widget-head">
+            <div class="min-w-0"><div class="widget-title">Time</div></div>
+            <span class="widget-menu"><i data-lucide="maximize-2" class="size-3.5"></i></span>
+          </div>
+          <div class="mt-2 flex-1 grid grid-cols-6 gap-1.5 content-start">
+            <span class="z-avatar size-6 text-[9px]" style="background:#FFE3C2;color:#9a4a00">A1</span>
+            <span class="z-avatar size-6 text-[9px]" style="background:#FFE3C2;color:#9a4a00">A2</span>
+            <span class="z-avatar size-6 text-[9px]" style="background:#FFE3C2;color:#9a4a00">A3</span>
+            <span class="z-avatar size-6 text-[9px]" style="background:#FFE3C2;color:#9a4a00">A4</span>
+            <span class="z-avatar size-6 text-[9px]" style="background:#FFE3C2;color:#9a4a00">A5</span>
+            <span class="z-avatar size-6 text-[9px]" style="background:#FFE3C2;color:#9a4a00">A6</span>
+            <span class="z-avatar size-6 text-[9px]" style="background:#FFE3C2;color:#9a4a00">B1</span>
+            <span class="z-avatar size-6 text-[9px]" style="background:#FFE3C2;color:#9a4a00">B2</span>
+            <span class="z-avatar size-6 text-[9px]" style="background:#FFE3C2;color:#9a4a00">B3</span>
+            <span class="z-avatar size-6 text-[9px]" style="background:#FFE3C2;color:#9a4a00">B4</span>
+            <span class="z-avatar size-6 text-[9px]" style="background:#FFE3C2;color:#9a4a00">B5</span>
+            <span class="z-avatar size-6 text-[9px]" style="background:#FFE3C2;color:#9a4a00">B6</span>
+            <span class="z-avatar size-6 text-[9px]" style="background:#FFE3C2;color:#9a4a00">C1</span>
+            <span class="z-avatar size-6 text-[9px]" style="background:#FFE3C2;color:#9a4a00">C2</span>
+            <span class="z-avatar size-6 text-[9px]" style="background:#FFE3C2;color:#9a4a00">C3</span>
+            <span class="z-avatar size-6 text-[9px]" style="background:#FFE3C2;color:#9a4a00">C4</span>
+            <span class="z-avatar size-6 text-[9px]" style="background:#FFE3C2;color:#9a4a00">C5</span>
+            <span class="z-avatar size-6 text-[9px]" style="background:#FFE3C2;color:#9a4a00">C6</span>
+          </div>
+        </article>
+
+        <!-- Widget PP (formato vazio) -->
+        <article class="widget w-[180px] min-h-[180px] p-3 border-dashed" aria-label="Widget PP (formato)">
+          <div class="widget-head">
+            <div class="min-w-0"><div class="widget-title">Nome</div><div class="widget-sub">subtítulo</div></div>
+            <span class="widget-menu"><i data-lucide="maximize-2" class="size-3.5"></i></span>
+          </div>
+          <div class="flex-1 flex items-center justify-center text-[11px] text-muted-foreground/70">formato PP</div>
+          <div class="widget-foot">
+            <span class="widget-info">!</span>
+            <span class="z-avatar size-6 text-[10px] bg-muted">NU</span>
+          </div>
+        </article>
+
+      </div>
+    </section>
+
+    <!-- ====================== SIMPLIFICADO — 180×130 ====================== -->
+    <section id="simpl" class="mt-12 scroll-mt-28">
+      <div class="mb-4 flex items-baseline gap-3">
+        <h2 class="text-base font-bold text-card-foreground">Simplificado — 180 × 130</h2>
+        <span class="text-[13px] text-muted-foreground">Variante compacta (cabeçalho + valor + rodapé)</span>
+      </div>
+
+      <div class="flex flex-wrap gap-5">
+
+        <!-- Calendário simplificado (dia) -->
+        <article class="widget w-[180px] min-h-[130px] p-3" aria-label="Calendário simplificado">
+          <div class="widget-head">
+            <div class="min-w-0"><div class="widget-title">Calendário</div><div class="widget-sub">subtítulo</div></div>
+            <span class="widget-menu"><i data-lucide="maximize-2" class="size-3.5"></i></span>
+          </div>
+          <div class="mt-2 flex-1">
+            <div class="panel flex h-full items-center justify-center">
+              <span class="font-display text-[44px] font-semibold leading-none text-foreground" style="letter-spacing:-2px">01</span>
+            </div>
+          </div>
+          <div class="widget-foot">
+            <span class="widget-info">!</span>
+            <span class="z-avatar size-6 text-[10px]" style="background:#D7E9FF;color:#17457A">JD</span>
+          </div>
+        </article>
+
+        <!-- Número simplificado (valor) -->
+        <article class="widget w-[180px] min-h-[130px] p-3" aria-label="Número simplificado">
+          <div class="widget-head">
+            <div class="min-w-0"><div class="widget-title">Número</div><div class="widget-sub">subtítulo</div></div>
+            <span class="widget-menu"><i data-lucide="maximize-2" class="size-3.5"></i></span>
+          </div>
+          <div class="mt-2 flex-1">
+            <div class="panel flex h-full flex-col items-center justify-center gap-0.5">
+              <span class="font-display text-[38px] font-semibold leading-none text-primary" style="letter-spacing:-1px">3000</span>
+              <span class="text-[11px] font-medium text-muted-foreground">unidade</span>
+            </div>
+          </div>
+          <div class="widget-foot">
+            <span class="widget-info">!</span>
+            <span class="z-avatar size-6 text-[10px]" style="background:#D7E9FF;color:#17457A">JD</span>
+          </div>
+        </article>
+
+      </div>
+    </section>
+
+    <!-- ====================== MP — 370×180 ====================== -->
+    <section id="mp" class="mt-12 scroll-mt-28">
+      <div class="mb-4 flex items-baseline gap-3">
+        <h2 class="text-base font-bold text-card-foreground">MP — 370 × 180</h2>
+        <span class="text-[13px] text-muted-foreground">Formato largo · alguns widgets iniciam neste tamanho</span>
+      </div>
+
+      <div class="flex flex-wrap gap-5">
+
+        <!-- Tabela MP -->
+        <article class="widget w-[370px] min-h-[180px] p-3" aria-label="Tabela (MP)">
+          <div class="widget-head">
+            <div class="min-w-0"><div class="widget-title">Tabela</div><div class="widget-sub">subtítulo</div></div>
+            <span class="widget-menu"><i data-lucide="maximize-2" class="size-3.5"></i></span>
+          </div>
+          <div class="mt-2 flex-1 overflow-hidden rounded-lg border border-border">
+            <table class="z-table">
+              <thead>
+                <tr class="border-b bg-muted/60">
+                  <th class="z-th">TEXTO <i data-lucide="chevron-down" class="inline size-3"></i></th>
+                  <th class="z-th">NÚMERO <i data-lucide="chevron-down" class="inline size-3"></i></th>
+                  <th class="z-th">DATA <i data-lucide="chevron-down" class="inline size-3"></i></th>
+                </tr>
+              </thead>
+              <tbody>
+                <tr class="z-tr border-0">
+                  <td class="z-td text-foreground">Loren ipsum</td>
+                  <td class="z-td text-foreground">312654654</td>
+                  <td class="z-td text-foreground">25/12/1990</td>
+                </tr>
+              </tbody>
+            </table>
+          </div>
+          <div class="widget-foot pt-2">
+            <span class="widget-info">!</span>
+            <span class="z-avatar size-6 text-[10px]" style="background:#FFD8A8;color:#9a4a00">NU</span>
+          </div>
+        </article>
+
+        <!-- Widget MP (formato vazio) -->
+        <article class="widget w-[370px] min-h-[180px] p-3 border-dashed" aria-label="Widget MP (formato)">
+          <div class="widget-head">
+            <div class="min-w-0"><div class="widget-title">Nome</div><div class="widget-sub">subtítulo</div></div>
+            <span class="widget-menu"><i data-lucide="maximize-2" class="size-3.5"></i></span>
+          </div>
+          <div class="flex-1 flex items-center justify-center text-[11px] text-muted-foreground/70">formato MP — 370 × 180</div>
+          <div class="widget-foot">
+            <span class="widget-info">!</span>
+            <span class="z-avatar size-6 text-[10px] bg-muted">NU</span>
+          </div>
+        </article>
+
+      </div>
+    </section>
+
+    <!-- ====================== PM — 180×370 ====================== -->
+    <section id="pm" class="mt-12 scroll-mt-28">
+      <div class="mb-4 flex items-baseline gap-3">
+        <h2 class="text-base font-bold text-card-foreground">PM — 180 × 370</h2>
+        <span class="text-[13px] text-muted-foreground">Formato estreito e alto</span>
+      </div>
+
+      <div class="flex flex-wrap gap-5">
+
+        <!-- Texto (PM) -->
+        <article class="widget w-[180px] min-h-[370px] p-3" aria-label="Texto (PM)">
+          <div class="widget-head">
+            <div class="min-w-0"><div class="widget-title">Texto</div><div class="widget-sub">subtítulo</div></div>
+            <span class="widget-menu"><i data-lucide="maximize-2" class="size-3.5"></i></span>
+          </div>
+          <div class="mt-2 flex-1 space-y-1.5">
+            <span class="block h-2 w-[90%] rounded bg-muted"></span>
+            <span class="block h-2 w-full rounded bg-muted"></span>
+            <span class="block h-2 w-[80%] rounded bg-muted"></span>
+            <span class="block h-2 w-[95%] rounded bg-muted"></span>
+            <span class="block h-2 w-[70%] rounded bg-muted"></span>
+            <span class="block h-2 w-full rounded bg-muted"></span>
+            <span class="block h-2 w-[85%] rounded bg-muted"></span>
+            <span class="block h-2 w-[60%] rounded bg-muted"></span>
+          </div>
+        </article>
+
+        <!-- Calendário (PM) -->
+        <article class="widget w-[180px] min-h-[370px] p-3" aria-label="Calendário (PM)">
+          <div class="widget-head">
+            <div class="min-w-0"><div class="widget-title">Calendário</div></div>
+            <span class="widget-menu"><i data-lucide="maximize-2" class="size-3.5"></i></span>
+          </div>
+          <div class="mt-2 flex-1">
+            <div class="mb-2 text-center text-[12px] font-semibold text-card-foreground">Março 2023</div>
+            <div class="grid grid-cols-7 gap-[3px] text-center text-[9px] font-medium text-muted-foreground">
+              <span>D</span><span>S</span><span>T</span><span>Q</span><span>Q</span><span>S</span><span>S</span>
+            </div>
+            <div class="mt-1 grid grid-cols-7 gap-[3px] text-[10px] font-medium leading-none">
+              <span class="flex h-5 items-center justify-center rounded bg-destructive text-white">1</span>
+              <span class="flex h-5 items-center justify-center rounded text-foreground">2</span>
+              <span class="flex h-5 items-center justify-center rounded bg-success text-white">3</span>
+              <span class="flex h-5 items-center justify-center rounded text-foreground">4</span>
+              <span class="flex h-5 items-center justify-center rounded bg-success text-white">5</span>
+              <span class="flex h-5 items-center justify-center rounded text-foreground">6</span>
+              <span class="flex h-5 items-center justify-center rounded bg-warning text-[#5a4500]">7</span>
+              <span class="flex h-5 items-center justify-center rounded text-foreground">8</span>
+              <span class="flex h-5 items-center justify-center rounded bg-success text-white">9</span>
+              <span class="flex h-5 items-center justify-center rounded text-foreground">10</span>
+              <span class="flex h-5 items-center justify-center rounded bg-destructive text-white">11</span>
+              <span class="flex h-5 items-center justify-center rounded text-foreground">12</span>
+              <span class="flex h-5 items-center justify-center rounded text-foreground">13</span>
+              <span class="flex h-5 items-center justify-center rounded bg-success text-white">14</span>
+              <span class="flex h-5 items-center justify-center rounded bg-success text-white">15</span>
+              <span class="flex h-5 items-center justify-center rounded text-foreground">16</span>
+              <span class="flex h-5 items-center justify-center rounded text-foreground">17</span>
+              <span class="flex h-5 items-center justify-center rounded bg-warning text-[#5a4500]">18</span>
+              <span class="flex h-5 items-center justify-center rounded text-foreground">19</span>
+              <span class="flex h-5 items-center justify-center rounded bg-success text-white">20</span>
+              <span class="flex h-5 items-center justify-center rounded text-foreground">21</span>
+              <span class="flex h-5 items-center justify-center rounded text-foreground">22</span>
+              <span class="flex h-5 items-center justify-center rounded bg-destructive text-white">23</span>
+              <span class="flex h-5 items-center justify-center rounded text-foreground">24</span>
+              <span class="flex h-5 items-center justify-center rounded bg-success text-white">25</span>
+              <span class="flex h-5 items-center justify-center rounded text-foreground">26</span>
+              <span class="flex h-5 items-center justify-center rounded text-foreground">27</span>
+              <span class="flex h-5 items-center justify-center rounded bg-success text-white">28</span>
+              <span class="flex h-5 items-center justify-center rounded text-foreground">29</span>
+              <span class="flex h-5 items-center justify-center rounded text-foreground">30</span>
+              <span class="flex h-5 items-center justify-center rounded bg-success text-white">31</span>
+            </div>
+          </div>
+          <div class="widget-foot pt-2">
+            <span class="widget-info">!</span>
+            <span class="z-avatar size-6 text-[10px]" style="background:#FFD8A8;color:#9a4a00">NU</span>
+          </div>
+        </article>
+
+        <!-- Widget PM (formato vazio) -->
+        <article class="widget w-[180px] min-h-[370px] p-3 border-dashed" aria-label="Widget PM (formato)">
+          <div class="widget-head">
+            <div class="min-w-0"><div class="widget-title">Nome</div><div class="widget-sub">subtítulo</div></div>
+            <span class="widget-menu"><i data-lucide="maximize-2" class="size-3.5"></i></span>
+          </div>
+          <div class="flex-1 flex items-center justify-center text-[11px] text-muted-foreground/70">formato PM</div>
+          <div class="widget-foot">
+            <span class="widget-info">!</span>
+            <span class="z-avatar size-6 text-[10px] bg-muted">NU</span>
+          </div>
+        </article>
+
+      </div>
+    </section>
+
+    <!-- ====================== MM — 370×370 ====================== -->
+    <section id="mm" class="mt-12 scroll-mt-28">
+      <div class="mb-4 flex items-baseline gap-3">
+        <h2 class="text-base font-bold text-card-foreground">MM — 370 × 370</h2>
+        <span class="text-[13px] text-muted-foreground">Widgets densos (listas, tabelas, mídia)</span>
+      </div>
+
+      <div class="flex flex-wrap gap-5">
+
+        <!-- Plano de ação / Action Plans -->
+        <article class="widget w-[370px] h-[370px] p-3" aria-label="Plano de ação">
+          <div class="widget-head">
+            <div class="min-w-0"><div class="widget-title">Action Plans</div></div>
+            <div class="flex shrink-0 items-center gap-1.5">
+              <span class="z-badge z-badge-success">3 No prazo</span>
+              <span class="z-badge z-badge-danger">8 Atrasados</span>
+            </div>
+          </div>
+
+          <div class="mt-2 flex items-center -space-x-2">
+            <span class="relative z-avatar size-8 text-[10px] ring-2 ring-white" style="background:#FFE3C2;color:#9a4a00">JM
+              <span class="absolute -bottom-0.5 -right-0.5 flex size-3.5 items-center justify-center rounded-full bg-warning text-[8px] font-bold text-[#5a4500] ring-2 ring-white">1</span></span>
+            <span class="relative z-avatar size-8 text-[10px] ring-2 ring-white" style="background:#D7E9FF;color:#17457A">AB
+              <span class="absolute -bottom-0.5 -right-0.5 flex size-3.5 items-center justify-center rounded-full bg-destructive text-[8px] font-bold text-white ring-2 ring-white">3</span></span>
+            <span class="relative z-avatar size-8 text-[10px] ring-2 ring-white" style="background:#D8F3DC;color:#2d6a4f">CD
+              <span class="absolute -bottom-0.5 -right-0.5 flex size-3.5 items-center justify-center rounded-full bg-destructive text-[8px] font-bold text-white ring-2 ring-white">5</span></span>
+            <span class="relative z-avatar size-8 text-[10px] ring-2 ring-white" style="background:#FFE0E0;color:#c0392b">EF
+              <span class="absolute -bottom-0.5 -right-0.5 flex size-3.5 items-center justify-center rounded-full bg-destructive text-[8px] font-bold text-white ring-2 ring-white">2</span></span>
+          </div>
+
+          <div class="mt-2.5 flex items-center gap-1.5">
+            <button class="z-btn z-btn-default z-btn-icon rounded-full"><i data-lucide="plus" class="size-4"></i></button>
+            <div class="relative flex-1">
+              <i data-lucide="search" class="pointer-events-none absolute left-2.5 top-1/2 size-3.5 -translate-y-1/2 text-muted-foreground"></i>
+              <input class="z-input pl-7" placeholder="Pesquisar" />
+            </div>
+            <button class="z-btn z-btn-outline z-btn-icon"><i data-lucide="filter" class="size-4"></i></button>
+            <button class="z-btn z-btn-outline z-btn-icon"><i data-lucide="layout-grid" class="size-4"></i></button>
+          </div>
+
+          <div class="scrollthin mt-2.5 flex-1 space-y-2 overflow-y-auto pr-1">
+            <div class="rounded-xl border border-border p-2.5 transition-colors hover:bg-muted/50">
+              <div class="flex items-center justify-between gap-2">
+                <div class="flex min-w-0 items-center gap-2"><span class="size-4 shrink-0 rounded-full border-2 border-[#cccdd3]"></span><span class="z-badge z-badge-neutral">ACP-38444542</span></div>
+                <span class="z-badge z-badge-danger shrink-0">Atrasado</span>
+              </div>
+              <p class="mt-2 text-[13px] font-medium leading-snug text-foreground ll">O operador bateu o braço na máquina</p>
+              <div class="mt-2 flex items-center justify-between text-[11px] text-tertiary">
+                <span class="flex items-center gap-1"><i data-lucide="message-square" class="size-3.5"></i> 2</span>
+                <span class="flex items-center gap-1"><i data-lucide="clock" class="size-3.5"></i> Vence em 2 dias</span>
+              </div>
+            </div>
+            <div class="rounded-xl border border-border p-2.5 transition-colors hover:bg-muted/50">
+              <div class="flex items-center justify-between gap-2">
+                <div class="flex min-w-0 items-center gap-2"><span class="size-4 shrink-0 rounded-full border-2 border-[#cccdd3]"></span><span class="z-badge z-badge-neutral">ACP-0001</span></div>
+                <span class="z-badge z-badge-warning shrink-0">No prazo</span>
+              </div>
+              <p class="mt-2 text-[13px] font-medium leading-snug text-foreground ll">O operador bateu o braço na máquina</p>
+              <div class="mt-2 flex items-center justify-between text-[11px] text-tertiary">
+                <span class="flex items-center gap-1"><i data-lucide="message-square" class="size-3.5"></i> 3</span>
+                <span class="flex items-center gap-1"><i data-lucide="clock" class="size-3.5"></i> Vence em 5 dias</span>
+              </div>
+            </div>
+            <div class="rounded-xl border border-border p-2.5 transition-colors hover:bg-muted/50">
+              <div class="flex items-center justify-between gap-2">
+                <div class="flex min-w-0 items-center gap-2"><span class="size-4 shrink-0 rounded-full border-2 border-[#cccdd3]"></span><span class="z-badge z-badge-neutral">ACP-0003</span></div>
+                <span class="z-badge z-badge-warning shrink-0">No prazo</span>
+              </div>
+              <p class="mt-2 text-[13px] font-medium leading-snug text-foreground ll">Testar geradores de emergência</p>
+              <div class="mt-2 flex items-center justify-between text-[11px] text-tertiary">
+                <span class="flex items-center gap-1"><i data-lucide="message-square" class="size-3.5"></i> 1</span>
+                <span class="flex items-center gap-1"><i data-lucide="clock" class="size-3.5"></i> Vence em 1 dia</span>
+              </div>
+            </div>
+          </div>
+        </article>
+
+        <!-- Checklist / Checks -->
+        <article class="widget w-[370px] h-[370px] p-3" aria-label="Checklist">
+          <div class="widget-head">
+            <div class="min-w-0"><div class="widget-title">Checks</div></div>
+            <span class="widget-menu"><i data-lucide="maximize-2" class="size-3.5"></i></span>
+          </div>
+          <div class="mt-2.5 flex items-center gap-1.5">
+            <button class="z-btn z-btn-default z-btn-icon rounded-full"><i data-lucide="plus" class="size-4"></i></button>
+            <div class="relative flex-1">
+              <i data-lucide="search" class="pointer-events-none absolute left-2.5 top-1/2 size-3.5 -translate-y-1/2 text-muted-foreground"></i>
+              <input class="z-input pl-7" placeholder="Pesquisar" />
+            </div>
+          </div>
+          <div class="scrollthin mt-2 flex-1 overflow-y-auto">
+            <table class="z-table">
+              <thead class="sticky top-0 bg-card">
+                <tr class="border-b">
+                  <th class="z-th">N° <i data-lucide="chevron-down" class="inline size-3"></i></th>
+                  <th class="z-th">CHECK <i data-lucide="chevron-down" class="inline size-3"></i></th>
+                  <th class="z-th text-center">INS. <i data-lucide="chevron-down" class="inline size-3"></i></th>
+                  <th class="z-th text-center">STATUS <i data-lucide="chevron-down" class="inline size-3"></i></th>
+                </tr>
+              </thead>
+              <tbody class="text-[13px]">
+                <tr class="z-tr"><td class="z-td"><a class="font-semibold text-primary">CHK-92/24</a></td><td class="z-td text-foreground">teste 1234…</td><td class="z-td"><span class="mx-auto flex w-fit overflow-hidden rounded-full text-[10px] font-bold text-white"><span class="bg-success px-1.5 py-0.5">2</span><span class="bg-destructive px-1.5 py-0.5">4</span></span></td><td class="z-td text-center"><span class="z-badge z-badge-success">Status</span></td></tr>
+                <tr class="z-tr"><td class="z-td"><a class="font-semibold text-primary">CHK-9/4</a></td><td class="z-td text-foreground">teste 1234…</td><td class="z-td"><span class="mx-auto flex w-fit overflow-hidden rounded-full text-[10px] font-bold text-white"><span class="bg-success px-1.5 py-0.5">2</span><span class="bg-destructive px-1.5 py-0.5">4</span></span></td><td class="z-td text-center"><span class="z-badge z-badge-warning">Status</span></td></tr>
+                <tr class="z-tr"><td class="z-td"><a class="font-semibold text-primary">CHK-9/4</a></td><td class="z-td text-foreground">teste 1234…</td><td class="z-td"><span class="mx-auto flex w-fit overflow-hidden rounded-full text-[10px] font-bold text-white"><span class="bg-success px-1.5 py-0.5">2</span><span class="bg-destructive px-1.5 py-0.5">4</span></span></td><td class="z-td text-center"><span class="z-badge z-badge-warning">Status</span></td></tr>
+                <tr class="z-tr"><td class="z-td"><a class="font-semibold text-primary">CHK-9/4</a></td><td class="z-td text-foreground">teste 1234…</td><td class="z-td"><span class="mx-auto flex w-fit overflow-hidden rounded-full text-[10px] font-bold text-white"><span class="bg-success px-1.5 py-0.5">2</span><span class="bg-destructive px-1.5 py-0.5">4</span></span></td><td class="z-td text-center"><span class="z-badge z-badge-success">Status</span></td></tr>
+                <tr class="z-tr"><td class="z-td"><a class="font-semibold text-primary">CHK-9/4</a></td><td class="z-td text-foreground">teste 1234…</td><td class="z-td"><span class="mx-auto flex w-fit overflow-hidden rounded-full text-[10px] font-bold text-white"><span class="bg-success px-1.5 py-0.5">2</span><span class="bg-destructive px-1.5 py-0.5">4</span></span></td><td class="z-td text-center"><span class="z-badge z-badge-warning">Status</span></td></tr>
+                <tr class="z-tr"><td class="z-td"><a class="font-semibold text-primary">CHK-9/4</a></td><td class="z-td text-foreground">teste 1234…</td><td class="z-td"><span class="mx-auto flex w-fit overflow-hidden rounded-full text-[10px] font-bold text-white"><span class="bg-success px-1.5 py-0.5">2</span><span class="bg-destructive px-1.5 py-0.5">4</span></span></td><td class="z-td text-center"><span class="z-badge z-badge-warning">Status</span></td></tr>
+              </tbody>
+            </table>
+          </div>
+        </article>
+
+        <!-- RCA -->
+        <article class="widget w-[370px] h-[370px] p-3" aria-label="RCA">
+          <div class="widget-head">
+            <div class="min-w-0"><div class="widget-title">RCA</div></div>
+            <span class="widget-menu"><i data-lucide="maximize-2" class="size-3.5"></i></span>
+          </div>
+          <div class="mt-2.5 flex items-center gap-1.5">
+            <button class="z-btn z-btn-default z-btn-icon rounded-full"><i data-lucide="plus" class="size-4"></i></button>
+            <div class="relative flex-1">
+              <i data-lucide="search" class="pointer-events-none absolute left-2.5 top-1/2 size-3.5 -translate-y-1/2 text-muted-foreground"></i>
+              <input class="z-input pl-7" placeholder="Pesquisar" />
+            </div>
+            <button class="z-btn z-btn-outline z-btn-icon"><i data-lucide="filter" class="size-4"></i></button>
+          </div>
+          <div class="scrollthin mt-2.5 flex-1 space-y-2 overflow-y-auto pr-1">
+            <div class="rounded-xl border border-border p-2.5 transition-colors hover:bg-muted/50">
+              <div class="flex items-center justify-between gap-2">
+                <div class="flex min-w-0 items-center gap-2"><span class="size-4 shrink-0 rounded-full border-2 border-[#cccdd3]"></span><span class="z-badge z-badge-neutral">RCA-384</span></div>
+                <span class="z-badge z-badge-warning shrink-0">Aberta</span>
+              </div>
+              <p class="mt-2 text-[13px] font-medium leading-snug text-foreground ll">O operador bateu o braço na máquina</p>
+              <div class="mt-2 flex items-center justify-between text-[11px] text-tertiary">
+                <span class="flex items-center gap-1"><i data-lucide="message-square" class="size-3.5"></i> 1</span>
+                <span>Idade: 36 dias</span>
+              </div>
+            </div>
+            <div class="rounded-xl border border-border p-2.5 transition-colors hover:bg-muted/50">
+              <div class="flex items-center justify-between gap-2">
+                <div class="flex min-w-0 items-center gap-2"><span class="size-4 shrink-0 rounded-full border-2 border-[#cccdd3]"></span><span class="z-badge z-badge-neutral">RCA-385</span></div>
+                <span class="z-badge z-badge-warning shrink-0">Aberta</span>
+              </div>
+              <p class="mt-2 text-[13px] font-medium leading-snug text-foreground ll">O operador bateu o braço na máquina</p>
+              <div class="mt-2 flex items-center justify-between text-[11px] text-tertiary">
+                <span class="flex items-center gap-1"><i data-lucide="message-square" class="size-3.5"></i> 1</span>
+                <span>Idade: 36 dias</span>
+              </div>
+            </div>
+            <div class="rounded-xl border border-border p-2.5 transition-colors hover:bg-muted/50">
+              <div class="flex items-center justify-between gap-2">
+                <div class="flex min-w-0 items-center gap-2"><span class="size-4 shrink-0 rounded-full border-2 border-success bg-success/10"></span><span class="z-badge z-badge-neutral">RCA-386</span></div>
+                <span class="z-badge z-badge-success shrink-0">Completo</span>
+              </div>
+              <p class="mt-2 text-[13px] font-medium leading-snug text-foreground ll">O operador bateu o braço na máquina</p>
+              <div class="mt-2 flex items-center justify-between text-[11px] text-tertiary">
+                <span class="flex items-center gap-1"><i data-lucide="message-square" class="size-3.5"></i> 1</span>
+                <span>Idade: 36 dias</span>
+              </div>
+            </div>
+          </div>
+        </article>
+
+        <!-- Tabela -->
+        <article class="widget w-[370px] h-[370px] p-3" aria-label="Tabela">
+          <div class="widget-head">
+            <div class="min-w-0"><div class="widget-title">Tabela</div><div class="widget-sub">subtítulo</div></div>
+            <span class="widget-menu"><i data-lucide="maximize-2" class="size-3.5"></i></span>
+          </div>
+          <div class="mt-2.5 flex-1 overflow-hidden rounded-lg border border-border">
+            <table class="z-table">
+              <thead>
+                <tr class="border-b bg-muted/60">
+                  <th class="z-th">TEXTO <i data-lucide="chevron-down" class="inline size-3"></i></th>
+                  <th class="z-th">NÚMERO <i data-lucide="chevron-down" class="inline size-3"></i></th>
+                  <th class="z-th">DATA <i data-lucide="chevron-down" class="inline size-3"></i></th>
+                </tr>
+              </thead>
+              <tbody class="text-[13px]">
+                <tr class="z-tr"><td class="z-td text-foreground">Loren ipsum</td><td class="z-td text-foreground">312654654</td><td class="z-td text-foreground">25/12/1990</td></tr>
+              </tbody>
+            </table>
+          </div>
+          <div class="widget-foot pt-2">
+            <span class="widget-info">!</span>
+            <span class="z-avatar size-6 text-[10px]" style="background:#FFD8A8;color:#9a4a00">NU</span>
+          </div>
+        </article>
+
+        <!-- Lista de presença -->
+        <article class="widget w-[370px] h-[370px] p-3" aria-label="Lista de presença">
+          <div class="widget-head">
+            <div class="min-w-0"><div class="widget-title">Lista de presença</div></div>
+            <span class="widget-menu"><i data-lucide="maximize-2" class="size-3.5"></i></span>
+          </div>
+          <div class="mt-3 flex items-center justify-between">
+            <span class="text-[12px] font-semibold text-foreground">21–27 Abr</span>
+            <div class="flex gap-1">
+              <button class="z-btn z-btn-outline z-btn-icon size-6"><i data-lucide="chevron-left" class="size-3.5"></i></button>
+              <button class="z-btn z-btn-outline z-btn-icon size-6"><i data-lucide="chevron-right" class="size-3.5"></i></button>
+            </div>
+          </div>
+          <div class="mt-2 flex-1">
+            <div class="grid grid-cols-[74px_repeat(7,1fr)] gap-1 pb-1">
+              <span></span>
+              <span class="text-center text-[10px] font-medium text-muted-foreground">21</span>
+              <span class="text-center text-[10px] font-medium text-muted-foreground">22</span>
+              <span class="text-center text-[10px] font-medium text-muted-foreground">23</span>
+              <span class="text-center text-[10px] font-medium text-muted-foreground">24</span>
+              <span class="text-center text-[10px] font-medium text-muted-foreground">25</span>
+              <span class="text-center text-[10px] font-medium text-muted-foreground">26</span>
+              <span class="text-center text-[10px] font-medium text-muted-foreground">27</span>
+            </div>
+            <div class="space-y-1">
+              <div class="grid grid-cols-[74px_repeat(7,1fr)] items-center gap-1">
+                <span class="flex min-w-0 items-center gap-1.5"><span class="z-avatar size-6 shrink-0 text-[8px]" style="background:#FFE3C2;color:#9a4a00">LT</span><span class="truncate text-[11px] font-medium text-foreground">Laura T.</span></span>
+                <span class="flex h-6 items-center justify-center rounded-md bg-success text-white"><i data-lucide="check" class="size-3"></i></span>
+                <span class="flex h-6 items-center justify-center rounded-md bg-warning text-white"><i data-lucide="minus" class="size-3"></i></span>
+                <span class="flex h-6 items-center justify-center rounded-md bg-success text-white"><i data-lucide="check" class="size-3"></i></span>
+                <span class="flex h-6 items-center justify-center rounded-md bg-success text-white"><i data-lucide="check" class="size-3"></i></span>
+                <span class="flex h-6 items-center justify-center rounded-md bg-success text-white"><i data-lucide="check" class="size-3"></i></span>
+                <span class="flex h-6 items-center justify-center rounded-md bg-destructive text-white"><i data-lucide="x" class="size-3"></i></span>
+                <span class="flex h-6 items-center justify-center rounded-md bg-success text-white"><i data-lucide="check" class="size-3"></i></span>
+              </div>
+              <div class="grid grid-cols-[74px_repeat(7,1fr)] items-center gap-1">
+                <span class="flex min-w-0 items-center gap-1.5"><span class="z-avatar size-6 shrink-0 text-[8px]" style="background:#D7E9FF;color:#17457A">JS</span><span class="truncate text-[11px] font-medium text-foreground">Jane S.</span></span>
+                <span class="flex h-6 items-center justify-center rounded-md bg-success text-white"><i data-lucide="check" class="size-3"></i></span>
+                <span class="flex h-6 items-center justify-center rounded-md bg-success text-white"><i data-lucide="check" class="size-3"></i></span>
+                <span class="flex h-6 items-center justify-center rounded-md bg-warning text-white"><i data-lucide="minus" class="size-3"></i></span>
+                <span class="flex h-6 items-center justify-center rounded-md bg-success text-white"><i data-lucide="check" class="size-3"></i></span>
+                <span class="flex h-6 items-center justify-center rounded-md bg-success text-white"><i data-lucide="check" class="size-3"></i></span>
+                <span class="flex h-6 items-center justify-center rounded-md bg-success text-white"><i data-lucide="check" class="size-3"></i></span>
+                <span class="flex h-6 items-center justify-center rounded-md bg-success text-white"><i data-lucide="check" class="size-3"></i></span>
+              </div>
+              <div class="grid grid-cols-[74px_repeat(7,1fr)] items-center gap-1">
+                <span class="flex min-w-0 items-center gap-1.5"><span class="z-avatar size-6 shrink-0 text-[8px]" style="background:#D8F3DC;color:#2d6a4f">NJ</span><span class="truncate text-[11px] font-medium text-foreground">Nick J.</span></span>
+                <span class="flex h-6 items-center justify-center rounded-md bg-success text-white"><i data-lucide="check" class="size-3"></i></span>
+                <span class="flex h-6 items-center justify-center rounded-md bg-success text-white"><i data-lucide="check" class="size-3"></i></span>
+                <span class="flex h-6 items-center justify-center rounded-md bg-success text-white"><i data-lucide="check" class="size-3"></i></span>
+                <span class="flex h-6 items-center justify-center rounded-md bg-success text-white"><i data-lucide="check" class="size-3"></i></span>
+                <span class="flex h-6 items-center justify-center rounded-md bg-success text-white"><i data-lucide="check" class="size-3"></i></span>
+                <span class="flex h-6 items-center justify-center rounded-md bg-success text-white"><i data-lucide="check" class="size-3"></i></span>
+                <span class="flex h-6 items-center justify-center rounded-md bg-success text-white"><i data-lucide="check" class="size-3"></i></span>
+              </div>
+              <div class="grid grid-cols-[74px_repeat(7,1fr)] items-center gap-1">
+                <span class="flex min-w-0 items-center gap-1.5"><span class="z-avatar size-6 shrink-0 text-[8px]" style="background:#FFE0E0;color:#c0392b">DB</span><span class="truncate text-[11px] font-medium text-foreground">Davie B.</span></span>
+                <span class="flex h-6 items-center justify-center rounded-md bg-destructive text-white"><i data-lucide="x" class="size-3"></i></span>
+                <span class="flex h-6 items-center justify-center rounded-md bg-success text-white"><i data-lucide="check" class="size-3"></i></span>
+                <span class="flex h-6 items-center justify-center rounded-md bg-success text-white"><i data-lucide="check" class="size-3"></i></span>
+                <span class="flex h-6 items-center justify-center rounded-md bg-warning text-white"><i data-lucide="minus" class="size-3"></i></span>
+                <span class="flex h-6 items-center justify-center rounded-md bg-success text-white"><i data-lucide="check" class="size-3"></i></span>
+                <span class="flex h-6 items-center justify-center rounded-md bg-success text-white"><i data-lucide="check" class="size-3"></i></span>
+                <span class="flex h-6 items-center justify-center rounded-md bg-success text-white"><i data-lucide="check" class="size-3"></i></span>
+              </div>
+              <div class="grid grid-cols-[74px_repeat(7,1fr)] items-center gap-1">
+                <span class="flex min-w-0 items-center gap-1.5"><span class="z-avatar size-6 shrink-0 text-[8px]" style="background:#E9D8FD;color:#6b21a8">MP</span><span class="truncate text-[11px] font-medium text-foreground">Marco P.</span></span>
+                <span class="flex h-6 items-center justify-center rounded-md bg-success text-white"><i data-lucide="check" class="size-3"></i></span>
+                <span class="flex h-6 items-center justify-center rounded-md bg-success text-white"><i data-lucide="check" class="size-3"></i></span>
+                <span class="flex h-6 items-center justify-center rounded-md bg-success text-white"><i data-lucide="check" class="size-3"></i></span>
+                <span class="flex h-6 items-center justify-center rounded-md bg-success text-white"><i data-lucide="check" class="size-3"></i></span>
+                <span class="flex h-6 items-center justify-center rounded-md bg-warning text-white"><i data-lucide="minus" class="size-3"></i></span>
+                <span class="flex h-6 items-center justify-center rounded-md bg-success text-white"><i data-lucide="check" class="size-3"></i></span>
+                <span class="flex h-6 items-center justify-center rounded-md bg-success text-white"><i data-lucide="check" class="size-3"></i></span>
+              </div>
+            </div>
+            <div class="mt-2.5 flex flex-wrap items-center gap-x-3 gap-y-1 text-[10px] text-muted-foreground">
+              <span class="flex items-center gap-1"><span class="flex size-3.5 items-center justify-center rounded-full bg-success text-white"><i data-lucide="check" class="size-2.5"></i></span>Presente</span>
+              <span class="flex items-center gap-1"><span class="flex size-3.5 items-center justify-center rounded-full bg-warning text-white"><i data-lucide="minus" class="size-2.5"></i></span>A confirmar</span>
+              <span class="flex items-center gap-1"><span class="flex size-3.5 items-center justify-center rounded-full bg-destructive text-white"><i data-lucide="x" class="size-2.5"></i></span>Ausente</span>
+            </div>
+          </div>
+        </article>
+
+        <!-- Agenda do dia -->
+        <article class="widget w-[370px] h-[370px] p-3" aria-label="Agenda do dia">
+          <div class="widget-head">
+            <div class="min-w-0"><div class="widget-title">Agenda do dia</div></div>
+            <span class="widget-menu"><i data-lucide="maximize-2" class="size-3.5"></i></span>
+          </div>
+          <div class="mt-3 flex items-center gap-3">
+            <span class="flex size-9 shrink-0 items-center justify-center rounded-full bg-[#161616] text-white"><i data-lucide="clock" class="size-5"></i></span>
+            <div class="flex items-center gap-1">
+              <span class="flex h-10 w-7 items-center justify-center rounded-lg bg-gradient-to-b from-[#2b2b2b] to-[#0d0d0d] text-2xl font-bold text-white shadow-sm ring-1 ring-white/10">0</span>
+              <span class="flex h-10 w-7 items-center justify-center rounded-lg bg-gradient-to-b from-[#2b2b2b] to-[#0d0d0d] text-2xl font-bold text-white shadow-sm ring-1 ring-white/10">9</span>
+              <span class="px-0.5 text-2xl font-bold text-card-foreground">:</span>
+              <span class="flex h-10 w-7 items-center justify-center rounded-lg bg-gradient-to-b from-[#2b2b2b] to-[#0d0d0d] text-2xl font-bold text-white shadow-sm ring-1 ring-white/10">4</span>
+              <span class="flex h-10 w-7 items-center justify-center rounded-lg bg-gradient-to-b from-[#2b2b2b] to-[#0d0d0d] text-2xl font-bold text-white shadow-sm ring-1 ring-white/10">5</span>
+            </div>
+          </div>
+          <div class="z-progress mt-3"><i style="width:62%"></i></div>
+          <div class="mt-3 flex items-center justify-center gap-3">
+            <button class="z-btn z-btn-default z-btn-icon size-7 rounded-full"><i data-lucide="play" class="size-3.5"></i></button>
+            <button class="z-btn z-btn-default z-btn-icon size-7 rounded-full"><i data-lucide="square" class="size-3.5"></i></button>
+            <button class="z-btn z-btn-default z-btn-icon size-7 rounded-full"><i data-lucide="refresh-cw" class="size-3.5"></i></button>
+          </div>
+          <div class="mt-4 flex-1 space-y-2 text-[13px]">
+            <div class="flex items-center justify-between text-muted-foreground line-through"><span>Action plans</span><span>5 min</span></div>
+            <div class="flex items-center justify-between text-foreground"><span>Checklist</span><span>2 min</span></div>
+            <div class="flex items-center justify-between text-foreground"><span>Defect tag</span><span>4 min</span></div>
+          </div>
+        </article>
+
+        <!-- Documentos -->
+        <article class="widget w-[370px] h-[370px] p-3" aria-label="Documentos">
+          <div class="widget-head">
+            <div class="min-w-0"><div class="widget-title">Documentos</div></div>
+            <span class="widget-menu"><i data-lucide="maximize-2" class="size-3.5"></i></span>
+          </div>
+          <div class="mt-2.5 flex items-center gap-1.5">
+            <button class="z-btn z-btn-default z-btn-icon rounded-full"><i data-lucide="plus" class="size-4"></i></button>
+            <div class="relative flex-1">
+              <i data-lucide="search" class="pointer-events-none absolute left-2.5 top-1/2 size-3.5 -translate-y-1/2 text-muted-foreground"></i>
+              <input class="z-input pl-7" placeholder="Pesquisar" />
+            </div>
+          </div>
+          <div class="scrollthin mt-2 flex-1 divide-y divide-border overflow-y-auto">
+            <div class="flex items-center gap-2.5 py-2">
+              <i data-lucide="file-text" class="size-6 shrink-0 text-primary"></i>
+              <div class="min-w-0 flex-1"><a class="block text-[13px] font-semibold text-primary hover:underline">nome.docx</a><p class="truncate text-[11px] text-muted-foreground">Atualização: 26/10/2023 18:25 · Administrador eWCM(Admin)</p></div>
+              <button class="text-[#0a0a0b] hover:text-destructive"><i data-lucide="trash-2" class="size-4"></i></button>
+            </div>
+            <div class="flex items-center gap-2.5 py-2">
+              <i data-lucide="sheet" class="size-6 shrink-0 text-success"></i>
+              <div class="min-w-0 flex-1"><a class="block text-[13px] font-semibold text-primary hover:underline">nome.xlsx</a><p class="truncate text-[11px] text-muted-foreground">Atualização: 26/10/2023 18:25 · Administrador eWCM(Admin)</p></div>
+              <button class="text-muted-foreground/40" disabled><i data-lucide="trash-2" class="size-4"></i></button>
+            </div>
+            <div class="flex items-center gap-2.5 py-2">
+              <i data-lucide="presentation" class="size-6 shrink-0" style="color:#d97706"></i>
+              <div class="min-w-0 flex-1"><a class="block text-[13px] font-semibold text-primary hover:underline">nome.pptx</a><p class="truncate text-[11px] text-muted-foreground">Atualização: 26/10/2023 18:25 · Administrador eWCM(Admin)</p></div>
+              <button class="text-muted-foreground/40" disabled><i data-lucide="trash-2" class="size-4"></i></button>
+            </div>
+            <div class="flex items-center gap-2.5 py-2">
+              <i data-lucide="file" class="size-6 shrink-0 text-destructive"></i>
+              <div class="min-w-0 flex-1"><a class="block text-[13px] font-semibold text-primary hover:underline">nome.pdf</a><p class="truncate text-[11px] text-muted-foreground">Atualização: 26/10/2023 18:25 · Administrador eWCM(Admin)</p></div>
+              <button class="text-muted-foreground/40" disabled><i data-lucide="trash-2" class="size-4"></i></button>
+            </div>
+          </div>
+        </article>
+
+        <!-- Etiqueta / Defect -->
+        <article class="widget w-[370px] h-[370px] p-3" aria-label="Etiqueta (Defect)">
+          <div class="widget-head">
+            <div class="min-w-0"><div class="widget-title">Defect</div></div>
+            <span class="widget-menu"><i data-lucide="maximize-2" class="size-3.5"></i></span>
+          </div>
+          <div class="relative mt-2 h-[104px] shrink-0 overflow-hidden rounded-lg" style="background:linear-gradient(135deg,#cfd8e3,#aab6c6 60%,#8d9aab)">
+            <span class="absolute left-1/3 top-5 -translate-x-1/2"><i data-lucide="map-pin" class="size-6 fill-destructive text-white"></i></span>
+            <span class="absolute left-[58%] top-9 -translate-x-1/2"><i data-lucide="map-pin" class="size-6 fill-primary text-white"></i></span>
+            <span class="absolute left-[78%] top-4 -translate-x-1/2"><i data-lucide="map-pin" class="size-6 fill-destructive text-white"></i></span>
+            <i data-lucide="factory" class="absolute bottom-2 right-2 size-7 text-white/60"></i>
+          </div>
+          <div class="mt-2 flex items-center gap-1.5">
+            <button class="z-btn z-btn-default z-btn-icon rounded-full"><i data-lucide="plus" class="size-4"></i></button>
+            <div class="relative flex-1">
+              <i data-lucide="search" class="pointer-events-none absolute left-2.5 top-1/2 size-3.5 -translate-y-1/2 text-muted-foreground"></i>
+              <input class="z-input pl-7" placeholder="Pesquisar" />
+            </div>
+            <button class="z-btn z-btn-outline z-btn-icon"><i data-lucide="calendar-check" class="size-4"></i></button>
+            <button class="z-btn z-btn-outline z-btn-icon"><i data-lucide="calendar" class="size-4"></i></button>
+          </div>
+          <div class="mt-1 flex-1 overflow-hidden">
+            <table class="z-table">
+              <thead><tr class="border-b"><th class="z-th">N° <i data-lucide="chevron-down" class="inline size-3"></i></th><th class="z-th">DEFECT <i data-lucide="chevron-down" class="inline size-3"></i></th><th class="z-th text-right">STATUS <i data-lucide="chevron-down" class="inline size-3"></i></th></tr></thead>
+              <tbody class="text-[13px]">
+                <tr class="z-tr"><td class="z-td"><a class="font-semibold text-primary">DFT-999999</a></td><td class="z-td text-foreground">Lorem Ipsum is simply d.</td><td class="z-td text-right"><span class="z-badge z-badge-danger">Late</span></td></tr>
+              </tbody>
+            </table>
+          </div>
+          <div class="flex items-center justify-end gap-3 pt-1 text-[11px] text-muted-foreground">
+            <span class="flex items-center gap-1">Items per page: 10 <i data-lucide="chevron-down" class="size-3"></i></span>
+            <span>1 -10 de 10</span>
+          </div>
+        </article>
+
+        <!-- Recado -->
+        <article class="widget w-[370px] h-[370px] p-3" aria-label="Recado">
+          <div class="widget-head">
+            <div class="min-w-0"><div class="widget-title">Recado</div></div>
+            <span class="widget-menu"><i data-lucide="maximize-2" class="size-3.5"></i></span>
+          </div>
+          <div class="relative mt-2 h-[150px] shrink-0 overflow-hidden rounded-lg" style="background:linear-gradient(135deg,#e8743b,#c2410c 55%,#7c2d12)">
+            <i data-lucide="bot" class="absolute left-1/2 top-1/2 size-16 -translate-x-1/2 -translate-y-1/2 text-white/55"></i>
+            <button class="absolute left-1.5 top-1/2 flex size-6 -translate-y-1/2 items-center justify-center rounded-full bg-white/85 text-foreground shadow"><i data-lucide="chevron-left" class="size-4"></i></button>
+            <button class="absolute right-1.5 top-1/2 flex size-6 -translate-y-1/2 items-center justify-center rounded-full bg-white/85 text-foreground shadow"><i data-lucide="chevron-right" class="size-4"></i></button>
+          </div>
+          <div class="mt-2.5 flex items-start justify-between gap-2">
+            <h3 class="text-[15px] font-bold leading-snug text-primary">Título grande com uma quebra de duas linhas</h3>
+            <button class="mt-0.5 shrink-0 text-muted-foreground"><i data-lucide="eye-off" class="size-4"></i></button>
+          </div>
+          <p class="mt-1.5 flex-1 text-[13px] leading-snug text-foreground ll3">Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed eiusmod tempor incididunt ut labore et dolore magna aliqua.</p>
+        </article>
+
+        <!-- Pesquisa -->
+        <article class="widget w-[370px] h-[370px] p-3" aria-label="Pesquisa">
+          <div class="widget-head">
+            <div class="min-w-0"><div class="widget-title">Pesquisa</div></div>
+            <span class="widget-menu"><i data-lucide="maximize-2" class="size-3.5"></i></span>
+          </div>
+          <div class="flex-1 flex flex-col items-center justify-center gap-3">
+            <button class="flex size-20 items-center justify-center rounded-full bg-gradient-to-br from-[#5b5bff] to-primary text-primary-foreground shadow-lg ring-8 ring-primary/10 transition-transform hover:scale-105">
+              <span class="flex size-12 items-center justify-center rounded-full bg-white text-primary shadow-inner"><i data-lucide="play" class="size-6 fill-primary" style="margin-left:2px"></i></span>
+            </button>
+            <span class="text-sm font-medium text-foreground">Iniciar</span>
+          </div>
+        </article>
+
+        <!-- Feed -->
+        <article class="widget w-[370px] h-[370px] p-3" style="background:#dce9fb" aria-label="Feed">
+          <div class="widget-head">
+            <div class="min-w-0"><div class="widget-title">Feed</div></div>
+          </div>
+          <div class="mt-2.5 flex items-center gap-2">
+            <input class="z-input rounded-full border-0 bg-white shadow-sm" placeholder="Comentar" />
+            <button class="z-btn z-btn-default z-btn-icon rounded-full"><i data-lucide="send" class="size-4"></i></button>
+            <button class="z-btn z-btn-default z-btn-icon rounded-full"><i data-lucide="more-vertical" class="size-4"></i></button>
+          </div>
+          <div class="scrollthin mt-3 flex-1 space-y-3 overflow-y-auto pr-1">
+            <div class="flex gap-2">
+              <span class="z-avatar size-8 shrink-0 bg-[#cdd5df] text-[10px]">NU</span>
+              <div class="min-w-0 flex-1">
+                <div class="rounded-xl bg-[#c8ddf7] p-2.5">
+                  <div class="flex items-baseline gap-2"><span class="text-[13px] font-semibold text-card-foreground">Nome usuário</span><span class="text-[11px] text-muted-foreground">5:02 am</span></div>
+                  <p class="mt-1 text-[13px] leading-snug text-foreground">Lorem ipsum dolor sit amet, consectetur adipiscing elit. Vivamus mauris nulla, volutpat a turpis vitae, consectetur</p>
+                </div>
+                <div class="mt-1 flex gap-2 px-1 text-[11px] font-medium text-foreground">
+                  <button class="hover:text-primary">Reagir</button><span class="text-muted-foreground">|</span><button class="hover:text-primary">Responder</button><span class="text-muted-foreground">|</span><button class="hover:text-primary">Traduzir</button><span class="text-muted-foreground">|</span><button class="hover:text-primary">Excluir</button>
+                </div>
+              </div>
+            </div>
+            <div class="flex gap-2">
+              <span class="z-avatar size-8 shrink-0 bg-[#cdd5df] text-[10px]">NU</span>
+              <div class="min-w-0 flex-1">
+                <div class="rounded-xl bg-[#e7e9ee] p-2.5">
+                  <div class="flex items-baseline gap-2"><span class="text-[13px] font-semibold text-card-foreground">Nome usuário</span><span class="text-[11px] text-muted-foreground">5:02 am</span></div>
+                  <p class="mt-1 text-[13px] leading-snug text-foreground">Lorem ipsum dolor sit amet, consectetur adipiscing elit. Vivamus mauris nulla, volutpat a turpis vitae, consectetur</p>
+                </div>
+              </div>
+            </div>
+          </div>
+        </article>
+
+        <!-- Quadro branco -->
+        <article class="widget w-[370px] h-[370px] p-3" aria-label="Quadro branco">
+          <div class="widget-head">
+            <div class="min-w-0"><div class="widget-title">Quadro branco</div><div class="widget-sub">subtítulo</div></div>
+            <span class="widget-menu"><i data-lucide="maximize-2" class="size-3.5"></i></span>
+          </div>
+          <div class="dotgrid mt-2.5 flex-1 rounded-lg border border-dashed border-border"></div>
+          <div class="widget-foot pt-2">
+            <span class="widget-info">!</span>
+            <span class="z-avatar size-6 text-[10px] bg-muted">NU</span>
+          </div>
+        </article>
+
+        <!-- Widget MM (formato vazio) -->
+        <article class="widget w-[370px] h-[370px] p-3 border-dashed" aria-label="Widget MM (formato)">
+          <div class="widget-head">
+            <div class="min-w-0"><div class="widget-title">Nome</div><div class="widget-sub">subtítulo</div></div>
+            <span class="widget-menu"><i data-lucide="maximize-2" class="size-3.5"></i></span>
+          </div>
+          <div class="flex-1 flex items-center justify-center text-[11px] text-muted-foreground/70">formato MM — 370 × 370</div>
+          <div class="widget-foot">
+            <span class="widget-info">!</span>
+            <span class="z-avatar size-6 text-[10px] bg-muted">NU</span>
+          </div>
+        </article>
+
+      </div>
+    </section>
+
+    <!-- ====================== AVANÇADOS ====================== -->
+    <section id="adv" class="mt-12 scroll-mt-28">
+      <div class="mb-4 flex items-baseline gap-3">
+        <h2 class="text-base font-bold text-card-foreground">Avançados</h2>
+        <span class="text-[13px] text-muted-foreground">Radial (anéis) · Pirâmide · Checks com Score</span>
+      </div>
+
+      <div class="flex flex-wrap gap-5">
+
+        <!-- Radial (anéis de maturidade) -->
+        <article class="widget w-[370px] h-[370px] p-3" aria-label="Radial">
+          <div class="widget-head">
+            <div class="min-w-0"><div class="widget-title">Radial</div><div class="widget-sub">subtítulo</div></div>
+            <span class="widget-menu"><i data-lucide="maximize-2" class="size-3.5"></i></span>
+          </div>
+          <div class="mt-1 flex-1 flex items-center justify-center">
+            <svg viewBox="0 0 250 250" class="h-full max-h-[270px]">
+<path d="M126.2 67.0 L126.7 46.0 A79 79 0 0 1 139.3 47.3 L135.5 68.0 A58 58 0 0 0 126.2 67.0 Z" fill="#14ae5c"/>
+<path d="M137.9 68.4 L142.5 48.0 A79 79 0 0 1 154.6 51.8 L146.8 71.2 A58 58 0 0 0 137.9 68.4 Z" fill="#14ae5c"/>
+<path d="M149.0 72.2 L157.7 53.1 A79 79 0 0 1 168.8 59.2 L157.1 76.7 A58 58 0 0 0 149.0 72.2 Z" fill="#14ae5c"/>
+<path d="M159.1 78.1 L171.5 61.1 A79 79 0 0 1 181.1 69.4 L166.2 84.2 A58 58 0 0 0 159.1 78.1 Z" fill="#14ae5c"/>
+<path d="M167.9 85.9 L183.4 71.8 A79 79 0 0 1 191.2 81.8 L173.6 93.3 A58 58 0 0 0 167.9 85.9 Z" fill="#14ae5c"/>
+<path d="M174.9 95.4 L192.9 84.6 A79 79 0 0 1 198.5 96.0 L179.0 103.7 A58 58 0 0 0 174.9 95.4 Z" fill="#ec221f"/>
+<path d="M179.8 106.0 L199.6 99.1 A79 79 0 0 1 202.8 111.4 L182.1 115.0 A58 58 0 0 0 179.8 106.0 Z" fill="#14ae5c"/>
+<path d="M182.5 117.4 L203.3 114.7 A79 79 0 0 1 204.0 127.3 L183.0 126.7 A58 58 0 0 0 182.5 117.4 Z" fill="#14ae5c"/>
+<path d="M182.9 129.2 L203.8 130.7 A79 79 0 0 1 201.9 143.2 L181.4 138.4 A58 58 0 0 0 182.9 129.2 Z" fill="#14ae5c"/>
+<path d="M180.8 140.7 L201.0 146.4 A79 79 0 0 1 196.6 158.3 L177.6 149.4 A58 58 0 0 0 180.8 140.7 Z" fill="#ec221f"/>
+<path d="M176.5 151.6 L195.2 161.3 A79 79 0 0 1 188.5 172.0 L171.6 159.5 A58 58 0 0 0 176.5 151.6 Z" fill="#14ae5c"/>
+<path d="M170.1 161.5 L186.4 174.7 A79 79 0 0 1 177.7 183.9 L163.7 168.2 A58 58 0 0 0 170.1 161.5 Z" fill="#14ae5c"/>
+<path d="M161.8 169.8 L175.2 186.0 A79 79 0 0 1 164.8 193.3 L154.2 175.1 A58 58 0 0 0 161.8 169.8 Z" fill="#14ae5c"/>
+<path d="M152.1 176.3 L161.9 194.9 A79 79 0 0 1 150.2 199.9 L143.5 180.0 A58 58 0 0 0 152.1 176.3 Z" fill="#14ae5c"/>
+<path d="M141.2 180.7 L147.1 200.9 A79 79 0 0 1 134.6 203.4 L132.1 182.6 A58 58 0 0 0 141.2 180.7 Z" fill="#14ae5c"/>
+<path d="M129.7 182.8 L131.3 203.7 A79 79 0 0 1 118.7 203.7 L120.3 182.8 A58 58 0 0 0 129.7 182.8 Z" fill="#14ae5c"/>
+<path d="M117.9 182.6 L115.4 203.4 A79 79 0 0 1 102.9 200.9 L108.8 180.7 A58 58 0 0 0 117.9 182.6 Z" fill="#ec221f"/>
+<path d="M106.5 180.0 L99.8 199.9 A79 79 0 0 1 88.1 194.9 L97.9 176.3 A58 58 0 0 0 106.5 180.0 Z" fill="#14ae5c"/>
+<path d="M95.8 175.1 L85.2 193.3 A79 79 0 0 1 74.8 186.0 L88.2 169.8 A58 58 0 0 0 95.8 175.1 Z" fill="#14ae5c"/>
+<path d="M86.3 168.2 L72.3 183.9 A79 79 0 0 1 63.6 174.7 L79.9 161.5 A58 58 0 0 0 86.3 168.2 Z" fill="#e9ebef"/>
+<path d="M78.4 159.5 L61.5 172.0 A79 79 0 0 1 54.8 161.3 L73.5 151.6 A58 58 0 0 0 78.4 159.5 Z" fill="#e9ebef"/>
+<path d="M72.4 149.4 L53.4 158.3 A79 79 0 0 1 49.0 146.4 L69.2 140.7 A58 58 0 0 0 72.4 149.4 Z" fill="#e9ebef"/>
+<path d="M68.6 138.4 L48.1 143.2 A79 79 0 0 1 46.2 130.7 L67.1 129.2 A58 58 0 0 0 68.6 138.4 Z" fill="#e9ebef"/>
+<path d="M67.0 126.7 L46.0 127.3 A79 79 0 0 1 46.7 114.7 L67.5 117.4 A58 58 0 0 0 67.0 126.7 Z" fill="#e9ebef"/>
+<path d="M67.9 115.0 L47.2 111.4 A79 79 0 0 1 50.4 99.1 L70.2 106.0 A58 58 0 0 0 67.9 115.0 Z" fill="#e9ebef"/>
+<path d="M71.0 103.7 L51.5 96.0 A79 79 0 0 1 57.1 84.6 L75.1 95.4 A58 58 0 0 0 71.0 103.7 Z" fill="#e9ebef"/>
+<path d="M76.4 93.3 L58.8 81.8 A79 79 0 0 1 66.6 71.8 L82.1 85.9 A58 58 0 0 0 76.4 93.3 Z" fill="#e9ebef"/>
+<path d="M83.8 84.2 L68.9 69.4 A79 79 0 0 1 78.5 61.1 L90.9 78.1 A58 58 0 0 0 83.8 84.2 Z" fill="#e9ebef"/>
+<path d="M92.9 76.7 L81.2 59.2 A79 79 0 0 1 92.3 53.1 L101.0 72.2 A58 58 0 0 0 92.9 76.7 Z" fill="#e9ebef"/>
+<path d="M103.2 71.2 L95.4 51.8 A79 79 0 0 1 107.5 48.0 L112.1 68.4 A58 58 0 0 0 103.2 71.2 Z" fill="#e9ebef"/>
+<path d="M114.5 68.0 L110.7 47.3 A79 79 0 0 1 123.3 46.0 L123.8 67.0 A58 58 0 0 0 114.5 68.0 Z" fill="#e9ebef"/>
+<path d="M126.7 44.0 L127.1 23.0 A102 102 0 0 1 143.4 24.7 L139.6 45.3 A81 81 0 0 0 126.7 44.0 Z" fill="#14ae5c"/>
+<path d="M143.0 46.0 L147.6 25.5 A102 102 0 0 1 163.3 30.4 L155.4 49.9 A81 81 0 0 0 143.0 46.0 Z" fill="#14ae5c"/>
+<path d="M158.5 51.2 L167.2 32.1 A102 102 0 0 1 181.5 40.1 L169.9 57.6 A81 81 0 0 0 158.5 51.2 Z" fill="#14ae5c"/>
+<path d="M172.7 59.5 L185.0 42.5 A102 102 0 0 1 197.4 53.2 L182.5 68.0 A81 81 0 0 0 172.7 59.5 Z" fill="#14ae5c"/>
+<path d="M184.9 70.4 L200.4 56.3 A102 102 0 0 1 210.4 69.2 L192.8 80.7 A81 81 0 0 0 184.9 70.4 Z" fill="#14ae5c"/>
+<path d="M194.6 83.6 L212.7 72.9 A102 102 0 0 1 219.9 87.6 L200.4 95.3 A81 81 0 0 0 194.6 83.6 Z" fill="#14ae5c"/>
+<path d="M201.5 98.5 L221.4 91.6 A102 102 0 0 1 225.5 107.4 L204.8 111.1 A81 81 0 0 0 201.5 98.5 Z" fill="#ec221f"/>
+<path d="M205.3 114.4 L226.1 111.7 A102 102 0 0 1 227.0 128.0 L206.0 127.4 A81 81 0 0 0 205.3 114.4 Z" fill="#14ae5c"/>
+<path d="M205.8 130.8 L226.7 132.3 A102 102 0 0 1 224.3 148.5 L203.8 143.7 A81 81 0 0 0 205.8 130.8 Z" fill="#14ae5c"/>
+<path d="M203.0 146.9 L223.2 152.6 A102 102 0 0 1 217.5 168.0 L198.5 159.1 A81 81 0 0 0 203.0 146.9 Z" fill="#14ae5c"/>
+<path d="M197.0 162.2 L215.6 171.8 A102 102 0 0 1 206.9 185.7 L190.1 173.2 A81 81 0 0 0 197.0 162.2 Z" fill="#14ae5c"/>
+<path d="M188.0 175.9 L204.3 189.1 A102 102 0 0 1 193.0 201.0 L179.0 185.3 A81 81 0 0 0 188.0 175.9 Z" fill="#14ae5c"/>
+<path d="M176.5 187.6 L189.8 203.8 A102 102 0 0 1 176.4 213.1 L165.8 195.0 A81 81 0 0 0 176.5 187.6 Z" fill="#14ae5c"/>
+<path d="M162.8 196.6 L172.6 215.2 A102 102 0 0 1 157.6 221.7 L150.9 201.8 A81 81 0 0 0 162.8 196.6 Z" fill="#14ae5c"/>
+<path d="M147.6 202.8 L153.5 222.9 A102 102 0 0 1 137.4 226.2 L134.9 205.4 A81 81 0 0 0 147.6 202.8 Z" fill="#14ae5c"/>
+<path d="M131.5 205.7 L133.2 226.7 A102 102 0 0 1 116.8 226.7 L118.5 205.7 A81 81 0 0 0 131.5 205.7 Z" fill="#ec221f"/>
+<path d="M115.1 205.4 L112.6 226.2 A102 102 0 0 1 96.5 222.9 L102.4 202.8 A81 81 0 0 0 115.1 205.4 Z" fill="#14ae5c"/>
+<path d="M99.1 201.8 L92.4 221.7 A102 102 0 0 1 77.4 215.2 L87.2 196.6 A81 81 0 0 0 99.1 201.8 Z" fill="#14ae5c"/>
+<path d="M84.2 195.0 L73.6 213.1 A102 102 0 0 1 60.2 203.8 L73.5 187.6 A81 81 0 0 0 84.2 195.0 Z" fill="#14ae5c"/>
+<path d="M71.0 185.3 L57.0 201.0 A102 102 0 0 1 45.7 189.1 L62.0 175.9 A81 81 0 0 0 71.0 185.3 Z" fill="#e9ebef"/>
+<path d="M59.9 173.2 L43.1 185.7 A102 102 0 0 1 34.4 171.8 L53.0 162.2 A81 81 0 0 0 59.9 173.2 Z" fill="#e9ebef"/>
+<path d="M51.5 159.1 L32.5 168.0 A102 102 0 0 1 26.8 152.6 L47.0 146.9 A81 81 0 0 0 51.5 159.1 Z" fill="#e9ebef"/>
+<path d="M46.2 143.7 L25.7 148.5 A102 102 0 0 1 23.3 132.3 L44.2 130.8 A81 81 0 0 0 46.2 143.7 Z" fill="#e9ebef"/>
+<path d="M44.0 127.4 L23.0 128.0 A102 102 0 0 1 23.9 111.7 L44.7 114.4 A81 81 0 0 0 44.0 127.4 Z" fill="#e9ebef"/>
+<path d="M45.2 111.1 L24.5 107.4 A102 102 0 0 1 28.6 91.6 L48.5 98.5 A81 81 0 0 0 45.2 111.1 Z" fill="#e9ebef"/>
+<path d="M49.6 95.3 L30.1 87.6 A102 102 0 0 1 37.3 72.9 L55.4 83.6 A81 81 0 0 0 49.6 95.3 Z" fill="#e9ebef"/>
+<path d="M57.2 80.7 L39.6 69.2 A102 102 0 0 1 49.6 56.3 L65.1 70.4 A81 81 0 0 0 57.2 80.7 Z" fill="#e9ebef"/>
+<path d="M67.5 68.0 L52.6 53.2 A102 102 0 0 1 65.0 42.5 L77.3 59.5 A81 81 0 0 0 67.5 68.0 Z" fill="#e9ebef"/>
+<path d="M80.1 57.6 L68.5 40.1 A102 102 0 0 1 82.8 32.1 L91.5 51.2 A81 81 0 0 0 80.1 57.6 Z" fill="#e9ebef"/>
+<path d="M94.6 49.9 L86.7 30.4 A102 102 0 0 1 102.4 25.5 L107.0 46.0 A81 81 0 0 0 94.6 49.9 Z" fill="#e9ebef"/>
+<path d="M110.4 45.3 L106.6 24.7 A102 102 0 0 1 122.9 23.0 L123.3 44.0 A81 81 0 0 0 110.4 45.3 Z" fill="#e9ebef"/>
+<path d="M127.2 21.0 L127.6 0.0 A125 125 0 0 1 147.6 2.1 L143.8 22.7 A104 104 0 0 0 127.2 21.0 Z" fill="#14ae5c"/>
+<path d="M148.1 23.6 L152.7 3.1 A125 125 0 0 1 171.9 9.1 L164.0 28.6 A104 104 0 0 0 148.1 23.6 Z" fill="#14ae5c"/>
+<path d="M168.0 30.3 L176.7 11.2 A125 125 0 0 1 194.2 20.9 L182.6 38.4 A104 104 0 0 0 168.0 30.3 Z" fill="#14ae5c"/>
+<path d="M186.2 40.9 L198.5 23.9 A125 125 0 0 1 213.8 37.0 L198.9 51.8 A104 104 0 0 0 186.2 40.9 Z" fill="#14ae5c"/>
+<path d="M201.9 54.9 L217.4 40.8 A125 125 0 0 1 229.7 56.7 L212.1 68.2 A104 104 0 0 0 201.9 54.9 Z" fill="#14ae5c"/>
+<path d="M214.4 71.8 L232.4 61.1 A125 125 0 0 1 241.3 79.1 L221.7 86.8 A104 104 0 0 0 214.4 71.8 Z" fill="#14ae5c"/>
+<path d="M223.3 90.9 L243.1 84.1 A125 125 0 0 1 248.1 103.5 L227.4 107.1 A104 104 0 0 0 223.3 90.9 Z" fill="#ec221f"/>
+<path d="M228.1 111.4 L248.9 108.7 A125 125 0 0 1 249.9 128.7 L229.0 128.1 A104 104 0 0 0 228.1 111.4 Z" fill="#14ae5c"/>
+<path d="M228.7 132.4 L249.7 133.9 A125 125 0 0 1 246.6 153.8 L226.2 149.0 A104 104 0 0 0 228.7 132.4 Z" fill="#ec221f"/>
+<path d="M225.1 153.2 L245.3 158.9 A125 125 0 0 1 238.4 177.7 L219.3 168.8 A104 104 0 0 0 225.1 153.2 Z" fill="#14ae5c"/>
+<path d="M217.4 172.7 L236.0 182.4 A125 125 0 0 1 225.4 199.4 L208.6 186.9 A104 104 0 0 0 217.4 172.7 Z" fill="#14ae5c"/>
+<path d="M205.9 190.4 L222.2 203.6 A125 125 0 0 1 208.4 218.1 L194.4 202.5 A104 104 0 0 0 205.9 190.4 Z" fill="#14ae5c"/>
+<path d="M191.1 205.3 L204.4 221.5 A125 125 0 0 1 187.9 233.0 L177.4 214.9 A104 104 0 0 0 191.1 205.3 Z" fill="#14ae5c"/>
+<path d="M173.6 217.0 L183.4 235.5 A125 125 0 0 1 164.9 243.5 L158.2 223.6 A104 104 0 0 0 173.6 217.0 Z" fill="#14ae5c"/>
+<path d="M154.0 224.9 L159.9 245.0 A125 125 0 0 1 140.2 249.1 L137.7 228.2 A104 104 0 0 0 154.0 224.9 Z" fill="#14ae5c"/>
+<path d="M133.4 228.7 L135.0 249.6 A125 125 0 0 1 115.0 249.6 L116.6 228.7 A104 104 0 0 0 133.4 228.7 Z" fill="#ec221f"/>
+<path d="M112.3 228.2 L109.8 249.1 A125 125 0 0 1 90.1 245.0 L96.0 224.9 A104 104 0 0 0 112.3 228.2 Z" fill="#ec221f"/>
+<path d="M91.8 223.6 L85.1 243.5 A125 125 0 0 1 66.6 235.5 L76.4 217.0 A104 104 0 0 0 91.8 223.6 Z" fill="#14ae5c"/>
+<path d="M72.6 214.9 L62.1 233.0 A125 125 0 0 1 45.6 221.5 L58.9 205.3 A104 104 0 0 0 72.6 214.9 Z" fill="#14ae5c"/>
+<path d="M55.6 202.5 L41.6 218.1 A125 125 0 0 1 27.8 203.6 L44.1 190.4 A104 104 0 0 0 55.6 202.5 Z" fill="#e9ebef"/>
+<path d="M41.4 186.9 L24.6 199.4 A125 125 0 0 1 14.0 182.4 L32.6 172.7 A104 104 0 0 0 41.4 186.9 Z" fill="#e9ebef"/>
+<path d="M30.7 168.8 L11.6 177.7 A125 125 0 0 1 4.7 158.9 L24.9 153.2 A104 104 0 0 0 30.7 168.8 Z" fill="#e9ebef"/>
+<path d="M23.8 149.0 L3.4 153.8 A125 125 0 0 1 0.3 133.9 L21.3 132.4 A104 104 0 0 0 23.8 149.0 Z" fill="#e9ebef"/>
+<path d="M21.0 128.1 L0.1 128.7 A125 125 0 0 1 1.1 108.7 L21.9 111.4 A104 104 0 0 0 21.0 128.1 Z" fill="#e9ebef"/>
+<path d="M22.6 107.1 L1.9 103.5 A125 125 0 0 1 6.9 84.1 L26.7 90.9 A104 104 0 0 0 22.6 107.1 Z" fill="#e9ebef"/>
+<path d="M28.3 86.8 L8.7 79.1 A125 125 0 0 1 17.6 61.1 L35.6 71.8 A104 104 0 0 0 28.3 86.8 Z" fill="#e9ebef"/>
+<path d="M37.9 68.2 L20.3 56.7 A125 125 0 0 1 32.6 40.8 L48.1 54.9 A104 104 0 0 0 37.9 68.2 Z" fill="#e9ebef"/>
+<path d="M51.1 51.8 L36.2 37.0 A125 125 0 0 1 51.5 23.9 L63.8 40.9 A104 104 0 0 0 51.1 51.8 Z" fill="#e9ebef"/>
+<path d="M67.4 38.4 L55.8 20.9 A125 125 0 0 1 73.3 11.2 L82.0 30.3 A104 104 0 0 0 67.4 38.4 Z" fill="#e9ebef"/>
+<path d="M86.0 28.6 L78.1 9.1 A125 125 0 0 1 97.3 3.1 L101.9 23.6 A104 104 0 0 0 86.0 28.6 Z" fill="#e9ebef"/>
+<path d="M106.2 22.7 L102.4 2.1 A125 125 0 0 1 122.4 0.0 L122.8 21.0 A104 104 0 0 0 106.2 22.7 Z" fill="#e9ebef"/>
+<text x="136.6" y="13.5" text-anchor="middle" style="font-size:6px;font-weight:600" fill="#ffffff">1</text>
+<text x="159.3" y="18.2" text-anchor="middle" style="font-size:6px;font-weight:600" fill="#ffffff">2</text>
+<text x="180.6" y="27.3" text-anchor="middle" style="font-size:6px;font-weight:600" fill="#ffffff">3</text>
+<text x="199.6" y="40.5" text-anchor="middle" style="font-size:6px;font-weight:600" fill="#ffffff">4</text>
+<text x="215.5" y="57.3" text-anchor="middle" style="font-size:6px;font-weight:600" fill="#ffffff">5</text>
+<text x="227.8" y="77.0" text-anchor="middle" style="font-size:6px;font-weight:600" fill="#ffffff">6</text>
+<text x="235.8" y="98.7" text-anchor="middle" style="font-size:6px;font-weight:600" fill="#ffffff">7</text>
+<text x="239.4" y="121.6" text-anchor="middle" style="font-size:6px;font-weight:600" fill="#ffffff">8</text>
+<text x="238.2" y="144.7" text-anchor="middle" style="font-size:6px;font-weight:600" fill="#ffffff">9</text>
+<text x="232.4" y="167.2" text-anchor="middle" style="font-size:6px;font-weight:600" fill="#ffffff">10</text>
+<text x="222.2" y="188.0" text-anchor="middle" style="font-size:6px;font-weight:600" fill="#ffffff">11</text>
+<text x="208.0" y="206.3" text-anchor="middle" style="font-size:6px;font-weight:600" fill="#ffffff">12</text>
+<text x="190.4" y="221.4" text-anchor="middle" style="font-size:6px;font-weight:600" fill="#ffffff">13</text>
+<text x="170.2" y="232.6" text-anchor="middle" style="font-size:6px;font-weight:600" fill="#ffffff">14</text>
+<text x="148.0" y="239.6" text-anchor="middle" style="font-size:6px;font-weight:600" fill="#ffffff">15</text>
+<text x="125.0" y="241.9" text-anchor="middle" style="font-size:6px;font-weight:600" fill="#ffffff">16</text>
+<text x="102.0" y="239.6" text-anchor="middle" style="font-size:6px;font-weight:600" fill="#ffffff">17</text>
+<text x="79.8" y="232.6" text-anchor="middle" style="font-size:6px;font-weight:600" fill="#ffffff">18</text>
+<text x="59.6" y="221.4" text-anchor="middle" style="font-size:6px;font-weight:600" fill="#ffffff">19</text>
+<text x="42.0" y="206.3" text-anchor="middle" style="font-size:6px;font-weight:600" fill="#9aa0ad">20</text>
+<text x="27.8" y="188.0" text-anchor="middle" style="font-size:6px;font-weight:600" fill="#9aa0ad">21</text>
+<text x="17.6" y="167.2" text-anchor="middle" style="font-size:6px;font-weight:600" fill="#9aa0ad">22</text>
+<text x="11.8" y="144.7" text-anchor="middle" style="font-size:6px;font-weight:600" fill="#9aa0ad">23</text>
+<text x="10.6" y="121.6" text-anchor="middle" style="font-size:6px;font-weight:600" fill="#9aa0ad">24</text>
+<text x="14.2" y="98.7" text-anchor="middle" style="font-size:6px;font-weight:600" fill="#9aa0ad">25</text>
+<text x="22.2" y="77.0" text-anchor="middle" style="font-size:6px;font-weight:600" fill="#9aa0ad">26</text>
+<text x="34.5" y="57.3" text-anchor="middle" style="font-size:6px;font-weight:600" fill="#9aa0ad">27</text>
+<text x="50.4" y="40.5" text-anchor="middle" style="font-size:6px;font-weight:600" fill="#9aa0ad">28</text>
+<text x="69.4" y="27.3" text-anchor="middle" style="font-size:6px;font-weight:600" fill="#9aa0ad">29</text>
+<text x="90.7" y="18.2" text-anchor="middle" style="font-size:6px;font-weight:600" fill="#9aa0ad">30</text>
+<text x="113.4" y="13.5" text-anchor="middle" style="font-size:6px;font-weight:600" fill="#9aa0ad">31</text>
+<circle cx="125.0" cy="125.0" r="56" fill="#ffffff"/>
+<text x="125.0" y="141.0" text-anchor="middle" class="fill-foreground font-display" style="font-size:48px;font-weight:600">M</text>
+            </svg>
+          </div>
+          <div class="widget-foot">
+            <span class="widget-info">!</span>
+            <span class="z-avatar size-6 text-[10px]" style="background:#FFD8A8;color:#9a4a00">NU</span>
+          </div>
+        </article>
+
+        <!-- Pyramid -->
+        <article class="widget w-[370px] h-[370px] p-3" aria-label="Pyramid">
+          <div class="widget-head">
+            <div class="min-w-0"><div class="widget-title">Pyramid</div><div class="widget-sub">subtitle</div></div>
+            <span class="widget-menu"><i data-lucide="maximize-2" class="size-3.5"></i></span>
+          </div>
+          <div class="mt-2 flex-1 flex items-center justify-center">
+            <svg viewBox="0 0 340 282" class="w-full max-h-full">
+              <polygon points="41,220 299,220 330,270 10,270" fill="#0a1f8f"/>
+              <polygon points="73,168 267,168 297,216 43,216" fill="#a9b5e0"/>
+              <polygon points="105,116 235,116 265,164 75,164" fill="#d6def5"/>
+              <polygon points="137,64 203,64 233,112 107,112" fill="#2e6fc6"/>
+              <polygon points="170,10 201,60 139,60" fill="#6f9bd8"/>
+              <text x="170" y="46" text-anchor="middle" fill="#ffffff" style="font-size:9px;font-weight:600">000…</text>
+              <text x="170" y="86" text-anchor="middle" fill="#ffffff" style="font-size:12px;font-weight:700">00000000</text>
+              <text x="170" y="98" text-anchor="middle" fill="#eaf0ff" style="font-size:8px">Loren ipsum</text>
+              <text x="170" y="137" text-anchor="middle" fill="#3a4790" style="font-size:12px;font-weight:700">00000000</text>
+              <text x="170" y="149" text-anchor="middle" fill="#5566a0" style="font-size:8px">Loren ipsum</text>
+              <text x="170" y="189" text-anchor="middle" fill="#26306b" style="font-size:12px;font-weight:700">00000000</text>
+              <text x="170" y="201" text-anchor="middle" fill="#2f3a72" style="font-size:8px">Loren ipsum</text>
+              <text x="170" y="243" text-anchor="middle" fill="#ffffff" style="font-size:12px;font-weight:700">00000000</text>
+              <text x="170" y="255" text-anchor="middle" fill="#cdd6ff" style="font-size:8px">Loren ipsum</text>
+            </svg>
+          </div>
+        </article>
+
+        <!-- Checks — Assessment (coluna Score) -->
+        <article class="widget w-[560px] h-[370px] p-3" aria-label="Checks — Assessment (Score)">
+          <div class="widget-head">
+            <div class="min-w-0"><div class="widget-title">Checks</div><div class="widget-sub">Assessment · com coluna Score</div></div>
+            <span class="widget-menu"><i data-lucide="maximize-2" class="size-3.5"></i></span>
+          </div>
+          <div class="mt-2.5 flex items-center gap-1.5">
+            <button class="z-btn z-btn-default z-btn-icon rounded-full"><i data-lucide="plus" class="size-4"></i></button>
+            <div class="relative flex-1">
+              <i data-lucide="search" class="pointer-events-none absolute left-2.5 top-1/2 size-3.5 -translate-y-1/2 text-muted-foreground"></i>
+              <input class="z-input pl-7" placeholder="Pesquisar" />
+            </div>
+          </div>
+          <div class="scrollthin mt-2 flex-1 overflow-y-auto">
+            <table class="z-table">
+              <thead class="sticky top-0 bg-card">
+                <tr class="border-b">
+                  <th class="z-th">N° <i data-lucide="chevron-down" class="inline size-3"></i></th>
+                  <th class="z-th">ASSESSMENT <i data-lucide="chevron-down" class="inline size-3"></i></th>
+                  <th class="z-th text-center">INSPECTIONS <i data-lucide="chevron-down" class="inline size-3"></i></th>
+                  <th class="z-th text-center">SCORE <i data-lucide="chevron-down" class="inline size-3"></i></th>
+                  <th class="z-th text-center">STATUS <i data-lucide="chevron-down" class="inline size-3"></i></th>
+                </tr>
+              </thead>
+              <tbody class="text-[13px]">
+                <tr class="z-tr"><td class="z-td"><a class="font-semibold text-primary">AST-92/24</a></td><td class="z-td text-foreground">teste 12345678901233</td><td class="z-td"><span class="mx-auto flex w-fit overflow-hidden rounded-full text-[10px] font-bold text-white"><span class="bg-success px-2 py-0.5">2</span><span class="bg-destructive px-3 py-0.5">4</span></span></td><td class="z-td"><span class="flex items-center justify-center gap-1 font-medium text-foreground"><span class="size-2 rounded-full bg-success"></span>63%</span></td><td class="z-td text-center"><span class="z-badge z-badge-success">Status</span></td></tr>
+                <tr class="z-tr"><td class="z-td"><a class="font-semibold text-primary">AST-9/4</a></td><td class="z-td text-foreground">teste 12345678901233</td><td class="z-td"><span class="mx-auto flex w-fit overflow-hidden rounded-full text-[10px] font-bold text-white"><span class="bg-success px-2 py-0.5">2</span><span class="bg-destructive px-3 py-0.5">4</span></span></td><td class="z-td"><span class="flex items-center justify-center gap-1 font-medium text-foreground"><span class="size-2 rounded-full bg-success"></span>96%</span></td><td class="z-td text-center"><span class="z-badge z-badge-success">Status</span></td></tr>
+                <tr class="z-tr"><td class="z-td"><a class="font-semibold text-primary">AST-9/4</a></td><td class="z-td text-foreground">teste 12345678901233</td><td class="z-td"><span class="mx-auto flex w-fit overflow-hidden rounded-full text-[10px] font-bold text-white"><span class="bg-success px-2 py-0.5">2</span><span class="bg-destructive px-3 py-0.5">4</span></span></td><td class="z-td"><span class="flex items-center justify-center gap-1 font-medium text-foreground"><span class="size-2 rounded-full bg-destructive"></span>39%</span></td><td class="z-td text-center"><span class="z-badge z-badge-warning">Status</span></td></tr>
+                <tr class="z-tr"><td class="z-td"><a class="font-semibold text-primary">AST-9/4</a></td><td class="z-td text-foreground">teste 12345678901233</td><td class="z-td"><span class="mx-auto flex w-fit overflow-hidden rounded-full text-[10px] font-bold text-white"><span class="bg-success px-2 py-0.5">2</span><span class="bg-destructive px-3 py-0.5">4</span></span></td><td class="z-td"><span class="flex items-center justify-center gap-1 font-medium text-foreground"><span class="size-2 rounded-full bg-destructive"></span>46%</span></td><td class="z-td text-center"><span class="z-badge z-badge-warning">Status</span></td></tr>
+                <tr class="z-tr"><td class="z-td"><a class="font-semibold text-primary">AST-9/4</a></td><td class="z-td text-foreground">teste 12345678901233</td><td class="z-td"><span class="mx-auto flex w-fit overflow-hidden rounded-full text-[10px] font-bold text-white"><span class="bg-success px-2 py-0.5">2</span><span class="bg-destructive px-3 py-0.5">4</span></span></td><td class="z-td"><span class="flex items-center justify-center gap-1 font-medium text-foreground"><span class="size-2 rounded-full bg-destructive"></span>12%</span></td><td class="z-td text-center"><span class="z-badge z-badge-warning">Status</span></td></tr>
+                <tr class="z-tr"><td class="z-td"><a class="font-semibold text-primary">AST-9/4</a></td><td class="z-td text-foreground">teste 12345678901233</td><td class="z-td"><span class="mx-auto flex w-fit overflow-hidden rounded-full text-[10px] font-bold text-white"><span class="bg-success px-2 py-0.5">2</span><span class="bg-destructive px-3 py-0.5">4</span></span></td><td class="z-td"><span class="flex items-center justify-center gap-1 font-medium text-foreground"><span class="size-2 rounded-full bg-success"></span>73%</span></td><td class="z-td text-center"><span class="z-badge z-badge-success">Status</span></td></tr>
+                <tr class="z-tr"><td class="z-td"><a class="font-semibold text-primary">AST-9/4</a></td><td class="z-td text-foreground">teste 12345678901233</td><td class="z-td"><span class="mx-auto flex w-fit overflow-hidden rounded-full text-[10px] font-bold text-white"><span class="bg-success px-2 py-0.5">2</span><span class="bg-destructive px-3 py-0.5">4</span></span></td><td class="z-td"><span class="flex items-center justify-center gap-1 font-medium text-foreground"><span class="size-2 rounded-full bg-success"></span>80%</span></td><td class="z-td text-center"><span class="z-badge z-badge-success">Status</span></td></tr>
+              </tbody>
+            </table>
+          </div>
+          <div class="flex items-center justify-between gap-3 pt-1.5 text-[11px] text-muted-foreground">
+            <span class="text-tertiary">Coluna Score exibida a partir de 570px</span>
+            <span class="flex items-center gap-3"><span class="flex items-center gap-1">Items per page: 10 <i data-lucide="chevron-down" class="size-3"></i></span><span>1 -10 de 10</span></span>
+          </div>
+        </article>
+
+      </div>
+    </section>
+
+  </main>
+
+  <footer class="mx-auto max-w-[1180px] px-6 pb-10 pt-2 text-center text-xs text-muted-foreground">
+    Digital Obeya · Galeria de widgets construída com componentes Zard UI (Tailwind) · tokens Solvace
+  </footer>
+
+  <script src="https://unpkg.com/lucide@latest/dist/umd/lucide.min.js"></script>
+  <script>
+    (function () {
+      function draw() { if (window.lucide && lucide.createIcons) lucide.createIcons(); }
+      if (document.readyState !== 'loading') draw();
+      else document.addEventListener('DOMContentLoaded', draw);
+    })();
+  </script>
+</body>
+</html>

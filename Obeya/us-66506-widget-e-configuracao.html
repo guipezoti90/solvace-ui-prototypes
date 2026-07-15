@@ -1,0 +1,767 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1.0" />
+<title>US 66506 — Widget no board + Configuração (Feed, dimensões)</title>
+<script src="https://cdn.tailwindcss.com"></script>
+<link rel="preconnect" href="https://fonts.googleapis.com" />
+<link href="https://fonts.googleapis.com/css2?family=Roboto:wght@300;400;500;700&display=swap" rel="stylesheet" />
+<script>
+  tailwind.config = {
+    theme: { extend: {
+      fontFamily: { sans: ['Roboto', 'ui-sans-serif', 'system-ui', 'sans-serif'] },
+      colors: {
+        primary: '#001391', 'primary-foreground': '#FFFFFF',
+        secondary: '#CCD0E9',            // primária a 20% sobre branco (sólida)
+        background: '#FFFFFF', foreground: '#4D4D4D',
+        muted: '#F4F6F8', 'muted-foreground': '#9BA0A3',
+        accent: '#DDEAF9', 'accent-foreground': '#001391',
+        border: '#D0D5DD', input: '#E4E7EA', ring: '#001391',
+        black2: '#0A0A0B', success: '#466900', danger: '#E22A2E', destructive: '#C0392B',
+      },
+      minWidth: { 50: '12.5rem' },
+    } },
+  };
+</script>
+<style>
+  html, body { height: 100%; }
+  body { font-family: 'Roboto', system-ui, sans-serif; background: #EEF1F4; color: #4D4D4D; }
+  .board-canvas { background-color:#EEF1F4; background-image: radial-gradient(#D0D5DD 1px, transparent 1px); background-size: 22px 22px; }
+  .widget-shadow { filter: drop-shadow(2px 1px 5px rgba(0,0,0,0.15)); }
+  .chart-grid { background-image: repeating-linear-gradient(to top, #E4E7EA 0 1px, transparent 1px 19px); }
+  .feed-scroll { scrollbar-width: thin; scrollbar-color: #D0D5DD #E4E7EA; }
+  .feed-scroll::-webkit-scrollbar { width: 8px; }
+  .feed-scroll::-webkit-scrollbar-track { background: #E4E7EA; border-radius: 8px; }
+  .feed-scroll::-webkit-scrollbar-thumb { background: #D0D5DD; border-radius: 8px; }
+  .body-scroll { scrollbar-width: thin; scrollbar-color: #D0D5DD transparent; }
+  @keyframes spin { to { transform: rotate(360deg); } } .spin { animation: spin .8s linear infinite; }
+  .feed-fade { transition: opacity .22s ease, transform .22s ease; }
+  .preview-fade { transition: all .2s ease; }
+  @keyframes toastIn { from { opacity:0; transform:translateY(8px);} to {opacity:1; transform:translateY(0);} }
+  .toast-in { animation: toastIn .2s ease both; }
+  .w-selected { outline: 2px solid #CCD0E9; outline-offset: 2px; box-shadow: 0 12px 34px rgba(0,19,145,.18); }
+  .tooltip-wrap:hover .tooltip-pop, .tooltip-wrap:focus-within .tooltip-pop { opacity:1; visibility:visible; }
+</style>
+</head>
+<body class="antialiased">
+
+<!-- ===================== TOPO ===================== -->
+<header class="h-12 bg-white border-b border-input flex items-center justify-between px-4">
+  <div class="flex items-center gap-2 min-w-0">
+    <div class="size-7 rounded-md bg-primary flex items-center justify-center text-white shrink-0">
+      <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="3" width="7" height="7" rx="1"/><rect x="14" y="3" width="7" height="7" rx="1"/><rect x="3" y="14" width="7" height="7" rx="1"/><rect x="14" y="14" width="7" height="7" rx="1"/></svg>
+    </div>
+    <span class="text-sm font-medium text-black2 truncate">Obeya Board · Board1</span>
+  </div>
+  <span class="hidden sm:inline-flex items-center justify-center border border-transparent bg-accent text-accent-foreground px-2 py-0.5 text-xs font-medium rounded-md h-5">US 66506</span>
+</header>
+
+<!-- ===================== CANVAS DO BOARD ===================== -->
+<main class="board-canvas relative w-full overflow-hidden" style="min-height: calc(100vh - 48px);">
+
+  <!-- Painel de demonstração (QA) -->
+  <aside class="hidden md:block absolute z-30 top-4 right-4 w-[230px] max-w-[calc(100vw-2rem)] bg-white rounded-xl border border-input shadow-sm p-3 text-xs">
+    <p class="font-semibold text-black2 mb-2">Demonstração de estados</p>
+    <div class="flex items-center justify-between mb-2">
+      <span class="text-foreground">Feed disponível</span>
+      <button id="mtgSwitch" type="button" role="switch" aria-checked="true" data-state="checked"
+        class="peer inline-flex h-6 w-11 shrink-0 cursor-pointer items-center rounded-full border-2 border-transparent transition-colors data-[state=unchecked]:bg-input data-[state=checked]:bg-primary">
+        <span data-state="checked" class="bg-white pointer-events-none block size-5 rounded-full shadow-lg transition-transform data-[state=checked]:translate-x-5 data-[state=unchecked]:translate-x-0"></span>
+      </button>
+    </div>
+    <p class="text-foreground mb-1">Conteúdo do Feed (6.16)</p>
+    <div id="stateBtns" class="grid grid-cols-2 gap-1">
+      <button data-st="normal" class="st-btn inline-flex items-center justify-center rounded-lg border text-xs font-medium px-2 h-7 cursor-pointer">Normal</button>
+      <button data-st="loading" class="st-btn inline-flex items-center justify-center rounded-lg border text-xs font-medium px-2 h-7 cursor-pointer">Carregando</button>
+      <button data-st="empty" class="st-btn inline-flex items-center justify-center rounded-lg border text-xs font-medium px-2 h-7 cursor-pointer">Vazio</button>
+      <button data-st="error" class="st-btn inline-flex items-center justify-center rounded-lg border text-xs font-medium px-2 h-7 cursor-pointer">Erro</button>
+    </div>
+    <p class="mt-2 text-[11px] leading-snug text-muted-foreground">Selecione o widget para redimensionar. O ⋮ abre as Configurações (flag do feed + Largura/Altura).</p>
+  </aside>
+
+  <!-- ===================== WIDGET (chart + feed) ===================== -->
+  <div id="boardGroup" class="absolute z-10 flex items-start" style="left:40px; top:36px;">
+    <section id="unifiedWidget"
+      class="widget-shadow bg-white rounded-[12px] flex flex-col sm:flex-row sm:items-stretch relative w-[min(420px,calc(100vw-2rem))] sm:w-auto"
+      style="min-width:180px; min-height:180px;"
+      aria-label="Widget Produção linha 3 com Feed">
+
+      <!-- Coluna do gráfico (divide o espaço do widget com o feed, sem aumentar o widget) -->
+      <div id="widgetCol" class="w-full sm:flex-1 sm:min-w-0 flex flex-col gap-3 px-4 py-2 relative">
+        <div id="dragHandle" class="flex items-center gap-1 w-full pt-1 cursor-move select-none">
+          <span class="text-primary shrink-0" aria-hidden="true"><svg width="16" height="16" viewBox="0 0 24 24" fill="currentColor"><circle cx="18" cy="5" r="2.6"/><circle cx="6" cy="12" r="2.6"/><circle cx="18" cy="19" r="2.6"/><path d="m8.3 13.2 7.4 4.3m0-11-7.4 4.3" stroke="currentColor" stroke-width="1.8" fill="none"/></svg></span>
+          <span class="flex-1 min-w-0 text-[16px] font-bold text-foreground leading-normal truncate">Produção linha 3</span>
+          <div class="relative shrink-0">
+            <button id="cfgTrigger" type="button" aria-haspopup="menu" aria-expanded="false" aria-label="Opções do widget"
+              class="inline-flex items-center justify-center rounded-lg border border-transparent transition-all hover:bg-muted size-7 outline-none cursor-pointer text-foreground">
+              <svg width="18" height="18" viewBox="0 0 24 24" fill="currentColor"><circle cx="12" cy="5" r="1.8"/><circle cx="12" cy="12" r="1.8"/><circle cx="12" cy="19" r="1.8"/></svg>
+            </button>
+            <div id="cfgMenu" data-state="closed" class="hidden absolute right-0 top-8 z-50 min-w-50 w-[210px] overflow-y-auto rounded-md border border-input bg-popover text-popover-foreground p-1 shadow-md">
+              <button id="menuConfig" type="button" class="w-full text-left relative flex cursor-pointer select-none items-center gap-2 rounded-sm px-2 py-2 text-sm text-foreground transition-colors hover:bg-accent hover:text-accent-foreground">
+                <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="3"/><path d="M19.4 15a1.65 1.65 0 0 0 .33 1.82l.06.06a2 2 0 0 1-2.83 2.83l-.06-.06a1.65 1.65 0 0 0-1.82-.33 1.65 1.65 0 0 0-1 1.51V21a2 2 0 0 1-4 0v-.09A1.65 1.65 0 0 0 9 19.4a1.65 1.65 0 0 0-1.82.33l-.06.06a2 2 0 1 1-2.83-2.83l.06-.06a1.65 1.65 0 0 0 .33-1.82 1.65 1.65 0 0 0-1.51-1H3a2 2 0 0 1 0-4h.09A1.65 1.65 0 0 0 4.6 9a1.65 1.65 0 0 0-.33-1.82l-.06-.06a2 2 0 1 1 2.83-2.83l.06.06a1.65 1.65 0 0 0 1.82.33H9a1.65 1.65 0 0 0 1-1.51V3a2 2 0 0 1 4 0v.09a1.65 1.65 0 0 0 1 1.51 1.65 1.65 0 0 0 1.82-.33l.06-.06a2 2 0 1 1 2.83 2.83l-.06.06a1.65 1.65 0 0 0-.33 1.82V9a1.65 1.65 0 0 0 1.51 1H21a2 2 0 0 1 0 4h-.09a1.65 1.65 0 0 0-1.51 1Z"/></svg>
+                Configurações
+              </button>
+              <div class="-mx-1 my-1 h-px bg-input"></div>
+              <div class="relative flex cursor-pointer select-none items-center gap-2 rounded-sm px-2 py-2 text-sm text-foreground transition-colors hover:bg-accent hover:text-accent-foreground"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M17 3a2.85 2.83 0 1 1 4 4L7.5 20.5 2 22l1.5-5.5Z"/></svg>Atualizar</div>
+              <div class="relative flex cursor-pointer select-none items-center gap-2 rounded-sm px-2 py-2 text-sm text-foreground transition-colors hover:bg-accent hover:text-accent-foreground"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/><polyline points="7 10 12 15 17 10"/><line x1="12" x2="12" y1="15" y2="3"/></svg>Download</div>
+            </div>
+          </div>
+        </div>
+
+        <div class="w-full flex-1 min-h-0 flex flex-col">
+          <div id="chart" class="chart-grid relative flex-1 min-h-[60px] flex items-end justify-between gap-1.5 px-2"></div>
+          <div id="chartLabels" class="flex items-start justify-between gap-1.5 px-2 mt-1 text-[11px] font-light text-foreground leading-[1.32]"></div>
+        </div>
+
+        <div class="flex items-start justify-between w-full pb-1 mt-auto">
+          <span class="text-black2" aria-label="Alertas"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="10"/><line x1="12" x2="12" y1="8" y2="12"/><line x1="12" x2="12.01" y1="16" y2="16"/></svg></span>
+          <span class="relative flex items-center justify-center bg-input rounded-full size-4"><span class="text-[#4D4D4D] font-semibold text-[7.2px] leading-none">NU</span></span>
+        </div>
+      </div>
+
+      <!-- Feed anexado -->
+      <section id="feedBeside" class="feed-fade w-full sm:w-[370px] sm:shrink-0 h-[480px] sm:h-full bg-secondary flex flex-col gap-3 p-3 overflow-hidden rounded-b-[12px] sm:rounded-bl-none sm:rounded-r-[12px] sm:rounded-tr-[12px]" aria-label="Feed do widget">
+        <div class="flex items-center gap-2 shrink-0">
+          <span class="text-primary" aria-hidden="true"><svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M4 11a9 9 0 0 1 9 9"/><path d="M4 4a16 16 0 0 1 16 16"/><circle cx="5" cy="19" r="1"/></svg></span>
+          <span class="text-lg font-bold text-primary leading-none">Feed</span>
+        </div>
+        <div class="flex items-center gap-2 shrink-0">
+          <div class="relative flex-1">
+            <input type="text" placeholder="Pesquisar" class="w-full h-9 rounded-lg border border-input bg-white pl-3 pr-8 text-sm text-foreground placeholder:text-muted-foreground outline-none focus-visible:border-ring focus-visible:ring-2 focus-visible:ring-ring/40 transition" />
+            <span class="absolute right-2.5 top-1/2 -translate-y-1/2 text-muted-foreground"><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="11" cy="11" r="8"/><path d="m21 21-4.3-4.3"/></svg></span>
+          </div>
+          <button type="button" aria-label="Filtrar" class="inline-flex items-center justify-center rounded border border-primary bg-white p-2 size-9 text-primary hover:bg-accent transition-colors cursor-pointer"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polygon points="22 3 2 3 10 12.46 10 19 14 21 14 12.46 22 3"/></svg></button>
+        </div>
+        <div class="flex-1 min-h-0 bg-white rounded-lg p-2 flex flex-col">
+          <div id="composer" class="flex items-center gap-2 px-1 pt-1 pb-2 shrink-0">
+            <div class="flex-1 flex items-center justify-between gap-2 rounded-full border-2 border-border pl-4 pr-1 py-1">
+              <input type="text" placeholder="Comentar" class="flex-1 min-w-0 bg-transparent text-sm text-foreground placeholder:text-muted-foreground outline-none" />
+              <button type="button" aria-label="Enviar" class="size-9 shrink-0 rounded-full bg-primary text-white flex items-center justify-center hover:bg-primary/90 transition-colors cursor-pointer"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="m22 2-7 20-4-9-9-4Z"/><path d="M22 2 11 13"/></svg></button>
+            </div>
+            <button type="button" aria-label="Anexar" class="size-9 shrink-0 rounded-full bg-primary text-white flex items-center justify-center hover:bg-primary/90 transition-colors cursor-pointer"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="m21.44 11.05-9.19 9.19a6 6 0 0 1-8.49-8.49l8.57-8.57A4 4 0 1 1 18 8.84l-8.59 8.57a2 2 0 0 1-2.83-2.83l8.49-8.48"/></svg></button>
+            <button type="button" aria-label="Áudio" class="size-9 shrink-0 rounded-full bg-primary text-white flex items-center justify-center hover:bg-primary/90 transition-colors cursor-pointer"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M12 2a3 3 0 0 0-3 3v7a3 3 0 0 0 6 0V5a3 3 0 0 0-3-3Z"/><path d="M19 10v2a7 7 0 0 1-14 0v-2"/><line x1="12" x2="12" y1="19" y2="22"/></svg></button>
+          </div>
+          <div id="feedList" class="feed-scroll flex-1 min-h-0 overflow-y-auto overflow-x-hidden pr-1 flex flex-col gap-5 py-1"></div>
+          <div id="feedLoading" class="hidden flex-1 min-h-0 flex-col items-center justify-center gap-3 text-muted-foreground">
+            <span class="text-primary"><svg class="spin" width="28" height="28" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round"><path d="M21 12a9 9 0 1 1-6.219-8.56"/></svg></span>
+            <p class="text-sm">Carregando o feed…</p>
+          </div>
+          <div id="feedEmpty" class="hidden flex-1 min-h-0 flex-col items-center justify-center gap-2 text-center px-6 text-muted-foreground">
+            <span class="size-12 rounded-full bg-muted flex items-center justify-center"><svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M4 11a9 9 0 0 1 9 9"/><path d="M4 4a16 16 0 0 1 16 16"/><circle cx="5" cy="19" r="1"/></svg></span>
+            <p class="text-sm font-medium text-foreground">Nenhum vídeo disponível</p>
+            <p class="text-xs">Ainda não há atividades neste feed.</p>
+          </div>
+          <div id="feedError" class="hidden flex-1 min-h-0 flex-col items-center justify-center gap-2 text-center px-6">
+            <span class="size-12 rounded-full bg-danger/10 flex items-center justify-center text-danger"><svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="10"/><line x1="12" x2="12" y1="8" y2="12"/><line x1="12" x2="12.01" y1="16" y2="16"/></svg></span>
+            <p class="text-sm font-medium text-foreground">Não foi possível exibir o feed</p>
+            <button id="retryBtn" type="button" class="inline-flex items-center justify-center rounded-lg border border-border bg-background hover:bg-muted text-sm font-medium px-3 h-8 cursor-pointer text-foreground">Tentar novamente</button>
+          </div>
+        </div>
+      </section>
+
+      <!-- Seleção / redimensionamento -->
+      <div id="wToolbar" class="hidden absolute -top-3.5 right-3 z-30 flex items-center gap-1.5">
+        <button class="size-7 rounded-full bg-primary text-white flex items-center justify-center shadow-md cursor-pointer hover:bg-primary/90" aria-label="Novo"><svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"/><path d="M14 2v6h6M12 11v6M9 14h6"/></svg></button>
+        <button class="size-7 rounded-full bg-primary text-white flex items-center justify-center shadow-md cursor-pointer hover:bg-primary/90" aria-label="Duplicar"><svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect width="14" height="14" x="8" y="8" rx="2"/><path d="M4 16c-1.1 0-2-.9-2-2V4c0-1.1.9-2 2-2h10c1.1 0 2 .9 2 2"/></svg></button>
+        <button id="wCfg" class="size-7 rounded-full bg-primary text-white flex items-center justify-center shadow-md cursor-pointer hover:bg-primary/90" aria-label="Configurações"><svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="3"/><path d="M19.4 15a1.65 1.65 0 0 0 .33 1.82l.06.06a2 2 0 0 1-2.83 2.83l-.06-.06a1.65 1.65 0 0 0-1.82-.33 1.65 1.65 0 0 0-1 1.51V21a2 2 0 0 1-4 0v-.09A1.65 1.65 0 0 0 9 19.4a1.65 1.65 0 0 0-1.82.33l-.06.06a2 2 0 1 1-2.83-2.83l.06-.06a1.65 1.65 0 0 0 .33-1.82 1.65 1.65 0 0 0-1.51-1H3a2 2 0 0 1 0-4h.09A1.65 1.65 0 0 0 4.6 9a1.65 1.65 0 0 0-.33-1.82l-.06-.06a2 2 0 1 1 2.83-2.83l.06.06a1.65 1.65 0 0 0 1.82.33H9a1.65 1.65 0 0 0 1-1.51V3a2 2 0 0 1 4 0v.09a1.65 1.65 0 0 0 1 1.51 1.65 1.65 0 0 0 1.82-.33l.06-.06a2 2 0 1 1 2.83 2.83l-.06.06a1.65 1.65 0 0 0-.33 1.82V9a1.65 1.65 0 0 0 1.51 1H21a2 2 0 0 1 0 4h-.09a1.65 1.65 0 0 0-1.51 1Z"/></svg></button>
+        <button id="wDel" class="size-7 rounded-full bg-primary text-white flex items-center justify-center shadow-md cursor-pointer hover:bg-primary/90" aria-label="Excluir"><svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M3 6h18M8 6V4a2 2 0 0 1 2-2h4a2 2 0 0 1 2 2v2m2 0v14a2 2 0 0 1-2 2H7a2 2 0 0 1-2-2V6"/></svg></button>
+      </div>
+
+      <div id="wBadge" class="hidden absolute -bottom-3.5 left-1/2 -translate-x-1/2 z-30">
+        <button id="wBadgeBtn" type="button" class="flex items-center gap-1.5 rounded-md bg-primary text-white px-2.5 py-1 text-[12px] font-medium shadow-md cursor-pointer">
+          <span id="wSizeText">630 x 420</span>
+          <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M12 20h9"/><path d="M16.5 3.5a2.12 2.12 0 0 1 3 3L7 19l-4 1 1-4Z"/></svg>
+        </button>
+      </div>
+
+      <div id="wEditBadge" class="hidden absolute -bottom-4 left-1/2 -translate-x-1/2 z-30">
+        <div class="relative flex items-center gap-1 rounded-md bg-white border border-input px-1.5 py-1 shadow-md">
+          <input id="wInW" type="text" inputmode="numeric" class="w-11 h-6 text-center text-[12px] font-medium rounded border border-input text-foreground outline-none focus:border-ring" />
+          <span class="text-muted-foreground text-[11px]">x</span>
+          <input id="wInH" type="text" inputmode="numeric" class="w-11 h-6 text-center text-[12px] font-medium rounded border border-input text-foreground outline-none focus:border-ring" />
+          <button id="wOk" type="button" class="size-6 rounded-full text-primary hover:bg-muted flex items-center justify-center cursor-pointer" aria-label="Confirmar"><svg width="16" height="16" viewBox="0 0 24 24" fill="currentColor"><path d="M12 2a10 10 0 1 0 0 20 10 10 0 0 0 0-20Zm-1.2 14.3-3.5-3.5 1.4-1.4 2.1 2.1 4.3-4.3 1.4 1.4Z"/></svg></button>
+          <button id="wCancel" type="button" class="size-6 rounded-full text-muted-foreground hover:bg-muted flex items-center justify-center cursor-pointer" aria-label="Cancelar"><svg width="16" height="16" viewBox="0 0 24 24" fill="currentColor"><path d="M12 2a10 10 0 1 0 0 20 10 10 0 0 0 0-20Zm3.5 12.1-1.4 1.4L12 13.4l-2.1 2.1-1.4-1.4 2.1-2.1-2.1-2.1 1.4-1.4 2.1 2.1 2.1-2.1 1.4 1.4-2.1 2.1Z"/></svg></button>
+          <span id="wTip" class="hidden absolute bottom-full mb-1.5 left-1/2 -translate-x-1/2 w-[200px] rounded-md bg-black2 text-white text-[11px] leading-snug px-2 py-1.5 shadow text-center">Use apenas números múltiplos de 10</span>
+        </div>
+      </div>
+
+      <div id="wResizeHandle" class="hidden absolute z-30 bottom-0 right-0 size-5 cursor-nwse-resize" aria-label="Redimensionar">
+        <svg width="13" height="13" viewBox="0 0 24 24" class="absolute bottom-1 right-1 text-primary pointer-events-none" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round"><path d="M21 15 15 21M21 9 9 21"/></svg>
+      </div>
+    </section>
+  </div>
+</main>
+
+<!-- ===================== MODAL DE CONFIGURAÇÃO ===================== -->
+<div id="cfgOverlay" class="hidden fixed inset-0 z-40 bg-black2/40 items-center justify-center p-3 sm:p-6">
+  <div role="dialog" aria-modal="true" class="bg-white w-[min(820px,100%)] h-[min(760px,90vh)] rounded-xl shadow-[0_24px_60px_rgba(16,24,40,.28)] flex flex-col overflow-hidden">
+    <div class="flex items-center justify-between gap-2 px-4 h-12 border-b border-input shrink-0">
+      <div class="flex items-center gap-2 text-sm font-semibold text-black2">
+        <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="3"/><path d="M19.4 15a1.65 1.65 0 0 0 .33 1.82l.06.06a2 2 0 0 1-2.83 2.83l-.06-.06a1.65 1.65 0 0 0-1.82-.33 1.65 1.65 0 0 0-1 1.51V21a2 2 0 0 1-4 0v-.09A1.65 1.65 0 0 0 9 19.4a1.65 1.65 0 0 0-1.82.33l-.06.06a2 2 0 1 1-2.83-2.83l.06-.06a1.65 1.65 0 0 0 .33-1.82 1.65 1.65 0 0 0-1.51-1H3a2 2 0 0 1 0-4h.09A1.65 1.65 0 0 0 4.6 9a1.65 1.65 0 0 0-.33-1.82l-.06-.06a2 2 0 1 1 2.83-2.83l.06.06a1.65 1.65 0 0 0 1.82.33H9a1.65 1.65 0 0 0 1-1.51V3a2 2 0 0 1 4 0v.09a1.65 1.65 0 0 0 1 1.51 1.65 1.65 0 0 0 1.82-.33l.06-.06a2 2 0 1 1 2.83 2.83l-.06.06a1.65 1.65 0 0 0-.33 1.82V9a1.65 1.65 0 0 0 1.51 1H21a2 2 0 0 1 0 4h-.09a1.65 1.65 0 0 0-1.51 1Z"/></svg>
+        Configurações
+      </div>
+      <button id="closeX" aria-label="Fechar" class="inline-flex items-center justify-center rounded-lg hover:bg-muted size-8 text-foreground cursor-pointer"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M18 6 6 18M6 6l12 12"/></svg></button>
+    </div>
+
+    <div class="px-4 border-b border-input shrink-0">
+      <div id="tabs" class="flex gap-4 overflow-x-auto -mb-px" role="tablist">
+        <button data-tab="geral" class="tab-btn shrink-0 inline-flex items-center whitespace-nowrap text-sm font-medium px-2 py-2.5 border-b-2 cursor-pointer">Geral</button>
+        <button data-tab="avancado" class="tab-btn shrink-0 inline-flex items-center whitespace-nowrap text-sm font-medium px-2 py-2.5 border-b-2 cursor-pointer">Avançado</button>
+        <button data-tab="fonte" class="tab-btn shrink-0 inline-flex items-center whitespace-nowrap text-sm font-medium px-2 py-2.5 border-b-2 cursor-pointer">Fonte</button>
+        <button data-tab="links" class="tab-btn shrink-0 inline-flex items-center whitespace-nowrap text-sm font-medium px-2 py-2.5 border-b-2 cursor-pointer">Links</button>
+        <button data-tab="relacionados" class="tab-btn shrink-0 inline-flex items-center whitespace-nowrap text-sm font-medium px-2 py-2.5 border-b-2 cursor-pointer">Widgets relacionados</button>
+      </div>
+    </div>
+
+    <div class="body-scroll flex-1 min-h-0 overflow-y-auto p-4">
+      <!-- GERAL -->
+      <section data-panel="geral" class="flex flex-col gap-5">
+        <div class="flex flex-col gap-5 min-w-0">
+          <div class="grid grid-cols-1 sm:grid-cols-[150px_1fr_190px_72px] gap-3 items-end">
+            <label class="flex items-center gap-2 h-9 cursor-pointer select-none"><span class="relative inline-flex"><input type="checkbox" checked class="cfg-check peer appearance-none size-4 rounded-[4px] border border-input bg-white checked:border-primary checked:bg-primary transition shadow-sm cursor-pointer" /><svg class="pointer-events-none absolute inset-0 m-auto opacity-0 peer-checked:opacity-100 text-white" width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"><path d="M20 6 9 17l-5-5"/></svg></span><span class="text-sm text-foreground">Mostrar título</span></label>
+            <div class="flex flex-col gap-1"><label class="text-xs text-muted-foreground">Título</label><input type="text" value="Produção linha 3" class="h-9 rounded-lg border border-input bg-white px-3 text-sm text-foreground outline-none focus-visible:border-ring focus-visible:ring-2 focus-visible:ring-ring/40 transition" /></div>
+            <div class="flex flex-col gap-1"><label class="text-xs text-muted-foreground">Tamanho</label><div class="h-9 rounded-lg border border-input bg-white px-2.5 flex items-center justify-between gap-2 cursor-pointer hover:border-ring transition-colors"><span class="inline-flex items-center gap-1 rounded-md bg-input px-2 py-0.5 text-xs text-foreground whitespace-nowrap">Pequeno <svg width="11" height="11" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round"><path d="M18 6 6 18M6 6l12 12"/></svg></span><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="#001391" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><path d="m6 9 6 6 6-6"/></svg></div></div>
+            <div class="flex flex-col gap-1"><label class="text-xs text-muted-foreground">Cor</label><button class="h-9 w-full rounded-lg border border-input bg-white px-2 flex items-center justify-between gap-1 cursor-pointer hover:border-ring transition-colors"><span class="size-5 rounded" style="background:#001391"></span><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="#001391" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><path d="m6 9 6 6 6-6"/></svg></button></div>
+          </div>
+
+          <div class="flex flex-col gap-3">
+            <p class="text-sm font-semibold text-foreground">Visualização</p>
+            <div class="grid grid-cols-1 sm:grid-cols-3 gap-3">
+              <div class="flex flex-col gap-1"><label class="text-xs text-muted-foreground">Formato de entrada</label><div class="h-9 rounded-lg border border-input bg-white px-2.5 flex items-center justify-between gap-2 cursor-pointer hover:border-ring transition-colors"><span class="inline-flex items-center gap-1 rounded-md bg-input px-2 py-0.5 text-xs text-foreground whitespace-nowrap">Diária <svg width="11" height="11" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round"><path d="M18 6 6 18M6 6l12 12"/></svg></span><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="#001391" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><path d="m6 9 6 6 6-6"/></svg></div></div>
+              <div class="flex flex-col gap-1"><label class="text-xs text-muted-foreground">Formato de visualização</label><div class="h-9 rounded-lg border border-input bg-white px-2.5 flex items-center justify-between gap-2 cursor-pointer hover:border-ring transition-colors"><span class="inline-flex items-center gap-1 rounded-md bg-input px-2 py-0.5 text-xs text-foreground whitespace-nowrap">Diária <svg width="11" height="11" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round"><path d="M18 6 6 18M6 6l12 12"/></svg></span><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="#001391" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><path d="m6 9 6 6 6-6"/></svg></div></div>
+              <div class="flex flex-col gap-1"><label class="text-xs text-muted-foreground">Intervalo de visualização</label><div class="h-9 rounded-lg border border-input bg-white px-2.5 flex items-center justify-between gap-2 cursor-pointer hover:border-ring transition-colors"><span class="inline-flex items-center gap-1 rounded-md bg-input px-2 py-0.5 text-xs text-foreground whitespace-nowrap truncate">Dias (mês atual) <svg width="11" height="11" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round"><path d="M18 6 6 18M6 6l12 12"/></svg></span><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="#001391" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><path d="m6 9 6 6 6-6"/></svg></div></div>
+            </div>
+            <div class="grid grid-cols-1 sm:grid-cols-2 gap-3">
+              <div class="flex flex-col gap-1"><label class="text-xs text-muted-foreground">Formato de exibição</label><div class="h-9 rounded-lg border border-input bg-white px-2.5 flex items-center justify-between gap-2 cursor-pointer hover:border-ring transition-colors"><span class="inline-flex items-center gap-1 rounded-md bg-input px-2 py-0.5 text-xs text-foreground whitespace-nowrap truncate">Gráfico de barras <svg width="11" height="11" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round"><path d="M18 6 6 18M6 6l12 12"/></svg></span><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="#001391" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><path d="m6 9 6 6 6-6"/></svg></div></div>
+              <div class="flex flex-col gap-1"><label class="text-xs text-muted-foreground">Texto do gráfico</label><input type="text" placeholder="Opcional" class="h-9 rounded-lg border border-input bg-white px-3 text-sm text-foreground placeholder:text-muted-foreground outline-none focus-visible:border-ring focus-visible:ring-2 focus-visible:ring-ring/40 transition" /></div>
+            </div>
+          </div>
+
+          <div class="flex flex-col gap-4">
+            <label class="flex items-center gap-2 cursor-pointer select-none w-fit"><span class="relative inline-flex"><input type="checkbox" checked class="cfg-check peer appearance-none size-4 rounded-[4px] border border-input bg-white checked:border-primary checked:bg-primary transition shadow-sm cursor-pointer" /><svg class="pointer-events-none absolute inset-0 m-auto opacity-0 peer-checked:opacity-100 text-white" width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"><path d="M20 6 9 17l-5-5"/></svg></span><span class="text-sm text-foreground">Mostrar objetivo</span></label>
+
+            <div class="flex flex-col gap-2">
+              <label class="flex items-center gap-2 cursor-pointer select-none w-fit"><span class="relative inline-flex"><input type="checkbox" checked class="cfg-check peer appearance-none size-4 rounded-[4px] border border-input bg-white checked:border-primary checked:bg-primary transition shadow-sm cursor-pointer" /><svg class="pointer-events-none absolute inset-0 m-auto opacity-0 peer-checked:opacity-100 text-white" width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"><path d="M20 6 9 17l-5-5"/></svg></span><span class="text-sm text-foreground">Mostrar formatação condicional</span></label>
+              <div class="grid grid-cols-2 sm:grid-cols-[88px_88px_88px_1fr] gap-3 pl-6 items-end">
+                <div class="flex flex-col gap-1"><label class="text-xs text-muted-foreground">Abaixo do objetivo</label><button class="h-9 w-full rounded-lg border border-input bg-white px-2 flex items-center justify-between gap-1 cursor-pointer hover:border-ring transition-colors"><span class="size-5 rounded" style="background:#E22A2E"></span><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="#001391" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><path d="m6 9 6 6 6-6"/></svg></button></div>
+                <div class="flex flex-col gap-1"><label class="text-xs text-muted-foreground">No objetivo</label><button class="h-9 w-full rounded-lg border border-input bg-white px-2 flex items-center justify-between gap-1 cursor-pointer hover:border-ring transition-colors"><span class="size-5 rounded" style="background:#0A0A0B"></span><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="#001391" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><path d="m6 9 6 6 6-6"/></svg></button></div>
+                <div class="flex flex-col gap-1"><label class="text-xs text-muted-foreground">Acima do objetivo</label><button class="h-9 w-full rounded-lg border border-input bg-white px-2 flex items-center justify-between gap-1 cursor-pointer hover:border-ring transition-colors"><span class="size-5 rounded" style="background:#466900"></span><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="#001391" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><path d="m6 9 6 6 6-6"/></svg></button></div>
+                <div class="flex flex-col gap-1"><label class="text-xs text-muted-foreground">Andon</label><div class="h-9 rounded-lg border border-input bg-white px-2.5 flex items-center justify-between gap-2 cursor-pointer hover:border-ring transition-colors"><span class="inline-flex items-center gap-1 rounded-md bg-input px-2 py-0.5 text-xs text-foreground whitespace-nowrap truncate">Abaixo do target <svg width="11" height="11" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round"><path d="M18 6 6 18M6 6l12 12"/></svg></span><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="#001391" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><path d="m6 9 6 6 6-6"/></svg></div></div>
+              </div>
+            </div>
+
+            <div class="flex flex-col gap-2">
+              <label class="flex items-center gap-2 cursor-pointer select-none w-fit"><span class="relative inline-flex"><input type="checkbox" checked class="cfg-check peer appearance-none size-4 rounded-[4px] border border-input bg-white checked:border-primary checked:bg-primary transition shadow-sm cursor-pointer" /><svg class="pointer-events-none absolute inset-0 m-auto opacity-0 peer-checked:opacity-100 text-white" width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"><path d="M20 6 9 17l-5-5"/></svg></span><span class="text-sm text-foreground">Mostrar Tolerância do objetivo</span></label>
+              <div class="flex gap-3 pl-6 items-end">
+                <div class="flex flex-col gap-1 w-[72px]"><label class="text-xs text-muted-foreground">Cor</label><button class="h-9 w-full rounded-lg border border-input bg-white px-2 flex items-center justify-between gap-1 cursor-pointer hover:border-ring transition-colors"><span class="size-5 rounded" style="background:#FFC000"></span><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="#001391" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><path d="m6 9 6 6 6-6"/></svg></button></div>
+                <div class="flex flex-col gap-1 w-[120px]"><label class="text-xs text-muted-foreground">Tolerância</label><input type="text" value="0,02" class="h-9 rounded-lg border border-input bg-white px-3 text-sm text-foreground outline-none focus-visible:border-ring focus-visible:ring-2 focus-visible:ring-ring/40 transition" /></div>
+              </div>
+            </div>
+
+            <!-- Flag do feed (US 66506) — mesmo padrão das demais -->
+            <label class="flex items-center gap-2 cursor-pointer select-none w-fit"><span class="relative inline-flex"><input id="feedFlag" type="checkbox" class="cfg-check peer appearance-none size-4 rounded-[4px] border border-input bg-white checked:border-primary checked:bg-primary transition shadow-sm cursor-pointer" /><svg class="pointer-events-none absolute inset-0 m-auto opacity-0 peer-checked:opacity-100 text-white" width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"><path d="M20 6 9 17l-5-5"/></svg></span><span class="text-sm text-foreground">Exibir feed do widget no board</span></label>
+          </div>
+
+          <div class="flex flex-col gap-2">
+            <div class="flex items-center gap-2"><span class="text-sm font-semibold text-foreground">Série</span><button id="serieAdd" type="button" class="size-5 rounded-full bg-primary text-white flex items-center justify-center cursor-pointer" aria-label="Adicionar série"><svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"><path d="M5 12h14M12 5v14"/></svg></button></div>
+            <div id="serieList" class="flex flex-col gap-2"></div>
+          </div>
+        </div>
+      </section>
+
+      <!-- AVANÇADO -->
+      <section data-panel="avancado" class="hidden flex-col gap-5">
+        <div class="grid grid-cols-1 sm:grid-cols-[150px_1fr_84px] gap-3 items-end">
+          <label class="flex items-center gap-2 h-9 cursor-pointer select-none"><span class="relative inline-flex"><input type="checkbox" checked class="cfg-check peer appearance-none size-4 rounded-[4px] border border-input bg-white checked:border-primary checked:bg-primary transition shadow-sm cursor-pointer" /><svg class="pointer-events-none absolute inset-0 m-auto opacity-0 peer-checked:opacity-100 text-white" width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"><path d="M20 6 9 17l-5-5"/></svg></span><span class="text-sm text-foreground">Mostrar legenda</span></label>
+          <div class="flex flex-col gap-1"><label class="text-xs text-muted-foreground">Legenda</label><input type="text" class="h-9 rounded-lg border border-input bg-white px-3 text-sm text-foreground outline-none focus-visible:border-ring focus-visible:ring-2 focus-visible:ring-ring/40 transition" /></div>
+          <div class="flex flex-col gap-1"><label class="text-xs text-muted-foreground">Cor</label><button class="h-9 w-full rounded-lg border border-input bg-white px-2 flex items-center justify-between gap-1 cursor-pointer hover:border-ring transition-colors"><span class="size-5 rounded" style="background:#001391"></span><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="#001391" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><path d="m6 9 6 6 6-6"/></svg></button></div>
+        </div>
+        <label class="flex items-center gap-2 cursor-pointer select-none w-fit"><span class="relative inline-flex"><input type="checkbox" class="cfg-check peer appearance-none size-4 rounded-[4px] border border-input bg-white checked:border-primary checked:bg-primary transition shadow-sm cursor-pointer" /><svg class="pointer-events-none absolute inset-0 m-auto opacity-0 peer-checked:opacity-100 text-white" width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"><path d="M20 6 9 17l-5-5"/></svg></span><span class="text-sm text-foreground">Mostrar unidade</span></label>
+        <label class="flex items-center gap-2 cursor-pointer select-none w-fit"><span class="relative inline-flex"><input type="checkbox" class="cfg-check peer appearance-none size-4 rounded-[4px] border border-input bg-white checked:border-primary checked:bg-primary transition shadow-sm cursor-pointer" /><svg class="pointer-events-none absolute inset-0 m-auto opacity-0 peer-checked:opacity-100 text-white" width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"><path d="M20 6 9 17l-5-5"/></svg></span><span class="text-sm text-foreground">Mostrar dica</span></label>
+        <div class="flex flex-wrap items-center gap-x-8 gap-y-2">
+          <label class="flex items-center gap-2 cursor-pointer select-none w-fit"><span class="relative inline-flex"><input type="checkbox" class="cfg-check peer appearance-none size-4 rounded-[4px] border border-input bg-white checked:border-primary checked:bg-primary transition shadow-sm cursor-pointer" /><svg class="pointer-events-none absolute inset-0 m-auto opacity-0 peer-checked:opacity-100 text-white" width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"><path d="M20 6 9 17l-5-5"/></svg></span><span class="text-sm text-foreground">Borda transparente</span></label>
+          <label class="flex items-center gap-2 cursor-pointer select-none w-fit"><span class="relative inline-flex"><input type="checkbox" class="cfg-check peer appearance-none size-4 rounded-[4px] border border-input bg-white checked:border-primary checked:bg-primary transition shadow-sm cursor-pointer" /><svg class="pointer-events-none absolute inset-0 m-auto opacity-0 peer-checked:opacity-100 text-white" width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"><path d="M20 6 9 17l-5-5"/></svg></span><span class="text-sm text-foreground">Fundo transparente</span></label>
+        </div>
+        <div class="flex flex-wrap items-center gap-x-8 gap-y-2">
+          <label class="flex items-center gap-2 cursor-pointer select-none w-fit"><span class="relative inline-flex"><input type="checkbox" class="cfg-check peer appearance-none size-4 rounded-[4px] border border-input bg-white checked:border-primary checked:bg-primary transition shadow-sm cursor-pointer" /><svg class="pointer-events-none absolute inset-0 m-auto opacity-0 peer-checked:opacity-100 text-white" width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"><path d="M20 6 9 17l-5-5"/></svg></span><span class="text-sm text-foreground">Atualização automática</span></label>
+          <label class="flex items-center gap-2 cursor-pointer select-none w-fit"><span class="relative inline-flex"><input type="checkbox" checked class="cfg-check peer appearance-none size-4 rounded-[4px] border border-input bg-white checked:border-primary checked:bg-primary transition shadow-sm cursor-pointer" /><svg class="pointer-events-none absolute inset-0 m-auto opacity-0 peer-checked:opacity-100 text-white" width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"><path d="M20 6 9 17l-5-5"/></svg></span><span class="text-sm text-foreground">Mostrar mobile</span></label>
+        </div>
+        <div class="flex flex-wrap gap-3">
+          <div class="flex flex-col gap-1 w-[150px]"><label class="text-xs text-muted-foreground">Altura</label><input id="cfgH" type="text" inputmode="numeric" class="h-9 rounded-lg border border-input bg-white px-3 text-sm text-foreground outline-none focus-visible:border-ring focus-visible:ring-2 focus-visible:ring-ring/40 transition" /></div>
+          <div class="flex flex-col gap-1 w-[150px]"><label class="text-xs text-muted-foreground">Largura</label><input id="cfgW" type="text" inputmode="numeric" class="h-9 rounded-lg border border-input bg-white px-3 text-sm text-foreground outline-none focus-visible:border-ring focus-visible:ring-2 focus-visible:ring-ring/40 transition" /></div>
+          <p id="cfgSizeTip" class="hidden w-full text-[11px] text-danger">Use apenas números múltiplos de 10.</p>
+        </div>
+        <div class="flex flex-col gap-1 w-full max-w-[360px]"><label class="text-xs text-muted-foreground">Dono</label><input type="text" class="h-9 rounded-lg border border-input bg-white px-3 text-sm text-foreground outline-none focus-visible:border-ring focus-visible:ring-2 focus-visible:ring-ring/40 transition" /></div>
+        <hr class="border-input" />
+        <label class="flex items-center gap-2 cursor-pointer select-none w-fit"><span class="relative inline-flex"><input type="checkbox" checked class="cfg-check peer appearance-none size-4 rounded-[4px] border border-input bg-white checked:border-primary checked:bg-primary transition shadow-sm cursor-pointer" /><svg class="pointer-events-none absolute inset-0 m-auto opacity-0 peer-checked:opacity-100 text-white" width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"><path d="M20 6 9 17l-5-5"/></svg></span><span class="text-sm text-foreground">Mostrar legenda do gráfico</span></label>
+        <div class="flex flex-col gap-1 w-full max-w-[260px]"><label class="text-xs text-muted-foreground">Casas decimais</label><div class="h-9 rounded-lg border border-input bg-white px-2.5 flex items-center justify-between gap-2 cursor-pointer hover:border-ring transition-colors"><span class="inline-flex items-center gap-1 rounded-md bg-input px-2 py-0.5 text-xs text-foreground whitespace-nowrap">Sem <svg width="11" height="11" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round"><path d="M18 6 6 18M6 6l12 12"/></svg></span><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="#001391" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><path d="m6 9 6 6 6-6"/></svg></div></div>
+        <label class="flex items-center gap-2 cursor-pointer select-none w-fit"><span class="relative inline-flex"><input type="checkbox" class="cfg-check peer appearance-none size-4 rounded-[4px] border border-input bg-white checked:border-primary checked:bg-primary transition shadow-sm cursor-pointer" /><svg class="pointer-events-none absolute inset-0 m-auto opacity-0 peer-checked:opacity-100 text-white" width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"><path d="M20 6 9 17l-5-5"/></svg></span><span class="text-sm text-foreground">Empilhar séries</span></label>
+        <label class="flex items-center gap-2 cursor-pointer select-none w-fit"><span class="relative inline-flex"><input type="checkbox" class="cfg-check peer appearance-none size-4 rounded-[4px] border border-input bg-white checked:border-primary checked:bg-primary transition shadow-sm cursor-pointer" /><svg class="pointer-events-none absolute inset-0 m-auto opacity-0 peer-checked:opacity-100 text-white" width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"><path d="M20 6 9 17l-5-5"/></svg></span><span class="text-sm text-foreground">Exibir eixo vertical</span></label>
+      </section>
+
+      <!-- FONTE -->
+      <section data-panel="fonte" class="hidden flex-col gap-4">
+        <div class="max-w-md" id="fonteTipo"></div>
+        <div class="grid grid-cols-1 sm:grid-cols-2 gap-3" id="fonteGrid"></div>
+      </section>
+
+      <!-- LINKS -->
+      <section data-panel="links" class="hidden flex-col gap-3">
+        <div class="grid grid-cols-1 sm:grid-cols-[1fr_1fr_1fr_auto] gap-2 items-end">
+          <div class="flex flex-col gap-1"><label class="text-xs text-muted-foreground">Link</label><input placeholder="Lorem ipsum" class="h-9 rounded-lg border border-input bg-white px-3 text-sm outline-none focus-visible:border-ring focus-visible:ring-2 focus-visible:ring-ring/40 transition" /></div>
+          <div class="flex flex-col gap-1"><label class="text-xs text-muted-foreground">Sala</label><div class="h-9 rounded-lg border border-input bg-white px-3 text-sm text-foreground flex items-center justify-between cursor-pointer"><span class="inline-flex items-center gap-1 rounded bg-input px-1.5 py-0.5 text-xs">DOB <svg width="10" height="10" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><path d="M18 6 6 18M6 6l12 12"/></svg></span><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="#001391" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><path d="m6 9 6 6 6-6"/></svg></div></div>
+          <div class="flex flex-col gap-1"><label class="text-xs text-muted-foreground">Quadro</label><div class="h-9 rounded-lg border border-input bg-white px-3 text-sm text-foreground flex items-center justify-between cursor-pointer"><span class="inline-flex items-center gap-1 rounded bg-input px-1.5 py-0.5 text-xs">Board1 <svg width="10" height="10" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><path d="M18 6 6 18M6 6l12 12"/></svg></span><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="#001391" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><path d="m6 9 6 6 6-6"/></svg></div></div>
+          <div class="flex items-center gap-1">
+            <button class="size-9 rounded-lg bg-primary text-white flex items-center justify-center cursor-pointer" aria-label="Adicionar"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><path d="M5 12h14M12 5v14"/></svg></button>
+            <button class="size-9 rounded-lg border border-success text-success flex items-center justify-center cursor-pointer" aria-label="Confirmar"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><path d="M20 6 9 17l-5-5"/></svg></button>
+          </div>
+        </div>
+        <div class="rounded-lg border border-dashed border-input py-10 text-center text-sm text-muted-foreground">Nenhum link adicionado ainda.</div>
+      </section>
+
+      <!-- WIDGETS RELACIONADOS -->
+      <section data-panel="relacionados" class="hidden flex-col">
+        <div class="overflow-x-auto rounded-lg border border-input">
+          <table class="w-full caption-bottom text-sm">
+            <thead><tr class="border-b border-input bg-muted/60 text-muted-foreground">
+              <th class="h-10 px-3 text-left font-medium">SITE</th><th class="h-10 px-3 text-left font-medium">SALA</th><th class="h-10 px-3 text-left font-medium">QUADRO</th><th class="h-10 px-3 text-left font-medium">WIDGET</th><th class="h-10 px-3 text-left font-medium">TIPO</th>
+            </tr></thead>
+            <tbody id="relTable"></tbody>
+          </table>
+        </div>
+      </section>
+
+      <!-- PREVIEW (rodapé, centralizado) -->
+      <div id="previewBlock" class="border-t border-input pt-4 mt-5">
+        <div class="rounded-lg border border-input bg-muted/50 p-4 flex justify-center items-center overflow-x-auto feed-scroll min-h-[210px]">
+          <div id="preview" class="preview-fade flex items-start shrink-0"></div>
+        </div>
+      </div>
+    </div>
+
+    <div class="flex items-center justify-end gap-2 px-4 h-14 border-t border-input shrink-0">
+      <button class="inline-flex items-center justify-center rounded-lg hover:bg-muted size-8 text-foreground cursor-pointer" aria-label="Mais opções"><svg width="18" height="18" viewBox="0 0 24 24" fill="currentColor"><circle cx="12" cy="5" r="1.8"/><circle cx="12" cy="12" r="1.8"/><circle cx="12" cy="19" r="1.8"/></svg></button>
+      <button id="btnFechar" class="inline-flex items-center justify-center rounded-lg border border-border bg-white hover:bg-muted text-sm font-medium px-4 h-9 cursor-pointer text-foreground">Fechar</button>
+      <button id="btnSalvar" class="inline-flex items-center justify-center rounded-lg bg-primary text-white hover:bg-primary/90 text-sm font-medium px-4 h-9 cursor-pointer">Salvar</button>
+    </div>
+  </div>
+</div>
+
+<!-- Toast -->
+<div id="toast" class="hidden fixed bottom-4 left-1/2 -translate-x-1/2 z-50">
+  <div class="toast-in flex items-center gap-2 rounded-lg bg-black2 text-white text-sm px-4 py-2.5 shadow-lg">
+    <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="10"/><line x1="12" x2="12" y1="8" y2="12"/><line x1="12" x2="12.01" y1="16" y2="16"/></svg>
+    <span id="toastMsg"></span>
+  </div>
+</div>
+
+<script>
+  // ═══════════ ESTADO ÚNICO (compartilhado board + modal) ═══════════
+  var widgetW = 630, widgetH = 420;     // dimensões do widget (gráfico ~260 + feed 370) — fonte única
+  var feedOn = true;                    // flag "Exibir feed do widget no board"
+  var feedAvailable = true;             // disponibilidade do feed (6.9/6.10)
+  var contentState = 'normal';          // normal | loading | empty | error (6.16)
+  // rascunho do modal (commit no Salvar)
+  var dW = widgetW, dH = widgetH, dFeed = feedOn;
+
+  var BARS = [{h:86,c:'bg-danger'},{h:68,c:'bg-success'},{h:79,c:'bg-danger'},{h:75,c:'bg-success'},{h:63,c:'bg-danger'},{h:100,c:'bg-success'}];
+  var COMMENTS = [
+    { hi:true,  reply:null, reactions:null },
+    { hi:false, reply:null, reactions:null },
+    { hi:true,  reply:'Lorem ipsum dolor sit amet, consectetur adipiscing elit. Vivamus mauris nulla, volutpat.', reactions:{emojis:['❤️','👍','👏','😂'],count:32} },
+    { hi:true,  reply:null, reactions:null },
+    { hi:false, reply:null, reactions:null }
+  ];
+  var ACTIONS = ['Reagir','Responder','Traduzir','Excluir'];
+  var TXT = 'Lorem ipsum dolor sit amet, consectetur adipiscing elit. Vivamus mauris nulla, volutpat a turpis vitae, consectetur';
+  var mql = window.matchMedia('(min-width: 640px)');
+  function el(id){ return document.getElementById(id); }
+  function round10(n){ return Math.round(n/10)*10; }
+  function mul10(n){ return !isNaN(n) && n % 10 === 0; }
+  function feedVisible(){ return feedOn && feedAvailable; }
+  // Feed tem largura fixa (370px). Largura mínima precisa caber o feed + um mínimo de gráfico.
+  var FEED_W = 370;
+  function minW(){ return feedVisible() ? (FEED_W + 90) : 180; }
+  function minH(){ return 180; }
+  function clampW(n){ n = round10(n); return (isNaN(n)||n<minW()) ? minW() : n; }
+  function clampH(n){ n = round10(n); return (isNaN(n)||n<minH()) ? minH() : n; }
+
+  // ───────── Gráfico (widget do board) ─────────
+  function renderChart(){
+    // barras finas: largura cresce um pouco com o widget mas com teto baixo; altura em % acompanha a altura
+    el('chart').innerHTML = BARS.map(function(b){ return '<span class="flex-1 min-w-0 max-w-[14px] rounded-full '+b.c+'" style="height:'+b.h+'%"></span>'; }).join('');
+    el('chartLabels').innerHTML = BARS.map(function(_,i){ return '<span class="flex-1 min-w-0 max-w-[14px] text-center">'+(i+1)+'</span>'; }).join('');
+  }
+
+  // ───────── Feed (board) ─────────
+  function actionsRow(){
+    return '<div class="flex flex-wrap items-center gap-x-2 gap-y-1 pl-10 min-w-0">'+ACTIONS.map(function(a){return '<span class="text-muted-foreground font-medium text-sm whitespace-nowrap">'+a+'</span>';}).join('<span class="w-px h-3 bg-input"></span>')+'</div>';
+  }
+  function reactionsRow(r){
+    var em = r.emojis.map(function(e){return '<span class="inline-flex items-center justify-center size-5 -mr-1 last:mr-0 text-[12px] rounded-full bg-white ring-1 ring-input">'+e+'</span>';}).join('');
+    return '<div class="flex flex-wrap items-center gap-x-2 gap-y-1 pl-10 min-w-0"><div class="flex items-center gap-1"><div class="flex items-center">'+em+'</div><span class="text-primary text-xs">'+r.count+'</span></div><div class="flex flex-wrap items-center gap-x-2 gap-y-1 min-w-0">'+ACTIONS.map(function(a){return '<span class="text-muted-foreground font-medium text-sm whitespace-nowrap">'+a+'</span>';}).join('<span class="w-px h-3 bg-input"></span>')+'</div></div>';
+  }
+  function commentHTML(c){
+    var bg = c.hi ? 'bg-secondary' : 'bg-input';
+    var reply = c.reply ? '<div class="bg-white rounded-lg p-2 mt-1 text-sm font-light text-black2">'+c.reply+'</div>' : '';
+    var bubble = '<div class="flex gap-2"><div class="relative flex items-center justify-center bg-input rounded-full size-8 shrink-0"><span class="text-[#4D4D4D] font-semibold text-sm">NU</span></div>'+
+      '<div class="flex-1 min-w-0 '+bg+' rounded-tr-2xl rounded-br-2xl rounded-bl-2xl px-4 py-2 flex flex-col gap-2"><div class="flex items-center gap-2.5 whitespace-nowrap"><span class="font-semibold text-black2 text-sm">Nome do usuário</span><span class="font-light text-foreground text-sm">5:02 am</span></div><p class="font-light text-foreground text-sm break-words">'+TXT+'</p>'+reply+'</div></div>';
+    return '<div class="flex flex-col gap-2">'+bubble+(c.reactions?reactionsRow(c.reactions):actionsRow())+'</div>';
+  }
+  function renderList(){ el('feedList').innerHTML = COMMENTS.map(commentHTML).join(''); }
+
+  function show(id,on){ el(id).classList.toggle('hidden',!on); el(id).classList.toggle('flex',on); }
+
+  // ───────── Tamanho do widget (board) ─────────
+  function applyWidgetSize(){
+    // Largura aplicada ao WIDGET INTEIRO (a coluna do gráfico é flexível e o feed acompanha)
+    if (mql.matches){ el('unifiedWidget').style.width = widgetW+'px'; el('unifiedWidget').style.height = widgetH+'px'; }
+    else { el('unifiedWidget').style.width=''; el('unifiedWidget').style.height=''; }
+    el('wSizeText').textContent = widgetW + ' x ' + widgetH;
+  }
+
+  // ───────── Render do board ─────────
+  function renderBoard(){
+    var vis = feedVisible();
+    el('feedBeside').classList.toggle('hidden', !vis);
+    el('feedBeside').classList.toggle('flex', vis);
+    widgetW = Math.max(widgetW, minW());  // garante largura mínima conforme o feed
+    widgetH = Math.max(widgetH, minH());
+    applyWidgetSize();
+    if (vis){
+      show('feedLoading', contentState==='loading');
+      show('feedEmpty',   contentState==='empty');
+      show('feedError',   contentState==='error');
+      var normal = contentState==='normal';
+      el('feedList').classList.toggle('hidden', !normal);
+      el('feedList').classList.toggle('flex', normal);
+      var sc = normal || contentState==='empty';
+      el('composer').classList.toggle('hidden', !sc);
+      el('composer').classList.toggle('flex', sc);
+    }
+  }
+
+  // ───────── Seleção / redimensionamento (board) ─────────
+  var wSel=false, wEdit=false;
+  function refreshSelection(){
+    el('wToolbar').classList.toggle('hidden', !wSel);
+    el('wResizeHandle').classList.toggle('hidden', !wSel);
+    el('wBadge').classList.toggle('hidden', !wSel || wEdit);
+    el('wEditBadge').classList.toggle('hidden', !wSel || !wEdit);
+    el('unifiedWidget').classList.toggle('w-selected', wSel);
+  }
+  function selectWidget(on){ wSel=on; if(!on) wEdit=false; refreshSelection(); }
+  function validateBadge(){
+    var iw=el('wInW'), ih=el('wInH');
+    var bw=!mul10(parseInt(iw.value,10)), bh=!mul10(parseInt(ih.value,10));
+    iw.classList.toggle('text-danger',bw); iw.classList.toggle('border-danger',bw);
+    ih.classList.toggle('text-danger',bh); ih.classList.toggle('border-danger',bh);
+    el('wTip').classList.toggle('hidden', !(bw||bh));
+    el('wOk').classList.toggle('opacity-40', bw||bh);
+    el('wOk').classList.toggle('pointer-events-none', bw||bh);
+    return !(bw||bh);
+  }
+  function enterBadgeEdit(){ wEdit=true; el('wInW').value=widgetW; el('wInH').value=widgetH; validateBadge(); refreshSelection(); el('wInW').focus(); el('wInW').select(); }
+  function commitBadge(){
+    if(!validateBadge()) return;
+    widgetW=clampW(parseInt(el('wInW').value,10)); widgetH=clampH(parseInt(el('wInH').value,10));
+    dW=widgetW; dH=widgetH;            // mantém o rascunho do modal em sincronia
+    wEdit=false; renderBoard(); refreshSelection();
+  }
+
+  // ───────── Modal: tabs, selects, série, preview ─────────
+  function chipSelect(label,value){
+    return '<div class="flex flex-col gap-1"><label class="text-xs text-muted-foreground">'+label+'</label><div class="h-9 rounded-lg border border-input bg-white px-2.5 flex items-center justify-between gap-2 cursor-pointer hover:border-ring transition-colors"><span class="inline-flex items-center gap-1 rounded-md bg-input px-2 py-0.5 text-xs text-foreground whitespace-nowrap truncate">'+value+' <svg width="11" height="11" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round"><path d="M18 6 6 18M6 6l12 12"/></svg></span><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="#001391" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><path d="m6 9 6 6 6-6"/></svg></div></div>';
+  }
+  function fillSelects(){
+    el('fonteTipo').innerHTML = chipSelect('Tipo de visão','Modelos Padrão');
+    el('fonteGrid').innerHTML = chipSelect('Posição','Lorem ipsum')+chipSelect('Métrica','Lorem ipsum')+chipSelect('Tipo de linha','Lorem ipsum')+chipSelect('Agrupação','Lorem ipsum')+chipSelect('Frequência','Lorem ipsum')+chipSelect('Tipo de exibição','Lorem ipsum')+chipSelect('Cores','Lorem ipsum');
+  }
+  var SERIES=['Linha 1','Linha 2','Linha 3'], serieSeq=3;
+  function renderSerie(){
+    el('serieList').innerHTML = SERIES.map(function(n,i){
+      return '<div class="flex items-center gap-2"><input type="text" value="'+n+'" class="flex-1 min-w-0 h-9 rounded-lg border border-input bg-white px-3 text-sm text-foreground outline-none focus-visible:border-ring focus-visible:ring-2 focus-visible:ring-ring/40 transition" />'+
+        '<span class="relative inline-flex shrink-0"><input type="checkbox" checked class="cfg-check peer appearance-none size-4 rounded-[4px] border border-input bg-white checked:border-primary checked:bg-primary transition shadow-sm cursor-pointer" /><svg class="pointer-events-none absolute inset-0 m-auto opacity-0 peer-checked:opacity-100 text-white" width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"><path d="M20 6 9 17l-5-5"/></svg></span>'+
+        '<button type="button" data-serie-del="'+i+'" class="size-8 rounded-md flex items-center justify-center text-primary hover:bg-muted cursor-pointer shrink-0" aria-label="Excluir série"><svg class="pointer-events-none" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M3 6h18M8 6V4a2 2 0 0 1 2-2h4a2 2 0 0 1 2 2v2m2 0v14a2 2 0 0 1-2 2H7a2 2 0 0 1-2-2V6"/><line x1="10" x2="10" y1="11" y2="17"/><line x1="14" x2="14" y1="11" y2="17"/></svg></button></div>';
+    }).join('');
+  }
+  function fillRelTable(){
+    var rows=[['Curitiba','DOB 519 - Teste','Board1','Gráfico','Cálculo'],['Curitiba','DOB 519 - Teste','Board1','Gráfico','Espelhamento'],['Curitiba','DOB 519 - Teste','Board1','Gráfico','Compartilhamento']];
+    el('relTable').innerHTML = rows.map(function(r){ return '<tr class="border-b border-input last:border-0 hover:bg-muted/40">'+r.map(function(c){return '<td class="px-3 py-2.5 text-foreground">'+c+'</td>';}).join('')+'</tr>'; }).join('');
+  }
+
+  // Preview (mini) reflete o rascunho (com/sem feed)
+  function chartCardMini(){
+    var bars = BARS.map(function(b){return '<span class="w-[10px] rounded-full '+b.c+'" style="height:'+b.h+'%"></span>';}).join('');
+    var labels = BARS.map(function(_,i){return '<span class="w-[10px] text-center">'+(i+1)+'</span>';}).join('');
+    return '<div class="widget-shadow bg-white rounded-[12px] flex flex-col gap-3 px-4 py-2" style="width:200px;min-height:168px;"><div class="flex items-center gap-1 pt-1"><span class="text-primary"><svg width="15" height="15" viewBox="0 0 24 24" fill="currentColor"><circle cx="18" cy="5" r="2.6"/><circle cx="6" cy="12" r="2.6"/><circle cx="18" cy="19" r="2.6"/><path d="m8.3 13.2 7.4 4.3m0-11-7.4 4.3" stroke="currentColor" stroke-width="1.8" fill="none"/></svg></span><span class="flex-1 text-[15px] font-bold text-foreground truncate">Produção linha 3</span><svg width="16" height="16" viewBox="0 0 24 24" fill="#4D4D4D"><circle cx="12" cy="5" r="1.6"/><circle cx="12" cy="12" r="1.6"/><circle cx="12" cy="19" r="1.6"/></svg></div><div><div class="chart-grid relative h-[88px] flex items-end justify-between px-1">'+bars+'</div><div class="flex items-start justify-between px-1 mt-1 text-[10px] font-light text-foreground">'+labels+'</div></div><div class="flex items-start justify-between pb-1"><span class="text-black2"><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="10"/><line x1="12" x2="12" y1="8" y2="12"/><line x1="12" x2="12.01" y1="16" y2="16"/></svg></span><span class="flex items-center justify-center bg-input rounded-full size-4"><span class="text-[#4D4D4D] font-semibold text-[7px]">NU</span></span></div></div>';
+  }
+  function feedMini(){
+    var bubble=function(hi){return '<div class="flex gap-1.5"><div class="flex items-center justify-center bg-input rounded-full size-6 shrink-0"><span class="text-[#4D4D4D] font-semibold text-[10px]">NU</span></div><div class="flex-1 min-w-0 '+(hi?'bg-secondary':'bg-input')+' rounded-tr-xl rounded-br-xl rounded-bl-xl px-2.5 py-1.5"><div class="flex items-center gap-1.5"><span class="font-semibold text-black2 text-[11px]">Nome do usuário</span><span class="font-light text-foreground text-[10px]">5:02 am</span></div><p class="font-light text-foreground text-[11px] leading-snug">Lorem ipsum dolor sit amet, consectetur adipiscing elit.</p></div></div>';};
+    return '<div class="bg-secondary flex flex-col gap-2 p-2.5 rounded-r-[12px]" style="width:210px;align-self:stretch;"><div class="flex items-center gap-1.5"><span class="text-primary"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M4 11a9 9 0 0 1 9 9"/><path d="M4 4a16 16 0 0 1 16 16"/><circle cx="5" cy="19" r="1"/></svg></span><span class="text-sm font-bold text-primary">Feed</span></div><div class="bg-white rounded-lg p-2 flex flex-col gap-3 flex-1 min-h-0"><div class="flex items-center justify-between gap-1 rounded-full border-2 border-border pl-3 pr-1 py-0.5"><span class="text-[11px] text-muted-foreground">Comentar</span><span class="size-6 rounded-full bg-primary text-white flex items-center justify-center"><svg width="11" height="11" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="m22 2-7 20-4-9-9-4Z"/><path d="M22 2 11 13"/></svg></span></div>'+bubble(true)+bubble(false)+'</div></div>';
+  }
+  function renderPreview(){
+    el('preview').innerHTML = '<div class="widget-shadow bg-white rounded-[12px] flex items-stretch overflow-hidden"><div class="shrink-0">'+chartCardMini()+'</div>'+(dFeed?feedMini():'')+'</div>';
+  }
+
+  // ───────── Tabs ─────────
+  var TABS=['geral','avancado','fonte','links','relacionados'];
+  function setTab(name){
+    document.querySelectorAll('.tab-btn').forEach(function(b){
+      var a=b.getAttribute('data-tab')===name;
+      b.classList.toggle('border-primary',a); b.classList.toggle('text-primary',a);
+      b.classList.toggle('border-transparent',!a); b.classList.toggle('text-muted-foreground',!a);
+    });
+    TABS.forEach(function(t){ var p=document.querySelector('[data-panel="'+t+'"]'); var on=t===name; p.classList.toggle('hidden',!on); p.classList.toggle('flex',on); });
+    el('previewBlock').classList.toggle('hidden', !(name==='geral'||name==='avancado'||name==='fonte'));
+  }
+
+  // ───────── Modal: abrir/fechar/salvar ─────────
+  function validateCfgSize(){
+    var bw=!mul10(parseInt(el('cfgW').value,10)), bh=!mul10(parseInt(el('cfgH').value,10));
+    el('cfgW').classList.toggle('border-danger',bw); el('cfgW').classList.toggle('text-danger',bw);
+    el('cfgH').classList.toggle('border-danger',bh); el('cfgH').classList.toggle('text-danger',bh);
+    el('cfgSizeTip').classList.toggle('hidden', !(bw||bh));
+    el('btnSalvar').classList.toggle('opacity-40', bw||bh);
+    el('btnSalvar').classList.toggle('pointer-events-none', bw||bh);
+    return !(bw||bh);
+  }
+  function openModal(){
+    dW=widgetW; dH=widgetH; dFeed=feedOn;
+    el('cfgW').value=dW; el('cfgH').value=dH; el('feedFlag').checked=dFeed;
+    validateCfgSize(); renderPreview();
+    el('cfgOverlay').classList.remove('hidden'); el('cfgOverlay').classList.add('flex');
+    setTab('geral');
+  }
+  function closeModal(){ el('cfgOverlay').classList.add('hidden'); el('cfgOverlay').classList.remove('flex'); }
+  var toastTimer=null;
+  function showToast(msg){ el('toastMsg').textContent=msg; el('toast').classList.remove('hidden'); if(toastTimer)clearTimeout(toastTimer); toastTimer=setTimeout(function(){el('toast').classList.add('hidden');},2800); }
+
+  // ───────── Demo: estados ─────────
+  function setSwitch(btn,on){ var s=on?'checked':'unchecked'; btn.setAttribute('data-state',s); btn.setAttribute('aria-checked',on?'true':'false'); var t=btn.querySelector('span'); if(t)t.setAttribute('data-state',s); }
+  var stBtns=document.querySelectorAll('.st-btn');
+  function paintStateBtns(){ stBtns.forEach(function(b){ var a=b.getAttribute('data-st')===contentState; b.className='st-btn inline-flex items-center justify-center rounded-lg border text-xs font-medium px-2 h-7 cursor-pointer '+(a?'bg-primary text-white border-primary':'bg-background text-foreground border-border hover:bg-muted'); }); }
+
+  // ═══════════ EVENTOS ═══════════
+  // Menu ⋮
+  var cfgTrigger=el('cfgTrigger'), cfgMenu=el('cfgMenu');
+  function openMenu(o){ cfgMenu.classList.toggle('hidden',!o); cfgMenu.setAttribute('data-state',o?'open':'closed'); cfgTrigger.setAttribute('aria-expanded',o?'true':'false'); }
+  cfgTrigger.addEventListener('click', function(e){ e.stopPropagation(); openMenu(cfgMenu.classList.contains('hidden')); });
+  el('menuConfig').addEventListener('click', function(e){ e.stopPropagation(); openMenu(false); openModal(); });
+  document.addEventListener('click', function(e){ if(!cfgMenu.contains(e.target) && e.target!==cfgTrigger) openMenu(false); });
+
+  // Seleção do widget
+  el('unifiedWidget').addEventListener('click', function(e){ if(e.target.closest('#cfgTrigger')||e.target.closest('#cfgMenu')) return; if(!wSel) selectWidget(true); });
+  document.addEventListener('click', function(e){ if(!el('boardGroup').contains(e.target) && !el('cfgOverlay').contains(e.target)) selectWidget(false); });
+  document.addEventListener('keydown', function(e){ if(e.key==='Escape'){ openMenu(false); if(!el('cfgOverlay').classList.contains('hidden')) closeModal(); else if(wEdit){wEdit=false;refreshSelection();} else selectWidget(false); } });
+
+  // Badge edit
+  el('wBadgeBtn').addEventListener('click', function(e){ e.stopPropagation(); enterBadgeEdit(); });
+  el('wInW').addEventListener('input', validateBadge); el('wInH').addEventListener('input', validateBadge);
+  el('wInW').addEventListener('keydown', function(e){ if(e.key==='Enter') commitBadge(); });
+  el('wInH').addEventListener('keydown', function(e){ if(e.key==='Enter') commitBadge(); });
+  el('wOk').addEventListener('click', function(e){ e.stopPropagation(); commitBadge(); });
+  el('wCancel').addEventListener('click', function(e){ e.stopPropagation(); wEdit=false; refreshSelection(); });
+  el('wDel').addEventListener('click', function(e){ e.stopPropagation(); selectWidget(false); });
+  el('wCfg').addEventListener('click', function(e){ e.stopPropagation(); openModal(); });
+
+  // Resize handle
+  (function(){
+    var h=el('wResizeHandle'), rz=false, sx=0, sy=0, sw=0, sh=0;
+    h.addEventListener('pointerdown', function(e){ e.stopPropagation(); if(!mql.matches) return; rz=true; sx=e.clientX; sy=e.clientY; sw=widgetW; sh=widgetH; h.setPointerCapture(e.pointerId); });
+    h.addEventListener('pointermove', function(e){ if(!rz) return; widgetW=clampW(sw+(e.clientX-sx)); widgetH=clampH(sh+(e.clientY-sy)); dW=widgetW; dH=widgetH; applyWidgetSize(); });
+    function stop(e){ rz=false; try{h.releasePointerCapture(e.pointerId);}catch(_){} }
+    h.addEventListener('pointerup', stop); h.addEventListener('pointercancel', stop);
+  })();
+
+  // Arrasto do widget
+  (function(){
+    var group=el('boardGroup'), handle=el('dragHandle'), dr=false, sx=0, sy=0, ox=0, oy=0;
+    handle.addEventListener('pointerdown', function(e){ if(e.target.closest('#cfgTrigger')||e.target.closest('#cfgMenu')) return; dr=true; sx=e.clientX; sy=e.clientY; ox=parseFloat(group.style.left)||0; oy=parseFloat(group.style.top)||0; handle.setPointerCapture(e.pointerId); });
+    handle.addEventListener('pointermove', function(e){ if(!dr) return; group.style.left=Math.max(0,ox+(e.clientX-sx))+'px'; group.style.top=Math.max(0,oy+(e.clientY-sy))+'px'; });
+    function stop(e){ dr=false; try{handle.releasePointerCapture(e.pointerId);}catch(_){} }
+    handle.addEventListener('pointerup', stop); handle.addEventListener('pointercancel', stop);
+  })();
+
+  // Modal: tabs, flag, tamanho, salvar/fechar
+  document.querySelectorAll('.tab-btn').forEach(function(b){ b.addEventListener('click', function(){ setTab(b.getAttribute('data-tab')); }); });
+  el('feedFlag').addEventListener('change', function(){
+    var was = dFeed;
+    dFeed = el('feedFlag').checked;
+    // Ao incluir o feed, soma 370px à largura (feed fixo) sem encolher o gráfico; ao remover, subtrai 370px.
+    if (dFeed && !was) dW = clampW(dW + FEED_W);
+    else if (!dFeed && was) dW = clampW(dW - FEED_W);
+    el('cfgW').value = dW;
+    validateCfgSize();
+    renderPreview();
+  });
+  el('cfgW').addEventListener('input', function(){ dW=parseInt(el('cfgW').value,10); validateCfgSize(); });
+  el('cfgH').addEventListener('input', function(){ dH=parseInt(el('cfgH').value,10); validateCfgSize(); });
+  el('serieAdd').addEventListener('click', function(){ serieSeq+=1; SERIES.push('Linha '+serieSeq); renderSerie(); });
+  el('serieList').addEventListener('click', function(e){ var b=e.target.closest('[data-serie-del]'); if(!b) return; SERIES.splice(parseInt(b.getAttribute('data-serie-del'),10),1); renderSerie(); });
+  el('closeX').addEventListener('click', closeModal);
+  el('btnFechar').addEventListener('click', closeModal);
+  el('btnSalvar').addEventListener('click', function(){
+    if(!validateCfgSize()) return;
+    widgetW=clampW(dW); widgetH=clampH(dH); feedOn=dFeed;
+    renderBoard(); closeModal(); showToast('Configurações salvas.');
+  });
+  el('cfgOverlay').addEventListener('click', function(e){ if(e.target===el('cfgOverlay')) closeModal(); });
+
+  // Demo states
+  el('mtgSwitch').addEventListener('click', function(){ feedAvailable=!feedAvailable; setSwitch(el('mtgSwitch'),feedAvailable); if(!feedAvailable && feedOn) showToast('A reunião foi encerrada. O feed foi removido do board.'); renderBoard(); });
+  stBtns.forEach(function(b){ b.addEventListener('click', function(){ contentState=b.getAttribute('data-st'); if(contentState==='error') showToast('Não foi possível exibir o feed no board. Tente novamente.'); paintStateBtns(); renderBoard(); }); });
+  el('retryBtn').addEventListener('click', function(){ contentState='loading'; paintStateBtns(); renderBoard(); setTimeout(function(){ contentState='normal'; paintStateBtns(); renderBoard(); },1200); });
+  mql.addEventListener('change', applyWidgetSize);
+
+  // ═══════════ INIT ═══════════
+  renderChart(); renderList(); fillSelects(); renderSerie(); fillRelTable(); paintStateBtns();
+  setTab('geral'); renderPreview(); renderBoard();
+</script>
+
+<script>window.RV_CONFIG = { key: 'us66506_widget_config_v1', title: 'Revisão — US 66506 (Widget + Config)' };</script>
+<button id="rv-toggle">💬 Revisão</button>
+<div id="rv-bar">
+  <div class="rv-top"><span class="dot"></span> <span id="rv-title">Revisão de comentários</span> <span style="margin-left:auto;cursor:pointer" id="rv-min">—</span></div>
+  <div class="rv-sec">
+    <div><label>Seu nome (revisor)</label><input type="text" id="rv-name" placeholder="ex.: Maria"></div>
+    <button id="rv-mode">💬 Ativar modo comentário</button>
+    <div class="row">
+      <button id="rv-listbtn">📋 Lista (<span id="rv-count">0</span>)</button>
+      <button id="rv-export">⬇ Exportar</button>
+    </div>
+    <div class="row"><button id="rv-importbtn" style="flex:1">⬆ Importar comentários</button></div>
+    <input type="file" id="rv-import" accept=".html,.json" style="display:none">
+    <div class="hint">Ative o modo, <b>clique no ponto</b> que quer comentar e escreva. Ao terminar, <b>Exportar</b> gera um arquivo com os comentários salvos para enviar de volta.</div>
+  </div>
+</div>
+<div id="rv-layer"></div>
+<div id="rv-pop"></div>
+<div id="rv-panel"><h3>Comentários <button id="rv-close">×</button></h3><div id="rv-list"></div></div>
+<script type="application/json" id="rv-data">{"savedAt":0,"comments":[]}</script>
+
+<style>
+  #rv-bar{position:fixed;top:14px;right:14px;z-index:9000;background:#0f172a;color:#fff;border-radius:12px;box-shadow:0 8px 24px rgba(2,6,23,.35);font-size:13px;width:270px;overflow:hidden;font-family:-apple-system,BlinkMacSystemFont,"Segoe UI",Roboto,Arial,sans-serif}
+  #rv-bar .rv-top{display:flex;align-items:center;gap:8px;padding:11px 13px;font-weight:700}
+  #rv-bar .rv-top .dot{width:10px;height:10px;border-radius:50%;background:#f43f5e}
+  #rv-bar .rv-sec{padding:0 13px 13px;display:flex;flex-direction:column;gap:9px}
+  #rv-bar label{font-size:11px;color:#94a3b8;display:block;margin-bottom:3px}
+  #rv-bar input[type=text]{width:100%;padding:7px 9px;border-radius:7px;border:1px solid #334155;background:#1e293b;color:#fff;font-size:13px}
+  #rv-bar button{border:0;border-radius:8px;padding:8px 10px;font-size:12.5px;font-weight:600;cursor:pointer;color:#fff;background:#334155}
+  #rv-bar button.on{background:#f43f5e}
+  #rv-bar .row{display:flex;gap:7px}#rv-bar .row button{flex:1}
+  #rv-bar .hint{font-size:11px;color:#94a3b8;line-height:1.45}
+  #rv-toggle{position:fixed;top:14px;right:14px;z-index:9001;background:#0f172a;color:#fff;border:0;border-radius:10px;padding:9px 12px;font-weight:700;font-size:13px;cursor:pointer;box-shadow:0 6px 18px rgba(2,6,23,.3);display:none;font-family:inherit}
+  .rv-pin{position:absolute;z-index:8000;width:26px;height:26px;border-radius:50% 50% 50% 2px;background:#f43f5e;color:#fff;display:flex;align-items:center;justify-content:center;font-size:12px;font-weight:700;cursor:pointer;transform:translate(-3px,-26px);box-shadow:0 3px 8px rgba(0,0,0,.3);border:2px solid #fff}
+  .rv-pin.resolved{background:#16a34a;opacity:.85}
+  #rv-layer{position:absolute;top:0;left:0;width:100%;pointer-events:none;z-index:7000}
+  #rv-layer .rv-pin{pointer-events:auto}
+  body.rv-commenting{cursor:crosshair}
+  #rv-pop{position:fixed;z-index:9500;width:260px;background:#fff;border:1px solid #e2e8f0;border-radius:12px;box-shadow:0 12px 30px rgba(2,6,23,.25);padding:12px;display:none;font-family:-apple-system,BlinkMacSystemFont,"Segoe UI",Roboto,Arial,sans-serif}
+  #rv-pop textarea{width:100%;min-height:64px;border:1px solid #e2e8f0;border-radius:8px;padding:8px;font-size:13px;font-family:inherit;resize:vertical}
+  #rv-pop .meta{font-size:11px;color:#64748b;margin-bottom:6px}
+  #rv-pop .acts{display:flex;gap:7px;margin-top:8px}
+  #rv-pop button{border:0;border-radius:7px;padding:7px 10px;font-size:12px;font-weight:600;cursor:pointer}
+  #rv-pop .save{background:#0e7490;color:#fff;flex:1}#rv-pop .res{background:#dcfce7;color:#166534}#rv-pop .del{background:#fee2e2;color:#991b1b}
+  #rv-panel{position:fixed;top:0;right:-360px;width:340px;height:100%;background:#fff;z-index:8900;box-shadow:-6px 0 24px rgba(2,6,23,.18);transition:right .25s;display:flex;flex-direction:column;font-family:-apple-system,BlinkMacSystemFont,"Segoe UI",Roboto,Arial,sans-serif}
+  #rv-panel.open{right:0}
+  #rv-panel h3{margin:0;padding:16px 18px;border-bottom:1px solid #e2e8f0;font-size:15px;display:flex;justify-content:space-between;align-items:center}
+  #rv-panel h3 button{border:0;background:none;font-size:18px;cursor:pointer;color:#64748b}
+  #rv-list{overflow:auto;padding:10px 14px;flex:1}
+  .rv-item{border:1px solid #e2e8f0;border-radius:10px;padding:10px;margin-bottom:9px;cursor:pointer}
+  .rv-item:hover{background:#f8fafc}
+  .rv-item .h{display:flex;align-items:center;gap:8px;font-size:12px;font-weight:700;margin-bottom:4px}
+  .rv-item .h .b{background:#f43f5e;color:#fff;width:20px;height:20px;border-radius:50%;display:inline-flex;align-items:center;justify-content:center;font-size:11px}
+  .rv-item.resolved .b{background:#16a34a}
+  .rv-item .t{font-size:13px;white-space:pre-wrap}
+  .rv-item .when{font-size:10.5px;color:#64748b;margin-top:5px}
+  @media print{#rv-bar,#rv-toggle,#rv-panel,#rv-pop{display:none!important}.rv-pin{-webkit-print-color-adjust:exact;print-color-adjust:exact}}
+</style>
+
+<script>
+(function(){
+  var CFG=window.RV_CONFIG||{};
+  var KEY=CFG.key||('rv_'+(document.title||location.pathname).replace(/[^a-z0-9]+/gi,'_').toLowerCase());
+  if(CFG.title){document.getElementById('rv-title').textContent=CFG.title;}
+  var layer=document.getElementById('rv-layer'),pop=document.getElementById('rv-pop'),panel=document.getElementById('rv-panel'),
+      list=document.getElementById('rv-list'),countEl=document.getElementById('rv-count'),nameInput=document.getElementById('rv-name'),
+      modeBtn=document.getElementById('rv-mode');
+  var comments=[],commentMode=false,seq=0,RVMO=null;
+  function parse(s){try{return JSON.parse(s)}catch(e){return null}}
+  var embedded=parse(document.getElementById('rv-data').textContent)||{savedAt:0,comments:[]};
+  var stored=parse(localStorage.getItem(KEY))||{savedAt:0,comments:[]};
+  var src=(embedded.savedAt>=stored.savedAt)?embedded:stored;
+  comments=src.comments||[]; seq=comments.reduce(function(m,c){return Math.max(m,c.n||0)},0);
+  var sn=localStorage.getItem(KEY+'_name'); if(sn) nameInput.value=sn;
+
+  // ---- contexto/visão: board (main) x modal (conteúdo do modal aberto) ----
+  function viewKey(){ var ov=document.getElementById('cfgOverlay'); return (ov && !ov.classList.contains('hidden')) ? 'modal' : 'board'; }
+  function getAnchor(view){
+    if(view==='modal'){ var ov=document.getElementById('cfgOverlay'); return ov ? (ov.querySelector('.body-scroll')||ov) : document.body; }
+    return document.querySelector('main') || document.scrollingElement || document.documentElement;
+  }
+  function scW(a){ return a.scrollWidth || a.clientWidth || 1; }
+  function scH(a){ return a.scrollHeight || a.clientHeight || 1; }
+
+  function save(){var p={savedAt:Date.now(),comments:comments};localStorage.setItem(KEY,JSON.stringify(p));localStorage.setItem(KEY+'_name',nameInput.value||'');document.getElementById('rv-data').textContent=JSON.stringify(p);}
+  function esc(s){return (s||'').replace(/[&<>"]/g,function(m){return {'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;'}[m]})}
+  function render(){
+    if(RVMO){RVMO.disconnect();}   // evita loop: render muta o DOM e re-dispararia o observer
+    var view=viewKey(), anchor=getAnchor(view);
+    if(layer.parentNode!==anchor) anchor.appendChild(layer);
+    if(getComputedStyle(anchor).position==='static') anchor.style.position='relative';
+    var W=scW(anchor), H=scH(anchor);
+    layer.style.width='100%'; layer.style.height=H+'px'; layer.innerHTML='';
+    // Mostra apenas os comentários da visão atual (os demais permanecem salvos)
+    var shown=comments.filter(function(c){return (c.view||'board')===view;});
+    shown.forEach(function(c){var pin=document.createElement('div');pin.className='rv-pin'+(c.resolved?' resolved':'');pin.textContent=c.n;pin.dataset.n=c.n;
+      pin.style.left=(c.xPct*W)+'px';pin.style.top=(c.yPct*H)+'px';pin.title=(c.author||'?')+': '+c.text;
+      pin.addEventListener('click',function(ev){ev.stopPropagation();openPop(c,pin)});layer.appendChild(pin);});
+    list.innerHTML=''; if(!shown.length){list.innerHTML='<p style="color:#94a3b8;font-size:13px;padding:6px">Nenhum comentário nesta visão ('+(view==='modal'?'modal':'board')+').</p>';}
+    shown.slice().sort(function(a,b){return a.n-b.n}).forEach(function(c){var it=document.createElement('div');it.className='rv-item'+(c.resolved?' resolved':'');
+      it.innerHTML='<div class="h"><span class="b">'+c.n+'</span> '+esc(c.author||'—')+(c.resolved?' · ✓ resolvido':'')+'</div><div class="t">'+esc(c.text)+'</div><div class="when">'+new Date(c.ts).toLocaleString('pt-BR')+'</div>';
+      it.addEventListener('click',function(){var a=getAnchor(view);try{a.scrollTo({top:c.yPct*scH(a)-120,behavior:'smooth'});}catch(e){} var pin=layer.querySelector('.rv-pin[data-n="'+c.n+'"]');openPop(c,pin);});list.appendChild(it);});
+    countEl.textContent=shown.length;
+    if(RVMO){ try{ RVMO.observe(document.body,{childList:true,subtree:true,attributes:true,attributeFilter:['class','style']}); }catch(e){} } // reconecta após render
+  }
+  function openPop(c,el){var r=el?el.getBoundingClientRect():{left:innerWidth/2,top:innerHeight/2};pop.style.display='block';
+    pop.style.left=Math.min(r.left+30,innerWidth-280)+'px';pop.style.top=Math.max(8,Math.min(r.top,innerHeight-180))+'px';
+    pop.innerHTML='<div class="meta">Pino #'+c.n+(c.author?(' · '+esc(c.author)):'')+'</div><textarea id="rv-ta">'+esc(c.text)+'</textarea><div class="acts"><button class="save" id="rv-sv">Salvar</button><button class="res" id="rv-rs">'+(c.resolved?'Reabrir':'Resolver')+'</button><button class="del" id="rv-dl">Excluir</button></div>';
+    var ta=document.getElementById('rv-ta');ta.focus();
+    document.getElementById('rv-sv').onclick=function(){c.text=ta.value.trim();c.author=nameInput.value||c.author||'Anônimo';c.ts=Date.now();if(!c.text){rm(c)}else{save();render()}pop.style.display='none';};
+    document.getElementById('rv-rs').onclick=function(){c.resolved=!c.resolved;save();render();pop.style.display='none';};
+    document.getElementById('rv-dl').onclick=function(){rm(c);pop.style.display='none';};
+  }
+  function rm(c){comments=comments.filter(function(x){return x!==c});save();render();}
+  document.addEventListener('click',function(ev){if(!commentMode)return;if(ev.target.closest('#rv-bar,#rv-toggle,#rv-panel,#rv-pop,.rv-pin'))return;
+    var view=viewKey(), anchor=getAnchor(view), rect=anchor.getBoundingClientRect?anchor.getBoundingClientRect():{left:0,top:0};
+    var x=ev.clientX-(rect.left||0)+(anchor.scrollLeft||0), y=ev.clientY-(rect.top||0)+(anchor.scrollTop||0);
+    var c={n:++seq,view:view,xPct:x/scW(anchor),yPct:y/scH(anchor),author:nameInput.value||'Anônimo',text:'',ts:Date.now(),resolved:false};
+    comments.push(c);save();render();var pins=layer.querySelectorAll('.rv-pin');openPop(c,pins[pins.length-1]);});
+  modeBtn.onclick=function(){commentMode=!commentMode;document.body.classList.toggle('rv-commenting',commentMode);modeBtn.classList.toggle('on',commentMode);modeBtn.textContent=commentMode?'✋ Sair do modo comentário':'💬 Ativar modo comentário';};
+  document.getElementById('rv-listbtn').onclick=function(){panel.classList.add('open')};
+  document.getElementById('rv-close').onclick=function(){panel.classList.remove('open')};
+  nameInput.onchange=save;
+  document.getElementById('rv-min').onclick=function(){document.getElementById('rv-bar').style.display='none';document.getElementById('rv-toggle').style.display='block';};
+  document.getElementById('rv-toggle').onclick=function(){document.getElementById('rv-bar').style.display='block';document.getElementById('rv-toggle').style.display='none';};
+  document.getElementById('rv-export').onclick=function(){save();var clone=document.documentElement.cloneNode(true);
+    var a=clone.querySelector('#rv-layer');if(a)a.innerHTML='';var b=clone.querySelector('#rv-list');if(b)b.innerHTML='';
+    var c=clone.querySelector('#rv-pop');if(c){c.innerHTML='';c.style.display='none';}
+    var name=(document.title||'arquivo').replace(/[^a-z0-9]+/gi,'-').toLowerCase()+'-COMENTADO.html';
+    dl(new Blob(['<!DOCTYPE html>\n'+clone.outerHTML],{type:'text/html'}),name);};
+  document.getElementById('rv-importbtn').onclick=function(){document.getElementById('rv-import').click()};
+  document.getElementById('rv-import').onchange=function(e){var f=e.target.files[0];if(!f)return;var rd=new FileReader();
+    rd.onload=function(){var data=null,t=rd.result;if(f.name.endsWith('.json')){data=parse(t)}else{var m=t.match(/<script[^>]*id="rv-data"[^>]*>([\s\S]*?)<\/script>/);if(m)data=parse(m[1]);}
+      if(data&&data.comments){comments=data.comments;seq=comments.reduce(function(mx,c){return Math.max(mx,c.n||0)},0);save();render();alert('Importados '+comments.length+' comentário(s).');}else alert('Não encontrei comentários nesse arquivo.');};
+    rd.readAsText(f);};
+  function dl(blob,name){var a=document.createElement('a');a.href=URL.createObjectURL(blob);a.download=name;a.click();setTimeout(function(){URL.revokeObjectURL(a.href)},2000);}
+  window.addEventListener('resize',render); window.addEventListener('load',render);
+  // reposiciona quando a página muda de conteúdo (ex.: troca de view em SPA/protótipo)
+  try{ RVMO=new MutationObserver(function(){clearTimeout(window.__rvmo);window.__rvmo=setTimeout(render,120);});
+    RVMO.observe(document.body,{childList:true,subtree:true,attributes:true,attributeFilter:['class','style']}); }catch(e){}
+  render();
+})();
+</script>
+</body>
+</html>

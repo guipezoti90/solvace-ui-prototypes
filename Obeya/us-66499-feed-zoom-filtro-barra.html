@@ -1,0 +1,715 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1.0" />
+<title>US 66499 — Feed do zoom filtrado a partir da data da barra clicada</title>
+<script src="https://cdn.tailwindcss.com"></script>
+<link rel="preconnect" href="https://fonts.googleapis.com" />
+<link href="https://fonts.googleapis.com/css2?family=Roboto:wght@300;400;500;700&display=swap" rel="stylesheet" />
+<script>
+  // ── Tailwind config: tokens reais do Design System Solvace / Zard ──
+  tailwind.config = {
+    theme: {
+      extend: {
+        fontFamily: { sans: ['Roboto', 'ui-sans-serif', 'system-ui', 'sans-serif'] },
+        colors: {
+          primary: '#001391',           // Solvace Primária
+          'primary-foreground': '#FFFFFF',
+          secondary: '#CCD0E9',
+          'primary-100': '#DDEAF9',
+          background: '#FFFFFF',
+          foreground: '#4D4D4D',        // Fonte
+          card: '#FFFFFF',
+          'card-foreground': '#4D4D4D',
+          popover: '#FFFFFF',
+          'popover-foreground': '#4D4D4D',
+          muted: '#F4F6F8',
+          'muted-foreground': '#9BA0A3',// Desabilitado
+          accent: '#DDEAF9',
+          'accent-foreground': '#001391',
+          border: '#D0D5DD',
+          input: '#E4E7EA',             // Inativo
+          ring: '#001391',
+          black2: '#0A0A0B',
+          success: '#466900',           // Sucesso (barras verdes)
+          danger: '#E22A2E',            // Perigo (barras vermelhas)
+          destructive: '#C0392B',
+        },
+      },
+    },
+  };
+</script>
+<style>
+  html, body { height: 100%; }
+  body { font-family: 'Roboto', system-ui, sans-serif; background: #EEF1F4; color: #4D4D4D; }
+
+  /* Canvas do board com grid de pontos (atrás do modal) */
+  .board-canvas {
+    background-color: #EEF1F4;
+    background-image: radial-gradient(#D0D5DD 1px, transparent 1px);
+    background-size: 22px 22px;
+  }
+
+  .widget-shadow { filter: drop-shadow(2px 1px 5px rgba(0,0,0,0.15)); }
+
+  /* Linhas de grade do gráfico */
+  .chart-grid { background-image: repeating-linear-gradient(to top, #E4E7EA 0 1px, transparent 1px 31px); }
+
+  /* Scrollbar do feed (trilho #E4E7EA, thumb #D0D5DD) */
+  .feed-scroll { scrollbar-width: thin; scrollbar-color: #D0D5DD #E4E7EA; }
+  .feed-scroll::-webkit-scrollbar { width: 8px; }
+  .feed-scroll::-webkit-scrollbar-track { background: #E4E7EA; border-radius: 8px; }
+  .feed-scroll::-webkit-scrollbar-thumb { background: #D0D5DD; border-radius: 8px; }
+
+  @keyframes spin { to { transform: rotate(360deg); } }
+  .spin { animation: spin .8s linear infinite; }
+
+  .feed-fade { transition: opacity .22s ease; }
+
+  /* Barras do gráfico do zoom */
+  .zoom-bar { transition: opacity .15s ease, outline-color .15s ease; cursor: pointer; outline: 2px solid transparent; outline-offset: 2px; }
+  .zoom-bar:hover { opacity: .85; }
+  .zoom-bar[data-selected="true"] { outline-color: #001391; }
+  .chart-has-selection .zoom-bar:not([data-selected="true"]) { opacity: .35; }
+
+  /* Tooltip da barra (comportamento preservado, regra 6.5) */
+  .bar-wrap { position: relative; }
+  .bar-tip {
+    position: absolute; bottom: calc(100% + 8px); left: 50%; transform: translateX(-50%);
+    background: #0A0A0B; color: #fff; font-size: 11px; line-height: 1.35;
+    padding: 4px 8px; border-radius: 6px; white-space: nowrap;
+    opacity: 0; visibility: hidden; transition: opacity .12s ease; pointer-events: none; z-index: 20;
+  }
+  .bar-wrap:hover .bar-tip { opacity: 1; visibility: visible; }
+
+  @keyframes toastIn { from { opacity: 0; transform: translateY(8px);} to {opacity:1; transform: translateY(0);} }
+  .toast-in { animation: toastIn .2s ease both; }
+</style>
+</head>
+<body class="antialiased">
+
+<!-- ===================== TOPO: contexto do board ===================== -->
+<header class="h-12 bg-white border-b border-input flex items-center justify-between px-4 shrink-0 relative z-10">
+  <div class="flex items-center gap-2 min-w-0">
+    <div class="size-7 rounded-md bg-primary flex items-center justify-center text-white shrink-0">
+      <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="3" width="7" height="7" rx="1"/><rect x="14" y="3" width="7" height="7" rx="1"/><rect x="3" y="14" width="7" height="7" rx="1"/><rect x="14" y="14" width="7" height="7" rx="1"/></svg>
+    </div>
+    <span class="text-sm font-medium text-black2 truncate">Obeya Board · Board1</span>
+  </div>
+  <span class="hidden sm:inline-flex items-center justify-center border border-transparent bg-accent text-accent-foreground px-2 py-0.5 text-xs font-medium rounded-md h-5">US 66499</span>
+</header>
+
+<!-- ===================== CANVAS DO BOARD (atrás do modal) ===================== -->
+<main class="board-canvas relative w-full overflow-hidden" style="min-height: calc(100vh - 48px);">
+
+  <!-- Widget de gráfico no board (origem do zoom) -->
+  <section class="widget-shadow absolute w-[220px] bg-white rounded-[12px] flex flex-col gap-3 px-4 py-2" style="left:40px; top:36px; min-height:180px;">
+    <div class="flex items-center gap-1 w-full pt-1 select-none">
+      <span class="text-primary shrink-0" aria-hidden="true">
+        <svg width="16" height="16" viewBox="0 0 24 24" fill="currentColor"><circle cx="18" cy="5" r="2.6"/><circle cx="6" cy="12" r="2.6"/><circle cx="18" cy="19" r="2.6"/><path d="m8.3 13.2 7.4 4.3m0-11-7.4 4.3" stroke="currentColor" stroke-width="1.8" fill="none"/></svg>
+      </span>
+      <span class="flex-1 min-w-0 text-[16px] font-bold text-foreground leading-normal truncate">Produção linha 3</span>
+      <button id="miniMenuBtn" type="button" aria-label="Opções do widget"
+        class="inline-flex items-center justify-center rounded-lg border border-transparent transition-all hover:bg-muted size-7 outline-none cursor-pointer text-foreground">
+        <svg width="18" height="18" viewBox="0 0 24 24" fill="currentColor"><circle cx="12" cy="5" r="1.8"/><circle cx="12" cy="12" r="1.8"/><circle cx="12" cy="19" r="1.8"/></svg>
+      </button>
+    </div>
+    <div class="w-full">
+      <div id="miniChart" class="chart-grid relative h-[95px] flex items-end justify-between px-2" style="background-size:auto 19px;"></div>
+      <div id="miniChartLabels" class="flex items-start justify-between px-2 mt-1 text-[11px] font-light text-foreground leading-[1.32]"></div>
+    </div>
+    <div class="flex items-start justify-between w-full pb-1">
+      <span class="text-black2" aria-label="Alertas do widget">
+        <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="10"/><line x1="12" x2="12" y1="8" y2="12"/><line x1="12" x2="12.01" y1="16" y2="16"/></svg>
+      </span>
+      <span class="relative flex items-center justify-center bg-input rounded-full size-4" aria-label="Responsável NU">
+        <span class="text-[#4D4D4D] font-semibold text-[7.2px] leading-none">NU</span>
+      </span>
+    </div>
+    <button id="openZoomBtn" type="button"
+      class="absolute inset-0 rounded-[12px] cursor-zoom-in focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring"
+      aria-label="Abrir zoom do widget Produção linha 3"></button>
+  </section>
+
+  <p class="absolute left-10 top-[280px] text-xs text-muted-foreground">Clique no widget para abrir o zoom.</p>
+</main>
+
+<!-- ===================== MODAL DE ZOOM DO WIDGET ===================== -->
+<div id="zoomOverlay" class="fixed inset-0 z-40 bg-black2/40 flex items-center justify-center p-3 sm:p-6">
+  <div role="dialog" aria-modal="true" aria-labelledby="zoomTitle"
+    class="bg-white rounded-xl shadow-[0_8px_30px_rgba(16,24,40,.25)] w-full max-w-[1060px] flex flex-col overflow-hidden"
+    style="height: min(640px, calc(100vh - 32px));">
+
+    <!-- Cabeçalho do modal -->
+    <div class="flex items-center justify-between gap-2 px-4 sm:px-5 py-3 border-b border-input shrink-0">
+      <div class="flex items-center gap-2 min-w-0">
+        <span class="text-primary shrink-0" aria-hidden="true">
+          <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="11" cy="11" r="8"/><line x1="21" x2="16.65" y1="21" y2="16.65"/><line x1="11" x2="11" y1="8" y2="14"/><line x1="8" x2="14" y1="11" y2="11"/></svg>
+        </span>
+        <h2 id="zoomTitle" class="text-[16px] sm:text-lg font-bold text-foreground truncate">Produção linha 3</h2>
+        <span id="granBadge" class="inline-flex items-center justify-center border border-transparent bg-accent text-accent-foreground px-2 py-0.5 text-xs font-medium rounded-md h-5 whitespace-nowrap">Granularidade: Dia</span>
+      </div>
+      <button id="closeZoomBtn" type="button" aria-label="Fechar zoom"
+        class="inline-flex items-center justify-center rounded-lg border border-transparent transition-all hover:bg-muted size-8 outline-none cursor-pointer text-foreground shrink-0">
+        <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M18 6 6 18"/><path d="m6 6 12 12"/></svg>
+      </button>
+    </div>
+
+    <!-- Corpo: gráfico + feed -->
+    <div class="flex-1 min-h-0 flex flex-col lg:flex-row overflow-y-auto lg:overflow-hidden">
+
+      <!-- ── Gráfico ── -->
+      <div class="flex-1 min-w-0 p-4 sm:p-5 flex flex-col gap-3 overflow-y-auto lg:overflow-visible">
+        <div class="flex items-center justify-between gap-2">
+          <p id="chartCaption" class="text-sm font-medium text-foreground">Junho/2026 · meta diária: 80</p>
+          <div class="flex items-center gap-3 text-[11px] text-muted-foreground">
+            <span class="inline-flex items-center gap-1"><span class="size-2 rounded-full bg-success"></span>Dentro da meta</span>
+            <span class="inline-flex items-center gap-1"><span class="size-2 rounded-full bg-danger"></span>Fora da meta</span>
+          </div>
+        </div>
+
+        <div id="zoomChart" class="chart-grid relative h-[220px] sm:h-[250px] flex items-end justify-between gap-1 px-1 sm:px-2 pt-2"></div>
+        <div id="zoomChartLabels" class="flex items-start justify-between gap-1 px-1 sm:px-2 text-[11px] font-light text-foreground leading-[1.32]"></div>
+
+        <p class="text-xs text-muted-foreground leading-snug">
+          Clique em uma barra para filtrar o feed. Clique novamente na barra selecionada para limpar a seleção.
+        </p>
+      </div>
+
+      <!-- ── Feed do zoom ── -->
+      <section class="w-full lg:w-[380px] shrink-0 border-t lg:border-t-0 lg:border-l border-input bg-secondary flex flex-col gap-3 p-3 min-h-[320px] lg:min-h-0"
+        aria-label="Feed do widget Produção linha 3">
+
+        <div class="flex items-center justify-between gap-2 shrink-0">
+          <div class="flex items-center gap-2 min-w-0">
+            <span class="text-primary" aria-hidden="true">
+              <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M4 11a9 9 0 0 1 9 9"/><path d="M4 4a16 16 0 0 1 16 16"/><circle cx="5" cy="19" r="1"/></svg>
+            </span>
+            <span class="text-lg font-bold text-primary leading-none">Feed</span>
+          </div>
+        </div>
+
+        <!-- Busca + filtro (comportamentos preservados) -->
+        <div class="flex items-center gap-2 shrink-0">
+          <div class="relative flex-1">
+            <input type="text" placeholder="Pesquisar"
+              class="w-full h-9 flex items-center rounded-lg border border-input bg-white pl-3 pr-8 text-sm text-foreground placeholder:text-muted-foreground outline-none focus-visible:border-ring focus-visible:ring-2 focus-visible:ring-ring/50 transition-colors" />
+            <span class="absolute right-2.5 top-1/2 -translate-y-1/2 text-muted-foreground">
+              <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="11" cy="11" r="8"/><path d="m21 21-4.3-4.3"/></svg>
+            </span>
+          </div>
+          <button type="button" aria-label="Filtrar feed"
+            class="inline-flex items-center justify-center rounded border border-primary bg-white p-2 size-9 text-primary hover:bg-accent transition-colors cursor-pointer">
+            <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polygon points="22 3 2 3 10 12.46 10 19 14 21 14 12.46 22 3"/></svg>
+          </button>
+        </div>
+
+        <!-- Card branco: composer + lista -->
+        <div class="feed-fade flex-1 min-h-0 bg-white rounded-lg p-2 flex flex-col" id="feedCard">
+
+          <!-- Composer (criação sem amarração a barra — regra 6.5) -->
+          <div id="composer" class="flex items-center gap-2 px-1 pt-1 pb-2 shrink-0">
+            <div class="flex-1 flex items-center justify-between gap-2 rounded-full border-2 border-border pl-4 pr-1 py-1">
+              <input type="text" placeholder="Comentar" class="flex-1 min-w-0 bg-transparent text-sm text-foreground placeholder:text-muted-foreground outline-none" />
+              <button type="button" aria-label="Enviar comentário" class="size-9 shrink-0 rounded-full bg-primary text-white flex items-center justify-center hover:bg-primary/90 transition-colors cursor-pointer">
+                <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="m22 2-7 20-4-9-9-4Z"/><path d="M22 2 11 13"/></svg>
+              </button>
+            </div>
+            <button type="button" aria-label="Anexar arquivo" class="size-9 shrink-0 rounded-full bg-primary text-white flex items-center justify-center hover:bg-primary/90 transition-colors cursor-pointer">
+              <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="m21.44 11.05-9.19 9.19a6 6 0 0 1-8.49-8.49l8.57-8.57A4 4 0 1 1 18 8.84l-8.59 8.57a2 2 0 0 1-2.83-2.83l8.49-8.48"/></svg>
+            </button>
+          </div>
+
+          <!-- Lista de comentários -->
+          <div id="feedList" class="feed-scroll flex-1 min-h-0 overflow-y-auto overflow-x-hidden pr-1 flex flex-col gap-5 py-1"></div>
+
+          <!-- Estado: carregando (6.8 — loading padrão atual do feed) -->
+          <div id="feedLoading" class="hidden flex-1 min-h-0 flex-col items-center justify-center gap-3 text-muted-foreground">
+            <span class="text-primary"><svg class="spin" width="28" height="28" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round"><path d="M21 12a9 9 0 1 1-6.219-8.56"/></svg></span>
+            <p class="text-sm">Carregando o feed…</p>
+          </div>
+
+          <!-- Estado: vazio (6.8) -->
+          <div id="feedEmpty" class="hidden flex-1 min-h-0 flex-col items-center justify-center gap-2 text-center px-6 text-muted-foreground">
+            <span class="size-12 rounded-full bg-muted flex items-center justify-center text-muted-foreground">
+              <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M4 11a9 9 0 0 1 9 9"/><path d="M4 4a16 16 0 0 1 16 16"/><circle cx="5" cy="19" r="1"/></svg>
+            </span>
+            <p class="text-sm font-medium text-foreground">Não há comentários</p>
+          </div>
+
+          <!-- Estado: erro (6.8) -->
+          <div id="feedError" class="hidden flex-1 min-h-0 flex-col items-center justify-center gap-2 text-center px-6">
+            <span class="size-12 rounded-full bg-danger/10 flex items-center justify-center text-danger">
+              <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="10"/><line x1="12" x2="12" y1="8" y2="12"/><line x1="12" x2="12.01" y1="16" y2="16"/></svg>
+            </span>
+            <p class="text-sm font-medium text-foreground">Não foi possível exibir o feed</p>
+            <button id="retryBtn" type="button" class="inline-flex items-center justify-center gap-1.5 rounded-lg border border-border bg-background hover:bg-muted text-sm font-medium transition-all px-3 h-8 cursor-pointer text-foreground">Tentar novamente</button>
+          </div>
+        </div>
+      </section>
+    </div>
+  </div>
+</div>
+
+<!-- ===================== PAINEL DE DEMONSTRAÇÃO (apenas QA do protótipo) ===================== -->
+<aside class="fixed z-50 bottom-4 right-4 w-[250px] max-w-[calc(100vw-2rem)] bg-white rounded-xl border border-input shadow-lg p-3 text-xs">
+  <p class="font-semibold text-black2 mb-2">Demonstração (QA do protótipo)</p>
+
+  <p class="text-foreground mb-1">Granularidade do KPI (6.3)</p>
+  <div id="granBtns" class="grid grid-cols-2 gap-1 mb-2">
+    <button data-gran="day" class="gran-btn inline-flex items-center justify-center rounded-lg border text-xs font-medium transition-all px-2 h-7 cursor-pointer">Dia</button>
+    <button data-gran="month" class="gran-btn inline-flex items-center justify-center rounded-lg border text-xs font-medium transition-all px-2 h-7 cursor-pointer">Mês</button>
+  </div>
+
+  <p class="text-foreground mb-1">Regra de filtro ao clicar na barra</p>
+  <div id="ruleBtns" class="grid grid-cols-2 gap-1 mb-2">
+    <button data-rule="new" class="rule-btn inline-flex items-center justify-center rounded-lg border text-xs font-medium transition-all px-2 h-7 cursor-pointer">Nova (US 66499)</button>
+    <button data-rule="old" class="rule-btn inline-flex items-center justify-center rounded-lg border text-xs font-medium transition-all px-2 h-7 cursor-pointer">Antiga</button>
+  </div>
+
+  <button id="errBtn" type="button" class="w-full inline-flex items-center justify-center rounded-lg border border-border bg-background hover:bg-muted text-xs font-medium transition-all px-2 h-7 cursor-pointer mb-2">Simular erro ao refiltrar (6.8)</button>
+
+  <p id="demoHint" class="text-[11px] leading-snug text-muted-foreground">Nova regra: barra de 03/06 → comentários de 03/06 em diante (sem teto superior).</p>
+</aside>
+
+<!-- Toast -->
+<div id="toast" class="hidden fixed bottom-4 left-1/2 -translate-x-1/2 z-50">
+  <div class="toast-in flex items-center gap-2 rounded-lg bg-black2 text-white text-sm px-4 py-2.5 shadow-lg">
+    <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="10"/><line x1="12" x2="12" y1="8" y2="12"/><line x1="12" x2="12.01" y1="16" y2="16"/></svg>
+    <span id="toastMsg">Mensagem</span>
+  </div>
+</div>
+
+<script>
+  // ───────────────── Dados ─────────────────
+  // Granularidade DIA — Junho/2026 (exemplo 6.12). Barras 01–12/06; meta 80.
+  var DAY_BARS = [
+    { start: '2026-06-01', label: '01/06', value: 92,  ok: true  },
+    { start: '2026-06-02', label: '02/06', value: 64,  ok: false },
+    { start: '2026-06-03', label: '03/06', value: 58,  ok: false },
+    { start: '2026-06-04', label: '04/06', value: 86,  ok: true  },
+    { start: '2026-06-05', label: '05/06', value: 71,  ok: false },
+    { start: '2026-06-06', label: '06/06', value: 95,  ok: true  },
+    { start: '2026-06-07', label: '07/06', value: 88,  ok: true  },
+    { start: '2026-06-08', label: '08/06', value: 60,  ok: false },
+    { start: '2026-06-09', label: '09/06', value: 90,  ok: true  },
+    { start: '2026-06-10', label: '10/06', value: 83,  ok: true  },
+    { start: '2026-06-11', label: '11/06', value: 77,  ok: false },
+    { start: '2026-06-12', label: '12/06', value: 97,  ok: true  }
+  ];
+
+  // Granularidade MÊS — ano 2026 (exemplo 6.12).
+  var MONTH_BARS = [
+    { start: '2026-01-01', label: 'Jan', value: 78, ok: false },
+    { start: '2026-02-01', label: 'Fev', value: 85, ok: true  },
+    { start: '2026-03-01', label: 'Mar', value: 70, ok: false },
+    { start: '2026-04-01', label: 'Abr', value: 90, ok: true  },
+    { start: '2026-05-01', label: 'Mai', value: 82, ok: true  },
+    { start: '2026-06-01', label: 'Jun', value: 66, ok: false },
+    { start: '2026-07-01', label: 'Jul', value: 88, ok: true  },
+    { start: '2026-08-01', label: 'Ago', value: 91, ok: true  },
+    { start: '2026-09-01', label: 'Set', value: 74, ok: false },
+    { start: '2026-10-01', label: 'Out', value: 0,  ok: false, future: true },
+    { start: '2026-11-01', label: 'Nov', value: 0,  ok: false, future: true },
+    { start: '2026-12-01', label: 'Dez', value: 0,  ok: false, future: true }
+  ];
+
+  // Comentários do feed geral do KPI — a amarração é só pela data de criação (6.5).
+  // Inclui os exemplos da spec 6.12: D(02/06), A(03/06), B(04/06), C(10/06) e E(15/03), F(02/06), G(20/09).
+  var COMMENTS = [
+    { id: 'G', name: 'Carla Mendes',  date: '2026-09-20', time: '09:14', text: 'Plano de ação de setembro revisado: troca do fuso da linha 3 concluída, indicador voltou à meta.' },
+    { id: 'C', name: 'Rafael Souza',  date: '2026-06-10', time: '16:40', text: 'Retroativo: a queda dos dias 03 e 05 foi causada pela parada não programada da prensa. OS nº 4587 anexada.' },
+    { id: 'B', name: 'Juliana Prado', date: '2026-06-04', time: '08:02', text: 'Atualização sobre ontem (03/06): manutenção identificou desgaste no rolamento. Peça chega amanhã.' },
+    { id: 'A', name: 'Nome do usuário', date: '2026-06-03', time: '17:25', text: 'Dia vermelho: produção parou 2h por falha elétrica no painel da linha 3. Acionada a manutenção.' },
+    { id: 'F', name: 'Pedro Lima',    date: '2026-06-02', time: '11:48', text: 'Dia abaixo da meta por absenteísmo no 1º turno. RH acionado para remanejamento.' },
+    { id: 'E', name: 'Marina Alves',  date: '2026-03-15', time: '10:30', text: 'Março: meta não atingida na primeira quinzena por atraso de matéria-prima do fornecedor B.' }
+  ];
+
+  // ───────────────── Estado ─────────────────
+  var granularity = 'day';     // 'day' | 'month' (demo das granularidades — 6.3)
+  var rule = 'new';            // 'new' = US 66499 (data inicial da barra em diante) | 'old' = período da barra
+  var selectedIndex = null;    // barra selecionada (null = sem filtro)
+  var contentState = 'normal'; // normal | loading | empty | error
+  var simulateError = false;
+  var loadTimer = null;
+
+  // ───────────────── Helpers ─────────────────
+  function el(id) { return document.getElementById(id); }
+
+  function bars() { return granularity === 'day' ? DAY_BARS : MONTH_BARS; }
+
+  // Fim exclusivo do período da barra (apenas para a regra ANTIGA, na demonstração)
+  function barEnd(i) {
+    var bs = bars();
+    if (i + 1 < bs.length) return bs[i + 1].start;
+    return '9999-12-31';
+  }
+
+  function fmtDate(iso) {
+    var p = iso.split('-');
+    return p[2] + '/' + p[1] + '/' + p[0];
+  }
+
+  // Filtro do feed (núcleo da US):
+  // Nova regra → data de criação >= data inicial da barra, SEM teto superior (6.2/6.4).
+  // Regra antiga (só p/ comparação na demo) → dentro do período da barra.
+  function filteredComments() {
+    if (selectedIndex === null) return COMMENTS.slice();
+    var start = bars()[selectedIndex].start;
+    if (rule === 'new') {
+      return COMMENTS.filter(function (c) { return c.date >= start; });
+    }
+    var end = barEnd(selectedIndex);
+    return COMMENTS.filter(function (c) { return c.date >= start && c.date < end; });
+  }
+
+  // ───────────────── Gráfico ─────────────────
+  function renderMiniChart() {
+    var bs = DAY_BARS.slice(0, 6);
+    el('miniChart').innerHTML = bs.map(function (b) {
+      return '<span class="w-[10px] rounded-full ' + (b.ok ? 'bg-success' : 'bg-danger') + '" style="height:' + Math.round(b.value) + '%"></span>';
+    }).join('');
+    el('miniChartLabels').innerHTML = bs.map(function (b) {
+      return '<span class="w-[10px] text-center">' + b.label.slice(0, 2) + '</span>';
+    }).join('');
+  }
+
+  function renderZoomChart() {
+    var bs = bars();
+    var html = bs.map(function (b, i) {
+      var color = b.future ? 'bg-input' : (b.ok ? 'bg-success' : 'bg-danger');
+      var sel = selectedIndex === i ? 'true' : 'false';
+      var h = b.future ? 4 : Math.max(6, Math.round(b.value));
+      var tip = b.future
+        ? fmtDate(b.start) + ' · sem dados'
+        : fmtDate(b.start) + ' · valor: ' + b.value + (b.ok ? ' · dentro da meta' : ' · fora da meta');
+      return '<div class="bar-wrap flex-1 h-full flex items-end justify-center min-w-0">' +
+          '<span class="bar-tip">' + tip + '</span>' +
+          '<button type="button" data-i="' + i + '" data-selected="' + sel + '" ' +
+            'aria-pressed="' + sel + '" aria-label="Barra ' + fmtDate(b.start) + (b.future ? ' (sem dados)' : ', valor ' + b.value) + '" ' +
+            'class="zoom-bar w-[55%] max-w-[26px] rounded-full ' + color + '" style="height:' + h + '%"></button>' +
+        '</div>';
+    }).join('');
+    var chart = el('zoomChart');
+    chart.innerHTML = html;
+    chart.classList.toggle('chart-has-selection', selectedIndex !== null);
+
+    el('zoomChartLabels').innerHTML = bs.map(function (b) {
+      return '<span class="flex-1 text-center truncate">' + b.label + '</span>';
+    }).join('');
+
+    el('chartCaption').textContent = granularity === 'day' ? 'Junho/2026 · meta diária: 80' : 'Ano 2026 · meta mensal: 80';
+    el('granBadge').textContent = 'Granularidade: ' + (granularity === 'day' ? 'Dia' : 'Mês');
+
+    Array.prototype.forEach.call(chart.querySelectorAll('.zoom-bar'), function (btn) {
+      btn.addEventListener('click', function () { onBarClick(parseInt(btn.getAttribute('data-i'), 10)); });
+    });
+  }
+
+  // ───────────────── Feed ─────────────────
+  function commentHTML(c) {
+    return '<div class="flex flex-col gap-2">' +
+      '<div class="flex gap-2">' +
+        '<div class="relative flex items-center justify-center bg-input rounded-full size-8 shrink-0">' +
+          '<span class="text-[#4D4D4D] font-semibold text-sm">' + c.name.split(' ').map(function (n) { return n[0]; }).slice(0, 2).join('').toUpperCase() + '</span>' +
+        '</div>' +
+        '<div class="flex-1 min-w-0 bg-secondary rounded-tr-2xl rounded-br-2xl rounded-bl-2xl px-4 py-2 flex flex-col gap-2">' +
+          '<div class="flex items-center gap-2.5 flex-wrap">' +
+            '<span class="font-semibold text-black2 text-sm">' + c.name + '</span>' +
+            '<span class="font-light text-foreground text-sm">' + fmtDate(c.date) + ' · ' + c.time + '</span>' +
+          '</div>' +
+          '<p class="font-light text-foreground text-sm break-words">' + c.text + '</p>' +
+        '</div>' +
+      '</div>' +
+      '<div class="flex flex-wrap items-center gap-x-2 gap-y-1 pl-10 min-w-0">' +
+        ['Reagir', 'Responder', 'Traduzir', 'Excluir'].map(function (a) {
+          return '<span class="text-muted-foreground font-medium text-sm whitespace-nowrap cursor-pointer">' + a + '</span>';
+        }).join('<span class="w-px h-3 bg-input"></span>') +
+      '</div>' +
+    '</div>';
+  }
+
+  function show(id, on) { el(id).classList.toggle('hidden', !on); el(id).classList.toggle('flex', on); }
+
+  function renderFeed() {
+    show('feedLoading', contentState === 'loading');
+    show('feedError', contentState === 'error');
+
+    if (contentState === 'loading' || contentState === 'error') {
+      show('feedEmpty', false);
+      el('feedList').classList.add('hidden');
+      el('feedList').classList.remove('flex');
+      return;
+    }
+
+    var list = filteredComments();
+    var empty = list.length === 0;
+    show('feedEmpty', empty);
+    el('feedList').classList.toggle('hidden', empty);
+    el('feedList').classList.toggle('flex', !empty);
+    if (!empty) el('feedList').innerHTML = list.map(commentHTML).join('');
+  }
+
+  // ───────────────── Interação central da US ─────────────────
+  // Clique na barra → refiltra o feed a partir da data inicial da barra (loading padrão 6.8).
+  function onBarClick(i) {
+    if (selectedIndex === i) {
+      selectedIndex = null; // desfazer seleção (comportamento atual mantido — 6.5)
+    } else {
+      selectedIndex = i;
+    }
+    renderZoomChart();
+    refilterFeed();
+  }
+
+  function refilterFeed() {
+    if (loadTimer) clearTimeout(loadTimer);
+    contentState = 'loading';
+    renderFeed();
+    loadTimer = setTimeout(function () {
+      contentState = simulateError ? 'error' : 'normal';
+      if (contentState === 'error') showToast('Falha ao carregar o feed. Tente novamente.');
+      renderFeed();
+      updateHint();
+    }, 450);
+  }
+
+  function updateHint() {
+    var hint;
+    if (selectedIndex === null) {
+      hint = 'Sem barra selecionada: feed geral completo do KPI.';
+    } else {
+      var b = bars()[selectedIndex];
+      var n = filteredComments().length;
+      if (rule === 'new') {
+        hint = 'Barra ' + fmtDate(b.start) + ' → comentários a partir de ' + fmtDate(b.start) + ' em diante (sem teto): ' + n + ' resultado(s).';
+      } else {
+        hint = 'Regra antiga: barra ' + fmtDate(b.start) + ' → apenas comentários do período da barra: ' + n + ' resultado(s).';
+      }
+    }
+    el('demoHint').textContent = hint;
+  }
+
+  // ───────────────── Toast ─────────────────
+  var toastTimer = null;
+  function showToast(msg) {
+    el('toastMsg').textContent = msg;
+    el('toast').classList.remove('hidden');
+    if (toastTimer) clearTimeout(toastTimer);
+    toastTimer = setTimeout(function () { el('toast').classList.add('hidden'); }, 3200);
+  }
+
+  // ───────────────── Modal ─────────────────
+  function setZoomOpen(open) {
+    el('zoomOverlay').classList.toggle('hidden', !open);
+    el('zoomOverlay').classList.toggle('flex', open);
+  }
+  el('openZoomBtn').addEventListener('click', function () { setZoomOpen(true); });
+  el('miniMenuBtn').addEventListener('click', function (e) { e.stopPropagation(); setZoomOpen(true); });
+  el('closeZoomBtn').addEventListener('click', function () { setZoomOpen(false); });
+  document.addEventListener('keydown', function (e) { if (e.key === 'Escape') setZoomOpen(false); });
+
+  // ───────────────── Painel de demonstração ─────────────────
+  function paintBtns(selector, attr, current) {
+    Array.prototype.forEach.call(document.querySelectorAll(selector), function (b) {
+      var active = b.getAttribute(attr) === current;
+      b.className = b.className
+        .replace(/bg-primary text-white border-primary/g, '')
+        .replace(/bg-background text-foreground border-border hover:bg-muted/g, '')
+        .trim() + ' ' + (active ? 'bg-primary text-white border-primary' : 'bg-background text-foreground border-border hover:bg-muted');
+    });
+  }
+
+  Array.prototype.forEach.call(document.querySelectorAll('.gran-btn'), function (b) {
+    b.addEventListener('click', function () {
+      granularity = b.getAttribute('data-gran');
+      selectedIndex = null; // troca de granularidade limpa a seleção (demo)
+      paintBtns('.gran-btn', 'data-gran', granularity);
+      renderZoomChart();
+      refilterFeed();
+    });
+  });
+
+  Array.prototype.forEach.call(document.querySelectorAll('.rule-btn'), function (b) {
+    b.addEventListener('click', function () {
+      rule = b.getAttribute('data-rule');
+      paintBtns('.rule-btn', 'data-rule', rule);
+      if (selectedIndex !== null) refilterFeed(); else updateHint();
+    });
+  });
+
+  el('errBtn').addEventListener('click', function () {
+    simulateError = true;
+    el('errBtn').textContent = 'Erro será simulado no próximo refiltro…';
+    refilterFeed();
+  });
+
+  el('retryBtn').addEventListener('click', function () {
+    simulateError = false;
+    el('errBtn').textContent = 'Simular erro ao refiltrar (6.8)';
+    refilterFeed();
+  });
+
+  // ───────────────── Init ─────────────────
+  renderMiniChart();
+  renderZoomChart();
+  renderFeed();
+  paintBtns('.gran-btn', 'data-gran', granularity);
+  paintBtns('.rule-btn', 'data-rule', rule);
+  updateHint();
+</script>
+<!-- ============================================================
+     CAMADA DE COMENTÁRIOS (estilo Figma) — DROP-IN PORTÁTIL · v2
+     ============================================================ -->
+<script>window.RV_CONFIG = { key: 'us_66499_feed_zoom_v1', title: 'Revisão — US 66499 (Feed do Zoom)' };</script>
+<button id="rv-toggle">💬 Revisão</button>
+<div id="rv-bar">
+  <div class="rv-top"><span class="dot"></span> <span id="rv-title">Revisão de comentários</span> <span style="margin-left:auto;cursor:pointer" id="rv-min">—</span></div>
+  <div class="rv-sec">
+    <div><label>Seu nome (revisor)</label><input type="text" id="rv-name" placeholder="ex.: Maria"></div>
+    <button id="rv-mode">💬 Ativar modo comentário</button>
+    <div class="row">
+      <button id="rv-listbtn">📋 Lista (<span id="rv-count">0</span>)</button>
+      <button id="rv-export">⬇ Exportar</button>
+    </div>
+    <div class="row"><button id="rv-importbtn" style="flex:1">⬆ Importar comentários</button></div>
+    <input type="file" id="rv-import" accept=".html,.json" style="display:none">
+    <div class="hint">Ative o modo, <b>clique no ponto</b> que quer comentar e escreva. Ao terminar, <b>Exportar</b> gera um arquivo com os comentários salvos para enviar de volta.</div>
+  </div>
+</div>
+<div id="rv-layer"></div>
+<div id="rv-pop"></div>
+<div id="rv-panel"><h3>Comentários <button id="rv-close">×</button></h3><div id="rv-list"></div></div>
+<script type="application/json" id="rv-data">{"savedAt":0,"comments":[]}</script>
+
+<style>
+  #rv-bar{position:fixed;top:14px;right:14px;z-index:9000;background:#0f172a;color:#fff;border-radius:12px;box-shadow:0 8px 24px rgba(2,6,23,.35);font-size:13px;width:270px;overflow:hidden;font-family:-apple-system,BlinkMacSystemFont,"Segoe UI",Roboto,Arial,sans-serif}
+  #rv-bar .rv-top{display:flex;align-items:center;gap:8px;padding:11px 13px;font-weight:700}
+  #rv-bar .rv-top .dot{width:10px;height:10px;border-radius:50%;background:#f43f5e}
+  #rv-bar .rv-sec{padding:0 13px 13px;display:flex;flex-direction:column;gap:9px}
+  #rv-bar label{font-size:11px;color:#94a3b8;display:block;margin-bottom:3px}
+  #rv-bar input[type=text]{width:100%;padding:7px 9px;border-radius:7px;border:1px solid #334155;background:#1e293b;color:#fff;font-size:13px}
+  #rv-bar button{border:0;border-radius:8px;padding:8px 10px;font-size:12.5px;font-weight:600;cursor:pointer;color:#fff;background:#334155}
+  #rv-bar button.on{background:#f43f5e}
+  #rv-bar .row{display:flex;gap:7px}#rv-bar .row button{flex:1}
+  #rv-bar .hint{font-size:11px;color:#94a3b8;line-height:1.45}
+  #rv-toggle{position:fixed;top:14px;right:14px;z-index:9001;background:#0f172a;color:#fff;border:0;border-radius:10px;padding:9px 12px;font-weight:700;font-size:13px;cursor:pointer;box-shadow:0 6px 18px rgba(2,6,23,.3);display:none;font-family:inherit}
+  .rv-pin{position:absolute;z-index:8000;width:26px;height:26px;border-radius:50% 50% 50% 2px;background:#f43f5e;color:#fff;display:flex;align-items:center;justify-content:center;font-size:12px;font-weight:700;cursor:pointer;transform:translate(-3px,-26px);box-shadow:0 3px 8px rgba(0,0,0,.3);border:2px solid #fff}
+  .rv-pin.resolved{background:#16a34a;opacity:.85}
+  #rv-layer{position:absolute;top:0;left:0;width:100%;pointer-events:none;z-index:7000}
+  #rv-layer .rv-pin{pointer-events:auto}
+  body.rv-commenting{cursor:crosshair}
+  #rv-pop{position:fixed;z-index:9500;width:260px;background:#fff;border:1px solid #e2e8f0;border-radius:12px;box-shadow:0 12px 30px rgba(2,6,23,.25);padding:12px;display:none;font-family:-apple-system,BlinkMacSystemFont,"Segoe UI",Roboto,Arial,sans-serif}
+  #rv-pop textarea{width:100%;min-height:64px;border:1px solid #e2e8f0;border-radius:8px;padding:8px;font-size:13px;font-family:inherit;resize:vertical}
+  #rv-pop .meta{font-size:11px;color:#64748b;margin-bottom:6px}
+  #rv-pop .acts{display:flex;gap:7px;margin-top:8px}
+  #rv-pop button{border:0;border-radius:7px;padding:7px 10px;font-size:12px;font-weight:600;cursor:pointer}
+  #rv-pop .save{background:#0e7490;color:#fff;flex:1}#rv-pop .res{background:#dcfce7;color:#166534}#rv-pop .del{background:#fee2e2;color:#991b1b}
+  #rv-panel{position:fixed;top:0;right:-360px;width:340px;height:100%;background:#fff;z-index:8900;box-shadow:-6px 0 24px rgba(2,6,23,.18);transition:right .25s;display:flex;flex-direction:column;font-family:-apple-system,BlinkMacSystemFont,"Segoe UI",Roboto,Arial,sans-serif}
+  #rv-panel.open{right:0}
+  #rv-panel h3{margin:0;padding:16px 18px;border-bottom:1px solid #e2e8f0;font-size:15px;display:flex;justify-content:space-between;align-items:center}
+  #rv-panel h3 button{border:0;background:none;font-size:18px;cursor:pointer;color:#64748b}
+  #rv-list{overflow:auto;padding:10px 14px;flex:1}
+  .rv-item{border:1px solid #e2e8f0;border-radius:10px;padding:10px;margin-bottom:9px;cursor:pointer}
+  .rv-item:hover{background:#f8fafc}
+  .rv-item .h{display:flex;align-items:center;gap:8px;font-size:12px;font-weight:700;margin-bottom:4px}
+  .rv-item .h .b{background:#f43f5e;color:#fff;width:20px;height:20px;border-radius:50%;display:inline-flex;align-items:center;justify-content:center;font-size:11px}
+  .rv-item.resolved .b{background:#16a34a}
+  .rv-item .t{font-size:13px;white-space:pre-wrap}
+  .rv-item .when{font-size:10.5px;color:#64748b;margin-top:5px}
+  @media print{#rv-bar,#rv-toggle,#rv-panel,#rv-pop{display:none!important}.rv-pin{-webkit-print-color-adjust:exact;print-color-adjust:exact}}
+</style>
+
+<script>
+(function(){
+  var CFG=window.RV_CONFIG||{};
+  var KEY=CFG.key||('rv_'+(document.title||location.pathname).replace(/[^a-z0-9]+/gi,'_').toLowerCase());
+  if(CFG.title){document.getElementById('rv-title').textContent=CFG.title;}
+  var MODAL_SEL=CFG.modalSelector||'[role="dialog"],[aria-modal="true"],.modal,[data-rv-view]';
+  var layer=document.getElementById('rv-layer'),pop=document.getElementById('rv-pop'),panel=document.getElementById('rv-panel'),
+      list=document.getElementById('rv-list'),countEl=document.getElementById('rv-count'),nameInput=document.getElementById('rv-name'),
+      modeBtn=document.getElementById('rv-mode');
+  var comments=[],commentMode=false,seq=0,RVMO=null;
+  function parse(s){try{return JSON.parse(s)}catch(e){return null}}
+  var embedded=parse(document.getElementById('rv-data').textContent)||{savedAt:0,comments:[]};
+  var stored=parse(localStorage.getItem(KEY))||{savedAt:0,comments:[]};
+  var src=(embedded.savedAt>=stored.savedAt)?embedded:stored;
+  comments=src.comments||[]; seq=comments.reduce(function(m,c){return Math.max(m,c.n||0)},0);
+  var sn=localStorage.getItem(KEY+'_name'); if(sn) nameInput.value=sn;
+
+  // ---- visão atual: documento/board x modal/dialog aberto ----
+  function vis(e){ if(!e||e.closest('#rv-bar,#rv-panel,#rv-pop')) return false; if(!e.getClientRects().length) return false; var cs=getComputedStyle(e); return cs.display!=='none'&&cs.visibility!=='hidden'&&parseFloat(cs.opacity||'1')>0; }
+  function activeModal(){ var ns=document.querySelectorAll(MODAL_SEL),out=null; for(var i=0;i<ns.length;i++){ if(vis(ns[i])) out=ns[i]; } return out; }
+  function viewKey(){ var m=activeModal(); return m ? ('modal:'+(m.id||m.getAttribute('data-rv-view')||'dialog')) : 'doc'; }
+  function docScroller(){ var k=document.querySelector('[data-rv-scroll]'); if(k) return k; var mn=document.querySelector('main'); if(mn) return mn; return document.scrollingElement||document.documentElement; }
+  function innerScroller(root){ var best=null,area=0,els=root.querySelectorAll('*'); for(var i=0;i<els.length;i++){var e=els[i];if(e.closest('#rv-bar,#rv-panel,#rv-pop'))continue;var cs=getComputedStyle(e),oy=cs.overflowY;if((oy==='auto'||oy==='scroll')&&e.scrollHeight>e.clientHeight+4&&e.getClientRects().length){var a=e.clientWidth*e.clientHeight;if(a>area){area=a;best=e;}}} return best||root; }
+  function getAnchor(view){ if(view.indexOf('modal:')===0){ var m=activeModal(); return m?innerScroller(m):docScroller(); } return docScroller(); }
+  function isDoc(a){ return a===document.scrollingElement||a===document.documentElement||a===document.body; }
+  function scW(a){ return isDoc(a)?document.documentElement.scrollWidth:(a.scrollWidth||a.clientWidth||1); }
+  function scH(a){ return isDoc(a)?document.documentElement.scrollHeight:(a.scrollHeight||a.clientHeight||1); }
+
+  function save(){var p={savedAt:Date.now(),comments:comments};localStorage.setItem(KEY,JSON.stringify(p));localStorage.setItem(KEY+'_name',nameInput.value||'');document.getElementById('rv-data').textContent=JSON.stringify(p);}
+  function esc(s){return (s||'').replace(/[&<>"]/g,function(m){return {'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;'}[m]})}
+
+  function render(){
+    if(RVMO){RVMO.disconnect();}                       // evita loop: render muta o DOM
+    var view=viewKey(), anchor=getAnchor(view), docMode=isDoc(anchor), host=docMode?document.body:anchor;
+    if(layer.parentNode!==host) host.appendChild(layer);
+    if(!docMode && getComputedStyle(anchor).position==='static') anchor.style.position='relative';
+    layer.style.height='0px';                          // mede sem a própria camada influenciar o scrollHeight
+    var W=scW(anchor), H=scH(anchor);
+    layer.style.width=docMode?(W+'px'):'100%'; layer.style.height=H+'px'; layer.innerHTML='';
+    var shown=comments.filter(function(c){return (c.view||'doc')===view;});   // só a visão atual
+    shown.forEach(function(c){var pin=document.createElement('div');pin.className='rv-pin'+(c.resolved?' resolved':'');pin.textContent=c.n;pin.dataset.n=c.n;
+      pin.style.left=(c.xPct*W)+'px';pin.style.top=(c.yPct*H)+'px';pin.title=(c.author||'?')+': '+c.text;
+      pin.addEventListener('click',function(ev){ev.stopPropagation();openPop(c,pin)});layer.appendChild(pin);});
+    list.innerHTML=''; if(!shown.length){list.innerHTML='<p style="color:#94a3b8;font-size:13px;padding:6px">Nenhum comentário nesta visão.</p>';}
+    shown.slice().sort(function(a,b){return a.n-b.n}).forEach(function(c){var it=document.createElement('div');it.className='rv-item'+(c.resolved?' resolved':'');
+      it.innerHTML='<div class="h"><span class="b">'+c.n+'</span> '+esc(c.author||'—')+(c.resolved?' · ✓ resolvido':'')+'</div><div class="t">'+esc(c.text)+'</div><div class="when">'+new Date(c.ts).toLocaleString('pt-BR')+'</div>';
+      it.addEventListener('click',function(){var a=getAnchor(viewKey());try{(a.scrollTo?a:window).scrollTo({top:c.yPct*scH(a)-160,behavior:'smooth'});}catch(e){} var pin=layer.querySelector('.rv-pin[data-n="'+c.n+'"]');openPop(c,pin);});list.appendChild(it);});
+    countEl.textContent=shown.length;
+    if(RVMO){ try{ RVMO.observe(document.body,{childList:true,subtree:true,attributes:true,attributeFilter:['class','style']}); }catch(e){} }
+  }
+  function openPop(c,el){var r=el?el.getBoundingClientRect():{left:innerWidth/2,top:innerHeight/2};pop.style.display='block';
+    pop.style.left=Math.min(r.left+30,innerWidth-280)+'px';pop.style.top=Math.max(8,Math.min(r.top,innerHeight-180))+'px';
+    pop.innerHTML='<div class="meta">Pino #'+c.n+(c.author?(' · '+esc(c.author)):'')+'</div><textarea id="rv-ta">'+esc(c.text)+'</textarea><div class="acts"><button class="save" id="rv-sv">Salvar</button><button class="res" id="rv-rs">'+(c.resolved?'Reabrir':'Resolver')+'</button><button class="del" id="rv-dl">Excluir</button></div>';
+    var ta=document.getElementById('rv-ta');ta.focus();
+    document.getElementById('rv-sv').onclick=function(){c.text=ta.value.trim();c.author=nameInput.value||c.author||'Anônimo';c.ts=Date.now();if(!c.text){rm(c)}else{save();render()}pop.style.display='none';};
+    document.getElementById('rv-rs').onclick=function(){c.resolved=!c.resolved;save();render();pop.style.display='none';};
+    document.getElementById('rv-dl').onclick=function(){rm(c);pop.style.display='none';};
+  }
+  function rm(c){comments=comments.filter(function(x){return x!==c});save();render();}
+  document.addEventListener('click',function(ev){if(!commentMode)return;if(ev.target.closest('#rv-bar,#rv-toggle,#rv-panel,#rv-pop,.rv-pin'))return;
+    var view=viewKey(), anchor=getAnchor(view), docMode=isDoc(anchor), rect=anchor.getBoundingClientRect?anchor.getBoundingClientRect():{left:0,top:0};
+    var x,y;
+    if(docMode){ x=ev.pageX; y=ev.pageY; }
+    else { x=ev.clientX-(rect.left||0)+(anchor.scrollLeft||0); y=ev.clientY-(rect.top||0)+(anchor.scrollTop||0); }
+    var c={n:++seq,view:view,xPct:x/(scW(anchor)||1),yPct:y/(scH(anchor)||1),author:nameInput.value||'Anônimo',text:'',ts:Date.now(),resolved:false};
+    comments.push(c);save();render();var pins=layer.querySelectorAll('.rv-pin');openPop(c,pins[pins.length-1]);});
+  modeBtn.onclick=function(){commentMode=!commentMode;document.body.classList.toggle('rv-commenting',commentMode);modeBtn.classList.toggle('on',commentMode);modeBtn.textContent=commentMode?'✋ Sair do modo comentário':'💬 Ativar modo comentário';};
+  document.getElementById('rv-listbtn').onclick=function(){panel.classList.add('open')};
+  document.getElementById('rv-close').onclick=function(){panel.classList.remove('open')};
+  nameInput.onchange=save;
+  document.getElementById('rv-min').onclick=function(){document.getElementById('rv-bar').style.display='none';document.getElementById('rv-toggle').style.display='block';};
+  document.getElementById('rv-toggle').onclick=function(){document.getElementById('rv-bar').style.display='block';document.getElementById('rv-toggle').style.display='none';};
+  document.getElementById('rv-export').onclick=function(){save();var clone=document.documentElement.cloneNode(true);
+    var a=clone.querySelector('#rv-layer');if(a)a.innerHTML='';var b=clone.querySelector('#rv-list');if(b)b.innerHTML='';
+    var c=clone.querySelector('#rv-pop');if(c){c.innerHTML='';c.style.display='none';}
+    var name=(document.title||'arquivo').replace(/[^a-z0-9]+/gi,'-').toLowerCase()+'-COMENTADO.html';
+    dl(new Blob(['<!DOCTYPE html>\n'+clone.outerHTML],{type:'text/html'}),name);};
+  document.getElementById('rv-importbtn').onclick=function(){document.getElementById('rv-import').click()};
+  document.getElementById('rv-import').onchange=function(e){var f=e.target.files[0];if(!f)return;var rd=new FileReader();
+    rd.onload=function(){var data=null,t=rd.result;if(f.name.endsWith('.json')){data=parse(t)}else{var m=t.match(/<script[^>]*id="rv-data"[^>]*>([\s\S]*?)<\/script>/);if(m)data=parse(m[1]);}
+      if(data&&data.comments){comments=data.comments;seq=comments.reduce(function(mx,c){return Math.max(mx,c.n||0)},0);save();render();alert('Importados '+comments.length+' comentário(s).');}else alert('Não encontrei comentários nesse arquivo.');};
+    rd.readAsText(f);};
+  function dl(blob,name){var a=document.createElement('a');a.href=URL.createObjectURL(blob);a.download=name;a.click();setTimeout(function(){URL.revokeObjectURL(a.href)},2000);}
+  window.addEventListener('resize',render); window.addEventListener('load',render);
+  // reposiciona/troca de visão quando o conteúdo muda ou um modal abre/fecha (classe/estilo)
+  try{ RVMO=new MutationObserver(function(){clearTimeout(window.__rvmo);window.__rvmo=setTimeout(render,120);});
+    RVMO.observe(document.body,{childList:true,subtree:true,attributes:true,attributeFilter:['class','style']}); }catch(e){}
+  render();
+})();
+</script>
+</body>
+</html>

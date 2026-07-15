@@ -1,0 +1,828 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1.0" />
+<title>Benchmark de Widgets · Boards tipo Obeya (concorrentes Solvace)</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+<style>
+  :root{
+    --primary:#001391; --text:#4d4d4d; --muted-fg:#9ba0a3; --inactive:#e4e7ea;
+    --tbl-bg:#f3f3f3; --border:#e7e9f0; --black:#0a0a0b;
+    --success:#16a34a; --warning:#f59e0b; --danger:#dc2626;
+    --primary-050:#eef1ff; --primary-100:#dfe3ff;
+    --bg:#f6f7fb; --card:#ffffff;
+  }
+  *{box-sizing:border-box}
+  html{scroll-behavior:smooth}
+  body{margin:0;font-family:'Inter',system-ui,-apple-system,sans-serif;background:var(--bg);color:var(--text);
+    -webkit-font-smoothing:antialiased;line-height:1.5;}
+  .wrap{max-width:1240px;margin:0 auto;padding:0 20px}
+  h1,h2,h3,h4{color:#111827;margin:0;font-weight:700;letter-spacing:-.01em}
+  a{color:var(--primary);text-decoration:none}
+  a:hover{text-decoration:underline}
+
+  /* ---------- top bar ---------- */
+  .topbar{position:sticky;top:0;z-index:50;background:rgba(255,255,255,.85);backdrop-filter:blur(10px);
+    border-bottom:1px solid var(--border)}
+  .topbar .wrap{display:flex;align-items:center;gap:18px;height:56px}
+  .brand{display:flex;align-items:center;gap:9px;font-weight:800;color:var(--primary);font-size:15px}
+  .brand .dot{width:22px;height:22px;border-radius:6px;background:var(--primary);display:inline-flex;align-items:center;justify-content:center;color:#fff;font-size:12px}
+  .navlinks{display:flex;gap:4px;margin-left:auto;flex-wrap:wrap}
+  .navlinks a{font-size:13px;font-weight:500;color:var(--text);padding:6px 10px;border-radius:8px}
+  .navlinks a:hover{background:var(--primary-050);text-decoration:none;color:var(--primary)}
+
+  /* ---------- hero ---------- */
+  .hero{padding:44px 0 26px}
+  .kicker{display:inline-flex;align-items:center;gap:7px;background:var(--primary-050);color:var(--primary);
+    font-weight:600;font-size:12px;padding:5px 11px;border-radius:999px;border:1px solid var(--primary-100)}
+  .hero h1{font-size:34px;margin:16px 0 10px;line-height:1.12;max-width:820px}
+  .hero p{font-size:15.5px;max-width:760px;color:var(--text)}
+  .method{margin-top:16px;font-size:12.5px;color:var(--muted-fg);max-width:780px}
+
+  /* competitor chips legend */
+  .legend{display:flex;flex-wrap:wrap;gap:8px;margin-top:22px}
+  .comp{display:inline-flex;align-items:center;gap:7px;background:#fff;border:1px solid var(--border);
+    border-radius:999px;padding:5px 11px 5px 6px;font-size:12.5px;font-weight:600;color:#111827}
+  .comp i{width:9px;height:9px;border-radius:50%}
+
+  /* ---------- section ---------- */
+  section{padding:30px 0}
+  .sec-head{margin-bottom:18px}
+  .sec-head .eyebrow{font-size:12px;font-weight:700;letter-spacing:.08em;text-transform:uppercase;color:var(--primary)}
+  .sec-head h2{font-size:23px;margin-top:6px}
+  .sec-head p{margin-top:6px;font-size:14px;max-width:760px;color:var(--text)}
+
+  /* ---------- zard-like card ---------- */
+  .grid{display:grid;gap:18px}
+  .g2{grid-template-columns:repeat(2,1fr)}
+  .g3{grid-template-columns:repeat(3,1fr)}
+  @media(max-width:980px){.g3{grid-template-columns:repeat(2,1fr)}}
+  @media(max-width:720px){.g2,.g3{grid-template-columns:1fr}}
+
+  .zcard{background:var(--card);border:1px solid var(--border);border-radius:14px;
+    box-shadow:0 1px 2px rgba(16,24,40,.04);overflow:hidden;display:flex;flex-direction:column}
+  .zcard .ch{padding:14px 16px;border-bottom:1px solid var(--border);display:flex;align-items:center;gap:10px}
+  .zcard .ch .ico{width:32px;height:32px;border-radius:9px;background:var(--primary-050);color:var(--primary);
+    display:flex;align-items:center;justify-content:center;flex-shrink:0}
+  .zcard .ch h3{font-size:14.5px}
+  .zcard .ch .sub{font-size:11.5px;color:var(--muted-fg);font-weight:500}
+  .demo{padding:16px;background:linear-gradient(180deg,#fbfcfe,#f4f6fb);border-bottom:1px solid var(--border);
+    min-height:172px;display:flex;align-items:center;justify-content:center}
+  .info{padding:14px 16px}
+  .info .lbl{font-size:10.5px;font-weight:700;letter-spacing:.06em;text-transform:uppercase;color:var(--muted-fg);margin-bottom:7px}
+  .info ul{margin:0 0 12px;padding-left:16px}
+  .info li{font-size:12.8px;margin-bottom:4px}
+  .who{display:flex;flex-wrap:wrap;gap:5px}
+  .tag{font-size:11px;font-weight:600;padding:3px 8px;border-radius:6px;background:var(--tbl-bg);color:#374151;border:1px solid var(--border)}
+
+  /* ---------- badges / RAG ---------- */
+  .badge{display:inline-flex;align-items:center;gap:5px;font-size:11px;font-weight:600;padding:3px 8px;border-radius:6px}
+  .b-green{background:#dcfce7;color:#15803d}
+  .b-amber{background:#fef3c7;color:#b45309}
+  .b-red{background:#fee2e2;color:#b91c1c}
+  .b-blue{background:var(--primary-050);color:var(--primary)}
+  .b-gray{background:#f1f2f4;color:#6b7280}
+
+  /* ===== WIDGET MOCKUPS ===== */
+  /* SQCDP */
+  .sqcdp{display:flex;gap:8px}
+  .pil{width:52px;background:#fff;border:1px solid var(--border);border-radius:10px;overflow:hidden;text-align:center}
+  .pil .lt{font-size:20px;font-weight:800;color:#fff;padding:8px 0 6px;line-height:1}
+  .pil .st{font-size:9px;font-weight:700;padding:3px 0;color:#fff}
+  .pil .days{display:grid;grid-template-columns:repeat(4,1fr);gap:2px;padding:5px}
+  .pil .days span{aspect-ratio:1;border-radius:2px}
+  .cg{background:var(--success)} .ca{background:var(--warning)} .cr{background:var(--danger)} .cn{background:#e5e7eb}
+
+  /* Safety cross */
+  .cross{display:grid;grid-template-columns:repeat(7,20px);grid-template-rows:repeat(7,20px);gap:3px}
+  .cross span{border-radius:3px;background:transparent}
+  .cross .on{box-shadow:inset 0 0 0 1px rgba(0,0,0,.05)}
+
+  /* KPI chart */
+  .kpi{width:100%;max-width:270px}
+  .kpi .top{display:flex;justify-content:space-between;align-items:flex-end;margin-bottom:6px}
+  .kpi .val{font-size:26px;font-weight:800;color:#111827;line-height:1}
+  .kpi .unit{font-size:12px;color:var(--muted-fg);font-weight:600}
+  .kpi .delta{font-size:11.5px;font-weight:700}
+
+  /* kanban */
+  .kanban{display:grid;grid-template-columns:repeat(3,1fr);gap:8px;width:100%}
+  .kcol{background:#fff;border:1px solid var(--border);border-radius:9px;padding:7px}
+  .kcol .kh{font-size:9.5px;font-weight:700;text-transform:uppercase;letter-spacing:.05em;color:var(--muted-fg);margin-bottom:6px;display:flex;justify-content:space-between}
+  .kt{background:var(--tbl-bg);border:1px solid var(--border);border-radius:7px;padding:6px;margin-bottom:5px}
+  .kt .tt{font-size:10.5px;font-weight:600;color:#1f2937;margin-bottom:5px;line-height:1.25}
+  .kt .mt{display:flex;align-items:center;justify-content:space-between}
+  .av{width:16px;height:16px;border-radius:50%;background:var(--primary);color:#fff;font-size:8px;font-weight:700;display:flex;align-items:center;justify-content:center}
+  .pri{width:7px;height:7px;border-radius:50%}
+
+  /* 5 whys */
+  .whys{width:100%;max-width:280px}
+  .why{display:flex;gap:8px;align-items:flex-start;margin-bottom:6px}
+  .why .n{width:20px;height:20px;border-radius:6px;background:var(--primary);color:#fff;font-size:10px;font-weight:700;display:flex;align-items:center;justify-content:center;flex-shrink:0}
+  .why .tx{font-size:10.5px;background:#fff;border:1px solid var(--border);border-radius:6px;padding:4px 7px;flex:1}
+  .methods{display:flex;flex-wrap:wrap;gap:4px;margin-top:8px}
+
+  /* kamishibai */
+  .kami{display:grid;grid-template-columns:repeat(4,1fr);gap:6px;width:100%}
+  .kmi{aspect-ratio:1.4;border-radius:7px;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:3px;font-size:9px;font-weight:600;color:#fff}
+  .kmi svg{width:15px;height:15px}
+
+  /* attendance */
+  .att{width:100%;max-width:270px}
+  .att .row{display:flex;gap:6px;flex-wrap:wrap;margin-bottom:10px}
+  .att .p{width:34px;height:34px;border-radius:50%;background:var(--primary);color:#fff;font-size:11px;font-weight:700;display:flex;align-items:center;justify-content:center;position:relative}
+  .att .p.absent{background:#e5e7eb;color:#9ca3af}
+  .att .p .ring{position:absolute;inset:-3px;border-radius:50%;border:2px solid var(--success)}
+  .att .p.absent .ring{border-color:#d1d5db}
+  .att .bar{height:8px;border-radius:999px;background:var(--inactive);overflow:hidden}
+  .att .bar i{display:block;height:100%;background:var(--success);border-radius:999px}
+
+  /* ILUO skills */
+  .mtx{width:100%;font-size:10px;border-collapse:collapse}
+  .mtx th,.mtx td{padding:5px 6px;text-align:center;border:1px solid var(--border)}
+  .mtx th{background:var(--tbl-bg);font-weight:700;color:#374151}
+  .mtx td:first-child,.mtx th:first-child{text-align:left;font-weight:600}
+  .iluo{width:16px;height:16px;border-radius:50%;display:inline-block;border:1.5px solid var(--primary)}
+  .i0{background:#fff}
+  .i1{background:conic-gradient(var(--primary) 25%, #fff 0)}
+  .i2{background:conic-gradient(var(--primary) 50%, #fff 0)}
+  .i3{background:conic-gradient(var(--primary) 75%, #fff 0)}
+  .i4{background:var(--primary)}
+
+  /* communication */
+  .msg{width:100%;max-width:280px;background:#fff;border:1px solid var(--border);border-radius:10px;padding:10px}
+  .msg .mh{display:flex;align-items:center;gap:7px;margin-bottom:7px}
+  .msg .im{height:56px;border-radius:7px;background:linear-gradient(120deg,var(--primary-100),#c7d2fe);display:flex;align-items:center;justify-content:center;color:var(--primary);margin-bottom:7px}
+  .msg .doc{display:inline-flex;align-items:center;gap:5px;font-size:10px;font-weight:600;background:var(--tbl-bg);border:1px solid var(--border);border-radius:6px;padding:3px 7px}
+
+  /* agenda / tiers */
+  .agenda{width:100%;max-width:290px}
+  .ag{display:flex;align-items:center;gap:8px;background:#fff;border:1px solid var(--border);border-radius:7px;padding:6px 8px;margin-bottom:5px;font-size:10.5px}
+  .ag .tm{margin-left:auto;font-size:9.5px;font-weight:700;color:var(--muted-fg)}
+  .tiers{display:flex;align-items:center;gap:6px;margin-top:9px;justify-content:center}
+  .tier{background:var(--primary-050);border:1px solid var(--primary-100);color:var(--primary);border-radius:7px;padding:5px 9px;font-size:10px;font-weight:700}
+  .tier.up{background:var(--primary);color:#fff}
+  .arw{color:var(--muted-fg)}
+
+  /* work instructions */
+  .wi{width:100%;max-width:270px;background:#fff;border:1px solid var(--border);border-radius:10px;overflow:hidden}
+  .wi .vid{height:74px;background:linear-gradient(120deg,#111827,#374151);display:flex;align-items:center;justify-content:center;position:relative}
+  .wi .vid .pl{width:32px;height:32px;border-radius:50%;background:rgba(255,255,255,.9);display:flex;align-items:center;justify-content:center;color:var(--primary)}
+  .wi .vid .ar{position:absolute;top:8px;right:8px;background:var(--success);color:#fff;font-size:8.5px;font-weight:700;padding:2px 6px;border-radius:5px}
+  .wi .step{padding:8px 10px}
+  .wi .stp{display:flex;gap:7px;font-size:10px;margin-bottom:4px;align-items:center}
+  .wi .stp .sn{width:16px;height:16px;border-radius:5px;background:var(--primary-050);color:var(--primary);font-weight:700;font-size:9px;display:flex;align-items:center;justify-content:center}
+
+  /* embed BI */
+  .bi{width:100%;max-width:280px}
+  .bars{display:flex;align-items:flex-end;gap:8px;height:90px;padding:8px;background:#fff;border:1px solid var(--border);border-radius:9px}
+  .bars .bar{flex:1;background:var(--primary);border-radius:4px 4px 0 0;opacity:.85}
+  .src-chip{display:inline-flex;gap:5px;align-items:center;font-size:9.5px;font-weight:700;color:var(--muted-fg);margin-top:7px}
+
+  /* ---------- matrix table ---------- */
+  .matrix-wrap{background:#fff;border:1px solid var(--border);border-radius:14px;overflow-x:auto;box-shadow:0 1px 2px rgba(16,24,40,.04)}
+  table.matrix{width:100%;border-collapse:collapse;min-width:920px;font-size:12.5px}
+  table.matrix th,table.matrix td{padding:10px 12px;text-align:center;border-bottom:1px solid var(--border)}
+  table.matrix thead th{background:var(--tbl-bg);font-size:11px;font-weight:700;color:#111827;position:sticky;top:0}
+  table.matrix td:first-child,table.matrix th:first-child{text-align:left;font-weight:600;color:#1f2937;position:sticky;left:0;background:#fff;min-width:210px}
+  table.matrix thead th:first-child{background:var(--tbl-bg)}
+  table.matrix tbody tr:hover td{background:#fbfcfe}
+  table.matrix tbody tr:hover td:first-child{background:#fbfcfe}
+  .yes{color:var(--success);font-weight:800}
+  .part{color:var(--warning);font-weight:800}
+  .no{color:#cbd0d6;font-weight:700}
+  .mlegend{display:flex;gap:16px;flex-wrap:wrap;margin-top:12px;font-size:12px;color:var(--text)}
+  .mlegend span{display:inline-flex;align-items:center;gap:6px}
+
+  /* ---------- competitor cards ---------- */
+  .ccard{background:#fff;border:1px solid var(--border);border-radius:14px;overflow:hidden;box-shadow:0 1px 2px rgba(16,24,40,.04)}
+  .ccard .top{padding:14px 16px;border-bottom:1px solid var(--border);display:flex;align-items:center;gap:10px}
+  .ccard .top .lg{width:36px;height:36px;border-radius:9px;color:#fff;font-weight:800;font-size:15px;display:flex;align-items:center;justify-content:center}
+  .ccard .top h3{font-size:15px}
+  .ccard .top .pos{font-size:11.5px;color:var(--muted-fg);font-weight:500}
+  .ccard .bd{padding:14px 16px}
+  .ccard .bd .lbl{font-size:10.5px;font-weight:700;letter-spacing:.05em;text-transform:uppercase;color:var(--muted-fg);margin:0 0 6px}
+  .ccard .bd ul{margin:0 0 12px;padding-left:16px}
+  .ccard .bd li{font-size:12.6px;margin-bottom:4px}
+  .ccard .bd .hl{font-size:12.6px;background:var(--primary-050);border:1px solid var(--primary-100);border-radius:8px;padding:8px 10px;color:#1f2937}
+
+  /* takeaways */
+  .take{background:linear-gradient(135deg,#001391,#1e3a8a);border-radius:16px;padding:26px 24px;color:#fff}
+  .take h2{color:#fff;font-size:22px}
+  .take p.s{color:#c7d2fe;font-size:14px;margin-top:6px;max-width:720px}
+  .take .grid{margin-top:20px}
+  .tk{background:rgba(255,255,255,.08);border:1px solid rgba(255,255,255,.16);border-radius:12px;padding:15px}
+  .tk h4{color:#fff;font-size:14px;margin-bottom:6px;display:flex;align-items:center;gap:8px}
+  .tk p{color:#dbe3ff;font-size:12.8px;margin:0}
+  .tk .num{width:24px;height:24px;border-radius:7px;background:rgba(255,255,255,.16);display:flex;align-items:center;justify-content:center;font-size:12px;font-weight:800}
+
+  footer{padding:30px 0 50px;border-top:1px solid var(--border);margin-top:20px}
+  footer h4{font-size:13px;margin-bottom:10px;color:#111827}
+  footer .srcs{font-size:12px;color:var(--muted-fg);line-height:1.9}
+  footer .srcs a{color:var(--text)}
+  .muted{color:var(--muted-fg)}
+</style>
+</head>
+<body>
+
+<!-- TOP BAR -->
+<div class="topbar">
+  <div class="wrap">
+    <div class="brand"><span class="dot">◆</span> Obeya · Benchmark de Widgets</div>
+    <nav class="navlinks">
+      <a href="#widgets">Widgets</a>
+      <a href="#matriz">Matriz</a>
+      <a href="#players">Concorrentes</a>
+      <a href="#leituras">Leituras p/ Solvace</a>
+    </nav>
+  </div>
+</div>
+
+<!-- HERO -->
+<header class="hero">
+  <div class="wrap">
+    <span class="kicker">◆ Análise competitiva · Digital Obeya / Daily Management Boards</span>
+    <h1>Como os concorrentes desenham os widgets dos boards tipo Obeya</h1>
+    <p>Mapeamento dos principais widgets usados em boards de gestão à vista (SQCDP, safety cross, planos de ação,
+    resolução de problemas, matriz de habilidades e mais), como eles se parecem e <strong>que informação relevante
+    cada um carrega</strong> — comparando Fabriq, iObeya, Poka, Glartek, L2L, Azumuta e Tervene/DigiLEAN.</p>
+    <p class="method">Método: recriação visual dos widgets a partir das páginas públicas de produto de cada player (2025–2026),
+    estilizada com os tokens do design system Solvace/Zard. Os mockups são representações fiéis do padrão de cada widget,
+    não capturas de tela dos produtos. Fontes listadas no rodapé.</p>
+
+    <div class="legend">
+      <span class="comp"><i style="background:#6d28d9"></i>Fabriq</span>
+      <span class="comp"><i style="background:#0f766e"></i>iObeya</span>
+      <span class="comp"><i style="background:#ea580c"></i>Poka</span>
+      <span class="comp"><i style="background:#0284c7"></i>Glartek</span>
+      <span class="comp"><i style="background:#be123c"></i>L2L</span>
+      <span class="comp"><i style="background:#65a30d"></i>Azumuta</span>
+      <span class="comp"><i style="background:#7c3aed"></i>Tervene / DigiLEAN</span>
+    </div>
+  </div>
+</header>
+
+<!-- WIDGETS -->
+<section id="widgets">
+  <div class="wrap">
+    <div class="sec-head">
+      <div class="eyebrow">Anatomia</div>
+      <h2>Os 12 widgets recorrentes — desenho e informação</h2>
+      <p>Cada card mostra uma recriação do widget, o que ele exibe de relevante e quais players o trazem de forma nativa.</p>
+    </div>
+
+    <div class="grid g3">
+
+      <!-- 1 SQCDP -->
+      <div class="zcard">
+        <div class="ch">
+          <div class="ico">▦</div>
+          <div><h3>Letras SQCDP / SQDC</h3><div class="sub">Pilares de performance do dia</div></div>
+        </div>
+        <div class="demo">
+          <div class="sqcdp">
+            <div class="pil"><div class="lt" style="background:var(--success)">S</div><div class="st" style="background:var(--success)">OK</div>
+              <div class="days"><span class="cg"></span><span class="cg"></span><span class="cg"></span><span class="cg"></span><span class="cg"></span><span class="cg"></span><span class="cg"></span><span class="cn"></span></div></div>
+            <div class="pil"><div class="lt" style="background:var(--danger)">Q</div><div class="st" style="background:var(--danger)">NOK</div>
+              <div class="days"><span class="cg"></span><span class="cg"></span><span class="cr"></span><span class="cg"></span><span class="ca"></span><span class="cg"></span><span class="cr"></span><span class="cn"></span></div></div>
+            <div class="pil"><div class="lt" style="background:var(--warning)">C</div><div class="st" style="background:var(--warning)">ATN</div>
+              <div class="days"><span class="cg"></span><span class="ca"></span><span class="cg"></span><span class="cg"></span><span class="ca"></span><span class="cg"></span><span class="cg"></span><span class="cn"></span></div></div>
+            <div class="pil"><div class="lt" style="background:var(--success)">D</div><div class="st" style="background:var(--success)">OK</div>
+              <div class="days"><span class="cg"></span><span class="cg"></span><span class="cg"></span><span class="cg"></span><span class="cg"></span><span class="cg"></span><span class="cg"></span><span class="cn"></span></div></div>
+            <div class="pil"><div class="lt" style="background:var(--success)">P</div><div class="st" style="background:var(--success)">OK</div>
+              <div class="days"><span class="cg"></span><span class="cg"></span><span class="cg"></span><span class="ca"></span><span class="cg"></span><span class="cg"></span><span class="cg"></span><span class="cn"></span></div></div>
+          </div>
+        </div>
+        <div class="info">
+          <div class="lbl">O que mostra</div>
+          <ul>
+            <li>Status diário por pilar (Safety, Quality, Cost, Delivery, People)</li>
+            <li>Grade de dias do mês com cor RAG (verde/amarelo/vermelho)</li>
+            <li>Clique na letra → abre KPI ou cria ticket de desvio</li>
+          </ul>
+          <div class="lbl">Quem traz nativo</div>
+          <div class="who"><span class="tag">Fabriq</span><span class="tag">iObeya</span><span class="tag">Poka</span><span class="tag">L2L</span><span class="tag">DigiLEAN</span></div>
+        </div>
+      </div>
+
+      <!-- 2 Safety Cross -->
+      <div class="zcard">
+        <div class="ch">
+          <div class="ico">✚</div>
+          <div><h3>Safety / Green Cross</h3><div class="sub">Cruz de segurança do mês</div></div>
+        </div>
+        <div class="demo">
+          <div class="cross">
+            <!-- row1 -->
+            <span></span><span></span><span class="on cg"></span><span class="on cg"></span><span class="on cg"></span><span></span><span></span>
+            <span></span><span></span><span class="on cg"></span><span class="on ca"></span><span class="on cg"></span><span></span><span></span>
+            <span class="on cg"></span><span class="on cg"></span><span class="on cg"></span><span class="on cr"></span><span class="on cg"></span><span class="on cg"></span><span class="on cg"></span>
+            <span class="on cg"></span><span class="on cg"></span><span class="on cg"></span><span class="on cg"></span><span class="on cg"></span><span class="on cg"></span><span class="on cn"></span>
+            <span class="on cg"></span><span class="on cg"></span><span class="on cg"></span><span class="on cg"></span><span class="on cg"></span><span class="on cn"></span><span class="on cn"></span>
+            <span></span><span></span><span class="on cg"></span><span class="on cn"></span><span class="on cn"></span><span></span><span></span>
+            <span></span><span></span><span class="on cn"></span><span class="on cn"></span><span class="on cn"></span><span></span><span></span>
+          </div>
+        </div>
+        <div class="info">
+          <div class="lbl">O que mostra</div>
+          <ul>
+            <li>Um quadrado por dia; verde = sem ocorrência, vermelho = incidente</li>
+            <li>Leitura instantânea de dias seguros no mês (streak de segurança)</li>
+            <li>Variações: 5S green cross, cruz de qualidade / ausências</li>
+          </ul>
+          <div class="lbl">Quem traz nativo</div>
+          <div class="who"><span class="tag">Fabriq</span><span class="tag">iObeya</span><span class="tag">DigiLEAN</span></div>
+        </div>
+      </div>
+
+      <!-- 3 KPI trend -->
+      <div class="zcard">
+        <div class="ch">
+          <div class="ico">📈</div>
+          <div><h3>KPI: meta × real + tendência</h3><div class="sub">Indicador com alvo e histórico</div></div>
+        </div>
+        <div class="demo">
+          <div class="kpi">
+            <div class="top">
+              <div><div class="val">94,2<span class="unit">%</span></div><div class="muted" style="font-size:11px">OEE · Linha 3</div></div>
+              <div style="text-align:right"><span class="badge b-amber">● abaixo da meta</span><div class="delta" style="color:var(--danger);margin-top:5px">▼ 3,8% vs meta 98%</div></div>
+            </div>
+            <svg viewBox="0 0 260 80" width="100%" height="80">
+              <line x1="0" y1="22" x2="260" y2="22" stroke="#dc2626" stroke-dasharray="4 4" stroke-width="1.5"/>
+              <text x="2" y="18" font-size="8" fill="#dc2626" font-weight="700">meta 98%</text>
+              <polyline fill="none" stroke="#001391" stroke-width="2.5" points="0,52 43,40 86,58 130,34 173,46 216,30 259,38"/>
+              <polygon fill="#00139115" points="0,52 43,40 86,58 130,34 173,46 216,30 259,38 259,80 0,80"/>
+              <g fill="#001391"><circle cx="130" cy="34" r="3"/><circle cx="216" cy="30" r="3"/><circle cx="259" cy="38" r="3"/></g>
+            </svg>
+          </div>
+        </div>
+        <div class="info">
+          <div class="lbl">O que mostra</div>
+          <ul>
+            <li>Valor atual grande + unidade + delta vs meta</li>
+            <li>Linha de meta/threshold e cor RAG automática</li>
+            <li>Série histórica (dia/semana/mês) com consolidação em árvore de KPI</li>
+          </ul>
+          <div class="lbl">Quem traz nativo</div>
+          <div class="who"><span class="tag">Fabriq</span><span class="tag">iObeya</span><span class="tag">Poka</span><span class="tag">L2L</span><span class="tag">Azumuta</span></div>
+        </div>
+      </div>
+
+      <!-- 4 Action plan / tickets -->
+      <div class="zcard">
+        <div class="ch">
+          <div class="ico">🗂</div>
+          <div><h3>Plano de ação / Tickets</h3><div class="sub">Ações e desvios com responsável</div></div>
+        </div>
+        <div class="demo">
+          <div class="kanban">
+            <div class="kcol"><div class="kh">A fazer <span>3</span></div>
+              <div class="kt"><div class="tt">Vazamento válvula L2</div><div class="mt"><span class="av">JS</span><span class="pri" style="background:var(--danger)"></span></div></div>
+              <div class="kt"><div class="tt">Ajuste setup molde</div><div class="mt"><span class="av">MA</span><span class="pri" style="background:var(--warning)"></span></div></div>
+            </div>
+            <div class="kcol"><div class="kh">Fazendo <span>2</span></div>
+              <div class="kt"><div class="tt">Troca sensor temp.</div><div class="mt"><span class="av">RC</span><span class="badge b-amber" style="font-size:8.5px;padding:1px 5px">hoje</span></div></div>
+            </div>
+            <div class="kcol"><div class="kh">Feito <span>5</span></div>
+              <div class="kt" style="opacity:.7"><div class="tt">Limpeza filtro</div><div class="mt"><span class="av" style="background:var(--success)">✓</span></div></div>
+            </div>
+          </div>
+        </div>
+        <div class="info">
+          <div class="lbl">O que mostra</div>
+          <ul>
+            <li>Responsável, prazo, prioridade, status e categoria (5W2H)</li>
+            <li>Ligado ao KPI/incidente que originou a ação</li>
+            <li>Múltiplas visões: kanban, lista, calendário, Gantt, carga</li>
+          </ul>
+          <div class="lbl">Quem traz nativo</div>
+          <div class="who"><span class="tag">Fabriq</span><span class="tag">iObeya</span><span class="tag">Poka</span><span class="tag">L2L</span><span class="tag">DigiLEAN</span></div>
+        </div>
+      </div>
+
+      <!-- 5 Problem solving -->
+      <div class="zcard">
+        <div class="ch">
+          <div class="ico">🔍</div>
+          <div><h3>Resolução de problemas</h3><div class="sub">5 Porquês · PDCA · A3 · 8D</div></div>
+        </div>
+        <div class="demo">
+          <div class="whys">
+            <div class="why"><span class="n">1</span><span class="tx">Peça refugada na inspeção final</span></div>
+            <div class="why"><span class="n">2</span><span class="tx">Dimensional fora de tolerância</span></div>
+            <div class="why"><span class="n">3</span><span class="tx">Desgaste da ferramenta de corte</span></div>
+            <div class="methods">
+              <span class="tag">5 Porquês</span><span class="tag">Ishikawa</span><span class="tag">PDCA</span><span class="tag">QRQC</span><span class="tag">8D</span><span class="tag">A3</span>
+            </div>
+          </div>
+        </div>
+        <div class="info">
+          <div class="lbl">O que mostra</div>
+          <ul>
+            <li>Fluxo estruturado de causa-raiz anexado ao ticket</li>
+            <li>Campos guiados por metodologia + evidências (fotos/anexos)</li>
+            <li>Exportável como relatório (A3/8D) para auditoria</li>
+          </ul>
+          <div class="lbl">Quem traz nativo</div>
+          <div class="who"><span class="tag">Fabriq</span><span class="tag">iObeya</span><span class="tag">Poka (issues)</span></div>
+        </div>
+      </div>
+
+      <!-- 6 Routines / Kamishibai -->
+      <div class="zcard">
+        <div class="ch">
+          <div class="ico">☑</div>
+          <div><h3>Rotinas / Checklists / Kamishibai</h3><div class="sub">Confirmação de tarefas e auditorias</div></div>
+        </div>
+        <div class="demo">
+          <div class="kami">
+            <div class="kmi" style="background:var(--success)"><svg viewBox="0 0 24 24" fill="none" stroke="#fff" stroke-width="3"><path d="M20 6L9 17l-5-5"/></svg>5S</div>
+            <div class="kmi" style="background:var(--success)"><svg viewBox="0 0 24 24" fill="none" stroke="#fff" stroke-width="3"><path d="M20 6L9 17l-5-5"/></svg>LPA</div>
+            <div class="kmi" style="background:var(--danger)"><svg viewBox="0 0 24 24" fill="none" stroke="#fff" stroke-width="3"><path d="M18 6L6 18M6 6l12 12"/></svg>CIL</div>
+            <div class="kmi" style="background:#e5e7eb;color:#9ca3af">–<br>15h</div>
+            <div class="kmi" style="background:var(--success)"><svg viewBox="0 0 24 24" fill="none" stroke="#fff" stroke-width="3"><path d="M20 6L9 17l-5-5"/></svg>Seg</div>
+            <div class="kmi" style="background:var(--success)"><svg viewBox="0 0 24 24" fill="none" stroke="#fff" stroke-width="3"><path d="M20 6L9 17l-5-5"/></svg>Qual</div>
+            <div class="kmi" style="background:var(--warning)">!<br>rev</div>
+            <div class="kmi" style="background:#e5e7eb;color:#9ca3af">–<br>18h</div>
+          </div>
+        </div>
+        <div class="info">
+          <div class="lbl">O que mostra</div>
+          <ul>
+            <li>Cartões vermelho/verde de tarefa executada × pendente</li>
+            <li>Auditorias em camadas (LPA), CIL, 5S, gemba walk</li>
+            <li>Aderência à rotina no turno e responsável por horário</li>
+          </ul>
+          <div class="lbl">Quem traz nativo</div>
+          <div class="who"><span class="tag">Fabriq</span><span class="tag">Tervene</span><span class="tag">DigiLEAN</span><span class="tag">Azumuta</span><span class="tag">Glartek</span></div>
+        </div>
+      </div>
+
+      <!-- 7 Attendance -->
+      <div class="zcard">
+        <div class="ch">
+          <div class="ico">👥</div>
+          <div><h3>Presença / Equipe do turno</h3><div class="sub">Quem está na reunião/linha</div></div>
+        </div>
+        <div class="demo">
+          <div class="att">
+            <div class="row">
+              <span class="p">JS<span class="ring"></span></span>
+              <span class="p">MA<span class="ring"></span></span>
+              <span class="p">RC<span class="ring"></span></span>
+              <span class="p absent">LB<span class="ring"></span></span>
+              <span class="p">TF<span class="ring"></span></span>
+              <span class="p">AD<span class="ring"></span></span>
+              <span class="p absent">PS<span class="ring"></span></span>
+              <span class="p">VK<span class="ring"></span></span>
+            </div>
+            <div style="display:flex;justify-content:space-between;font-size:11px;font-weight:700;margin-bottom:5px"><span>Presença</span><span class="muted">8 / 10 presentes</span></div>
+            <div class="bar"><i style="width:80%"></i></div>
+          </div>
+        </div>
+        <div class="info">
+          <div class="lbl">O que mostra</div>
+          <ul>
+            <li>Presentes × ausentes com % de presença do turno</li>
+            <li>Facilitador da reunião e papéis atribuídos</li>
+            <li>Base para cobertura de posto e polivalência</li>
+          </ul>
+          <div class="lbl">Quem traz nativo</div>
+          <div class="who"><span class="tag">Poka</span><span class="tag">Tervene</span><span class="tag">iObeya</span></div>
+        </div>
+      </div>
+
+      <!-- 8 Skills matrix -->
+      <div class="zcard">
+        <div class="ch">
+          <div class="ico">▤</div>
+          <div><h3>Matriz de habilidades (ILUO)</h3><div class="sub">Polivalência operador × tarefa</div></div>
+        </div>
+        <div class="demo">
+          <table class="mtx">
+            <thead><tr><th>Operador</th><th>Setup</th><th>Insp.</th><th>CIL</th><th>Solda</th></tr></thead>
+            <tbody>
+              <tr><td>J. Silva</td><td><span class="iluo i4"></span></td><td><span class="iluo i3"></span></td><td><span class="iluo i4"></span></td><td><span class="iluo i2"></span></td></tr>
+              <tr><td>M. Alves</td><td><span class="iluo i3"></span></td><td><span class="iluo i4"></span></td><td><span class="iluo i1"></span></td><td><span class="iluo i0"></span></td></tr>
+              <tr><td>R. Costa</td><td><span class="iluo i2"></span></td><td><span class="iluo i2"></span></td><td><span class="iluo i4"></span></td><td><span class="iluo i3"></span></td></tr>
+            </tbody>
+          </table>
+        </div>
+        <div class="info">
+          <div class="lbl">O que mostra</div>
+          <ul>
+            <li>Nível de competência por tarefa (ícone ILUO em 4 quartos)</li>
+            <li>Gaps de polivalência e quem pode treinar quem</li>
+            <li>Liga a trilhas de treinamento e certificações</li>
+          </ul>
+          <div class="lbl">Quem traz nativo</div>
+          <div class="who"><span class="tag">Azumuta</span><span class="tag">Poka</span><span class="tag">iObeya (composto)</span></div>
+        </div>
+      </div>
+
+      <!-- 9 Communication -->
+      <div class="zcard">
+        <div class="ch">
+          <div class="ico">📣</div>
+          <div><h3>Comunicação / Avisos</h3><div class="sub">Mensagens ao turno</div></div>
+        </div>
+        <div class="demo">
+          <div class="msg">
+            <div class="mh"><span class="av" style="width:22px;height:22px;font-size:9px">SUP</span><div><div style="font-size:11px;font-weight:700">Aviso de turno</div><div class="muted" style="font-size:9.5px">Supervisor · há 20 min</div></div><span style="margin-left:auto;color:var(--warning)">📌</span></div>
+            <div class="im">🖼</div>
+            <div style="font-size:10.5px;margin-bottom:7px">Nova instrução de EPI para a linha 3. Ler antes do início.</div>
+            <span class="doc">📄 IT-EPI-03.pdf</span>
+          </div>
+        </div>
+        <div class="info">
+          <div class="lbl">O que mostra</div>
+          <ul>
+            <li>Recados fixados, imagens, documentos e links</li>
+            <li>Slideshow em telas de chão de fábrica</li>
+            <li>Confirmação de leitura / broadcast por área</li>
+          </ul>
+          <div class="lbl">Quem traz nativo</div>
+          <div class="who"><span class="tag">Fabriq</span><span class="tag">Poka</span><span class="tag">Glartek</span><span class="tag">Azumuta</span></div>
+        </div>
+      </div>
+
+      <!-- 10 Agenda / tiers -->
+      <div class="zcard">
+        <div class="ch">
+          <div class="ico">⏱</div>
+          <div><h3>Agenda + Escalonamento (Tiers)</h3><div class="sub">Reunião SIM e passagem entre níveis</div></div>
+        </div>
+        <div class="demo">
+          <div class="agenda">
+            <div class="ag">🟢 Segurança & presença <span class="tm">2 min</span></div>
+            <div class="ag">📊 Revisão SQCDP <span class="tm">5 min</span></div>
+            <div class="ag">🗂 Plano de ação <span class="tm">4 min</span></div>
+            <div class="tiers">
+              <span class="tier">T1 Linha</span><span class="arw">→</span>
+              <span class="tier up">T2 Área</span><span class="arw">→</span>
+              <span class="tier">T3 Planta</span>
+            </div>
+          </div>
+        </div>
+        <div class="info">
+          <div class="lbl">O que mostra</div>
+          <ul>
+            <li>Roteiro cronometrado da reunião diária (SIM/huddle)</li>
+            <li>Escalonamento de itens de T1→T2→T3 mantendo contexto</li>
+            <li>Dashboards em camadas por nível hierárquico</li>
+          </ul>
+          <div class="lbl">Quem traz nativo</div>
+          <div class="who"><span class="tag">Poka</span><span class="tag">iObeya</span><span class="tag">L2L</span><span class="tag">Tervene</span></div>
+        </div>
+      </div>
+
+      <!-- 11 Work instructions -->
+      <div class="zcard">
+        <div class="ch">
+          <div class="ico">📋</div>
+          <div><h3>Instruções de trabalho / SOP</h3><div class="sub">Passo a passo com mídia e AR</div></div>
+        </div>
+        <div class="demo">
+          <div class="wi">
+            <div class="vid"><span class="pl">▶</span><span class="ar">AR</span></div>
+            <div class="step">
+              <div class="stp"><span class="sn">1</span> Travar disjuntor (LOTO)</div>
+              <div class="stp"><span class="sn">2</span> Escanear QR do ativo</div>
+              <div class="stp"><span class="sn">3</span> Registrar leitura de torque</div>
+            </div>
+          </div>
+        </div>
+        <div class="info">
+          <div class="lbl">O que mostra</div>
+          <ul>
+            <li>Etapas com vídeo, imagem, 3D e sobreposição AR</li>
+            <li>QR/NFC no ativo abre a instrução certa</li>
+            <li>Passos adaptados ao nível de habilidade do operador</li>
+          </ul>
+          <div class="lbl">Quem traz nativo</div>
+          <div class="who"><span class="tag">Glartek</span><span class="tag">Poka</span><span class="tag">Azumuta</span></div>
+        </div>
+      </div>
+
+      <!-- 12 Embed BI -->
+      <div class="zcard">
+        <div class="ch">
+          <div class="ico">🔌</div>
+          <div><h3>Embed BI / dados de MES-ERP</h3><div class="sub">iFrame e integração em tempo real</div></div>
+        </div>
+        <div class="demo">
+          <div class="bi">
+            <div class="bars">
+              <div class="bar" style="height:45%"></div><div class="bar" style="height:70%"></div>
+              <div class="bar" style="height:55%"></div><div class="bar" style="height:88%"></div>
+              <div class="bar" style="height:62%"></div><div class="bar" style="height:78%"></div>
+            </div>
+            <div style="text-align:center"><span class="src-chip">⟳ Atualizado via API · MES · ERP · Power BI</span></div>
+          </div>
+        </div>
+        <div class="info">
+          <div class="lbl">O que mostra</div>
+          <ul>
+            <li>Gráficos do BI corporativo embutidos no board</li>
+            <li>Atualização automática (API/iFrame) sem digitação manual</li>
+            <li>Dado único e confiável do MES/ERP no chão de fábrica</li>
+          </ul>
+          <div class="lbl">Quem traz nativo</div>
+          <div class="who"><span class="tag">Fabriq</span><span class="tag">Poka</span><span class="tag">L2L</span><span class="tag">iObeya</span></div>
+        </div>
+      </div>
+
+    </div>
+  </div>
+</section>
+
+<!-- MATRIX -->
+<section id="matriz">
+  <div class="wrap">
+    <div class="sec-head">
+      <div class="eyebrow">Comparativo</div>
+      <h2>Matriz widget × concorrente</h2>
+      <p>Cobertura de cada widget por player, com base nas capacidades divulgadas publicamente.</p>
+    </div>
+    <div class="matrix-wrap">
+      <table class="matrix">
+        <thead>
+          <tr>
+            <th>Widget</th><th>Fabriq</th><th>iObeya</th><th>Poka</th><th>L2L</th><th>Azumuta</th><th>Glartek</th><th>Tervene/<br>DigiLEAN</th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr><td>Letras SQCDP / SQDC</td><td class="yes">●</td><td class="yes">●</td><td class="yes">●</td><td class="yes">●</td><td class="part">◐</td><td class="no">○</td><td class="yes">●</td></tr>
+          <tr><td>Safety / Green Cross</td><td class="yes">●</td><td class="yes">●</td><td class="part">◐</td><td class="part">◐</td><td class="no">○</td><td class="no">○</td><td class="yes">●</td></tr>
+          <tr><td>KPI meta × real + tendência</td><td class="yes">●</td><td class="yes">●</td><td class="yes">●</td><td class="yes">●</td><td class="yes">●</td><td class="part">◐</td><td class="yes">●</td></tr>
+          <tr><td>Plano de ação / Tickets</td><td class="yes">●</td><td class="yes">●</td><td class="yes">●</td><td class="yes">●</td><td class="part">◐</td><td class="part">◐</td><td class="yes">●</td></tr>
+          <tr><td>Resolução de problemas (5W/A3/8D)</td><td class="yes">●</td><td class="yes">●</td><td class="part">◐</td><td class="part">◐</td><td class="part">◐</td><td class="part">◐</td><td class="part">◐</td></tr>
+          <tr><td>Rotinas / Checklists / Kamishibai</td><td class="yes">●</td><td class="yes">●</td><td class="yes">●</td><td class="part">◐</td><td class="yes">●</td><td class="yes">●</td><td class="yes">●</td></tr>
+          <tr><td>Presença / Equipe</td><td class="part">◐</td><td class="part">◐</td><td class="yes">●</td><td class="no">○</td><td class="no">○</td><td class="part">◐</td><td class="part">◐</td></tr>
+          <tr><td>Matriz de habilidades (ILUO)</td><td class="no">○</td><td class="part">◐</td><td class="yes">●</td><td class="part">◐</td><td class="yes">●</td><td class="part">◐</td><td class="part">◐</td></tr>
+          <tr><td>Comunicação / Avisos</td><td class="yes">●</td><td class="yes">●</td><td class="yes">●</td><td class="part">◐</td><td class="yes">●</td><td class="yes">●</td><td class="part">◐</td></tr>
+          <tr><td>Agenda + Escalonamento (Tiers)</td><td class="yes">●</td><td class="yes">●</td><td class="yes">●</td><td class="yes">●</td><td class="no">○</td><td class="no">○</td><td class="yes">●</td></tr>
+          <tr><td>Instruções de trabalho / SOP</td><td class="part">◐</td><td class="no">○</td><td class="yes">●</td><td class="part">◐</td><td class="yes">●</td><td class="yes">●</td><td class="part">◐</td></tr>
+          <tr><td>Embed BI / MES-ERP</td><td class="yes">●</td><td class="part">◐</td><td class="yes">●</td><td class="yes">●</td><td class="part">◐</td><td class="part">◐</td><td class="part">◐</td></tr>
+        </tbody>
+      </table>
+    </div>
+    <div class="mlegend">
+      <span><b class="yes">●</b> Nativo / forte</span>
+      <span><b class="part">◐</b> Parcial ou via composição</span>
+      <span><b class="no">○</b> Não é foco do produto</span>
+    </div>
+  </div>
+</section>
+
+<!-- PLAYERS -->
+<section id="players">
+  <div class="wrap">
+    <div class="sec-head">
+      <div class="eyebrow">Posicionamento</div>
+      <h2>Leitura por concorrente</h2>
+      <p>Foco de cada produto e o widget que melhor o representa.</p>
+    </div>
+
+    <div class="grid g2">
+
+      <div class="ccard">
+        <div class="top"><div class="lg" style="background:#6d28d9">F</div><div><h3>Fabriq</h3><div class="pos">Gestão à vista digital · SIM / performance</div></div></div>
+        <div class="bd">
+          <div class="lbl">Widgets de destaque</div>
+          <ul>
+            <li>Indicadores multiformato: SQCDP, safety cross, barras, linhas, status, iFrame de BI</li>
+            <li>DKPI: árvore de KPI que consolida do supervisor ao diretor em tempo real</li>
+            <li>Tickets com templates + processos 8D/5 Porquês/Ishikawa/PDCA/QRQC/A3</li>
+          </ul>
+          <div class="hl">🎯 Mais forte em: <strong>dashboards de performance configuráveis</strong> ligando KPI ↔ plano de ação (efeito espelho).</div>
+        </div>
+      </div>
+
+      <div class="ccard">
+        <div class="top"><div class="lg" style="background:#0f766e">iO</div><div><h3>iObeya</h3><div class="pos">A referência de Obeya digital · Lean & Agile</div></div></div>
+        <div class="bd">
+          <div class="lbl">Widgets de destaque</div>
+          <ul>
+            <li>40+ categorias de elementos: cards, notas, stickers, formas — board "infinito"</li>
+            <li>SQCDP com RAG dials, thresholds e action cards disparados por desvio</li>
+            <li>Board types: Kanban, Hoshin Kanri, Gantt, planning; árvore de KPI consolidada</li>
+          </ul>
+          <div class="hl">🎯 Mais forte em: <strong>flexibilidade de canvas e variedade de boards</strong> — replica qualquer quadro físico.</div>
+        </div>
+      </div>
+
+      <div class="ccard">
+        <div class="top"><div class="lg" style="background:#ea580c">P</div><div><h3>Poka</h3><div class="pos">Connected Worker + Huddle Boards (2025)</div></div></div>
+        <div class="bd">
+          <div class="lbl">Widgets de destaque</div>
+          <ul>
+            <li>Huddle Board: KPIs (S/Q/D/C/P), issues, escalonamento, tasks e standard work numa só tela</li>
+            <li>Agenda + facilitador + presença; escalonamento cross-tier L1→L2→L3 com contexto</li>
+            <li>Dashboards prontos embutindo dados de MES/ERP + instruções com vídeo</li>
+          </ul>
+          <div class="hl">🎯 Mais forte em: <strong>reunião de turno digital</strong> unindo operador, dados e ação.</div>
+        </div>
+      </div>
+
+      <div class="ccard">
+        <div class="top"><div class="lg" style="background:#0284c7">G</div><div><h3>Glartek</h3><div class="pos">Augmented & Connected Worker</div></div></div>
+        <div class="bd">
+          <div class="lbl">Widgets de destaque</div>
+          <ul>
+            <li>Instruções de trabalho com AR, QR/NFC no ativo e assistência remota visual</li>
+            <li>Checklists de autoinspeção e manutenção preventiva (papel → digital)</li>
+            <li>Dashboards em tempo real + alertas de erro/risco; feeds e chat</li>
+          </ul>
+          <div class="hl">🎯 Mais forte em: <strong>execução guiada no campo</strong> — menos board de gestão, mais operação assistida.</div>
+        </div>
+      </div>
+
+      <div class="ccard">
+        <div class="top"><div class="lg" style="background:#be123c">L</div><div><h3>L2L</h3><div class="pos">Manufacturing Ops Platform · TeamBoard</div></div></div>
+        <div class="bd">
+          <div class="lbl">Widgets de destaque</div>
+          <ul>
+            <li>TeamBoard = SQDC digital com widgets customizáveis para tier meetings</li>
+            <li>Drill-up / drill-down entre tiers com gráficos coloridos</li>
+            <li>Ações corretivas digitalizadas com delegação rápida a partir do dado do chão</li>
+          </ul>
+          <div class="hl">🎯 Mais forte em: <strong>dado de chão de fábrica ao vivo</strong> dentro do board (nativo da plataforma MOM).</div>
+        </div>
+      </div>
+
+      <div class="ccard">
+        <div class="top"><div class="lg" style="background:#65a30d">A</div><div><h3>Azumuta</h3><div class="pos">Work instructions + Skills + Quality</div></div></div>
+        <div class="bd">
+          <div class="lbl">Widgets de destaque</div>
+          <ul>
+            <li>Galeria de widgets: dashboards prontos, tabelas, imagens, links, lembretes</li>
+            <li>Skills Matrix + módulo de treinamento (trilhas e competências)</li>
+            <li>Instruções no-code (drag-and-drop) que se adaptam ao operador</li>
+          </ul>
+          <div class="hl">🎯 Mais forte em: <strong>matriz de habilidades e instruções</strong> — desenvolvimento da força de trabalho.</div>
+        </div>
+      </div>
+
+      <div class="ccard">
+        <div class="top"><div class="lg" style="background:#7c3aed">T</div><div><h3>Tervene / DigiLEAN</h3><div class="pos">Lean Daily Management</div></div></div>
+        <div class="bd">
+          <div class="lbl">Widgets de destaque</div>
+          <ul>
+            <li>DigiLEAN: SQCDP, shop floor, Kamishibai, 5S green cross, target bar, trend, smart tables</li>
+            <li>Tervene: agendas digitais de huddle, tracking de plano de ação, dashboards por Tier 1/2/3</li>
+            <li>Kamishibai para confirmar rotina/auditoria em gemba walks</li>
+          </ul>
+          <div class="hl">🎯 Mais forte em: <strong>rotina de gestão diária e Kamishibai</strong> por camadas.</div>
+        </div>
+      </div>
+
+    </div>
+  </div>
+</section>
+
+<!-- TAKEAWAYS -->
+<section id="leituras">
+  <div class="wrap">
+    <div class="take">
+      <h2>Leituras para o Obeya da Solvace</h2>
+      <p class="s">O que é padrão de mercado (table-stakes) e onde há espaço para diferenciar o design dos widgets.</p>
+      <div class="grid g3">
+        <div class="tk"><h4><span class="num">1</span> Base obrigatória</h4><p>SQCDP + safety cross + KPI (meta×real) + plano de ação estão em quase todos. Sem esses quatro, o board não compete.</p></div>
+        <div class="tk"><h4><span class="num">2</span> RAG em tudo</h4><p>Vermelho/amarelo/verde por threshold é a linguagem visual universal. Cor deve ser automática pelo dado, não manual.</p></div>
+        <div class="tk"><h4><span class="num">3</span> KPI ↔ ação</h4><p>O diferencial da Fabriq/iObeya: clicar no desvio e já abrir ticket/ação. O widget não é só leitura, é gatilho.</p></div>
+        <div class="tk"><h4><span class="num">4</span> Tiers e escalonamento</h4><p>Poka e L2L investem em passar item de T1→T2→T3 com contexto. Board precisa pensar hierarquia, não só uma tela.</p></div>
+        <div class="tk"><h4><span class="num">5</span> Dado automático</h4><p>Embed de BI / MES-ERP via API/iFrame reduz digitação e vira argumento de venda ("dado único e confiável").</p></div>
+        <div class="tk"><h4><span class="num">6</span> Onde diferenciar</h4><p>Presença, matriz ILUO e resolução de problemas guiada são menos maduros em vários players — bom espaço p/ Solvace.</p></div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<footer>
+  <div class="wrap">
+    <h4>Fontes (páginas públicas de produto · 2025–2026)</h4>
+    <div class="srcs">
+      <a href="https://fabriq.tech/en/feature-performance-indicators/">Fabriq — Performance indicators</a> ·
+      <a href="https://fabriq.tech/en/feature-tickets-action-plan/">Fabriq — Tickets & Action Plans</a> ·
+      <a href="https://fabriq.tech/en/2024/07/03/sqcdp-board/">Fabriq — SQCDP board</a> ·
+      <a href="https://www.iobeya.com/features/sqcdp/">iObeya — SQCDP</a> ·
+      <a href="https://www.iobeya.com/features/cards/">iObeya — Cards</a> ·
+      <a href="https://www.iobeya.com/features/digital-obeya/">iObeya — Digital Obeya</a> ·
+      <a href="https://foodindustryexecutive.com/2025/11/poka-launches-huddle-boards-a-revolutionary-new-collaboration-and-meeting-tool-for-manufacturing-workers-to-share-critical-data-and-improve-issue-resolution/">Poka — Huddle Boards (launch)</a> ·
+      <a href="https://www.poka.io/en/digital-whiteboards">Poka — Digital whiteboards</a> ·
+      <a href="https://glartek.com/digital-work-instructions-connected-worker/">Glartek — Digital Work Instructions</a> ·
+      <a href="https://www.l2l.com/blog/new-module-teamboard">L2L — TeamBoard (SQDC)</a> ·
+      <a href="https://www.l2l.com/blog/digital-obeya-teamboards-for-tier-meetings">L2L — Digital Obeya TeamBoards</a> ·
+      <a href="https://www.azumuta.com/solutions/dashboards-and-reports/">Azumuta — Dashboards & widgets</a> ·
+      <a href="https://www.digilean.com/product-features/">DigiLEAN — Product features</a> ·
+      <a href="https://tervene.com/solution/visual-management-system/">Tervene — Visual Management System</a>
+    </div>
+    <p class="muted" style="margin-top:16px;font-size:11.5px">Mockups recriados para benchmark de design, estilizados nos tokens Solvace/Zard. Não são capturas dos produtos originais.</p>
+  </div>
+</footer>
+
+</body>
+</html>

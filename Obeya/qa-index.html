@@ -1,0 +1,68 @@
+<!doctype html>
+<html lang="pt-br">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>QA — Digital Obeya · Solvace</title>
+  <style>
+    :root{--ink:#0d122f;--muted:#6b7280;--primary:#001391;--border:#e6e8ee;--bg:#f7f8fb}
+    *{box-sizing:border-box}
+    body{margin:0;font-family:Inter,system-ui,Arial,sans-serif;color:var(--ink);background:var(--bg)}
+    header{padding:28px 32px;border-bottom:1px solid var(--border);background:#fff}
+    h1{margin:0;font-size:22px}
+    .sub{color:var(--muted);font-size:14px;margin-top:4px}
+    main{max-width:1040px;margin:0 auto;padding:28px 32px;display:grid;grid-template-columns:repeat(auto-fill,minmax(300px,1fr));gap:16px}
+    .card{background:#fff;border:1px solid var(--border);border-radius:14px;padding:18px;box-shadow:0 1px 2px rgba(0,5,36,.05)}
+    .card h2{font-size:16px;margin:0 0 4px}
+    .card .id{font-size:12px;color:var(--muted);margin-bottom:10px}
+    .card p{font-size:13px;color:var(--muted);margin:0 0 14px;line-height:1.5}
+    .links{display:flex;flex-wrap:wrap;gap:8px}
+    a.btn{display:inline-flex;align-items:center;gap:6px;font-size:13px;font-weight:600;text-decoration:none;color:#fff;background:var(--primary);padding:8px 12px;border-radius:8px}
+    a.btn.alt{background:#fff;color:var(--primary);border:1px solid var(--primary)}
+  </style>
+</head>
+<body>
+  <header>
+    <h1>QA — Digital Obeya</h1>
+    <div class="sub">Catálogo de protótipos para revisão/QA · links estáveis para os cards do Azure DevOps</div>
+  </header>
+  <main>
+    <div class="card">
+      <h2>Board completo (Digital Obeya)</h2>
+      <div class="id">Protótipo principal · v atual</div>
+      <p>Board replicando a sala DOB-67 com 42 widgets, modos standard/update/edição/andon, zoom e camada de revisão.</p>
+      <div class="links"><a class="btn" href="obeya-board.html">Abrir</a></div>
+    </div>
+    <div class="card">
+      <h2>Galeria de widgets (lib Zard)</h2>
+      <div class="id">Referência de componentes</div>
+      <p>Todos os tipos de widget da lib (Número, Gráfico, Status, Radial, Agenda, Presença, Feed, Defect, RCA…).</p>
+      <div class="links"><a class="btn" href="solvace-widgets-gallery.html">Abrir</a></div>
+    </div>
+    <div class="card">
+      <h2>Feed · zoom · filtro · barra</h2>
+      <div class="id">US-66499</div>
+      <p>Protótipo da US 66499.</p>
+      <div class="links"><a class="btn" href="us-66499-feed-zoom-filtro-barra.html">Abrir</a></div>
+    </div>
+    <div class="card">
+      <h2>Widget e configuração</h2>
+      <div class="id">US-66506</div>
+      <p>Protótipo da US 66506.</p>
+      <div class="links"><a class="btn" href="us-66506-widget-e-configuracao.html">Abrir</a></div>
+    </div>
+    <div class="card">
+      <h2>Widget de pizza</h2>
+      <div class="id">Protótipo</div>
+      <p>Widget de gráfico de pizza/rosca com configuração.</p>
+      <div class="links"><a class="btn" href="widget-pizza-prototipo.html">Abrir</a></div>
+    </div>
+    <div class="card">
+      <h2>Modo atualização · troca de board</h2>
+      <div class="id">Protótipo</div>
+      <p>Fluxo de update mode e troca de board.</p>
+      <div class="links"><a class="btn" href="modo-atualizacao-troca-de-board.html">Abrir</a></div>
+    </div>
+  </main>
+</body>
+</html>

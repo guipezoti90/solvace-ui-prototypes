@@ -11,17 +11,56 @@
   button{ font-family:inherit; cursor:pointer }
   .font-display{ font-family:"Space Grotesk",Inter,sans-serif; }
 
-  /* ---- page showcase ---- */
+  /* ---- page ---- */
   #app{ padding:28px 32px 80px; }
   .pg-h{ margin:0 0 4px; font-size:22px; font-weight:700; }
-  .pg-sub{ margin:0 0 26px; color:#6b7280; font-size:14px; }
-  .modes{ display:flex; gap:28px; flex-wrap:wrap; align-items:flex-start; }
-  .mode{ width:320px; }
-  .mode-lbl{ display:flex; align-items:center; gap:8px; margin-bottom:10px; font-size:13px; font-weight:700; text-transform:uppercase; letter-spacing:.04em; color:#8a90a6; }
-  .mode-lbl .dot{ width:8px; height:8px; border-radius:99px; background:#001391; }
-  .mode-stage{ position:relative; height:300px; background:#fff; border:1px dashed #d7dae4; border-radius:14px; padding:16px; }
-  .mode-hint{ margin-top:10px; font-size:12px; color:#8a90a6; }
-  .zbtn-row{ margin-top:14px; display:flex; gap:10px; flex-wrap:wrap; }
+  .pg-sub{ margin:0 0 20px; color:#6b7280; font-size:14px; max-width:760px; }
+  .zbtn-row{ margin-top:16px; display:flex; gap:10px; flex-wrap:wrap; }
+
+  /* ---- page tabs (Zard tabs — bg-muted pill, active = bg-background + shadow) ---- */
+  .pgtabs{ display:inline-flex; align-items:center; gap:2px; background:#f2f3f7; border-radius:10px; padding:4px; margin-bottom:22px; }
+  .pgtab{ border:none; background:none; padding:8px 18px; border-radius:8px; font-size:14px; font-weight:600; color:#4d5166; cursor:pointer; display:inline-flex; align-items:center; gap:8px; transition:background .15s,color .15s,box-shadow .15s; }
+  .pgtab .dot{ width:8px; height:8px; border-radius:99px; background:#c2c6d6; transition:background .15s; }
+  .pgtab:hover{ color:#001391; }
+  .pgtab.active{ background:#fff; color:#001391; box-shadow:0 1px 2px rgba(0,5,36,.14); }
+  .pgtab.active .dot{ background:#001391; }
+
+  /* ---- view panels ---- */
+  .view{ display:none; }
+  .view.active{ display:block; }
+  .view-head{ margin-bottom:14px; }
+  .view-title{ font-size:15px; font-weight:700; color:#0d122f; }
+  .view-sub{ font-size:13px; color:#6b7280; margin-top:3px; max-width:760px; line-height:1.5; }
+
+  /* ---- stage (board-like canvas that frames the widget) ---- */
+  .stage{ position:relative; border-radius:16px; padding:44px 32px; display:flex; align-items:center; justify-content:center; min-height:460px; }
+  .stage-meeting,.stage-update{ background:#eef0f4; border:1px solid #e4e7ee; }
+  .stage-board{ background:#e8eaf0; border:1px solid #dcdfe8; background-image:
+      linear-gradient(to right, rgba(13,18,47,.07) 1px, transparent 1px),
+      linear-gradient(to bottom, rgba(13,18,47,.07) 1px, transparent 1px);
+    background-size:10px 10px; }
+  /* widget fixed size inside the stage (board number widget is portrait) */
+  .stage .wcard{ width:300px; height:320px; }
+
+  /* edit cluster: the floating toolbar sits just above the selected widget */
+  .edit-cluster{ display:flex; flex-direction:column; align-items:center; gap:12px; }
+
+  /* Edit-mode floating toolbar (board verbatim) */
+  .edit-toolbar{ display:inline-flex; align-items:center; gap:6px; background:rgba(198,201,255,0.95); -webkit-backdrop-filter:blur(20px) saturate(1.8); backdrop-filter:blur(20px) saturate(1.8); border:1px solid rgba(0,19,145,0.34); border-radius:10px; box-shadow:0 14px 36px rgba(0,19,145,.20), 0 2px 8px rgba(13,18,47,.12); padding:6px; }
+  .edit-toolbar .tb{ display:inline-flex; align-items:center; gap:7px; padding:6px 10px; border-radius:8px; font-size:14px; font-weight:500; color:#001391; cursor:pointer; background:none; border:none; transition:background .12s,color .12s; }
+  .edit-toolbar .tb:hover{ background:rgba(255,255,255,0.6); }
+  .edit-toolbar .tb svg{ width:16px; height:16px; }
+  .edit-toolbar .tb.danger{ color:#ec221f; }
+  .edit-toolbar .tb.danger:hover{ background:#fdeceb; color:#ec221f; }
+  .edit-toolbar .div{ width:1px; height:20px; background:#dcdee3; }
+
+  /* edit-mode widget chrome (scoped to the edit view) */
+  [data-state="edit"] .wcard{ border-style:dashed; border-color:#bcc2dc; cursor:grab; }
+  [data-state="edit"] .wcard.selected{ outline:2px solid #001391; outline-offset:2px; box-shadow:0 10px 34px rgba(0,19,145,.20); border-color:#001391; }
+  .wresize{ position:absolute; right:4px; bottom:4px; width:24px; height:24px; border-radius:7px; background:#fff; border:1px solid #001391; color:#001391; cursor:nwse-resize; z-index:60; display:flex; align-items:center; justify-content:center; box-shadow:0 2px 6px rgba(0,19,145,.22); }
+  .wresize svg{ width:14px; height:14px; }
+  /* size badge under the selected edit widget (board "selo de tamanho px") — in-flow so overflow:hidden on the card doesn't clip it */
+  .wsize-badge{ background:#001391; color:#fff; font-size:11px; font-weight:600; padding:2px 9px; border-radius:99px; white-space:nowrap; box-shadow:0 2px 6px rgba(0,19,145,.22); }
 
   /* ---- buttons (board tokens) ---- */
   .zbtn{ display:inline-flex; align-items:center; justify-content:center; gap:6px; white-space:nowrap; border-radius:8px; border:1px solid transparent; font-size:14px; font-weight:500; transition:all .15s; outline:none; user-select:none; cursor:pointer; height:32px; padding:0 12px; flex-shrink:0; background-clip:padding-box; }
@@ -49,7 +88,7 @@
 
   /* ---- update mode (board verbatim, scoped by [data-state="update"]) ---- */
   [data-state="update"] .wcard.up-editable{ border:2px solid #4d63d0; background:#f4f6ff; box-shadow:0 0 0 3px rgba(0,19,145,.12), 0 10px 24px rgba(0,19,145,.12); }
-  [data-state="update"] .wcard.up-editable .wcard-title::before{ content:"\270E"; margin-right:5px; color:#001391; font-weight:700; }
+  [data-state="update"] .wcard.up-editable .wcard-title::before{ content:none; }
   [data-state="update"] .wcard.up-editable:hover{ border-color:#001391; }
   [data-state="update"] .up-editable .num2-val{ cursor:pointer; }
   [data-state="update"] .up-editable .num2:hover{ box-shadow:inset 0 0 0 2px rgba(0,19,145,.35); }
@@ -99,7 +138,9 @@
 
   /* full-view + config sizing (board verbatim) */
   #fullModal .em-stage{ position:absolute; inset:0; display:block; max-width:none; gap:0; }
-  #fullModal .em-widget.fv-mode{ position:absolute; top:0; bottom:0; left:0; right:572px; padding:48px; gap:16px; justify-content:center; }
+  #fullModal .em-widget.fv-mode{ position:absolute; top:0; bottom:0; left:0; right:572px; padding:48px; gap:24px; justify-content:center; }
+  /* Zoom: menu flutuante encostado no widget (~24px) — o stage envolve o widget em vez de esticar */
+  #fullModal .fv-stage{ flex:0 0 auto; }
   #fullModal .edit-drawer{ position:absolute; top:24px; bottom:24px; right:32px; width:520px; max-width:none; flex:none; }
   #fullModal .ed-tabs{ gap:12px; }
   #editModal .em-stage{ position:absolute; inset:0; display:block; max-width:none; gap:0; }
@@ -107,10 +148,15 @@
   #editModal .edit-drawer{ position:absolute; top:24px; bottom:24px; right:32px; flex:none; }
 
   /* ---- datapoint editor (update popover, board verbatim #91) ---- */
-  #dpEdit{ position:fixed; z-index:9650; display:none; background:#fff; border:1px solid #e2e5ec; border-radius:12px; box-shadow:0 18px 44px rgba(13,18,47,.24); padding:12px; width:200px; }
+  #dpEdit{ position:fixed; z-index:9650; display:none; background:#fff; border:1px solid #e2e5ec; border-radius:12px; box-shadow:0 18px 44px rgba(13,18,47,.24); padding:12px; width:236px; }
   #dpEdit.open{ display:block; }
   #dpEdit .dpe-lbl{ font-size:12px; font-weight:600; color:#6b7280; margin-bottom:8px; }
   #dpEdit .dpe-in{ width:100%; border:1px solid #d0d5dd; border-radius:8px; padding:8px 10px; font-size:14px; color:#0d122f; outline:none; } #dpEdit .dpe-in:focus{ border-color:#001391; }
+  #dpEdit .dpe-in::-webkit-outer-spin-button, #dpEdit .dpe-in::-webkit-inner-spin-button{ -webkit-appearance:none; margin:0; } #dpEdit .dpe-in{ -moz-appearance:textfield; }
+  #dpEdit .dpe-step{ display:flex; align-items:stretch; gap:8px; }
+  #dpEdit .dpe-step .dpe-in{ flex:1 1 auto; width:auto; min-width:0; text-align:center; padding-left:6px; padding-right:6px; }
+  #dpEdit .dpe-mn, #dpEdit .dpe-pl{ width:36px; flex:0 0 36px; border:1px solid #d0d5dd; border-radius:8px; background:#f5f6ff; color:#001391; font-size:18px; font-weight:700; line-height:1; cursor:pointer; display:flex; align-items:center; justify-content:center; }
+  #dpEdit .dpe-mn:hover, #dpEdit .dpe-pl:hover{ background:#eef1ff; border-color:#c7ccf5; }
   #dpEdit .dpe-acts{ display:flex; justify-content:flex-end; gap:8px; margin-top:10px; }
   #dpEdit .dpe-acts button{ border-radius:8px; padding:7px 14px; font-size:13px; font-weight:600; cursor:pointer; border:1px solid transparent; }
   #dpEdit .dpe-cancel{ background:#fff; border-color:#eeeff1; color:#0d122f; }
@@ -161,13 +207,26 @@
   .ed-chipcell .cx{ cursor:pointer; width:16px; height:16px; border-radius:50%; background:#c2c6d2; color:#fff; display:inline-flex; align-items:center; justify-content:center; flex:0 0 auto; } .ed-chipcell .cx svg{ width:9px; height:9px; }
   .ed-trash{ border:none; background:none; color:#6b7280; cursor:pointer; padding:4px; display:inline-flex; border-radius:6px; } .ed-trash:hover{ background:#fee2e2; color:#dc2626; } .ed-trash svg{ width:18px; height:18px; }
   .andon-add{ width:26px; height:26px; border-radius:50%; border:none; background:#001391; color:#fff; display:inline-flex; align-items:center; justify-content:center; cursor:pointer; margin-bottom:14px; } .andon-add svg{ width:15px; height:15px; }
-  .andon-row{ display:grid; grid-template-columns:128px minmax(150px,1fr) 116px minmax(160px,1.4fr) 38px 28px; gap:14px; align-items:end; margin-bottom:16px; }
+  /* Andon — board version: card sem rolagem lateral (andon-fields 2-col + andon-foot) */
+  .andon-row{ border:1px solid #eef0f3; border-radius:10px; padding:12px; margin-bottom:14px; background:#fcfcfd; }
+  .andon-fields{ display:grid; grid-template-columns:1fr 1fr; gap:10px 12px; align-items:end; }
+  .andon-foot{ display:flex; align-items:center; gap:14px; margin-top:12px; }
+  .andon-foot .andon-del{ margin-left:auto; }
   .andon-f label{ display:block; font-size:12px; color:#6b7280; margin-bottom:6px; } .andon-f .ed-input{ width:100%; }
   .andon-series{ background:#f1f1f3; border:1px solid #e2e5ec; border-radius:8px; padding:9px 12px; font-size:13px; color:#667085; }
-  .andon-bellck{ display:flex; flex-direction:column; align-items:center; gap:8px; padding-bottom:2px; }
   .andon-bell{ border:none; background:none; color:#001391; cursor:pointer; padding:0; display:inline-flex; } .andon-bell svg{ width:20px; height:20px; }
   .andon-ck{ width:18px; height:18px; accent-color:#001391; cursor:pointer; }
-  .andon-del{ border:none; background:none; color:#001391; cursor:pointer; padding:0 0 4px; display:inline-flex; align-items:flex-end; } .andon-del:hover{ color:#dc2626; } .andon-del svg{ width:20px; height:20px; }
+  .andon-del{ border:none; background:none; color:#001391; cursor:pointer; padding:0; display:inline-flex; align-items:center; } .andon-del:hover{ color:#dc2626; } .andon-del svg{ width:20px; height:20px; }
+  /* Source / Advanced support classes (board) */
+  .ser-add{ width:22px; height:22px; border-radius:50%; border:none; background:#001391; color:#fff; display:inline-flex; align-items:center; justify-content:center; cursor:pointer; } .ser-add svg{ width:13px; height:13px; }
+  .ser-del{ border:none; background:none; color:#001391; cursor:pointer; display:inline-flex; align-items:center; justify-content:center; padding:0; } .ser-del:hover{ color:#dc2626; } .ser-del svg{ width:18px; height:18px; }
+  .ed-native{ -webkit-appearance:none; appearance:none; cursor:pointer; background-image:url("data:image/svg+xml;utf8,<svg xmlns='http://www.w3.org/2000/svg' width='16' height='16' viewBox='0 0 24 24' fill='none' stroke='%234d5166' stroke-width='2' stroke-linecap='round' stroke-linejoin='round'><path d='m6 9 6 6 6-6'/></svg>"); background-repeat:no-repeat; background-position:right 10px center; padding-right:34px; }
+  .ed-sec2{ font-size:12px; font-weight:700; text-transform:uppercase; letter-spacing:.03em; color:#8a90a6; margin:14px 0 6px; }
+  .ed-divider{ border-top:1px solid #eeeff1; margin:16px 0 8px; }
+  .ed-inbox.dis{ background:#f4f5f7; }
+  .calc-var{ border:1px solid #eef0f3; border-radius:10px; padding:10px; margin-top:10px; background:#fcfcfd; }
+  .calc-var-h{ display:flex; align-items:center; gap:8px; margin-bottom:8px; }
+  .calc-let{ width:60px; flex:0 0 60px; height:34px; min-height:34px; font-weight:600; }
 
   /* ---- batch update (modo Update ampliado — board verbatim) ---- */
   .wtable{ width:100%; border-collapse:collapse; font-size:13px; }
@@ -208,78 +267,115 @@
 <body>
 <div id="app">
   <h1 class="pg-h">Widget de Número</h1>
-  <p class="pg-sub">O mesmo widget nos 3 modos — Normal, Update e Zoom — mais os modais de Zoom, Configurações e edição de datapoint (Update).</p>
+  <p class="pg-sub">O mesmo widget de número nas 3 visões do Obeya. Cada aba mostra o widget no estado do seu modo, com os modais correspondentes.</p>
 
-  <div class="modes">
-    <!-- MODO NORMAL -->
-    <div class="mode">
-      <div class="mode-lbl"><span class="dot"></span>Normal</div>
-      <div class="mode-stage">
-        <section class="wcard">
-          <div class="wcard-head">
-            <div><div class="wcard-title" title="Units Today">Units Today</div><div class="wcard-sub">vs target 3.000</div></div>
-            <span class="expand" title="Open full view" onclick="openFull()"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polyline points="15 3 21 3 21 9"/><polyline points="9 21 3 21 3 15"/><line x1="21" x2="14" y1="3" y2="10"/><line x1="3" x2="10" y1="21" y2="14"/></svg></span>
-          </div>
-          <div class="num2"><span class="num2-val font-display" id="valNormal">3,420</span></div>
-          <div class="w-foot">
-            <span class="w-foot-l">
-              <span class="w-andon" title="Andon alert">!</span>
-              <span class="w-meta" title="4 action plans"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect width="8" height="4" x="8" y="2" rx="1"/><path d="M16 4h2a2 2 0 0 1 2 2v14a2 2 0 0 1-2 2H6a2 2 0 0 1-2-2V6a2 2 0 0 1 2-2h2"/></svg>4</span>
-              <span class="w-meta" title="2 comments in feed"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M21 15a2 2 0 0 1-2 2H7l-4 4V5a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2z"/></svg>2</span>
-            </span>
-            <span class="w-av" title="Nick Usk" style="background:#ffd8a8;color:#9a4a00">NU</span>
-          </div>
-        </section>
-      </div>
-      <div class="mode-hint">Estado de leitura. O ícone de expandir abre o Zoom.</div>
+  <!-- ===== PAGE TABS (Zard tabs) ===== -->
+  <div class="pgtabs" role="tablist" aria-label="Visões do widget">
+    <button class="pgtab active" type="button" role="tab" data-view="edit"><span class="dot"></span>Edit mode</button>
+    <button class="pgtab" type="button" role="tab" data-view="meeting"><span class="dot"></span>Meeting mode</button>
+    <button class="pgtab" type="button" role="tab" data-view="update"><span class="dot"></span>Update mode</button>
+  </div>
+
+  <!-- ===== VIEW: EDIT MODE ===== -->
+  <section class="view active" data-view="edit" data-state="edit" role="tabpanel">
+    <div class="view-head">
+      <div class="view-title">Edit mode</div>
+      <div class="view-sub">Modo de edição do board: o widget tem borda tracejada e, quando selecionado, mostra a barra flutuante (Edit · Duplicate · Move · Size · Delete), a alça de redimensionamento e o selo de tamanho. “Edit” abre o modal de Configurações.</div>
     </div>
-
-    <!-- MODO UPDATE -->
-    <div class="mode" data-state="update">
-      <div class="mode-lbl"><span class="dot"></span>Update</div>
-      <div class="mode-stage">
-        <section class="wcard up-editable">
-          <div class="wcard-head">
-            <div><div class="wcard-title" title="Units Today">Units Today</div><div class="wcard-sub">vs target 3.000</div></div>
-            <span class="up-acts">
-              <button class="zbtn zbtn-outline" title="Download da base"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/><polyline points="7 10 12 15 17 10"/><line x1="12" x2="12" y1="15" y2="3"/></svg></button>
-              <button class="zbtn zbtn-outline" title="Upload"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/><polyline points="17 8 12 3 7 8"/><line x1="12" x2="12" y1="3" y2="15"/></svg></button>
-              <button class="zbtn zbtn-outline" title="Zoom (batch update)" onclick="openBatch()"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polyline points="15 3 21 3 21 9"/><polyline points="9 21 3 21 3 15"/><line x1="21" x2="14" y1="3" y2="10"/><line x1="3" x2="10" y1="21" y2="14"/></svg></button>
-            </span>
-          </div>
-          <div class="num2"><span class="num2-val font-display" id="valUpdate" onclick="openDpe()">3,420</span></div>
-          <div class="w-foot">
-            <span class="w-foot-l">
-              <span class="w-andon" title="Andon alert">!</span>
-              <span class="w-meta" title="4 action plans"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect width="8" height="4" x="8" y="2" rx="1"/><path d="M16 4h2a2 2 0 0 1 2 2v14a2 2 0 0 1-2 2H6a2 2 0 0 1-2-2V6a2 2 0 0 1 2-2h2"/></svg>4</span>
-              <span class="w-meta" title="2 comments in feed"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M21 15a2 2 0 0 1-2 2H7l-4 4V5a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2z"/></svg>2</span>
-            </span>
-            <span class="w-av" title="Nick Usk" style="background:#ffd8a8;color:#9a4a00">NU</span>
-          </div>
-        </section>
-      </div>
-      <div class="mode-hint">Editável: clique no número para abrir o editor de datapoint. Import/export e zoom aparecem só no Update.</div>
-    </div>
-
-    <!-- MODO ZOOM -->
-    <div class="mode">
-      <div class="mode-lbl"><span class="dot"></span>Zoom</div>
-      <div class="mode-stage" style="display:flex;align-items:center;justify-content:center;text-align:center;">
-        <div>
-          <div class="num2" style="width:210px;height:150px;margin:0 auto 16px"><span class="num2-val font-display">3,420</span></div>
-          <button class="zbtn zbtn-default" onclick="openFull()">Abrir Zoom (tela cheia)</button>
+    <div class="stage stage-board">
+      <div class="edit-cluster">
+        <div class="edit-toolbar" role="toolbar" aria-label="Ações do widget">
+          <button class="tb" onclick="openEdit()"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M12.22 2h-.44a2 2 0 0 0-2 2v.18a2 2 0 0 1-1 1.73l-.43.25a2 2 0 0 1-2 0l-.15-.08a2 2 0 0 0-2.73.73l-.22.38a2 2 0 0 0 .73 2.73l.15.1a2 2 0 0 1 1 1.72v.51a2 2 0 0 1-1 1.74l-.15.09a2 2 0 0 0-.73 2.73l.22.38a2 2 0 0 0 2.73.73l.15-.08a2 2 0 0 1 2 0l.43.25a2 2 0 0 1 1 1.73V20a2 2 0 0 0 2 2h.44a2 2 0 0 0 2-2v-.18a2 2 0 0 1 1-1.73l.43-.25a2 2 0 0 1 2 0l.15.08a2 2 0 0 0 2.73-.73l.22-.39a2 2 0 0 0-.73-2.73l-.15-.08a2 2 0 0 1-1-1.74v-.5a2 2 0 0 1 1-1.74l.15-.09a2 2 0 0 0 .73-2.73l-.22-.38a2 2 0 0 0-2.73-.73l-.15.08a2 2 0 0 1-2 0l-.43-.25a2 2 0 0 1-1-1.73V4a2 2 0 0 0-2-2z"/><circle cx="12" cy="12" r="3"/></svg>Edit</button>
+          <button class="tb"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="9" y="9" width="13" height="13" rx="2"/><path d="M5 15H4a2 2 0 0 1-2-2V4a2 2 0 0 1 2-2h9a2 2 0 0 1 2 2v1"/></svg>Duplicate</button>
+          <button class="tb"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M12.83 2.18a2 2 0 0 0-1.66 0L2.6 6.08a1 1 0 0 0 0 1.83l8.58 3.91a2 2 0 0 0 1.66 0l8.58-3.9a1 1 0 0 0 0-1.83Z"/><path d="m22 17.65-9.17 4.16a2 2 0 0 1-1.66 0L2 17.65"/><path d="m22 12.65-9.17 4.16a2 2 0 0 1-1.66 0L2 12.65"/></svg>Move</button>
+          <button class="tb"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polyline points="15 3 21 3 21 9"/><polyline points="9 21 3 21 3 15"/><line x1="21" x2="14" y1="3" y2="10"/><line x1="3" x2="10" y1="21" y2="14"/></svg>Size</button>
+          <div class="div"></div>
+          <button class="tb danger"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M3 6h18"/><path d="M19 6v14a2 2 0 0 1-2 2H7a2 2 0 0 1-2-2V6m3 0V4a2 2 0 0 1 2-2h4a2 2 0 0 1 2 2v2"/></svg>Delete</button>
         </div>
+        <section class="wcard selected">
+          <div class="wcard-head">
+            <div><div class="wcard-title" title="Units Today">Units Today</div><div class="wcard-sub">vs target 3.000</div></div>
+            <span class="expand" title="Open full view"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polyline points="15 3 21 3 21 9"/><polyline points="9 21 3 21 3 15"/><line x1="21" x2="14" y1="3" y2="10"/><line x1="3" x2="10" y1="21" y2="14"/></svg></span>
+          </div>
+          <div class="num2"><span class="num2-val font-display wmain">3,420</span></div>
+          <div class="w-foot">
+            <span class="w-foot-l">
+              <span class="w-andon" title="Andon alert">!</span>
+              <span class="w-meta" title="4 action plans"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect width="8" height="4" x="8" y="2" rx="1"/><path d="M16 4h2a2 2 0 0 1 2 2v14a2 2 0 0 1-2 2H6a2 2 0 0 1-2-2V6a2 2 0 0 1 2-2h2"/></svg>4</span>
+              <span class="w-meta" title="2 comments in feed"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M21 15a2 2 0 0 1-2 2H7l-4 4V5a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2z"/></svg>2</span>
+            </span>
+            <span class="w-av" title="Nick Usk" style="background:#ffd8a8;color:#9a4a00">NU</span>
+          </div>
+          <div class="wresize" title="Resize"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polyline points="15 3 21 3 21 9"/><polyline points="9 21 3 21 3 15"/><line x1="21" x2="14" y1="3" y2="10"/><line x1="3" x2="10" y1="21" y2="14"/></svg></div>
+        </section>
+        <div class="wsize-badge">300 × 320</div>
       </div>
-      <div class="mode-hint">Visão ampliada com barra de ações (Download/Upload/Links) e drawer lateral (Feed, Action plan, RCA…).</div>
     </div>
-  </div>
+    <div class="zbtn-row">
+      <button class="zbtn zbtn-soft" onclick="openEdit()">⚙ Abrir Configurações</button>
+    </div>
+  </section>
 
-  <div class="zbtn-row">
-    <button class="zbtn zbtn-soft" onclick="openEdit()">⚙ Abrir modal de Configurações</button>
-    <button class="zbtn zbtn-soft" onclick="openFull()">⤢ Abrir modal de Zoom</button>
-    <button class="zbtn zbtn-soft" onclick="openDpe()">✎ Abrir editor de datapoint (Update)</button>
-    <button class="zbtn zbtn-soft" onclick="openBatch()">⤢ Abrir modo Update (batch)</button>
-  </div>
+  <!-- ===== VIEW: MEETING MODE ===== -->
+  <section class="view" data-view="meeting" data-state="meeting" role="tabpanel">
+    <div class="view-head">
+      <div class="view-title">Meeting mode</div>
+      <div class="view-sub">Visão de apresentação usada para rodar a reunião: leitura do indicador (valor, andon, planos de ação, comentários, responsável). O ícone de expandir abre o Zoom em tela cheia com o drawer lateral (Feed, Action plan, RCA…).</div>
+    </div>
+    <div class="stage stage-meeting">
+      <section class="wcard">
+        <div class="wcard-head">
+          <div><div class="wcard-title" title="Units Today">Units Today</div><div class="wcard-sub">vs target 3.000</div></div>
+          <span class="expand" title="Open full view" onclick="openFull()"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polyline points="15 3 21 3 21 9"/><polyline points="9 21 3 21 3 15"/><line x1="21" x2="14" y1="3" y2="10"/><line x1="3" x2="10" y1="21" y2="14"/></svg></span>
+        </div>
+        <div class="num2"><span class="num2-val font-display wmain" id="valNormal">3,420</span></div>
+        <div class="w-foot">
+          <span class="w-foot-l">
+            <span class="w-andon" title="Andon alert">!</span>
+            <span class="w-meta" title="4 action plans"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect width="8" height="4" x="8" y="2" rx="1"/><path d="M16 4h2a2 2 0 0 1 2 2v14a2 2 0 0 1-2 2H6a2 2 0 0 1-2-2V6a2 2 0 0 1 2-2h2"/></svg>4</span>
+            <span class="w-meta" title="2 comments in feed"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M21 15a2 2 0 0 1-2 2H7l-4 4V5a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2z"/></svg>2</span>
+          </span>
+          <span class="w-av" title="Nick Usk" style="background:#ffd8a8;color:#9a4a00">NU</span>
+        </div>
+      </section>
+    </div>
+    <div class="zbtn-row">
+      <button class="zbtn zbtn-soft" onclick="openFull()">⤢ Abrir Zoom (tela cheia)</button>
+    </div>
+  </section>
+
+  <!-- ===== VIEW: UPDATE MODE ===== -->
+  <section class="view" data-view="update" data-state="update" role="tabpanel">
+    <div class="view-head">
+      <div class="view-title">Update mode</div>
+      <div class="view-sub">Modo de atualização: o widget fica com destaque azul e editável. Clique no número para editar o datapoint; as ações de download/upload e o zoom (batch update, vários períodos) aparecem só neste modo.</div>
+    </div>
+    <div class="stage stage-update">
+      <section class="wcard up-editable">
+        <div class="wcard-head">
+          <div><div class="wcard-title" title="Units Today">Units Today</div><div class="wcard-sub">vs target 3.000</div></div>
+          <span class="up-acts">
+            <button class="zbtn zbtn-outline" title="Download da base"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/><polyline points="7 10 12 15 17 10"/><line x1="12" x2="12" y1="15" y2="3"/></svg></button>
+            <button class="zbtn zbtn-outline" title="Upload"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/><polyline points="17 8 12 3 7 8"/><line x1="12" x2="12" y1="3" y2="15"/></svg></button>
+            <button class="zbtn zbtn-outline" title="Zoom (batch update)" onclick="openBatch()"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polyline points="15 3 21 3 21 9"/><polyline points="9 21 3 21 3 15"/><line x1="21" x2="14" y1="3" y2="10"/><line x1="3" x2="10" y1="21" y2="14"/></svg></button>
+          </span>
+        </div>
+        <div class="num2"><span class="num2-val font-display wmain" id="valUpdate" onclick="openDpe()">3,420</span></div>
+        <div class="w-foot">
+          <span class="w-foot-l">
+            <span class="w-andon" title="Andon alert">!</span>
+            <span class="w-meta" title="4 action plans"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect width="8" height="4" x="8" y="2" rx="1"/><path d="M16 4h2a2 2 0 0 1 2 2v14a2 2 0 0 1-2 2H6a2 2 0 0 1-2-2V6a2 2 0 0 1 2-2h2"/></svg>4</span>
+            <span class="w-meta" title="2 comments in feed"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M21 15a2 2 0 0 1-2 2H7l-4 4V5a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2z"/></svg>2</span>
+          </span>
+          <span class="w-av" title="Nick Usk" style="background:#ffd8a8;color:#9a4a00">NU</span>
+        </div>
+      </section>
+    </div>
+    <div class="zbtn-row">
+      <button class="zbtn zbtn-soft" onclick="openDpe()">✎ Editar datapoint</button>
+      <button class="zbtn zbtn-soft" onclick="openBatch()">⤢ Batch update (vários períodos)</button>
+    </div>
+  </section>
 </div>
 
 <!-- =============== MODAL: ZOOM (full view) =============== -->
@@ -423,7 +519,7 @@
           <div class="ed-inbox"><span class="ed-chipcell">Standard <span class="cx"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round"><path d="M18 6 6 18M6 6l12 12"/></svg></span></span></div>
         </div>
 
-        <!-- ADVANCED (Figma 1233-20029) -->
+        <!-- ADVANCED (board — Figma 1233-20029) -->
         <div class="ed-panel" data-panel="advanced">
           <div class="ed-grid3">
             <div><label class="ed-label">Show Caption</label><button class="zswitch" type="button" onclick="tSw(this)"></button></div>
@@ -431,8 +527,8 @@
             <div><label class="ed-label">Color</label><div class="ed-select"><span class="swatch" style="background:#9aa0ac"></span><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="m6 9 6 6 6-6"/></svg></div></div>
           </div>
           <div class="ed-grid3">
-            <div><label class="ed-label">Show Unit</label><button class="zswitch on" type="button" onclick="tSw(this)"></button></div>
-            <div><label class="ed-label">Unit</label><input class="ed-input" value="min"></div>
+            <div><label class="ed-label">Show Unit</label><button class="zswitch" type="button" onclick="tSw(this)"></button></div>
+            <div><label class="ed-label">Site</label><input class="ed-input"></div>
             <div></div>
           </div>
           <div class="ed-grid3">
@@ -454,25 +550,98 @@
           <div class="ed-inbox"><span class="ed-chipcell">Others <span class="cx"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round"><path d="M18 6 6 18M6 6l12 12"/></svg></span></span></div>
           <label class="ed-label" style="margin-top:14px">Owner</label>
           <input class="ed-input">
+          <div class="ed-divider"></div>
+          <div class="ed-grid2">
+            <div class="ed-tr" style="margin:0"><button class="zswitch" type="button" onclick="tSw(this)"></button><span>Show Caption</span></div>
+            <div class="ed-tr" style="margin:0"><button class="zswitch on" type="button" onclick="tSw(this)"></button><span>Show Label</span></div>
+          </div>
+          <label class="ed-label" style="margin-top:14px">Decimal places</label>
+          <div class="ed-inbox"><span class="ed-chipcell">None <span class="cx"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round"><path d="M18 6 6 18M6 6l12 12"/></svg></span></span></div>
+          <div class="ed-grid2" style="margin-top:14px">
+            <div><label class="ed-label">Vertical Axis</label><div class="ed-inbox"><span class="ed-chipcell">Automatic <span class="cx"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round"><path d="M18 6 6 18M6 6l12 12"/></svg></span></span></div></div>
+            <div><label class="ed-label">Maximum vertical axis value</label><input class="ed-input" value="0,00"></div>
+          </div>
+          <div class="ed-tr" style="margin-top:14px"><button class="zswitch" type="button" onclick="tSw(this)"></button><span>Stack series</span></div>
         </div>
 
-        <!-- SOURCES -->
+        <!-- SOURCE (board — select edSrcType + variantes) -->
         <div class="ed-panel" data-panel="sources">
-          <div class="ed-sec" style="border-top:none;padding-top:0;margin-top:0">Data source</div>
-          <label class="ed-label">Source type</label>
-          <div class="ed-chips" data-single><button class="ed-chip active">Manual</button><button class="ed-chip">Indicator</button><button class="ed-chip">Module</button><button class="ed-chip">Formula</button></div>
-          <div class="ed-sec">Series</div>
-          <div class="ed-empty">No series yet — add a series to plot data.</div>
-          <button class="zbtn zbtn-outline ed-addbtn"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M5 12h14"/><path d="M12 5v14"/></svg> Add series</button>
+          <label class="ed-label">SOURCE TYPE</label>
+          <select class="ed-input ed-native" id="edSrcType">
+            <option value="api">API</option>
+            <option value="calc">Calculation</option>
+            <option value="mirror">mirroring</option>
+            <option value="manual">Manual</option>
+            <option value="modules" selected>Solvace Modules</option>
+          </select>
+
+          <!-- API -->
+          <div class="src-variant" data-src="api">
+            <div class="ed-grid2" style="margin-top:14px">
+              <div><label class="ed-label">Target</label><button class="zswitch" type="button" onclick="tSw(this)"></button></div>
+              <div><label class="ed-label">Value</label><button class="zswitch on" type="button" onclick="tSw(this)"></button></div>
+            </div>
+          </div>
+
+          <!-- Calculation -->
+          <div class="src-variant" data-src="calc">
+            <label class="ed-label" style="margin-top:14px">Calculation Type</label>
+            <div class="ed-inbox"><span class="ed-chipcell">Formula <span class="cx"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round"><path d="M18 6 6 18M6 6l12 12"/></svg></span></span></div>
+            <div class="ed-sec2">FORMULA</div>
+            <div class="ed-inbox" style="gap:8px"><button class="ser-add" type="button" title="Add variable"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round"><path d="M5 12h14M12 5v14"/></svg></button><input class="ed-input" style="border:none;flex:1;height:30px;padding:0 4px" value="A+B"></div>
+            <div class="calc-var">
+              <div class="calc-var-h"><button class="ser-del" type="button" title="Remove"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M3 6h18"/><path d="M19 6v14a2 2 0 0 1-2 2H7a2 2 0 0 1-2-2V6m3 0V4a2 2 0 0 1 2-2h4a2 2 0 0 1 2 2v2"/></svg></button><input class="ed-input calc-let" value="A"></div>
+              <div class="ed-grid2">
+                <div><label class="ed-label">Site</label><div class="ed-inbox dis"><span class="ed-chipcell">Detroit</span></div></div>
+                <div><label class="ed-label">Room</label><div class="ed-inbox"><span class="ed-chipcell">(DOB-1) Lin… <span class="cx"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round"><path d="M18 6 6 18M6 6l12 12"/></svg></span></span></div></div>
+                <div><label class="ed-label">Board</label><div class="ed-inbox"><span class="ed-chipcell">DDS Line 1 <span class="cx"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round"><path d="M18 6 6 18M6 6l12 12"/></svg></span></span></div></div>
+                <div><label class="ed-label">Widget</label><div class="ed-inbox"><span class="ed-chipcell">Incident Shift 2 <span class="cx"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round"><path d="M18 6 6 18M6 6l12 12"/></svg></span></span></div></div>
+              </div>
+            </div>
+            <div class="calc-var">
+              <div class="calc-var-h"><button class="ser-del" type="button" title="Remove"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M3 6h18"/><path d="M19 6v14a2 2 0 0 1-2 2H7a2 2 0 0 1-2-2V6m3 0V4a2 2 0 0 1 2-2h4a2 2 0 0 1 2 2v2"/></svg></button><input class="ed-input calc-let" value="B"></div>
+              <div class="ed-grid2">
+                <div><label class="ed-label">Site</label><div class="ed-inbox dis"><span class="ed-chipcell">Detroit</span></div></div>
+                <div><label class="ed-label">Room</label><div class="ed-inbox"><span class="ed-chipcell">(DOB-1) Lin… <span class="cx"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round"><path d="M18 6 6 18M6 6l12 12"/></svg></span></span></div></div>
+                <div><label class="ed-label">Board</label><div class="ed-inbox"><span class="ed-chipcell">DDS Line 1 <span class="cx"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round"><path d="M18 6 6 18M6 6l12 12"/></svg></span></span></div></div>
+                <div><label class="ed-label">Widget</label><div class="ed-inbox"><span class="ed-chipcell">Incident Shift 3 <span class="cx"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round"><path d="M18 6 6 18M6 6l12 12"/></svg></span></span></div></div>
+              </div>
+            </div>
+          </div>
+
+          <!-- mirroring -->
+          <div class="src-variant" data-src="mirror">
+            <div class="ed-tr" style="margin-top:14px"><button class="zswitch" type="button" onclick="tSw(this)"></button><span>Mirror goal</span></div>
+            <div class="ed-grid3" style="margin-top:6px">
+              <div><label class="ed-label">ROOM</label><input class="ed-input"></div>
+              <div><label class="ed-label">BOARD</label><input class="ed-input"></div>
+              <div><label class="ed-label">TOOL</label><input class="ed-input"></div>
+            </div>
+          </div>
+
+          <!-- Manual -->
+          <div class="src-variant" data-src="manual">
+            <div class="ed-empty" style="margin-top:14px">No extra settings for Manual source.</div>
+          </div>
+
+          <!-- Solvace Modules -->
+          <div class="src-variant" data-src="modules">
+            <div class="ed-grid3" style="margin-top:14px">
+              <div><label class="ed-label">Site</label><div class="ed-inbox"><span class="ed-chipcell">Detroit <span class="cx"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round"><path d="M18 6 6 18M6 6l12 12"/></svg></span></span></div></div>
+              <div><label class="ed-label">Module</label><input class="ed-input"></div>
+              <div><label class="ed-label">Indicator</label><input class="ed-input"></div>
+            </div>
+          </div>
         </div>
 
-        <!-- LINKS -->
+        <!-- LINKS (board — tabela editável, adiciona linhas) -->
         <div class="ed-panel" data-panel="links">
-          <button class="ed-addrow" title="Add link"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round"><path d="M5 12h14M12 5v14"/></svg></button>
+          <button class="ed-addrow" id="edLinkAdd" title="Add link"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round"><path d="M5 12h14M12 5v14"/></svg></button>
           <div class="ed-tbl-wrap">
             <table class="ed-tbl"><thead><tr><th>NAME</th><th>ROOM</th><th>BOARD</th><th>WIDGET</th><th></th></tr></thead>
-              <tbody>
+              <tbody id="edLinkRows">
                 <tr><td><input class="ed-cell" value="teste"></td><td><span class="ed-chipcell">(DOB-1) Line 1 <span class="cx"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round"><path d="M18 6 6 18M6 6l12 12"/></svg></span></span></td><td><span class="ed-chipcell">13 periods <span class="cx"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round"><path d="M18 6 6 18M6 6l12 12"/></svg></span></span></td><td><span class="ed-chipcell">Daily <span class="cx"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round"><path d="M18 6 6 18M6 6l12 12"/></svg></span></span></td><td><button class="ed-trash" title="Remove"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M3 6h18"/><path d="M19 6v14a2 2 0 0 1-2 2H7a2 2 0 0 1-2-2V6m3 0V4a2 2 0 0 1 2-2h4a2 2 0 0 1 2 2v2"/></svg></button></td></tr>
+                <tr><td><input class="ed-cell"></td><td><input class="ed-cell"></td><td><input class="ed-cell"></td><td><input class="ed-cell"></td><td><button class="ed-trash" title="Remove"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M3 6h18"/><path d="M19 6v14a2 2 0 0 1-2 2H7a2 2 0 0 1-2-2V6m3 0V4a2 2 0 0 1 2-2h4a2 2 0 0 1 2 2v2"/></svg></button></td></tr>
                 <tr><td><input class="ed-cell"></td><td><input class="ed-cell"></td><td><input class="ed-cell"></td><td><input class="ed-cell"></td><td><button class="ed-trash" title="Remove"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M3 6h18"/><path d="M19 6v14a2 2 0 0 1-2 2H7a2 2 0 0 1-2-2V6m3 0V4a2 2 0 0 1 2-2h4a2 2 0 0 1 2 2v2"/></svg></button></td></tr>
               </tbody>
             </table>
@@ -490,17 +659,10 @@
           </div>
         </div>
 
-        <!-- ANDON -->
+        <!-- ANDON (board — regras repetíveis, cartão sem rolagem lateral) -->
         <div class="ed-panel" data-panel="andon">
-          <button class="andon-add" title="Add rule"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round"><path d="M5 12h14M12 5v14"/></svg></button>
-          <div class="andon-row">
-            <div class="andon-f"><label>With</label><div class="andon-series">Series</div></div>
-            <div class="andon-f"><label>Regarding Target for</label><input class="ed-input"></div>
-            <div class="andon-f"><label>in (units)</label><input class="ed-input"></div>
-            <div class="andon-f"><label>Notify</label><input class="ed-input"></div>
-            <div class="andon-bellck"><button class="andon-bell" title="Notification"><svg viewBox="0 0 24 24" fill="currentColor"><path d="M12 2a6 6 0 0 0-6 6c0 7-3 9-3 9h18s-3-2-3-9a6 6 0 0 0-6-6z"/><path d="M10.5 21a1.5 1.5 0 0 0 3 0z"/></svg></button><input class="andon-ck" type="checkbox" checked></div>
-            <button class="andon-del" title="Remove"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M3 6h18"/><path d="M19 6v14a2 2 0 0 1-2 2H7a2 2 0 0 1-2-2V6m3 0V4a2 2 0 0 1 2-2h4a2 2 0 0 1 2 2v2"/></svg></button>
-          </div>
+          <button class="andon-add" id="edAndonAdd" title="Add rule"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round"><path d="M5 12h14M12 5v14"/></svg></button>
+          <div id="edAndonRows"></div>
         </div>
       </div>
       <div class="ed-foot"><button class="zbtn zbtn-outline" onclick="closeEdit()">Cancel</button><button class="zbtn zbtn-default" onclick="closeEdit()">Apply</button></div>
@@ -526,7 +688,7 @@
     </div>
     <aside class="edit-drawer">
       <div class="ed-head">
-        <div><div class="ed-title">Units Today</div><div class="ed-sub">Batch update</div></div>
+        <div><div class="ed-title">Batch update</div><div class="ed-sub">Edit indicator values in bulk</div></div>
         <button class="ed-close" onclick="closeBatch()"><svg viewBox="0 0 24 24" width="18" height="18" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M18 6 6 18"/><path d="m6 6 12 12"/></svg></button>
       </div>
       <div class="ed-body">
@@ -544,7 +706,7 @@
 <!-- =============== POPOVER: DATAPOINT (Update, #91) =============== -->
 <div id="dpEdit">
   <div class="dpe-lbl">Datapoint</div>
-  <input class="dpe-in" id="dpeIn" type="number" value="3420">
+  <div class="dpe-step"><button type="button" class="dpe-mn" onclick="dpeStep(-1)" aria-label="Decrease">−</button><input class="dpe-in" id="dpeIn" type="number" value="3420"><button type="button" class="dpe-pl" onclick="dpeStep(1)" aria-label="Increase">+</button></div>
   <div class="dpe-acts"><button class="dpe-cancel" onclick="closeDpe()">Cancel</button><button class="dpe-save" onclick="saveDpe()">Save</button></div>
 </div>
 
@@ -556,7 +718,18 @@ function openEdit(){ document.getElementById('editModal').classList.add('open');
 function closeEdit(){ document.getElementById('editModal').classList.remove('open'); }
 function openDpe(){ var el=document.getElementById('valUpdate'); var ed=document.getElementById('dpEdit'), inp=document.getElementById('dpeIn'); inp.value=(el.textContent||'').replace(/[^0-9.-]/g,'')||'0'; ed.classList.add('open'); var r=el.getBoundingClientRect(); ed.style.left=Math.min(window.innerWidth-210, Math.max(8, r.left+r.width/2-100))+'px'; var top=r.top-ed.offsetHeight-10; ed.style.top=(top>8?top:r.bottom+10)+'px'; inp.focus(); inp.select(); }
 function closeDpe(){ document.getElementById('dpEdit').classList.remove('open'); }
-function saveDpe(){ var n=Number(document.getElementById('dpeIn').value||0); var s=n.toLocaleString('en-US'); document.getElementById('valUpdate').textContent=s; document.getElementById('valNormal').textContent=s; applyNumStates(); closeDpe(); }
+function dpeStep(d){ var inp=document.getElementById('dpeIn'); var v=parseFloat(inp.value)||0; v=Math.max(0, Math.round((v+d)*100)/100); inp.value=v; }
+function saveDpe(){ var n=Number(document.getElementById('dpeIn').value||0); var s=n.toLocaleString('en-US'); document.querySelectorAll('.wmain').forEach(function(el){ el.textContent=s; }); applyNumStates(); closeDpe(); }
+
+/* page tabs: Edit / Meeting / Update */
+document.querySelectorAll('.pgtab').forEach(function(tab){
+  tab.addEventListener('click', function(){
+    var v=tab.getAttribute('data-view');
+    document.querySelectorAll('.pgtab').forEach(function(x){ x.classList.toggle('active', x===tab); });
+    document.querySelectorAll('.view').forEach(function(p){ p.classList.toggle('active', p.getAttribute('data-view')===v); });
+    closeDpe();
+  });
+});
 
 /* batch update (modo Update ampliado) */
 var B_DATES=['15/06/2026','16/06/2026','17/06/2026','18/06/2026','19/06/2026','20/06/2026','21/06/2026','22/06/2026','23/06/2026','24/06/2026','25/06/2026','26/06/2026','27/06/2026','28/06/2026'];
@@ -610,6 +783,26 @@ applyNumStates();
 document.getElementById('dpEdit').addEventListener('mousedown', function(e){ e.stopPropagation(); });
 document.addEventListener('mousedown', function(e){ var ed=document.getElementById('dpEdit'); if(!ed.classList.contains('open')) return; if(e.target.closest && (e.target.closest('#dpEdit')||e.target.id==='valUpdate')) return; closeDpe(); });
 document.addEventListener('keydown', function(e){ if(e.key==='Escape'){ closeFull(); closeEdit(); closeDpe(); closeBatch(); } });
+
+/* ---- config drawer: dynamic rows synced with the board (Source variants, Andon cards, Links) ---- */
+(function(){
+  var TRASH='<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M3 6h18"/><path d="M19 6v14a2 2 0 0 1-2 2H7a2 2 0 0 1-2-2V6m3 0V4a2 2 0 0 1 2-2h4a2 2 0 0 1 2 2v2"/></svg>';
+  /* Source type -> variant */
+  var srcType=document.getElementById('edSrcType');
+  function updSrc(){ var v=srcType?srcType.value:''; document.querySelectorAll('.src-variant').forEach(function(el){ el.style.display = el.getAttribute('data-src')===v ? 'block' : 'none'; }); }
+  if(srcType){ srcType.addEventListener('change', updSrc); updSrc(); }
+  /* Andon — repeatable rule cards (3 by default) */
+  var andonAdd=document.getElementById('edAndonAdd'), andonRows=document.getElementById('edAndonRows');
+  function andonRow(){ var d=document.createElement('div'); d.className='andon-row'; d.innerHTML='<div class="andon-fields"><div class="andon-f"><label>With</label><div class="andon-series">Series</div></div><div class="andon-f"><label>Regarding Target for</label><input class="ed-input"></div><div class="andon-f"><label>in (units)</label><input class="ed-input"></div><div class="andon-f"><label>Notify</label><input class="ed-input"></div></div><div class="andon-foot"><button class="andon-bell" title="Notification"><svg viewBox="0 0 24 24" fill="currentColor"><path d="M12 2a6 6 0 0 0-6 6c0 7-3 9-3 9h18s-3-2-3-9a6 6 0 0 0-6-6z"/><path d="M10.5 21a1.5 1.5 0 0 0 3 0z"/></svg></button><input class="andon-ck" type="checkbox" checked><button class="andon-del" title="Remove">'+TRASH+'</button></div>'; return d; }
+  if(andonRows){ for(var i=0;i<3;i++) andonRows.appendChild(andonRow()); }
+  if(andonAdd&&andonRows) andonAdd.addEventListener('click', function(){ andonRows.appendChild(andonRow()); });
+  if(andonRows) andonRows.addEventListener('click', function(e){ var d=e.target.closest('.andon-del'); if(d){ var row=d.closest('.andon-row'); if(row&&row.parentNode) row.parentNode.removeChild(row); } });
+  /* Links — add / remove rows */
+  var linkAdd=document.getElementById('edLinkAdd'), linkRows=document.getElementById('edLinkRows');
+  function emptyLinkRow(){ var tr=document.createElement('tr'); tr.innerHTML='<td><input class="ed-cell"></td><td><input class="ed-cell"></td><td><input class="ed-cell"></td><td><input class="ed-cell"></td><td><button class="ed-trash" title="Remove">'+TRASH+'</button></td>'; return tr; }
+  if(linkAdd&&linkRows) linkAdd.addEventListener('click', function(){ linkRows.appendChild(emptyLinkRow()); });
+  if(linkRows) linkRows.addEventListener('click', function(e){ var t=e.target.closest('.ed-trash'); if(t){ var tr=t.closest('tr'); if(tr&&tr.parentNode) tr.parentNode.removeChild(tr); return; } var cx=e.target.closest('.cx'); if(cx){ var td=cx.closest('td'); if(td) td.innerHTML='<input class="ed-cell">'; } });
+})();
 </script>
 </body>
 </html>

@@ -1,0 +1,1168 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1.0" />
+<title>Widget de Pizza · Digital Obeya</title>
+<script src="https://cdn.tailwindcss.com"></script>
+<script>
+  tailwind.config = {
+    theme: {
+      extend: {
+        colors: {
+          primary: { DEFAULT: '#001391', foreground: '#FFFFFF' },
+          fonte: '#4D4D4D',
+          fonte2: '#282828',
+          muted: { DEFAULT: '#F3F4F6', foreground: '#9BA0A3' },
+          inputbd: '#D0D5DD',
+          inativo: '#E4E7EA',
+          border: '#EAECF0',
+          danger: '#E22A2E',
+          success: '#5C8A00',
+          warning: '#FFC000',
+        },
+        fontFamily: { sans: ['Roboto', 'system-ui', 'sans-serif'] },
+        borderRadius: { lg: '8px', md: '6px' },
+      },
+    },
+  };
+</script>
+<link rel="preconnect" href="https://fonts.googleapis.com" />
+<link href="https://fonts.googleapis.com/css2?family=Roboto:wght@400;500;600;700&display=swap" rel="stylesheet" />
+<style>
+  :root {
+    --primary:#001391; --fonte:#4D4D4D; --fonte2:#282828; --muted-fg:#9BA0A3;
+    --input-bd:#D0D5DD; --inativo:#E4E7EA; --border:#EAECF0;
+    --danger:#E22A2E; --success:#5C8A00; --warning:#FFC000; --info:#2D7FF9;
+  }
+  * { font-family:'Roboto',system-ui,sans-serif; }
+  body { background:#E9EDF0; color:var(--fonte); margin:0; }
+  .board-bg {
+    background-color:#EBEEF1;
+    background-image:radial-gradient(#D6DBE0 1px, transparent 1px);
+    background-size:18px 18px;
+  }
+  /* card shadow Zard-like */
+  .z-card { box-shadow:0 1px 2px rgba(16,24,40,.06),0 1px 3px rgba(16,24,40,.08); }
+  .z-modal { box-shadow:0 20px 48px -12px rgba(16,24,40,.30); }
+  .scrollbar-thin::-webkit-scrollbar { width:8px; height:8px; }
+  .scrollbar-thin::-webkit-scrollbar-thumb { background:#D0D5DD; border-radius:8px; }
+  .scrollbar-thin::-webkit-scrollbar-track { background:transparent; }
+  /* checkbox (Zard) */
+  .z-check { width:18px;height:18px;border:1.5px solid var(--input-bd);border-radius:5px;
+    display:inline-flex;align-items:center;justify-content:center;cursor:pointer;flex-shrink:0;
+    background:#fff;transition:all .12s; }
+  .z-check.checked { background:var(--primary);border-color:var(--primary); }
+  .z-check svg { opacity:0;transform:scale(.7);transition:all .12s; }
+  .z-check.checked svg { opacity:1;transform:scale(1); }
+  .z-radio { width:18px;height:18px;border:1.5px solid var(--input-bd);border-radius:50%;
+    display:inline-flex;align-items:center;justify-content:center;cursor:pointer;flex-shrink:0;background:#fff; }
+  .z-radio.checked { border-color:var(--primary); }
+  .z-radio.checked::after { content:'';width:9px;height:9px;border-radius:50%;background:var(--primary); }
+  .slice { transition:opacity .15s; cursor:pointer; }
+  .slice.dim { opacity:.28; }
+  .legend-row.dim { opacity:.4; }
+  .nav-pill.active { background:var(--primary); color:#fff; }
+  .tab-btn { padding:8px 6px;margin-bottom:-1px;border-bottom:2px solid transparent;
+    font-size:14px;font-weight:500;color:var(--muted-fg);cursor:pointer;white-space:nowrap;transition:all .12s; }
+  .tab-btn.active { color:var(--primary);border-bottom-color:var(--primary); }
+  .z-input { width:100%;height:38px;border:1px solid var(--input-bd);border-radius:8px;padding:0 12px;
+    font-size:14px;color:var(--fonte2);outline:none;background:#fff;transition:border .12s,box-shadow .12s; }
+  .z-input:focus { border-color:var(--primary);box-shadow:0 0 0 3px rgba(23,69,122,.15); }
+  .z-input::placeholder { color:#B9BFC6; }
+  .z-select { width:100%;height:38px;border:1px solid var(--input-bd);border-radius:8px;padding:0 12px;
+    font-size:14px;color:var(--fonte2);background:#fff;display:flex;align-items:center;justify-content:space-between;cursor:pointer; }
+  .field-label { font-size:12px;color:var(--fonte);margin-bottom:6px;display:block; }
+  .menu-item { padding:8px 12px;font-size:14px;color:var(--fonte2);cursor:pointer;display:flex;align-items:center;gap:10px; }
+  .menu-item:hover { background:#F4F6F8; }
+</style>
+</head>
+<body class="min-h-screen">
+
+<!-- ===================== TOP NAV (protótipo) ===================== -->
+<header class="sticky top-0 z-40 bg-white border-b border-border">
+  <div class="max-w-[1280px] mx-auto px-5 py-3 flex items-center gap-4 flex-wrap">
+    <div class="flex items-center gap-2">
+      <span class="w-2.5 h-2.5 rounded-full bg-primary"></span>
+      <span class="font-semibold text-fonte2 text-[15px]">Digital Obeya · Widget de Pizza</span>
+    </div>
+    <nav class="flex items-center gap-1.5 ml-auto bg-muted rounded-lg p-1">
+      <button class="nav-pill active px-3.5 py-1.5 rounded-md text-[13px] font-medium text-fonte transition" data-view="widget">Widget</button>
+      <button class="nav-pill px-3.5 py-1.5 rounded-md text-[13px] font-medium text-fonte transition" data-view="config">Configurações</button>
+      <button class="nav-pill px-3.5 py-1.5 rounded-md text-[13px] font-medium text-fonte transition" data-view="zoom">Zoom</button>
+    </nav>
+  </div>
+</header>
+
+<!-- ===================== STAGE ===================== -->
+<main class="board-bg min-h-[calc(100vh-57px)] w-full flex items-center justify-center p-6">
+
+  <!-- =============== WIDGET CARD =============== -->
+  <section id="widgetCard" class="bg-white rounded-lg z-card w-[370px] h-[370px] p-4 flex flex-col">
+    <!-- header -->
+    <div class="flex items-start justify-between">
+      <div class="min-w-0">
+        <h3 class="font-bold text-[15px] text-fonte2 leading-tight truncate">Status dos Planos</h3>
+        <p class="text-[12px] text-muted-foreground leading-tight mt-0.5">Distribuição por situação</p>
+      </div>
+      <div class="relative">
+        <button id="widgetMenuBtn" class="w-7 h-7 rounded-md hover:bg-muted flex items-center justify-center text-fonte" title="Opções">
+          <svg width="18" height="18" viewBox="0 0 24 24" fill="currentColor"><circle cx="12" cy="5" r="1.6"/><circle cx="12" cy="12" r="1.6"/><circle cx="12" cy="19" r="1.6"/></svg>
+        </button>
+        <!-- dropdown -->
+        <div id="widgetMenu" class="hidden absolute right-0 top-8 z-30 w-56 bg-white rounded-xl border border-border z-card py-1">
+          <div class="menu-item py-2.5 text-[15px] gap-3" data-action="zoom">
+            <svg class="text-[#757575]" width="19" height="19" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><circle cx="11" cy="11" r="7"/><path d="m21 21-4.3-4.3M11 8v6M8 11h6"/></svg>
+            Zoom
+          </div>
+          <hr class="border-border mx-2" />
+          <div class="menu-item py-2.5 text-[15px] gap-3" data-action="config">
+            <svg class="text-[#757575]" width="19" height="19" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><path d="M12 3H5a2 2 0 0 0-2 2v14a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2v-7"/><path d="M18.375 2.625a2.121 2.121 0 1 1 3 3L12 15l-4 1 1-4Z"/></svg>
+            Atualizar
+          </div>
+          <hr class="border-border mx-2" />
+          <div class="menu-item py-2.5 text-[15px] gap-3" data-action="none">
+            <svg class="text-[#757575]" width="19" height="19" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><path d="M14.5 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V7.5L14.5 2z"/><path d="M14 2v6h6M12 18v-6M9 15l3 3 3-3"/></svg>
+            Download
+          </div>
+          <hr class="border-border mx-2" />
+          <div class="menu-item py-2.5 text-[15px] gap-3" data-action="none">
+            <svg class="text-[#757575]" width="19" height="19" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><rect x="3" y="5" width="18" height="14" rx="2"/><path d="M3 10h18M9 5v14M15 5v14"/></svg>
+            Atualizar em lote
+            <svg class="ml-auto text-[#9BA0A3]" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="m9 18 6-6-6-6"/></svg>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- chart area (somente o gráfico) -->
+    <div class="flex-1 flex items-center justify-center mt-1 min-h-0">
+      <svg id="widgetPie" width="250" height="250" viewBox="0 0 250 250"></svg>
+    </div>
+  </section>
+
+  <!-- =============== CONFIG MODAL =============== -->
+  <div id="configOverlay" class="hidden fixed inset-0 z-50 bg-black/40 flex items-start justify-center overflow-y-auto p-4">
+    <div class="bg-white rounded-lg z-modal w-full max-w-[820px] my-6 flex flex-col max-h-[92vh]">
+      <!-- header -->
+      <div class="flex items-center justify-between px-5 py-3.5 border-b border-border">
+        <div class="flex items-center gap-2 text-fonte2">
+          <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><circle cx="12" cy="12" r="3"/><path d="M19.4 15a1.65 1.65 0 0 0 .33 1.82l.06.06a2 2 0 1 1-2.83 2.83l-.06-.06a1.65 1.65 0 0 0-1.82-.33 1.65 1.65 0 0 0-1 1.51V21a2 2 0 0 1-4 0v-.09A1.65 1.65 0 0 0 9 19.4a1.65 1.65 0 0 0-1.82.33l-.06.06a2 2 0 1 1-2.83-2.83l.06-.06a1.65 1.65 0 0 0 .33-1.82 1.65 1.65 0 0 0-1.51-1H3a2 2 0 0 1 0-4h.09A1.65 1.65 0 0 0 4.6 9a1.65 1.65 0 0 0-.33-1.82l-.06-.06a2 2 0 1 1 2.83-2.83l.06.06a1.65 1.65 0 0 0 1.82.33H9a1.65 1.65 0 0 0 1-1.51V3a2 2 0 0 1 4 0v.09a1.65 1.65 0 0 0 1 1.51 1.65 1.65 0 0 0 1.82-.33l.06-.06a2 2 0 1 1 2.83 2.83l-.06.06a1.65 1.65 0 0 0-.33 1.82V9a1.65 1.65 0 0 0 1.51 1H21a2 2 0 0 1 0 4h-.09a1.65 1.65 0 0 0-1.51 1z"/></svg>
+          <span class="font-semibold text-[15px]">Configurações</span>
+        </div>
+        <button class="cfg-close w-8 h-8 rounded-md hover:bg-muted flex items-center justify-center text-fonte">
+          <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M18 6 6 18M6 6l12 12"/></svg>
+        </button>
+      </div>
+
+      <!-- tabs -->
+      <div class="px-5 pt-3 border-b border-border">
+        <div class="flex items-center justify-center gap-6">
+          <span class="tab-btn active" data-pane="paneGeral">Geral</span>
+          <span class="tab-btn" data-pane="paneAvancado">Avançado</span>
+          <span class="tab-btn">Fonte</span>
+          <span class="tab-btn">Links</span>
+          <span class="tab-btn">Widgets relacionados</span>
+        </div>
+      </div>
+
+      <!-- body -->
+      <div class="px-6 py-5 overflow-y-auto scrollbar-thin flex flex-col gap-8">
+
+        <!-- ===== ABA GERAL ===== -->
+        <div id="paneGeral" class="flex flex-col gap-5">
+          <!-- mostrar título + título + tamanho + cor -->
+          <div class="flex items-end gap-4 flex-wrap pb-5 border-b border-border">
+            <label class="flex items-center gap-2.5 h-[38px] cursor-pointer select-none">
+              <span class="z-check checked" data-toggle><svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="#fff" stroke-width="3"><path d="M5 13l4 4L19 7"/></svg></span>
+              <span class="text-[14px] text-fonte2">Mostrar título</span>
+            </label>
+            <div class="flex-1 min-w-[220px]">
+              <label class="field-label">Título</label>
+              <input class="z-input" type="text" value="Status dos Planos" />
+            </div>
+            <div class="w-[190px]">
+              <label class="field-label">Tamanho</label>
+              <div class="z-select">
+                <span class="inline-flex items-center gap-1.5 bg-[#ECEEF0] rounded-md px-2 py-0.5 text-[13px] text-fonte2">Pequeno
+                  <svg width="13" height="13" viewBox="0 0 24 24" fill="#6B7280"><circle cx="12" cy="12" r="10"/><path d="M15 9l-6 6M9 9l6 6" stroke="#fff" stroke-width="2"/></svg>
+                </span>
+                <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="#667085" stroke-width="2"><path d="m6 9 6 6 6-6"/></svg>
+              </div>
+            </div>
+            <div class="w-[84px]">
+              <label class="field-label">Cor</label>
+              <div class="z-select color-pick" data-color-role="title">
+                <span class="swatch inline-block w-5 h-5 rounded" style="background:var(--primary)"></span>
+                <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="#667085" stroke-width="2"><path d="m6 9 6 6 6-6"/></svg>
+              </div>
+            </div>
+          </div>
+
+          <!-- visualização -->
+          <h4 class="text-[15px] font-semibold text-fonte2 -mb-1">Visualização</h4>
+          <div class="grid grid-cols-1 md:grid-cols-3 gap-4">
+            <div>
+              <label class="field-label">Formato de entrada</label>
+              <div class="z-select">
+                <span class="inline-flex items-center gap-1.5 bg-[#ECEEF0] rounded-md px-2 py-0.5 text-[13px] text-fonte2">Diária
+                  <svg width="13" height="13" viewBox="0 0 24 24" fill="#6B7280"><circle cx="12" cy="12" r="10"/><path d="M15 9l-6 6M9 9l6 6" stroke="#fff" stroke-width="2"/></svg>
+                </span>
+                <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="#667085" stroke-width="2"><path d="m6 9 6 6 6-6"/></svg>
+              </div>
+            </div>
+            <div>
+              <label class="field-label">Formato de visualização</label>
+              <div class="z-select">
+                <span class="inline-flex items-center gap-1.5 bg-[#ECEEF0] rounded-md px-2 py-0.5 text-[13px] text-fonte2">Diária
+                  <svg width="13" height="13" viewBox="0 0 24 24" fill="#6B7280"><circle cx="12" cy="12" r="10"/><path d="M15 9l-6 6M9 9l6 6" stroke="#fff" stroke-width="2"/></svg>
+                </span>
+                <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="#667085" stroke-width="2"><path d="m6 9 6 6 6-6"/></svg>
+              </div>
+            </div>
+            <div>
+              <label class="field-label">Intervalo de visualização</label>
+              <div class="z-select">
+                <span class="inline-flex items-center gap-1.5 bg-[#ECEEF0] rounded-md px-2 py-0.5 text-[13px] text-fonte2">Dias (mês atual)
+                  <svg width="13" height="13" viewBox="0 0 24 24" fill="#6B7280"><circle cx="12" cy="12" r="10"/><path d="M15 9l-6 6M9 9l6 6" stroke="#fff" stroke-width="2"/></svg>
+                </span>
+                <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="#667085" stroke-width="2"><path d="m6 9 6 6 6-6"/></svg>
+              </div>
+            </div>
+            <div>
+              <label class="field-label">Formato de exibição</label>
+              <div class="z-select">
+                <span class="inline-flex items-center gap-1.5 bg-[#ECEEF0] rounded-md px-2 py-0.5 text-[13px] text-fonte2">Gráfico de pizza
+                  <svg width="13" height="13" viewBox="0 0 24 24" fill="#6B7280"><circle cx="12" cy="12" r="10"/><path d="M15 9l-6 6M9 9l6 6" stroke="#fff" stroke-width="2"/></svg>
+                </span>
+                <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="#667085" stroke-width="2"><path d="m6 9 6 6 6-6"/></svg>
+              </div>
+            </div>
+            <div>
+              <label class="field-label">Texto do gráfico</label>
+              <input class="z-input" type="text" placeholder="Opcional" />
+            </div>
+          </div>
+
+          <label class="flex items-center gap-2.5 cursor-pointer select-none mt-1">
+            <span class="z-check checked" data-toggle><svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="#fff" stroke-width="3"><path d="M5 13l4 4L19 7"/></svg></span>
+            <span class="text-[14px] text-fonte2">Mostrar objetivo</span>
+          </label>
+
+          <!-- formatação condicional -->
+          <div class="flex flex-col gap-3">
+            <label class="flex items-center gap-2.5 cursor-pointer select-none">
+              <span class="z-check checked" data-toggle><svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="#fff" stroke-width="3"><path d="M5 13l4 4L19 7"/></svg></span>
+              <span class="text-[14px] text-fonte2">Mostrar formatação condicional</span>
+            </label>
+            <div class="flex items-end gap-3 flex-wrap pl-8">
+              <div class="w-[96px]">
+                <label class="field-label">Abaixo do objetivo</label>
+                <div class="z-select px-2.5 color-pick" data-color-role="cond-0">
+                  <span class="swatch inline-block w-5 h-5 rounded" style="background:#E22A2E"></span>
+                  <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="#667085" stroke-width="2"><path d="m6 9 6 6 6-6"/></svg>
+                </div>
+              </div>
+              <div class="w-[96px]">
+                <label class="field-label">No objetivo</label>
+                <div class="z-select px-2.5 color-pick" data-color-role="cond-1">
+                  <span class="swatch inline-block w-5 h-5 rounded" style="background:#000000"></span>
+                  <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="#667085" stroke-width="2"><path d="m6 9 6 6 6-6"/></svg>
+                </div>
+              </div>
+              <div class="w-[96px]">
+                <label class="field-label">Acima do objetivo</label>
+                <div class="z-select px-2.5 color-pick" data-color-role="cond-2">
+                  <span class="swatch inline-block w-5 h-5 rounded" style="background:#5C8A00"></span>
+                  <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="#667085" stroke-width="2"><path d="m6 9 6 6 6-6"/></svg>
+                </div>
+              </div>
+              <div class="flex-1 min-w-[220px]">
+                <label class="field-label">Andon</label>
+                <div class="z-select">
+                  <span class="inline-flex items-center gap-1.5 bg-[#ECEEF0] rounded-md px-2 py-0.5 text-[13px] text-fonte2">Abaixo do target
+                    <svg width="13" height="13" viewBox="0 0 24 24" fill="#6B7280"><circle cx="12" cy="12" r="10"/><path d="M15 9l-6 6M9 9l6 6" stroke="#fff" stroke-width="2"/></svg>
+                  </span>
+                  <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="#667085" stroke-width="2"><path d="m6 9 6 6 6-6"/></svg>
+                </div>
+              </div>
+            </div>
+          </div>
+
+          <!-- tolerância -->
+          <div class="flex flex-col gap-3">
+            <label class="flex items-center gap-2.5 cursor-pointer select-none">
+              <span class="z-check checked" data-toggle><svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="#fff" stroke-width="3"><path d="M5 13l4 4L19 7"/></svg></span>
+              <span class="text-[14px] text-fonte2">Mostrar Tolerância do objetivo</span>
+            </label>
+            <div class="flex items-end gap-3 pl-8">
+              <div class="w-[96px]">
+                <label class="field-label">Cor</label>
+                <div class="z-select px-2.5 color-pick" data-color-role="tol">
+                  <span class="swatch inline-block w-5 h-5 rounded" style="background:#FFC000"></span>
+                  <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="#667085" stroke-width="2"><path d="m6 9 6 6 6-6"/></svg>
+                </div>
+              </div>
+              <div class="w-[120px]">
+                <label class="field-label">Tolerância</label>
+                <input class="z-input" type="text" value="0,02" />
+              </div>
+            </div>
+          </div>
+
+          <!-- série -->
+          <div class="flex items-center gap-2.5 mt-1">
+            <span class="text-[15px] font-semibold text-fonte2">Itens</span>
+            <button id="addSerieBtn" class="w-6 h-6 rounded-full bg-primary text-white flex items-center justify-center" title="Adicionar item">
+              <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><path d="M12 5v14M5 12h14"/></svg>
+            </button>
+          </div>
+          <div id="serieRows" class="flex flex-col gap-3"></div>
+        </div>
+
+        <!-- ===== ABA AVANÇADO ===== -->
+        <div id="paneAvancado" class="hidden flex-col gap-5">
+          <!-- mostrar legenda + legenda + cor -->
+          <div class="flex items-start gap-4 flex-wrap">
+            <label class="flex items-center gap-2.5 mt-7 cursor-pointer select-none">
+              <span class="z-check checked" data-toggle><svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="#fff" stroke-width="3"><path d="M5 13l4 4L19 7"/></svg></span>
+              <span class="text-[14px] text-fonte2">Mostrar legenda</span>
+            </label>
+            <div class="flex-1 min-w-[200px]">
+              <label class="field-label">Legenda</label>
+              <input class="z-input" type="text" value="Status dos Planos" />
+            </div>
+            <div class="w-[110px]">
+              <label class="field-label">Cor</label>
+              <div class="z-select color-pick" data-color-role="legend">
+                <span class="swatch inline-block w-5 h-5 rounded" style="background:var(--primary)"></span>
+                <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="#667085" stroke-width="2"><path d="m6 9 6 6 6-6"/></svg>
+              </div>
+            </div>
+          </div>
+
+          <label class="flex items-center gap-2.5 cursor-pointer select-none">
+            <span class="z-check" data-toggle><svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="#fff" stroke-width="3"><path d="M5 13l4 4L19 7"/></svg></span>
+            <span class="text-[14px] text-fonte2">Mostrar unidade</span>
+          </label>
+
+          <label class="flex items-center gap-2.5 cursor-pointer select-none">
+            <span class="z-check" data-toggle><svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="#fff" stroke-width="3"><path d="M5 13l4 4L19 7"/></svg></span>
+            <span class="text-[14px] text-fonte2">Mostrar dica</span>
+          </label>
+
+          <div class="flex items-center gap-8">
+            <label class="flex items-center gap-2.5 cursor-pointer select-none">
+              <span class="z-check" data-toggle><svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="#fff" stroke-width="3"><path d="M5 13l4 4L19 7"/></svg></span>
+              <span class="text-[14px] text-fonte2">Borda transparente</span>
+            </label>
+            <label class="flex items-center gap-2.5 cursor-pointer select-none">
+              <span class="z-check" data-toggle><svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="#fff" stroke-width="3"><path d="M5 13l4 4L19 7"/></svg></span>
+              <span class="text-[14px] text-fonte2">Fundo transparente</span>
+            </label>
+          </div>
+
+          <div class="flex items-center gap-8">
+            <label class="flex items-center gap-2.5 cursor-pointer select-none">
+              <span class="z-check" data-toggle><svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="#fff" stroke-width="3"><path d="M5 13l4 4L19 7"/></svg></span>
+              <span class="text-[14px] text-fonte2">Atualização automática</span>
+            </label>
+            <label class="flex items-center gap-2.5 cursor-pointer select-none">
+              <span class="z-check checked" data-toggle><svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="#fff" stroke-width="3"><path d="M5 13l4 4L19 7"/></svg></span>
+              <span class="text-[14px] text-fonte2">Mostrar mobile</span>
+            </label>
+          </div>
+
+          <div class="flex gap-4">
+            <div class="w-[150px]"><label class="field-label">Altura</label><input class="z-input" type="text" placeholder="370" /></div>
+            <div class="w-[150px]"><label class="field-label">Largura</label><input class="z-input" type="text" placeholder="370" /></div>
+          </div>
+          <div class="max-w-[420px]"><label class="field-label">Dono</label><input class="z-input" type="text" placeholder="Selecione o responsável" /></div>
+
+          <hr class="border-border" />
+
+          <label class="flex items-center gap-2.5 cursor-pointer select-none">
+            <span class="z-check checked" data-toggle><svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="#fff" stroke-width="3"><path d="M5 13l4 4L19 7"/></svg></span>
+            <span class="text-[14px] text-fonte2">Mostrar legenda do gráfico</span>
+          </label>
+
+          <div class="max-w-[260px]">
+            <label class="field-label">Casas decimais</label>
+            <div class="z-select">
+              <span class="flex items-center gap-1.5 text-fonte2">Sem
+                <svg width="14" height="14" viewBox="0 0 24 24" fill="#9BA0A3"><circle cx="12" cy="12" r="10"/><path d="M15 9l-6 6M9 9l6 6" stroke="#fff" stroke-width="2"/></svg>
+              </span>
+              <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="#667085" stroke-width="2"><path d="m6 9 6 6 6-6"/></svg>
+            </div>
+          </div>
+
+          <!-- pie-specific (substitui "Empilhar séries" / "Exibir eixo vertical" do gráfico de barras) -->
+          <label class="flex items-center gap-2.5 cursor-pointer select-none">
+            <span class="z-check checked" data-toggle data-pie="values"><svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="#fff" stroke-width="3"><path d="M5 13l4 4L19 7"/></svg></span>
+            <span class="text-[14px] text-fonte2">Mostrar valores</span>
+          </label>
+          <label class="flex items-center gap-2.5 cursor-pointer select-none">
+            <span class="z-check" data-toggle data-pie="percent"><svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="#fff" stroke-width="3"><path d="M5 13l4 4L19 7"/></svg></span>
+            <span class="text-[14px] text-fonte2">Mostrar porcentagem</span>
+          </label>
+          <label class="flex items-center gap-2.5 cursor-pointer select-none">
+            <span class="z-check" data-toggle data-pie="donut"><svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="#fff" stroke-width="3"><path d="M5 13l4 4L19 7"/></svg></span>
+            <span class="text-[14px] text-fonte2">Exibir como rosca (donut)</span>
+          </label>
+        </div>
+
+        <!-- preview (padrão: no final, centralizado) -->
+        <div class="flex items-start justify-center pt-2 border-t border-border">
+          <div class="bg-white rounded-lg border border-border z-card w-[240px] p-3.5 mt-5">
+            <div class="flex items-start justify-between">
+              <div>
+                <h4 class="font-bold text-[13px] text-fonte2 leading-tight">Status dos Planos</h4>
+                <p class="text-[11px] text-muted-foreground">Distribuição por situação</p>
+              </div>
+              <svg width="14" height="14" viewBox="0 0 24 24" fill="#9BA0A3"><circle cx="12" cy="5" r="1.6"/><circle cx="12" cy="12" r="1.6"/><circle cx="12" cy="19" r="1.6"/></svg>
+            </div>
+            <div class="flex flex-col items-center mt-2">
+              <svg id="previewPie" width="130" height="130" viewBox="0 0 130 130"></svg>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- footer -->
+      <div class="flex items-center justify-end gap-2.5 px-5 py-3.5 border-t border-border">
+        <button class="w-9 h-9 rounded-lg hover:bg-muted flex items-center justify-center text-fonte" title="Mais opções">
+          <svg width="18" height="18" viewBox="0 0 24 24" fill="currentColor"><circle cx="12" cy="5" r="1.6"/><circle cx="12" cy="12" r="1.6"/><circle cx="12" cy="19" r="1.6"/></svg>
+        </button>
+        <button class="cfg-close h-9 px-4 rounded-lg border border-inputbd bg-white text-[14px] font-medium text-fonte2 hover:bg-muted transition">Fechar</button>
+        <button class="cfg-close h-9 px-5 rounded-lg bg-primary text-white text-[14px] font-medium hover:opacity-90 transition">Salvar</button>
+      </div>
+    </div>
+  </div>
+
+  <!-- =============== ZOOM MODAL =============== -->
+  <div id="zoomOverlay" class="hidden fixed inset-0 z-50 bg-black/40 flex items-start justify-center overflow-y-auto p-4">
+    <div class="bg-white rounded-lg z-modal w-full max-w-[1100px] my-6 flex flex-col max-h-[94vh] overflow-hidden">
+      <!-- header -->
+      <div class="flex items-center justify-between px-5 py-3.5 border-b border-border">
+        <span class="font-bold text-[15px] text-fonte2">Gráfico</span>
+        <button class="zoom-close w-8 h-8 rounded-md hover:bg-muted flex items-center justify-center text-fonte">
+          <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M18 6 6 18M6 6l12 12"/></svg>
+        </button>
+      </div>
+
+      <div class="flex flex-col lg:flex-row flex-1 min-h-0">
+        <!-- ===== COLUNA ESQUERDA: gráfico + abas + lista ===== -->
+        <div class="flex-1 min-w-0 overflow-y-auto scrollbar-thin">
+          <!-- date picker row -->
+          <div class="flex items-center gap-3 px-5 py-3">
+            <button class="w-7 h-7 rounded-md hover:bg-muted flex items-center justify-center text-fonte">
+              <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="m15 18-6-6 6-6"/></svg>
+            </button>
+            <div class="flex-1 flex items-center justify-center gap-3">
+              <span id="zoomDateLabel" class="text-[14px] text-fonte2 font-medium">01/08/2021</span>
+              <button id="zoomCalBtn" class="w-7 h-7 rounded-md hover:bg-muted flex items-center justify-center text-fonte" title="Selecionar data">
+                <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><rect x="3" y="4" width="18" height="18" rx="2"/><path d="M16 2v4M8 2v4M3 10h18"/></svg>
+              </button>
+            </div>
+            <button class="w-7 h-7 rounded-md hover:bg-muted flex items-center justify-center text-fonte">
+              <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="m9 18 6-6-6-6"/></svg>
+            </button>
+          </div>
+
+          <!-- mini calendar popover -->
+          <div id="zoomCal" class="hidden mx-5 mb-2 w-[260px] ml-auto mr-5 rounded-lg border border-border z-card bg-white overflow-hidden">
+            <div class="bg-primary text-white px-4 py-3">
+              <div class="text-[10px] tracking-wide opacity-80">SELECIONE A DATA</div>
+              <div id="calBig" class="text-[20px] font-semibold mt-0.5">Seg, Nov 25</div>
+            </div>
+            <div class="px-3 py-2">
+              <div class="flex items-center justify-between text-[12px] text-fonte2 mb-1">
+                <span class="font-medium">Novembro 2024</span>
+                <span class="flex gap-2 text-muted-foreground">
+                  <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="m15 18-6-6 6-6"/></svg>
+                  <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="m9 18 6-6-6-6"/></svg>
+                </span>
+              </div>
+              <div class="grid grid-cols-7 gap-y-1 text-center text-[11px] text-muted-foreground">
+                <span>S</span><span>T</span><span>Q</span><span>Q</span><span>S</span><span>S</span><span>D</span>
+              </div>
+              <div id="calDays" class="grid grid-cols-7 gap-y-1 text-center text-[12px] text-fonte2 mt-1"></div>
+              <div class="flex items-center justify-end gap-4 px-1 py-2 text-[12px] font-medium text-primary">
+                <button id="calClear">LIMPAR</button><button id="calOk">OK</button>
+              </div>
+            </div>
+          </div>
+
+          <!-- pie chart (zoom) -->
+          <div class="flex flex-col items-center px-5 py-2">
+            <svg id="zoomPie" width="220" height="220" viewBox="0 0 220 220"></svg>
+            <ul id="zoomLegend" class="flex flex-wrap items-center justify-center gap-x-5 gap-y-2 text-[12px] mt-3"></ul>
+          </div>
+
+          <!-- related tabs -->
+          <div class="px-5 mt-2 border-b border-border">
+            <div class="flex items-center gap-6 overflow-x-auto scrollbar-thin">
+              <span class="tab-btn active flex items-center gap-1.5 text-[14px]">Planos de Ação
+                <span class="inline-flex items-center justify-center min-w-[22px] h-[22px] px-1 rounded-full bg-primary text-white text-[11px] font-semibold">28</span>
+                <span class="text-[12px] text-muted-foreground">/ 12</span></span>
+              <span class="tab-btn flex items-center gap-1.5 text-[14px]">RCA -1
+                <span class="inline-flex items-center justify-center min-w-[22px] h-[22px] px-1 rounded-full bg-[#9BA0A3] text-white text-[11px] font-semibold">12</span>
+                <span class="text-[12px] text-muted-foreground">/ 26</span></span>
+              <span class="tab-btn flex items-center gap-1.5 text-[14px]">Kaizen
+                <span class="inline-flex items-center justify-center min-w-[22px] h-[22px] px-1 rounded-full bg-[#9BA0A3] text-white text-[11px] font-semibold">12</span>
+                <span class="text-[12px] text-muted-foreground">/ 26</span></span>
+              <span class="tab-btn flex items-center gap-1.5 text-[14px]">Projetos
+                <span class="inline-flex items-center justify-center min-w-[22px] h-[22px] px-1 rounded-full bg-[#9BA0A3] text-white text-[11px] font-semibold">12</span>
+                <span class="text-[12px] text-muted-foreground">/ 26</span></span>
+            </div>
+          </div>
+
+          <!-- action row -->
+          <div class="flex items-center gap-3 px-5 py-3.5">
+            <button class="w-9 h-9 rounded-full bg-primary text-white flex items-center justify-center shrink-0">
+              <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M12 5v14M5 12h14"/></svg>
+            </button>
+            <div class="flex-1 flex items-center border border-inputbd rounded-lg h-10 px-3">
+              <input class="flex-1 outline-none text-[14px] text-fonte2 placeholder:text-[#B9BFC6]" placeholder="Pesquisar" />
+              <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="#9BA0A3" stroke-width="2"><circle cx="11" cy="11" r="7"/><path d="m21 21-4.3-4.3"/></svg>
+            </div>
+            <button class="w-10 h-10 rounded-lg bg-primary text-white flex items-center justify-center shrink-0">
+              <svg width="17" height="17" viewBox="0 0 24 24" fill="currentColor"><path d="M3 4h18l-7 8.5V19l-4 2v-8.5L3 4z"/></svg>
+            </button>
+            <button class="w-10 h-10 rounded-lg border-2 border-primary text-primary bg-white flex items-center justify-center shrink-0">
+              <svg width="17" height="17" viewBox="0 0 24 24" fill="currentColor"><rect x="3" y="3" width="8" height="8" rx="1.5"/><rect x="13" y="3" width="8" height="8" rx="1.5"/><rect x="3" y="13" width="8" height="8" rx="1.5"/><rect x="13" y="13" width="8" height="8" rx="1.5"/></svg>
+            </button>
+          </div>
+
+          <!-- item list -->
+          <div id="zoomItems" class="px-5 pb-5"></div>
+        </div>
+
+        <!-- ===== COLUNA DIREITA: FEED ===== -->
+        <div class="w-full lg:w-[420px] shrink-0 flex flex-col p-4 gap-3 min-h-0" style="background:#C5CAE9">
+          <!-- feed header -->
+          <div class="flex items-center gap-2.5 text-white">
+            <svg width="26" height="26" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="3" y="4" width="13" height="13" rx="2"/><path d="M8 9h5M8 12h3M19 8v9a2 2 0 0 1-2 2H8"/></svg>
+            <span class="text-[22px] font-bold">Feed</span>
+          </div>
+          <!-- search + filter -->
+          <div class="flex items-center gap-2">
+            <div class="flex-1 flex items-center bg-white rounded-lg h-10 px-3">
+              <input class="flex-1 outline-none text-[14px] text-fonte2 placeholder:text-[#B9BFC6]" placeholder="Pesquisar" />
+              <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="#9BA0A3" stroke-width="2"><circle cx="11" cy="11" r="7"/><path d="m21 21-4.3-4.3"/></svg>
+            </div>
+            <button class="w-10 h-10 rounded-lg bg-white border-2 border-primary text-primary flex items-center justify-center shrink-0">
+              <svg width="16" height="16" viewBox="0 0 24 24" fill="currentColor"><path d="M3 4h18l-7 8.5V19l-4 2v-8.5L3 4z"/></svg>
+            </button>
+          </div>
+          <!-- feed card -->
+          <div class="bg-white rounded-xl p-3 flex flex-col gap-3 flex-1 min-h-0">
+            <!-- composer -->
+            <div class="flex items-center gap-2.5">
+              <div class="flex-1 flex items-center border border-inputbd rounded-full h-11 pl-4 pr-1">
+                <input class="flex-1 outline-none text-[14px] text-fonte2 placeholder:text-[#B9BFC6] min-w-0" placeholder="Comentar" />
+                <button class="w-9 h-9 rounded-full bg-primary flex items-center justify-center text-white shrink-0">
+                  <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="m22 2-7 20-4-9-9-4Z"/><path d="M22 2 11 13"/></svg>
+                </button>
+              </div>
+              <button class="w-10 h-10 rounded-full bg-primary flex items-center justify-center text-white shrink-0">
+                <svg width="17" height="17" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M21.44 11.05 12.25 20.24a6 6 0 0 1-8.49-8.49l9.19-9.19a4 4 0 0 1 5.66 5.66l-9.2 9.19a2 2 0 0 1-2.83-2.83l8.49-8.48"/></svg>
+              </button>
+              <button class="w-10 h-10 rounded-full bg-primary flex items-center justify-center text-white shrink-0">
+                <svg width="17" height="17" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="9" y="2" width="6" height="12" rx="3"/><path d="M5 10a7 7 0 0 0 14 0M12 17v5"/></svg>
+              </button>
+            </div>
+            <!-- comments -->
+            <div id="zoomComments" class="flex flex-col gap-3 overflow-y-auto scrollbar-thin pr-1 min-h-0 max-h-[480px]"></div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+</main>
+
+<!-- tooltip flutuante -->
+<!-- paleta de cores -->
+<div id="colorPalette" class="hidden fixed z-[70] bg-white rounded-lg border border-border z-card p-2 grid grid-cols-4 gap-1.5"></div>
+
+<div id="pieTooltip" class="hidden fixed z-[60] pointer-events-none bg-fonte2 text-white rounded-md px-2.5 py-1.5 text-[12px] z-card whitespace-nowrap">
+  <div class="flex items-center gap-2">
+    <span id="ttSwatch" class="w-2.5 h-2.5 rounded-sm"></span>
+    <span id="ttLabel" class="font-medium"></span>
+  </div>
+  <div id="ttValue" class="text-[11px] text-white/80 mt-0.5"></div>
+</div>
+
+<script>
+  // ---------- DATA ----------
+  // Cada série vira uma fatia; as cores vêm da formatação condicional
+  // (Abaixo do objetivo / No objetivo / Acima do objetivo), aplicadas em ciclo
+  var COND_COLORS = ['#E22A2E', '#000000', '#5C8A00'];
+  var SERIES = [
+    { label: 'Linha 1', value: 42, visible: true },
+    { label: 'Linha 2', value: 28, visible: true },
+    { label: 'Linha 3', value: 30, visible: true }
+  ];
+  var PIE_DATA = [];
+  var TOTAL = 1;
+  function syncData() {
+    PIE_DATA = [];
+    SERIES.forEach(function (s, i) {
+      if (!s.visible) return;
+      PIE_DATA.push({ label: s.label, value: s.value, color: COND_COLORS[i % COND_COLORS.length] });
+    });
+    TOTAL = PIE_DATA.reduce(function (a, d) { return a + d.value; }, 0) || 1;
+  }
+
+  // ---------- PIE GEOMETRY ----------
+  function polar(cx, cy, r, ang) {
+    // ang in radians, 0 at top, clockwise
+    return [cx + r * Math.sin(ang), cy - r * Math.cos(ang)];
+  }
+  function slicePath(cx, cy, rOuter, rInner, a0, a1) {
+    var large = (a1 - a0) > Math.PI ? 1 : 0;
+    var o0 = polar(cx, cy, rOuter, a0), o1 = polar(cx, cy, rOuter, a1);
+    if (rInner <= 0) {
+      return 'M' + cx + ',' + cy + ' L' + o0[0].toFixed(2) + ',' + o0[1].toFixed(2) +
+             ' A' + rOuter + ',' + rOuter + ' 0 ' + large + ' 1 ' + o1[0].toFixed(2) + ',' + o1[1].toFixed(2) + ' Z';
+    }
+    var i1 = polar(cx, cy, rInner, a1), i0 = polar(cx, cy, rInner, a0);
+    return 'M' + o0[0].toFixed(2) + ',' + o0[1].toFixed(2) +
+           ' A' + rOuter + ',' + rOuter + ' 0 ' + large + ' 1 ' + o1[0].toFixed(2) + ',' + o1[1].toFixed(2) +
+           ' L' + i1[0].toFixed(2) + ',' + i1[1].toFixed(2) +
+           ' A' + rInner + ',' + rInner + ' 0 ' + large + ' 0 ' + i0[0].toFixed(2) + ',' + i0[1].toFixed(2) + ' Z';
+  }
+
+  // opts: { donut, percent, values, labelSize }
+  function renderPie(svg, size, opts) {
+    opts = opts || {};
+    while (svg.firstChild) svg.removeChild(svg.firstChild);
+    var cx = size / 2, cy = size / 2;
+    var rOuter = size / 2 - 4;
+    var rInner = opts.donut ? rOuter * 0.58 : 0;
+    var ang = 0;
+    var NS = 'http://www.w3.org/2000/svg';
+    PIE_DATA.forEach(function (d, i) {
+      var frac = d.value / TOTAL;
+      var a1 = ang + frac * Math.PI * 2;
+      var path = document.createElementNS(NS, 'path');
+      path.setAttribute('d', slicePath(cx, cy, rOuter, rInner, ang, a1));
+      path.setAttribute('fill', d.color);
+      path.setAttribute('stroke', '#fff');
+      path.setAttribute('stroke-width', '2');
+      path.setAttribute('class', 'slice');
+      path.setAttribute('data-idx', i);
+      svg.appendChild(path);
+
+      // labels (percent / value) at mid-angle
+      if (opts.percent || opts.values) {
+        var mid = (ang + a1) / 2;
+        var lr = rInner > 0 ? (rInner + rOuter) / 2 : rOuter * 0.62;
+        var p = polar(cx, cy, lr, mid);
+        var txt = document.createElementNS(NS, 'text');
+        txt.setAttribute('x', p[0].toFixed(1));
+        txt.setAttribute('y', p[1].toFixed(1));
+        txt.setAttribute('text-anchor', 'middle');
+        txt.setAttribute('dominant-baseline', 'central');
+        txt.setAttribute('font-size', (opts.labelSize || 11));
+        txt.setAttribute('font-weight', '600');
+        txt.setAttribute('fill', '#fff');
+        txt.setAttribute('pointer-events', 'none');
+        var label = opts.values ? d.value : Math.round(frac * 100) + '%';
+        if (frac > 0.05) txt.textContent = label;
+        svg.appendChild(txt);
+      }
+      ang = a1;
+    });
+    // donut center total
+    if (opts.donut) {
+      var t1 = document.createElementNS(NS, 'text');
+      t1.setAttribute('x', cx); t1.setAttribute('y', cy - 6);
+      t1.setAttribute('text-anchor', 'middle'); t1.setAttribute('font-size', size * 0.16);
+      t1.setAttribute('font-weight', '700'); t1.setAttribute('fill', '#282828');
+      t1.textContent = TOTAL;
+      svg.appendChild(t1);
+      var t2 = document.createElementNS(NS, 'text');
+      t2.setAttribute('x', cx); t2.setAttribute('y', cy + size * 0.10);
+      t2.setAttribute('text-anchor', 'middle'); t2.setAttribute('font-size', size * 0.075);
+      t2.setAttribute('fill', '#9BA0A3'); t2.textContent = 'Total';
+      svg.appendChild(t2);
+    }
+  }
+
+  function renderLegend(ul, opts) {
+    opts = opts || {};
+    ul.innerHTML = '';
+    PIE_DATA.forEach(function (d, i) {
+      var pct = Math.round(d.value / TOTAL * 100);
+      var li = document.createElement('li');
+      li.className = 'legend-row flex items-center gap-2';
+      li.setAttribute('data-idx', i);
+      var right = opts.compact
+        ? '<span class="ml-auto font-semibold text-fonte2">' + pct + '%</span>'
+        : '<span class="ml-auto text-muted-foreground">' + d.value + '</span><span class="w-9 text-right font-semibold text-fonte2">' + pct + '%</span>';
+      li.innerHTML =
+        '<span class="w-3 h-3 rounded-sm shrink-0" style="background:' + d.color + '"></span>' +
+        '<span class="text-fonte2 truncate">' + d.label + '</span>' + right;
+      ul.appendChild(li);
+    });
+  }
+
+  // ---------- COMMENTS (Feed) ----------
+  var LOREM = 'Lorem ipsum dolor sit amet, consectetur adipiscing elit. Vivamus mauris nulla, volutpat a turpis vitae, consectetur';
+  var COMMENTS = [
+    { who:'Nome do usuário', time:'5:02 am', text:LOREM, tone:'purple' },
+    { who:'Nome do usuário', time:'5:02 am', text:LOREM, tone:'gray' },
+    { who:'Nome do usuário', time:'5:02 am', text:LOREM, tone:'purple',
+      reply:'Lorem ipsum dolor sit amet, consectetur adipiscing elit. Vivamus mauris nulla, volutpat.',
+      reactions:'❤️ 👍 🎉 😂', reactCount:32 },
+    { who:'Nome do usuário', time:'5:02 am', text:LOREM, tone:'purple' },
+    { who:'Nome do usuário', time:'5:02 am', text:LOREM, tone:'gray' }
+  ];
+  function renderComments() {
+    var box = document.getElementById('zoomComments');
+    box.innerHTML = '';
+    var sep = '<span class="text-[#D0D5DD]">|</span>';
+    COMMENTS.forEach(function (c) {
+      var bg = c.tone === 'gray' ? '#E0E0E0' : '#CDD3EE';
+      var div = document.createElement('div');
+      div.className = 'flex gap-2';
+      var reply = c.reply
+        ? '<div class="bg-white rounded-lg px-3 py-2 mt-2 text-[13px] text-fonte leading-snug">' + c.reply + '</div>'
+        : '';
+      var reactions = c.reactions
+        ? '<span class="flex items-center gap-1">' + c.reactions + ' <span class="font-semibold text-primary">' + c.reactCount + '</span></span> '
+        : '';
+      div.innerHTML =
+        '<div class="w-9 h-9 rounded-full bg-[#E0E0E0] text-fonte2 text-[12px] font-semibold flex items-center justify-center shrink-0">NU</div>' +
+        '<div class="flex-1 min-w-0">' +
+          '<div class="rounded-xl px-3 py-2" style="background:' + bg + '">' +
+            '<div class="flex items-center gap-2"><span class="font-bold text-[13px] text-fonte2">' + c.who + '</span>' +
+            '<span class="text-[11px] text-fonte">' + c.time + '</span></div>' +
+            '<p class="text-[13px] text-fonte mt-0.5 leading-snug">' + c.text + '</p>' + reply +
+          '</div>' +
+          '<div class="flex items-center gap-2 mt-1 px-1 text-[12px] text-muted-foreground">' + reactions +
+            '<span class="cursor-pointer hover:text-fonte2">Reagir</span>' + sep +
+            '<span class="cursor-pointer hover:text-fonte2">Responder</span>' + sep +
+            '<span class="cursor-pointer hover:text-fonte2">Traduzir</span>' + sep +
+            '<span class="cursor-pointer hover:text-fonte2">Excluir</span>' +
+          '</div>' +
+        '</div>';
+      box.appendChild(div);
+    });
+  }
+
+  // ---------- ITEM LIST (Planos de Ação) ----------
+  var ZOOM_ITEMS = [
+    { id:'PLA-12345678', sub:'Loren ipsum', status:'#FFC000', comments:'00', days:'000 dias' },
+    { id:'PLA-12345678', sub:'Loren ipsum', status:'#E22A2E', comments:'00', days:'000 dias' },
+    { id:'PLA-12345678', sub:'Loren ipsum', status:'#FFC000', comments:'00', days:'000 dias' }
+  ];
+  function renderZoomItems() {
+    var box = document.getElementById('zoomItems');
+    box.innerHTML = '';
+    ZOOM_ITEMS.forEach(function (it) {
+      var row = document.createElement('div');
+      row.className = 'flex items-center gap-3 py-3 border-b border-border';
+      row.innerHTML =
+        '<div class="w-8 h-8 rounded-full bg-[#E0E0E0] text-fonte2 text-[11px] font-semibold flex items-center justify-center shrink-0">NU</div>' +
+        '<div class="min-w-0">' +
+          '<div class="text-[14px] font-bold text-primary leading-tight">' + it.id + '</div>' +
+          '<div class="text-[12px] text-fonte leading-tight">' + it.sub + '</div>' +
+        '</div>' +
+        '<div class="ml-auto flex flex-col items-end gap-0.5">' +
+          '<span class="flex items-center gap-1 text-[11px] text-fonte">' +
+            '<svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M21 15a2 2 0 0 1-2 2H7l-4 4V5a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2z"/></svg>' + it.comments + '</span>' +
+          '<span class="text-[11px] font-semibold text-white rounded px-2 py-0.5" style="background:' + it.status + '">Status</span>' +
+          '<span class="text-[11px] text-fonte">' + it.days + '</span>' +
+        '</div>';
+      box.appendChild(row);
+    });
+  }
+
+  // ---------- CALENDAR ----------
+  function renderCalendar() {
+    var days = document.getElementById('calDays');
+    days.innerHTML = '';
+    // Nov 2024: starts on Friday(=col 5 if S,T,Q,Q,S,S,D). Simplified offset = 4
+    var offset = 4, total = 30, selected = 25;
+    for (var i = 0; i < offset; i++) days.appendChild(document.createElement('span'));
+    for (var d = 1; d <= total; d++) {
+      var s = document.createElement('span');
+      s.textContent = d;
+      s.className = 'py-0.5 cursor-pointer rounded-full hover:bg-muted';
+      if (d === selected) s.className += ' border border-primary text-primary font-semibold';
+      days.appendChild(s);
+    }
+  }
+
+  // ---------- SÉRIES (adicionar / remover / ocultar / renomear) ----------
+  function renderSeries() {
+    var box = document.getElementById('serieRows');
+    box.innerHTML = '';
+    SERIES.forEach(function (s, i) {
+      var row = document.createElement('div');
+      row.className = 'flex items-center gap-3';
+
+      var input = document.createElement('input');
+      input.className = 'z-input flex-1';
+      input.type = 'text';
+      input.value = s.label;
+      input.addEventListener('input', function () { s.label = input.value; refreshAll(); });
+
+      var chk = document.createElement('span');
+      chk.className = 'z-check' + (s.visible ? ' checked' : '');
+      chk.title = 'Exibir item no gráfico';
+      chk.innerHTML = '<svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="#fff" stroke-width="3"><path d="M5 13l4 4L19 7"/></svg>';
+      chk.addEventListener('click', function () { s.visible = !s.visible; chk.classList.toggle('checked'); refreshAll(); });
+
+      var del = document.createElement('button');
+      del.className = 'text-primary hover:opacity-75 disabled:opacity-40';
+      del.title = 'Remover item';
+      del.disabled = SERIES.length <= 1;
+      del.innerHTML = '<svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><path d="M3 6h18M8 6V4a2 2 0 0 1 2-2h4a2 2 0 0 1 2 2v2m3 0v14a2 2 0 0 1-2 2H7a2 2 0 0 1-2-2V6h14ZM10 11v6M14 11v6"/></svg>';
+      del.addEventListener('click', function () {
+        if (SERIES.length <= 1) return;
+        SERIES.splice(i, 1);
+        renderSeries(); refreshAll();
+      });
+
+      row.appendChild(input); row.appendChild(chk); row.appendChild(del);
+      box.appendChild(row);
+    });
+  }
+
+  // ---------- PALETA DE CORES ----------
+  var PALETTE = ['#E22A2E', '#000000', '#5C8A00', '#8CC152', '#FFC000', '#001391', '#9BA0A3', '#6A1B9A'];
+  var paletteTarget = null;
+  function initPalette() {
+    var pal = document.getElementById('colorPalette');
+    PALETTE.forEach(function (c) {
+      var b = document.createElement('button');
+      b.className = 'w-6 h-6 rounded border border-black/10 cursor-pointer hover:scale-110 transition';
+      b.style.background = c;
+      b.title = c;
+      b.addEventListener('click', function (e) {
+        e.stopPropagation();
+        if (!paletteTarget) return;
+        paletteTarget.querySelector('.swatch').style.background = c;
+        var role = paletteTarget.getAttribute('data-color-role') || '';
+        if (role.indexOf('cond-') === 0) {
+          COND_COLORS[parseInt(role.slice(5), 10)] = c;
+          refreshAll();
+        }
+        pal.classList.add('hidden'); paletteTarget = null;
+      });
+      pal.appendChild(b);
+    });
+    document.querySelectorAll('.color-pick').forEach(function (el) {
+      el.addEventListener('click', function (e) {
+        e.stopPropagation();
+        paletteTarget = el;
+        var r = el.getBoundingClientRect();
+        pal.style.left = r.left + 'px';
+        pal.style.top = (r.bottom + 6) + 'px';
+        pal.classList.remove('hidden');
+      });
+    });
+    document.addEventListener('click', function () { pal.classList.add('hidden'); paletteTarget = null; });
+  }
+
+  // ---------- STATE ----------
+  // valor na fatia; porcentagem no tooltip
+  var pieOpts = { percent: false, values: true, donut: false };
+
+  function refreshAll() {
+    syncData();
+    renderPie(document.getElementById('widgetPie'), 250, { percent: pieOpts.percent, values: pieOpts.values, donut: pieOpts.donut, labelSize: 14 });
+    renderPie(document.getElementById('previewPie'), 130, { percent: pieOpts.percent, values: pieOpts.values, donut: pieOpts.donut, labelSize: 9 });
+    renderPie(document.getElementById('zoomPie'), 220, { percent: pieOpts.percent, values: pieOpts.values, donut: pieOpts.donut, labelSize: 13 });
+    renderLegend(document.getElementById('zoomLegend'), {});
+    bindSliceHover();
+  }
+
+  function bindSliceHover() {
+    var tip = document.getElementById('pieTooltip');
+    document.querySelectorAll('svg').forEach(function (svg) {
+      var slices = svg.querySelectorAll('.slice');
+      slices.forEach(function (sl) {
+        sl.onmouseenter = function () {
+          var idx = sl.getAttribute('data-idx');
+          slices.forEach(function (o) { if (o.getAttribute('data-idx') !== idx) o.classList.add('dim'); });
+          var d = PIE_DATA[idx];
+          var pct = Math.round(d.value / TOTAL * 100);
+          document.getElementById('ttSwatch').style.background = d.color;
+          document.getElementById('ttLabel').textContent = d.label;
+          document.getElementById('ttValue').textContent = pct + '%';
+          tip.classList.remove('hidden');
+        };
+        sl.onmousemove = function (e) {
+          tip.style.left = (e.clientX + 14) + 'px';
+          tip.style.top = (e.clientY + 14) + 'px';
+        };
+        sl.onmouseleave = function () {
+          slices.forEach(function (o) { o.classList.remove('dim'); });
+          tip.classList.add('hidden');
+        };
+      });
+    });
+  }
+
+  // ---------- NAV / MODALS ----------
+  function openConfig() { document.getElementById('configOverlay').classList.remove('hidden'); }
+  function openZoom() { document.getElementById('zoomOverlay').classList.remove('hidden'); }
+  function closeAll() {
+    document.getElementById('configOverlay').classList.add('hidden');
+    document.getElementById('zoomOverlay').classList.add('hidden');
+    document.getElementById('widgetMenu').classList.add('hidden');
+  }
+
+  document.addEventListener('DOMContentLoaded', function () {
+    renderCalendar();
+    renderComments();
+    renderZoomItems();
+    renderSeries();
+    initPalette();
+    refreshAll();
+
+    // adicionar série
+    document.getElementById('addSerieBtn').addEventListener('click', function () {
+      SERIES.push({ label: 'Linha ' + (SERIES.length + 1), value: 20, visible: true });
+      renderSeries(); refreshAll();
+    });
+
+    // top nav pills
+    document.querySelectorAll('.nav-pill').forEach(function (b) {
+      b.addEventListener('click', function () {
+        document.querySelectorAll('.nav-pill').forEach(function (x) { x.classList.remove('active'); });
+        b.classList.add('active');
+        closeAll();
+        var v = b.getAttribute('data-view');
+        if (v === 'config') openConfig();
+        if (v === 'zoom') openZoom();
+      });
+    });
+
+    // widget menu
+    var menuBtn = document.getElementById('widgetMenuBtn');
+    var menu = document.getElementById('widgetMenu');
+    menuBtn.addEventListener('click', function (e) { e.stopPropagation(); menu.classList.toggle('hidden'); });
+    menu.querySelectorAll('.menu-item').forEach(function (mi) {
+      mi.addEventListener('click', function () {
+        menu.classList.add('hidden');
+        var a = mi.getAttribute('data-action');
+        if (a === 'config') openConfig();
+        if (a === 'zoom') openZoom();
+      });
+    });
+    document.addEventListener('click', function () { menu.classList.add('hidden'); });
+
+    // close buttons
+    document.querySelectorAll('.cfg-close, .zoom-close').forEach(function (b) {
+      b.addEventListener('click', closeAll);
+    });
+    [document.getElementById('configOverlay'), document.getElementById('zoomOverlay')].forEach(function (ov) {
+      ov.addEventListener('click', function (e) { if (e.target === ov) closeAll(); });
+    });
+    document.addEventListener('keydown', function (e) { if (e.key === 'Escape') closeAll(); });
+
+    // tabs do modal de configurações (Geral / Avançado)
+    document.querySelectorAll('[data-pane]').forEach(function (t) {
+      t.addEventListener('click', function () {
+        document.querySelectorAll('[data-pane]').forEach(function (x) { x.classList.remove('active'); });
+        t.classList.add('active');
+        ['paneGeral', 'paneAvancado'].forEach(function (id) {
+          var p = document.getElementById(id);
+          if (id === t.getAttribute('data-pane')) { p.classList.remove('hidden'); p.classList.add('flex'); }
+          else { p.classList.add('hidden'); p.classList.remove('flex'); }
+        });
+      });
+    });
+
+    // checkbox toggles
+    document.querySelectorAll('[data-toggle]').forEach(function (cb) {
+      cb.addEventListener('click', function () {
+        cb.classList.toggle('checked');
+        var pie = cb.getAttribute('data-pie');
+        if (pie) { pieOpts[pie] = cb.classList.contains('checked'); refreshAll(); }
+      });
+    });
+
+    // calendar popover
+    var calBtn = document.getElementById('zoomCalBtn');
+    var cal = document.getElementById('zoomCal');
+    calBtn.addEventListener('click', function (e) { e.stopPropagation(); cal.classList.toggle('hidden'); });
+    document.getElementById('calOk').addEventListener('click', function () {
+      document.getElementById('zoomDateLabel').textContent = '25/11/2024';
+      cal.classList.add('hidden');
+    });
+    document.getElementById('calClear').addEventListener('click', function () {
+      document.getElementById('zoomDateLabel').textContent = '01/08/2021';
+      cal.classList.add('hidden');
+    });
+  });
+</script>
+
+<script>window.RV_CONFIG = { key: 'widget_pizza_v1', title: 'Revisão — Widget de Pizza', modalSelector: '#configOverlay, #zoomOverlay' };</script>
+<!--
+  ============================================================
+  CAMADA DE COMENTÁRIOS (estilo Figma) — DROP-IN PORTÁTIL  · v2
+  ============================================================
+-->
+<button id="rv-toggle">💬 Revisão</button>
+<div id="rv-bar">
+  <div class="rv-top"><span class="dot"></span> <span id="rv-title">Revisão de comentários</span> <span style="margin-left:auto;cursor:pointer" id="rv-min">—</span></div>
+  <div class="rv-sec">
+    <div><label>Seu nome (revisor)</label><input type="text" id="rv-name" placeholder="ex.: Maria"></div>
+    <button id="rv-mode">💬 Ativar modo comentário</button>
+    <div class="row">
+      <button id="rv-listbtn">📋 Lista (<span id="rv-count">0</span>)</button>
+      <button id="rv-export">⬇ Exportar</button>
+    </div>
+    <div class="row"><button id="rv-importbtn" style="flex:1">⬆ Importar comentários</button></div>
+    <input type="file" id="rv-import" accept=".html,.json" style="display:none">
+    <div class="hint">Ative o modo, <b>clique no ponto</b> que quer comentar e escreva. Ao terminar, <b>Exportar</b> gera um arquivo com os comentários salvos para enviar de volta.</div>
+  </div>
+</div>
+<div id="rv-layer"></div>
+<div id="rv-pop"></div>
+<div id="rv-panel"><h3>Comentários <button id="rv-close">×</button></h3><div id="rv-list"></div></div>
+<script type="application/json" id="rv-data">{"savedAt":0,"comments":[]}</script>
+
+<style>
+  #rv-bar{position:fixed;top:14px;right:14px;z-index:9000;background:#0f172a;color:#fff;border-radius:12px;box-shadow:0 8px 24px rgba(2,6,23,.35);font-size:13px;width:270px;overflow:hidden;font-family:-apple-system,BlinkMacSystemFont,"Segoe UI",Roboto,Arial,sans-serif}
+  #rv-bar .rv-top{display:flex;align-items:center;gap:8px;padding:11px 13px;font-weight:700}
+  #rv-bar .rv-top .dot{width:10px;height:10px;border-radius:50%;background:#f43f5e}
+  #rv-bar .rv-sec{padding:0 13px 13px;display:flex;flex-direction:column;gap:9px}
+  #rv-bar label{font-size:11px;color:#94a3b8;display:block;margin-bottom:3px}
+  #rv-bar input[type=text]{width:100%;padding:7px 9px;border-radius:7px;border:1px solid #334155;background:#1e293b;color:#fff;font-size:13px}
+  #rv-bar button{border:0;border-radius:8px;padding:8px 10px;font-size:12.5px;font-weight:600;cursor:pointer;color:#fff;background:#334155}
+  #rv-bar button.on{background:#f43f5e}
+  #rv-bar .row{display:flex;gap:7px}#rv-bar .row button{flex:1}
+  #rv-bar .hint{font-size:11px;color:#94a3b8;line-height:1.45}
+  #rv-toggle{position:fixed;top:14px;right:14px;z-index:9001;background:#0f172a;color:#fff;border:0;border-radius:10px;padding:9px 12px;font-weight:700;font-size:13px;cursor:pointer;box-shadow:0 6px 18px rgba(2,6,23,.3);display:none;font-family:inherit}
+  .rv-pin{position:absolute;z-index:8000;width:26px;height:26px;border-radius:50% 50% 50% 2px;background:#f43f5e;color:#fff;display:flex;align-items:center;justify-content:center;font-size:12px;font-weight:700;cursor:pointer;transform:translate(-3px,-26px);box-shadow:0 3px 8px rgba(0,0,0,.3);border:2px solid #fff}
+  .rv-pin.resolved{background:#16a34a;opacity:.85}
+  #rv-layer{position:absolute;top:0;left:0;width:100%;pointer-events:none;z-index:7000}
+  #rv-layer .rv-pin{pointer-events:auto}
+  body.rv-commenting{cursor:crosshair}
+  #rv-pop{position:fixed;z-index:9500;width:260px;background:#fff;border:1px solid #e2e8f0;border-radius:12px;box-shadow:0 12px 30px rgba(2,6,23,.25);padding:12px;display:none;font-family:-apple-system,BlinkMacSystemFont,"Segoe UI",Roboto,Arial,sans-serif}
+  #rv-pop textarea{width:100%;min-height:64px;border:1px solid #e2e8f0;border-radius:8px;padding:8px;font-size:13px;font-family:inherit;resize:vertical}
+  #rv-pop .meta{font-size:11px;color:#64748b;margin-bottom:6px}
+  #rv-pop .acts{display:flex;gap:7px;margin-top:8px}
+  #rv-pop button{border:0;border-radius:7px;padding:7px 10px;font-size:12px;font-weight:600;cursor:pointer}
+  #rv-pop .save{background:#0e7490;color:#fff;flex:1}#rv-pop .res{background:#dcfce7;color:#166534}#rv-pop .del{background:#fee2e2;color:#991b1b}
+  #rv-panel{position:fixed;top:0;right:-360px;width:340px;height:100%;background:#fff;z-index:8900;box-shadow:-6px 0 24px rgba(2,6,23,.18);transition:right .25s;display:flex;flex-direction:column;font-family:-apple-system,BlinkMacSystemFont,"Segoe UI",Roboto,Arial,sans-serif}
+  #rv-panel.open{right:0}
+  #rv-panel h3{margin:0;padding:16px 18px;border-bottom:1px solid #e2e8f0;font-size:15px;display:flex;justify-content:space-between;align-items:center}
+  #rv-panel h3 button{border:0;background:none;font-size:18px;cursor:pointer;color:#64748b}
+  #rv-list{overflow:auto;padding:10px 14px;flex:1}
+  .rv-item{border:1px solid #e2e8f0;border-radius:10px;padding:10px;margin-bottom:9px;cursor:pointer}
+  .rv-item:hover{background:#f8fafc}
+  .rv-item .h{display:flex;align-items:center;gap:8px;font-size:12px;font-weight:700;margin-bottom:4px}
+  .rv-item .h .b{background:#f43f5e;color:#fff;width:20px;height:20px;border-radius:50%;display:inline-flex;align-items:center;justify-content:center;font-size:11px}
+  .rv-item.resolved .b{background:#16a34a}
+  .rv-item .t{font-size:13px;white-space:pre-wrap}
+  .rv-item .when{font-size:10.5px;color:#64748b;margin-top:5px}
+  @media print{#rv-bar,#rv-toggle,#rv-panel,#rv-pop{display:none!important}.rv-pin{-webkit-print-color-adjust:exact;print-color-adjust:exact}}
+</style>
+
+<script>
+(function(){
+  var CFG=window.RV_CONFIG||{};
+  var KEY=CFG.key||('rv_'+(document.title||location.pathname).replace(/[^a-z0-9]+/gi,'_').toLowerCase());
+  if(CFG.title){document.getElementById('rv-title').textContent=CFG.title;}
+  var MODAL_SEL=CFG.modalSelector||'[role="dialog"],[aria-modal="true"],.modal,[data-rv-view]';
+  var layer=document.getElementById('rv-layer'),pop=document.getElementById('rv-pop'),panel=document.getElementById('rv-panel'),
+      list=document.getElementById('rv-list'),countEl=document.getElementById('rv-count'),nameInput=document.getElementById('rv-name'),
+      modeBtn=document.getElementById('rv-mode');
+  var comments=[],commentMode=false,seq=0,RVMO=null;
+  function parse(s){try{return JSON.parse(s)}catch(e){return null}}
+  function lsGet(k){try{return localStorage.getItem(k)}catch(e){return null}}     // file:// pode bloquear
+  function lsSet(k,v){try{localStorage.setItem(k,v)}catch(e){}}
+  var embedded=parse(document.getElementById('rv-data').textContent)||{savedAt:0,comments:[]};
+  var stored=parse(lsGet(KEY))||{savedAt:0,comments:[]};
+  var src=(embedded.savedAt>=stored.savedAt)?embedded:stored;
+  comments=src.comments||[]; seq=comments.reduce(function(m,c){return Math.max(m,c.n||0)},0);
+  var sn=lsGet(KEY+'_name'); if(sn) nameInput.value=sn;
+
+  // ---- visão atual: documento/board x modal/dialog aberto ----
+  function vis(e){ if(!e||e.closest('#rv-bar,#rv-panel,#rv-pop')) return false; if(!e.getClientRects().length) return false; var cs=getComputedStyle(e); return cs.display!=='none'&&cs.visibility!=='hidden'&&parseFloat(cs.opacity||'1')>0; }
+  function activeModal(){ var ns=document.querySelectorAll(MODAL_SEL),out=null; for(var i=0;i<ns.length;i++){ if(vis(ns[i])) out=ns[i]; } return out; }
+  function viewKey(){ var m=activeModal(); return m ? ('modal:'+(m.id||m.getAttribute('data-rv-view')||'dialog')) : 'doc'; }
+  function docScroller(){ var k=document.querySelector('[data-rv-scroll]'); if(k) return k; var mn=document.querySelector('main'); if(mn) return mn; return document.scrollingElement||document.documentElement; }
+  function innerScroller(root){ var best=null,area=0,els=root.querySelectorAll('*'); for(var i=0;i<els.length;i++){var e=els[i];if(e.closest('#rv-bar,#rv-panel,#rv-pop'))continue;var cs=getComputedStyle(e),oy=cs.overflowY;if((oy==='auto'||oy==='scroll')&&e.scrollHeight>e.clientHeight+4&&e.getClientRects().length){var a=e.clientWidth*e.clientHeight;if(a>area){area=a;best=e;}}} return best||root; }
+  function getAnchor(view){ if(view.indexOf('modal:')===0){ var m=activeModal(); return m?innerScroller(m):docScroller(); } return docScroller(); }
+  function isDoc(a){ return a===document.scrollingElement||a===document.documentElement||a===document.body; }
+  function scW(a){ return isDoc(a)?document.documentElement.scrollWidth:(a.scrollWidth||a.clientWidth||1); }
+  function scH(a){ return isDoc(a)?document.documentElement.scrollHeight:(a.scrollHeight||a.clientHeight||1); }
+
+  function save(){var p={savedAt:Date.now(),comments:comments};var j=JSON.stringify(p);lsSet(KEY,j);lsSet(KEY+'_name',nameInput.value||'');document.getElementById('rv-data').textContent=j;}
+  function esc(s){return (s||'').replace(/[&<>"]/g,function(m){return {'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;'}[m]})}
+
+  function render(){
+    if(RVMO){RVMO.disconnect();}                       // evita loop: render muta o DOM
+    var view=viewKey(), anchor=getAnchor(view), docMode=isDoc(anchor), host=docMode?document.body:anchor;
+    if(layer.parentNode!==host) host.appendChild(layer);
+    if(!docMode && getComputedStyle(anchor).position==='static') anchor.style.position='relative';
+    layer.style.height='0px';                          // mede sem a própria camada influenciar o scrollHeight
+    var W=scW(anchor), H=scH(anchor);
+    layer.style.width=docMode?(W+'px'):'100%'; layer.style.height=H+'px'; layer.innerHTML='';
+    var shown=comments.filter(function(c){return (c.view||'doc')===view;});   // só a visão atual
+    var ordered=shown.slice().sort(function(a,b){return a.n-b.n});             // nº sequencial por visão (1,2,3…)
+    ordered.forEach(function(c,i){c.__d=i+1;});
+    shown.forEach(function(c){var pin=document.createElement('div');pin.className='rv-pin'+(c.resolved?' resolved':'');pin.textContent=c.__d;pin.dataset.n=c.n;
+      pin.style.left=(c.xPct*W)+'px';pin.style.top=(c.yPct*H)+'px';pin.title=(c.author||'?')+': '+c.text;
+      pin.addEventListener('click',function(ev){ev.stopPropagation();openPop(c,pin)});layer.appendChild(pin);});
+    list.innerHTML=''; if(!shown.length){list.innerHTML='<p style="color:#94a3b8;font-size:13px;padding:6px">Nenhum comentário nesta visão.</p>';}
+    ordered.forEach(function(c){var it=document.createElement('div');it.className='rv-item'+(c.resolved?' resolved':'');
+      it.innerHTML='<div class="h"><span class="b">'+c.__d+'</span> '+esc(c.author||'—')+(c.resolved?' · ✓ resolvido':'')+'</div><div class="t">'+esc(c.text)+'</div><div class="when">'+new Date(c.ts).toLocaleString('pt-BR')+'</div>';
+      it.addEventListener('click',function(){var a=getAnchor(viewKey());try{(a.scrollTo?a:window).scrollTo({top:c.yPct*scH(a)-160,behavior:'smooth'});}catch(e){} var pin=layer.querySelector('.rv-pin[data-n="'+c.n+'"]');openPop(c,pin);});list.appendChild(it);});
+    countEl.textContent=shown.length;
+    if(RVMO){ try{ RVMO.observe(document.body,{childList:true,subtree:true,attributes:true,attributeFilter:['class','style']}); }catch(e){} }
+  }
+  function openPop(c,el){var r=el?el.getBoundingClientRect():{left:innerWidth/2,top:innerHeight/2};pop.style.display='block';
+    pop.style.left=Math.min(r.left+30,innerWidth-280)+'px';pop.style.top=Math.max(8,Math.min(r.top,innerHeight-180))+'px';
+    pop.innerHTML='<div class="meta">Pino #'+(c.__d||c.n)+(c.author?(' · '+esc(c.author)):'')+'</div><textarea id="rv-ta">'+esc(c.text)+'</textarea><div class="acts"><button class="save" id="rv-sv">Salvar</button><button class="res" id="rv-rs">'+(c.resolved?'Reabrir':'Resolver')+'</button><button class="del" id="rv-dl">Excluir</button></div>';
+    var ta=document.getElementById('rv-ta');ta.focus();
+    document.getElementById('rv-sv').onclick=function(){c.text=ta.value.trim();c.author=nameInput.value||c.author||'Anônimo';c.ts=Date.now();if(!c.text){rm(c)}else{save();render()}pop.style.display='none';};
+    document.getElementById('rv-rs').onclick=function(){c.resolved=!c.resolved;save();render();pop.style.display='none';};
+    document.getElementById('rv-dl').onclick=function(){rm(c);pop.style.display='none';};
+  }
+  function rm(c){comments=comments.filter(function(x){return x!==c});save();render();}
+  document.addEventListener('click',function(ev){if(!commentMode)return;if(ev.target.closest('#rv-bar,#rv-toggle,#rv-panel,#rv-pop,.rv-pin'))return;
+    // captura: impede que handlers do protótipo (fechar modal / toggles) rodem ao fixar o pino
+    ev.preventDefault();ev.stopPropagation();if(ev.stopImmediatePropagation)ev.stopImmediatePropagation();
+    var view=viewKey(), anchor=getAnchor(view), docMode=isDoc(anchor), rect=anchor.getBoundingClientRect?anchor.getBoundingClientRect():{left:0,top:0};
+    var x,y;
+    if(docMode){ x=ev.pageX; y=ev.pageY; }
+    else { x=ev.clientX-(rect.left||0)+(anchor.scrollLeft||0); y=ev.clientY-(rect.top||0)+(anchor.scrollTop||0); }
+    var c={n:++seq,view:view,xPct:x/(scW(anchor)||1),yPct:y/(scH(anchor)||1),author:nameInput.value||'Anônimo',text:'',ts:Date.now(),resolved:false};
+    comments.push(c);save();render();var pins=layer.querySelectorAll('.rv-pin');openPop(c,pins[pins.length-1]);},true);
+  modeBtn.onclick=function(){commentMode=!commentMode;document.body.classList.toggle('rv-commenting',commentMode);modeBtn.classList.toggle('on',commentMode);modeBtn.textContent=commentMode?'✋ Sair do modo comentário':'💬 Ativar modo comentário';};
+  document.getElementById('rv-listbtn').onclick=function(){panel.classList.add('open')};
+  document.getElementById('rv-close').onclick=function(){panel.classList.remove('open')};
+  nameInput.onchange=save;
+  document.getElementById('rv-min').onclick=function(){document.getElementById('rv-bar').style.display='none';document.getElementById('rv-toggle').style.display='block';};
+  document.getElementById('rv-toggle').onclick=function(){document.getElementById('rv-bar').style.display='block';document.getElementById('rv-toggle').style.display='none';};
+  document.getElementById('rv-export').onclick=function(){save();var clone=document.documentElement.cloneNode(true);
+    var a=clone.querySelector('#rv-layer');if(a)a.innerHTML='';var b=clone.querySelector('#rv-list');if(b)b.innerHTML='';
+    var c=clone.querySelector('#rv-pop');if(c){c.innerHTML='';c.style.display='none';}
+    var name=(document.title||'arquivo').replace(/[^a-z0-9]+/gi,'-').toLowerCase()+'-COMENTADO.html';
+    dl(new Blob(['<!DOCTYPE html>\n'+clone.outerHTML],{type:'text/html'}),name);};
+  document.getElementById('rv-importbtn').onclick=function(){document.getElementById('rv-import').click()};
+  document.getElementById('rv-import').onchange=function(e){var f=e.target.files[0];if(!f)return;var rd=new FileReader();
+    rd.onload=function(){var data=null,t=rd.result;if(f.name.endsWith('.json')){data=parse(t)}else{var m=t.match(/<script[^>]*id="rv-data"[^>]*>([\s\S]*?)<\/script>/);if(m)data=parse(m[1]);}
+      if(data&&data.comments){comments=data.comments;seq=comments.reduce(function(mx,c){return Math.max(mx,c.n||0)},0);save();render();alert('Importados '+comments.length+' comentário(s).');}else alert('Não encontrei comentários nesse arquivo.');};
+    rd.readAsText(f);};
+  function dl(blob,name){var a=document.createElement('a');a.href=URL.createObjectURL(blob);a.download=name;a.click();setTimeout(function(){URL.revokeObjectURL(a.href)},2000);}
+  window.addEventListener('resize',render); window.addEventListener('load',render);
+  // reposiciona/troca de visão quando o conteúdo muda ou um modal abre/fecha (classe/estilo)
+  try{ RVMO=new MutationObserver(function(){clearTimeout(window.__rvmo);window.__rvmo=setTimeout(render,120);});
+    RVMO.observe(document.body,{childList:true,subtree:true,attributes:true,attributeFilter:['class','style']}); }catch(e){}
+  render();
+})();
+</script>
+</body>
+</html>

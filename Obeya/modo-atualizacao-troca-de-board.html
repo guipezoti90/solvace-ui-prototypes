@@ -1,0 +1,773 @@
+<!doctype html>
+<html lang="pt-BR">
+<head>
+<meta charset="utf-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1" />
+<title>Obeya · Manter Atualizar e Editar Board ao trocar de board</title>
+<script src="https://cdn.tailwindcss.com"></script>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Roboto:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
+<script>
+  tailwind.config = {
+    theme: { extend: {
+      fontFamily: { sans: ['Roboto', 'ui-sans-serif', 'system-ui', 'sans-serif'] },
+      colors: {
+        primary:'#17457A', text:'#4D4D4D', disabled:'#9BA0A3', inactive:'#E4E7EA',
+        ink:'#0A0A0B', danger:'#E22A2E', success:'#466900', chartgreen:'#5C9E31',
+        chartred:'#E22A2E', accent5:'#FFD88D',
+      },
+    } }
+  }
+</script>
+<style>
+  :root{ --primary:#17457A; --text:#4D4D4D; --disabled:#9BA0A3; --inactive:#E4E7EA; }
+  *{ -webkit-tap-highlight-color:transparent; }
+  html,body{ height:100%; }
+  body{ font-family:'Roboto',sans-serif; background:#fff; color:var(--text); overflow-x:hidden; }
+
+  /* ---------- Board tabs ---------- */
+  .tabs-strip{ border-bottom:2px solid #9BA0A3; }
+  .b-tab{ padding:9px 28px; font-size:16px; font-weight:400; color:var(--disabled); white-space:nowrap;
+    cursor:pointer; border-bottom:2px solid transparent; margin-bottom:-2px; transition:color .15s; outline:none; }
+  .b-tab:hover{ color:var(--text); }
+  .b-tab:focus-visible{ box-shadow:0 0 0 3px rgba(23,69,122,.3); border-radius:6px; }
+  .b-tab.active{ color:var(--primary); border-bottom-color:var(--primary); font-weight:500; }
+  .tab-arrow{ padding:6px 0; color:var(--primary); cursor:pointer; display:flex; align-items:center; flex:0 0 auto; }
+
+  /* ---------- Toggle "Atualizar" ---------- */
+  .upd-switch{ position:relative; display:inline-flex; }
+  .upd-switch input{ position:absolute; opacity:0; width:0; height:0; }
+  .upd-switch .track{ width:44px; height:24px; border-radius:9999px; background:var(--inactive);
+    display:inline-flex; align-items:center; cursor:pointer; transition:background .18s ease, box-shadow .15s ease; }
+  .upd-switch .thumb{ width:20px; height:20px; border-radius:9999px; background:#fff; margin-left:2px;
+    box-shadow:0 1px 3px rgba(16,24,40,.3); transition:transform .18s cubic-bezier(.3,.8,.4,1); }
+  .upd-switch input:checked + .track{ background:var(--primary); }
+  .upd-switch input:checked + .track .thumb{ transform:translateX(20px); }
+  .upd-switch input:focus-visible + .track{ box-shadow:0 0 0 3px rgba(23,69,122,.35); }
+  .upd-switch input:disabled + .track{ opacity:.5; cursor:not-allowed; }
+
+  /* ---------- Tooltip ---------- */
+  .z-tip{ position:relative; }
+  .z-tip .tip{ position:absolute; bottom:calc(100% + 10px); left:50%; transform:translateX(-50%) translateY(4px);
+    background:#0A0A0B; color:#fff; font-size:12px; line-height:1.3; padding:6px 10px; border-radius:6px;
+    white-space:nowrap; opacity:0; pointer-events:none; transition:opacity .14s, transform .14s; z-index:50; box-shadow:0 4px 12px rgba(16,24,40,.25); }
+  .z-tip .tip::after{ content:""; position:absolute; top:100%; left:50%; transform:translateX(-50%); border:5px solid transparent; border-top-color:#0A0A0B; }
+  .z-tip:hover .tip, .z-tip:focus-within .tip{ opacity:1; transform:translateX(-50%) translateY(0); }
+  .z-tip.left .tip{ bottom:auto; top:50%; left:auto; right:calc(100% + 12px); transform:translateY(-50%) translateX(4px); }
+  .z-tip.left .tip::after{ top:50%; left:100%; transform:translateY(-50%); border-top-color:transparent; border-left-color:#0A0A0B; }
+  .z-tip.left:hover .tip, .z-tip.left:focus-within .tip{ transform:translateY(-50%) translateX(0); }
+
+  /* ---------- Status chips ---------- */
+  .chip{ display:inline-flex; align-items:center; gap:7px; height:28px; padding:0 11px; border-radius:8px;
+    font-size:13px; font-weight:600; border:1px solid var(--inactive); background:#fff; color:var(--disabled); }
+  .chip .led{ width:8px; height:8px; border-radius:9999px; background:var(--disabled); }
+  .chip.on{ color:var(--primary); border-color:rgba(23,69,122,.35); background:rgba(23,69,122,.06); }
+  .chip.on .led{ background:var(--primary); box-shadow:0 0 0 3px rgba(23,69,122,.15); }
+  .chip.on.edit{ color:var(--success); border-color:rgba(70,105,0,.35); background:rgba(70,105,0,.08); }
+  .chip.on.edit .led{ background:var(--success); box-shadow:0 0 0 3px rgba(70,105,0,.15); }
+
+  /* ---------- Widget ---------- */
+  .widget-card{ width:212px; background:#fff; border-radius:12px; padding:8px; border:2px solid transparent;
+    filter:drop-shadow(2px 1px 5px rgba(0,0,0,0.15)); display:flex; flex-direction:column; gap:12px; position:relative;
+    transition:border-color .15s, box-shadow .15s, width .25s ease; }
+  .w-title{ font-size:16px; font-weight:800; color:var(--text); cursor:pointer; border-radius:4px; outline:none; }
+  .w-title:hover{ text-decoration:underline; text-decoration-color:rgba(23,69,122,.5); color:var(--primary); }
+  .w-title:focus-visible{ box-shadow:0 0 0 3px rgba(23,69,122,.3); }
+
+  .chart{ position:relative; width:100%; height:97px; }
+  .chart .grid-l{ position:absolute; left:0; right:0; height:0; border-top:1px dashed #E4E7EA; }
+  .chart .bars{ position:absolute; inset:0 4px; display:flex; align-items:flex-end; justify-content:space-between; }
+  .chart .bar{ width:11px; border-radius:3px; transition:height .5s cubic-bezier(.3,.8,.3,1); }
+  .x-labels{ display:flex; justify-content:space-between; padding:0 4px; margin-top:4px; font-size:11px; font-weight:300; color:var(--text); line-height:1.32; }
+
+  /* ===== EDIÇÃO DO BOARD: aparência dos widgets (node 16707:14196) ===== */
+  body.edit-on .widget-card{ border-color:var(--primary); box-shadow:0 0 0 4px rgba(23,69,122,.12); cursor:grab; }
+  .w-edit-tools{ position:absolute; top:-13px; right:6px; gap:4px; display:none; z-index:5; }
+  body.edit-on .w-edit-tools{ display:flex; }
+  .w-edit-tools button{ width:22px; height:22px; border-radius:9999px; background:var(--primary); color:#fff; border:0;
+    display:inline-flex; align-items:center; justify-content:center; cursor:pointer; box-shadow:0 2px 5px rgba(16,24,40,.25); }
+  .w-edit-tools button:hover{ background:#103456; }
+  .w-edit-tools button:focus-visible{ box-shadow:0 0 0 3px rgba(23,69,122,.4); }
+  .w-edit-tools button.danger{ background:var(--danger); }
+  .w-edit-tools button.danger:hover{ background:#a81f23; }
+
+  .w-size{ position:absolute; bottom:-12px; left:50%; transform:translateX(-50%); display:none; align-items:center; gap:5px;
+    background:var(--primary); color:#fff; border-radius:4px; padding:2px 8px; font-size:12px; cursor:pointer; z-index:5; }
+  body.edit-on .widget-card .w-size{ display:inline-flex; }
+  body.edit-on .widget-card.resizing .w-size{ display:none; }
+
+  .w-resize{ position:absolute; bottom:-13px; left:50%; transform:translateX(-50%); display:none; align-items:center; gap:4px;
+    background:var(--primary); border-radius:6px; padding:3px 5px; z-index:6; }
+  body.edit-on .widget-card.resizing .w-resize{ display:inline-flex; }
+  .w-resize input{ width:36px; height:18px; border-radius:3px; border:0; text-align:center; font-size:12px; font-weight:600; color:var(--primary); background:#fff; outline:none; }
+  .w-resize input.invalid{ color:var(--danger); box-shadow:0 0 0 1.5px var(--danger) inset; }
+  .w-resize .x{ color:#fff; font-size:11px; }
+  .w-resize .rs-btn{ width:18px; height:18px; border-radius:9999px; background:#fff; color:var(--primary); border:0; display:inline-flex; align-items:center; justify-content:center; cursor:pointer; }
+  .w-resize .rs-btn.confirm{ color:var(--success); }
+  .w-resize .rs-btn.cancel{ color:var(--danger); }
+  .w-resize .rs-btn:disabled{ opacity:.45; cursor:not-allowed; }
+  .w-resize .rs-tip{ position:absolute; bottom:calc(100% + 8px); left:50%; transform:translateX(-50%); background:#0A0A0B; color:#fff;
+    font-size:11px; padding:5px 8px; border-radius:6px; white-space:nowrap; opacity:0; pointer-events:none; transition:opacity .14s; }
+  .w-resize .rs-tip::after{ content:""; position:absolute; top:100%; left:50%; transform:translateX(-50%); border:5px solid transparent; border-top-color:#0A0A0B; }
+  .w-resize .rs-tip.show{ opacity:1; }
+
+  /* ---------- Barra flutuante inferior direita ---------- */
+  .float-bar{ position:fixed; right:0; bottom:27px; width:330px; z-index:30; background:#fff; border-radius:32px 0 0 32px;
+    padding:0 4px; display:flex; align-items:center; filter:drop-shadow(-5px 0px 3px rgba(0,0,0,0.25)); }
+  .zoom-pill{ height:40px; background:var(--primary); border-radius:32px; padding:0 8px; display:flex; align-items:center; gap:8px; }
+  .zoom-pill .divider{ width:1px; height:35px; background:rgba(255,255,255,.9); }
+  .zoom-btn{ display:inline-flex; align-items:center; justify-content:center; width:24px; height:24px; color:#fff; cursor:pointer; background:transparent; border:0; border-radius:6px; }
+  .zoom-btn:hover{ opacity:.8; }
+  .menu-circle{ width:40px; height:40px; border-radius:32px; background:var(--primary); display:inline-flex; align-items:center; justify-content:center; color:#fff; cursor:pointer; border:0; transition:background .15s; }
+  .menu-circle:hover{ background:#103456; }
+  .menu-circle.open{ background:#103456; }
+  .bar-label{ font-size:14px; font-weight:600; color:var(--text); line-height:1.2; }
+
+  /* ---------- 3-dot menu (opções circulares — node 13277:6119) ---------- */
+  .dots-menu{ position:fixed; right:14px; bottom:96px; z-index:36; display:none; flex-direction:column; gap:10px; align-items:center; }
+  .dots-menu.open{ display:flex; }
+  .dot-opt{ width:48px; height:48px; border-radius:9999px; background:var(--primary); color:#fff; border:0; display:inline-flex;
+    align-items:center; justify-content:center; cursor:pointer; box-shadow:0 3px 10px rgba(16,24,40,.28);
+    transition:transform .12s ease, box-shadow .12s ease, background .12s; opacity:0; transform:translateY(8px) scale(.9); }
+  .dots-menu.open .dot-opt{ opacity:1; transform:translateY(0) scale(1); }
+  .dots-menu.open .dot-opt:nth-child(1){ transition-delay:.02s; } .dots-menu.open .dot-opt:nth-child(2){ transition-delay:.05s; }
+  .dots-menu.open .dot-opt:nth-child(3){ transition-delay:.08s; } .dots-menu.open .dot-opt:nth-child(4){ transition-delay:.11s; }
+  .dots-menu.open .dot-opt:nth-child(5){ transition-delay:.14s; } .dots-menu.open .dot-opt:nth-child(6){ transition-delay:.17s; }
+  .dot-opt:hover{ transform:scale(1.07); background:#103456; }
+  .dot-opt:focus-visible{ box-shadow:0 0 0 3px rgba(23,69,122,.45); }
+  .dot-opt.active{ background:#fff; color:var(--primary); box-shadow:0 0 0 2px var(--primary), 0 3px 10px rgba(16,24,40,.28); }
+
+  /* ---------- lang switch ---------- */
+  .seg{ display:inline-flex; border:1px solid rgba(255,255,255,.5); border-radius:8px; overflow:hidden; }
+  .seg button{ padding:3px 10px; font-size:12px; font-weight:600; color:rgba(255,255,255,.8); cursor:pointer; background:transparent; border:0; }
+  .seg button.active{ background:#fff; color:var(--primary); }
+
+  /* ---------- Toast ---------- */
+  #toasts{ position:fixed; left:50%; transform:translateX(-50%); bottom:24px; z-index:60; display:flex; flex-direction:column; gap:10px; align-items:center; }
+  .toast{ display:flex; align-items:center; gap:10px; background:#0A0A0B; color:#fff; border-radius:10px; padding:10px 16px; font-size:13px;
+    box-shadow:0 8px 24px rgba(16,24,40,.3); opacity:0; transform:translateY(12px); transition:opacity .25s, transform .25s; white-space:nowrap; }
+  .toast.show{ opacity:1; transform:translateY(0); }
+  .toast.error{ background:#7a1f1f; }
+
+  /* ---------- skeleton ---------- */
+  .sk{ background:linear-gradient(90deg,#eef1f4 25%,#e2e7ee 37%,#eef1f4 63%); background-size:400% 100%; animation:shimmer 1.3s infinite; border-radius:8px; }
+  @keyframes shimmer{ 0%{ background-position:100% 0;} 100%{ background-position:-100% 0;} }
+
+  /* ---------- Modais ---------- */
+  .overlay{ position:fixed; inset:0; background:rgba(10,10,11,.45); z-index:70; display:flex; align-items:center; justify-content:center;
+    padding:16px; opacity:0; pointer-events:none; transition:opacity .18s; }
+  .overlay.open{ opacity:1; pointer-events:auto; }
+  .modal-card{ background:#fff; border-radius:12px; box-shadow:0 10px 15px -3px rgba(0,0,0,.1), 0 4px 6px -4px rgba(0,0,0,.1);
+    width:100%; max-width:520px; transform:translateY(10px) scale(.98); transition:transform .18s; }
+  .overlay.open .modal-card{ transform:translateY(0) scale(1); }
+  .icon-btn{ width:32px; height:32px; border-radius:8px; display:inline-flex; align-items:center; justify-content:center; color:var(--text); cursor:pointer; }
+  .icon-btn:hover{ background:#F1F4F7; }
+  .z-input{ width:100%; height:40px; border:1px solid #D0D5DD; border-radius:8px; background:#fff; padding:0 12px; font-size:14px; color:var(--text); outline:none; transition:border-color .15s, box-shadow .15s; }
+  .z-input:focus{ border-color:var(--primary); box-shadow:0 0 0 3px rgba(23,69,122,.18); }
+  .field-label{ font-size:13px; color:var(--text); margin-bottom:6px; display:block; }
+  .z-btn{ display:inline-flex; align-items:center; justify-content:center; gap:6px; height:40px; padding:0 18px; border-radius:8px; font-size:14px; font-weight:500; cursor:pointer; border:1px solid transparent; transition:all .15s; }
+  .z-btn-primary{ background:var(--primary); color:#fff; } .z-btn-primary:hover{ background:#103456; }
+  .z-btn-outline{ background:#fff; color:var(--text); border-color:#D0D5DD; } .z-btn-outline:hover{ background:#F5F7FA; }
+
+  /* ---------- QA strip ---------- */
+  .qa-strip{ position:fixed; left:16px; bottom:16px; z-index:28; display:flex; align-items:center; gap:8px; background:#fff;
+    border:1px solid var(--inactive); border-radius:10px; padding:7px 10px; box-shadow:0 4px 14px rgba(16,24,40,.1); font-size:12px; }
+  .qa-strip .qa-lbl{ font-weight:600; color:var(--disabled); text-transform:uppercase; letter-spacing:.04em; }
+  .qa-btn{ border:1px solid var(--inactive); background:#fff; border-radius:7px; padding:5px 9px; font-size:12px; font-weight:500; cursor:pointer; color:var(--text); }
+  .qa-btn:hover{ background:#F5F7FA; }
+
+  @media (max-width:900px){
+    .tabs-wrap{ margin:0 12px; } .float-bar{ width:auto; max-width:88vw; } .qa-strip{ display:none; } .dots-menu{ right:12px; }
+  }
+</style>
+</head>
+<body>
+
+  <!-- ================= HEADER ================= -->
+  <header class="h-[53px] bg-primary flex items-center justify-between pl-8 pr-8 relative z-20">
+    <div class="flex items-center h-[30px] select-none" aria-label="Solvace">
+      <svg width="130" height="30" viewBox="0 0 130 30" fill="none" xmlns="http://www.w3.org/2000/svg">
+        <circle cx="13" cy="15" r="10.5" fill="#fff"/>
+        <path d="M16.6 11.2c-.5-1.2-1.8-2-3.4-2-2 0-3.5 1.2-3.5 2.9 0 1.5 1 2.3 3 2.8l1.3.3c1.3.3 1.9.7 1.9 1.5 0 .9-.9 1.5-2.2 1.5-1.4 0-2.4-.6-2.8-1.7l-1.9.7c.6 1.7 2.3 2.8 4.6 2.8 2.4 0 4.2-1.3 4.2-3.3 0-1.6-1-2.5-3.1-3l-1.4-.3c-1.2-.3-1.7-.7-1.7-1.4 0-.8.8-1.4 1.8-1.4s1.7.5 2 1.3l1.2-.7z" fill="#17457A"/>
+        <text x="28" y="21.5" fill="#fff" font-family="Roboto, sans-serif" font-size="19" font-weight="600" letter-spacing="0.5">solvace</text>
+      </svg>
+    </div>
+    <div class="flex items-center gap-4">
+      <svg width="24" height="24" viewBox="0 0 24 24" fill="#fff" aria-label="Notificações"><path d="M12 2a7 7 0 0 0-7 7v3.3l-1.6 3.2A1 1 0 0 0 4.3 17h15.4a1 1 0 0 0 .9-1.5L19 12.3V9a7 7 0 0 0-7-7Zm0 20a3 3 0 0 0 2.8-2H9.2A3 3 0 0 0 12 22Z"/></svg>
+      <div class="flex items-center gap-1">
+        <svg width="24" height="24" viewBox="0 0 24 24" fill="#fff" aria-hidden="true"><path fill-rule="evenodd" d="M12 2a7 7 0 0 0-7 7c0 5 7 13 7 13s7-8 7-13a7 7 0 0 0-7-7Zm0 9.5A2.5 2.5 0 1 1 12 6.5a2.5 2.5 0 0 1 0 5Z" clip-rule="evenodd"/></svg>
+        <span class="text-white font-semibold text-[16px] tracking-[-0.16px] leading-6">Curitiba</span>
+      </div>
+      <span class="inline-flex items-center justify-center w-6 h-6 rounded-full bg-inactive text-text text-[14px] leading-none">NU</span>
+      <svg width="32" height="32" viewBox="0 0 24 24" fill="#fff" aria-label="Aplicativos"><path d="M4 4h7v7H4V4Zm9 0h7v7h-7V4ZM4 13h7v7H4v-7Zm9 0h7v7h-7v-7Z"/></svg>
+    </div>
+  </header>
+
+  <!-- ================= SALA + ABAS DE BOARDS ================= -->
+  <div class="tabs-wrap mx-12 mt-5">
+    <div class="tabs-strip flex items-center">
+      <span class="tab-arrow" onclick="scrollTabs(-1)" aria-label="Boards anteriores">
+        <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="#17457A" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><polyline points="15 18 9 12 15 6"/></svg>
+      </span>
+      <div id="tabsScroll" class="flex items-center overflow-x-auto flex-1" style="scrollbar-width:none;" role="tablist">
+        <span class="b-tab active" data-board="0" role="tab" tabindex="0" aria-selected="true">INDICATORS</span>
+        <span class="b-tab" data-board="1" role="tab" tabindex="0">TABLE</span>
+        <span class="b-tab" data-board="2" role="tab" tabindex="0">MODULES</span>
+        <span class="b-tab" data-board="3" role="tab" tabindex="0">MEETINGS</span>
+        <span class="b-tab" data-board="4" role="tab" tabindex="0">VISUAL ELEMENTS</span>
+        <span class="b-tab" data-board="5" role="tab" tabindex="0">Test Ocean</span>
+      </div>
+      <span class="tab-arrow" onclick="scrollTabs(1)" aria-label="Próximos boards">
+        <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="#17457A" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><polyline points="9 18 15 12 9 6"/></svg>
+      </span>
+    </div>
+  </div>
+
+  <!-- ================= ÁREA DO BOARD ================= -->
+  <main class="relative px-12 pt-6 pb-24 min-h-[calc(100vh-150px)]">
+
+    <!-- skeleton -->
+    <div id="skeleton" class="hidden">
+      <div class="widget-card" style="filter:none;border:1px solid #EEF1F4;">
+        <div class="sk h-4 w-24"></div><div class="sk h-[97px] w-full"></div><div class="sk h-3 w-32"></div>
+      </div>
+    </div>
+
+    <!-- widget -->
+    <div id="widgetWrap">
+      <div class="widget-card" id="widgetCard">
+
+        <!-- mini-toolbar de edição (node 16739:13230) -->
+        <div class="w-edit-tools" role="toolbar" aria-label="Ações do widget">
+          <button class="z-tip" aria-label="Adicionar widget" onclick="widgetAction('add')">
+            <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round"><path d="M14 3v4a1 1 0 0 0 1 1h4"/><path d="M17 21H7a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h7l5 5v11a2 2 0 0 1-2 2Z"/><path d="M12 11v6M9 14h6"/></svg>
+            <span class="tip" data-tip="add">Adicionar</span>
+          </button>
+          <button class="z-tip" aria-label="Duplicar widget" onclick="widgetAction('dup')">
+            <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round"><rect x="9" y="9" width="11" height="11" rx="2"/><path d="M5 15H4a2 2 0 0 1-2-2V4a2 2 0 0 1 2-2h9a2 2 0 0 1 2 2v1"/></svg>
+            <span class="tip" data-tip="dup">Duplicar</span>
+          </button>
+          <button class="z-tip" aria-label="Configurações do widget" onclick="widgetAction('cog')">
+            <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="3"/><path d="M19.4 15a1.65 1.65 0 0 0 .33 1.82l.06.06a2 2 0 1 1-2.83 2.83l-.06-.06a1.65 1.65 0 0 0-1.82-.33 1.65 1.65 0 0 0-1 1.51V21a2 2 0 0 1-4 0v-.09A1.65 1.65 0 0 0 9 19.4a1.65 1.65 0 0 0-1.82.33l-.06.06a2 2 0 1 1-2.83-2.83l.06-.06a1.65 1.65 0 0 0 .33-1.82 1.65 1.65 0 0 0-1.51-1H3a2 2 0 0 1 0-4h.09A1.65 1.65 0 0 0 4.6 9a1.65 1.65 0 0 0-.33-1.82l-.06-.06a2 2 0 1 1 2.83-2.83l.06.06a1.65 1.65 0 0 0 1.82.33H9a1.65 1.65 0 0 0 1-1.51V3a2 2 0 0 1 4 0v.09a1.65 1.65 0 0 0 1 1.51 1.65 1.65 0 0 0 1.82-.33l.06-.06a2 2 0 1 1 2.83 2.83l-.06.06a1.65 1.65 0 0 0-.33 1.82V9a1.65 1.65 0 0 0 1.51 1H21a2 2 0 0 1 0 4h-.09a1.65 1.65 0 0 0-1.51 1Z"/></svg>
+            <span class="tip" data-tip="cog">Configurar</span>
+          </button>
+          <button class="danger z-tip" aria-label="Excluir widget" onclick="widgetAction('del')">
+            <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round"><path d="M3 6h18M8 6V4a1 1 0 0 1 1-1h6a1 1 0 0 1 1 1v2M19 6l-1 14a2 2 0 0 1-2 2H8a2 2 0 0 1-2-2L5 6"/></svg>
+            <span class="tip" data-tip="del">Excluir</span>
+          </button>
+        </div>
+
+        <div class="flex flex-col gap-1">
+          <span id="widgetTitle" class="w-title z-tip" role="link" tabindex="0"
+                onclick="openWidget()" onkeydown="if(event.key==='Enter'||event.key===' '){event.preventDefault();openWidget();}">
+            Gráfico
+            <span class="tip" id="titleTip">Ampliar widget</span>
+          </span>
+          <span class="text-[14px] text-black/50 leading-[normal]">subtítulo</span>
+        </div>
+        <div>
+          <div class="chart">
+            <div class="grid-l" style="top:0"></div><div class="grid-l" style="top:24px"></div>
+            <div class="grid-l" style="top:48px"></div><div class="grid-l" style="top:72px"></div>
+            <div class="grid-l" style="top:96px"></div>
+            <div class="bars" id="bars"></div>
+          </div>
+          <div class="x-labels"><span>1</span><span>2</span><span>3</span><span>4</span><span>5</span><span>6</span><span>7</span></div>
+        </div>
+        <div class="flex items-start justify-between w-full">
+          <svg width="16" height="16" viewBox="0 0 24 24" fill="#0A0A0B" aria-label="Informações"><path fill-rule="evenodd" d="M12 2a10 10 0 1 0 0 20 10 10 0 0 0 0-20Zm0 5a1.25 1.25 0 1 1 0 2.5A1.25 1.25 0 0 1 12 7Zm1 10h-2v-6h2v6Z" clip-rule="evenodd"/></svg>
+          <span class="inline-flex items-center justify-center w-4 h-4 rounded-full bg-accent5 overflow-hidden">
+            <svg width="12" height="12" viewBox="0 0 24 24" fill="#A9651B"><path d="M12 12a4 4 0 1 0 0-8 4 4 0 0 0 0 8Zm0 2c-3.3 0-8 1.7-8 5v3h16v-3c0-3.3-4.7-5-8-5Z"/></svg>
+          </span>
+        </div>
+
+        <!-- pill de tamanho (node 16739:13252) -->
+        <div class="w-size" role="button" tabindex="0" aria-label="Editar tamanho" onclick="startResize()" onkeydown="if(event.key==='Enter'||event.key===' '){event.preventDefault();startResize();}">
+          <span id="wSizeText">180 x 180</span>
+          <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M12 20h9"/><path d="M16.5 3.5a2.1 2.1 0 0 1 3 3L7 19l-4 1 1-4Z"/></svg>
+        </div>
+
+        <!-- editor de tamanho (node 17851:14334) -->
+        <div class="w-resize" id="wResize">
+          <span class="rs-tip" id="rsTip">Use apenas números múltiplos de 10</span>
+          <input id="rsW" type="text" inputmode="numeric" value="180" aria-label="Largura" oninput="validateResize()">
+          <span class="x">×</span>
+          <input id="rsH" type="text" inputmode="numeric" value="180" aria-label="Altura" oninput="validateResize()">
+          <button class="rs-btn confirm" id="rsConfirm" aria-label="Confirmar" onclick="confirmResize()">
+            <svg width="11" height="11" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"><path d="M20 6 9 17l-5-5"/></svg>
+          </button>
+          <button class="rs-btn cancel" aria-label="Cancelar" onclick="cancelResize()">
+            <svg width="11" height="11" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"><path d="M18 6 6 18M6 6l12 12"/></svg>
+          </button>
+        </div>
+      </div>
+    </div>
+  </main>
+
+  <!-- scrollbar decorativa -->
+  <div style="position:fixed;right:8px;top:172px;width:8px;height:min(640px,calc(100vh-220px));background:#E4E7EA;border-radius:8px;z-index:10" aria-hidden="true">
+    <div style="position:absolute;left:0;top:140px;width:8px;height:65px;background:#D0D5DD;border-radius:8px"></div>
+  </div>
+
+  <!-- ================= MENU 3 PONTOS (opções) ================= -->
+  <div class="dots-menu" id="dotsMenu" role="menu" aria-label="Opções do board">
+    <button class="dot-opt z-tip left" role="menuitem" aria-label="Avisos" onclick="menuAction('alert')">
+      <svg width="22" height="22" viewBox="0 0 24 24" fill="currentColor"><path d="M12 2a10 10 0 1 0 0 20 10 10 0 0 0 0-20Zm1 15h-2v-2h2v2Zm0-4h-2V7h2v6Z"/></svg>
+      <span class="tip" data-tip="alert">Avisos</span>
+    </button>
+    <button class="dot-opt z-tip left" role="menuitem" aria-label="Apresentar" onclick="menuAction('play')">
+      <svg width="22" height="22" viewBox="0 0 24 24" fill="currentColor"><path d="M8 5v14l11-7z"/></svg>
+      <span class="tip" data-tip="play">Apresentar</span>
+    </button>
+    <button class="dot-opt z-tip left" role="menuitem" aria-label="Tela cheia" onclick="menuAction('expand')">
+      <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><path d="M8 3H5a2 2 0 0 0-2 2v3M16 3h3a2 2 0 0 1 2 2v3M8 21H5a2 2 0 0 1-2-2v-3M16 21h3a2 2 0 0 0 2-2v-3"/></svg>
+      <span class="tip" data-tip="expand">Tela cheia</span>
+    </button>
+    <button class="dot-opt z-tip left" role="menuitem" aria-label="Sincronizar" onclick="menuAction('sync')">
+      <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><path d="M3 12a9 9 0 0 1 9-9 9 9 0 0 1 6.7 3M21 5v4h-4M21 12a9 9 0 0 1-9 9 9 9 0 0 1-6.7-3M3 19v-4h4"/></svg>
+      <span class="tip" data-tip="sync">Sincronizar</span>
+    </button>
+    <button class="dot-opt z-tip left" role="menuitem" aria-label="Configurações" onclick="menuAction('cog')">
+      <svg width="20" height="20" viewBox="0 0 24 24" fill="currentColor"><path d="M19.14 12.94a7.49 7.49 0 0 0 0-1.88l2.03-1.58a.5.5 0 0 0 .12-.64l-1.92-3.32a.5.5 0 0 0-.6-.22l-2.39.96a7.3 7.3 0 0 0-1.62-.94l-.36-2.54a.5.5 0 0 0-.5-.42h-3.84a.5.5 0 0 0-.5.42l-.36 2.54c-.59.24-1.13.56-1.62.94l-2.39-.96a.5.5 0 0 0-.6.22L2.68 8.84a.5.5 0 0 0 .12.64l2.03 1.58a7.49 7.49 0 0 0 0 1.88l-2.03 1.58a.5.5 0 0 0-.12.64l1.92 3.32c.14.24.42.32.66.22l2.39-.96c.49.38 1.03.7 1.62.94l.36 2.54a.5.5 0 0 0 .5.42h3.84a.5.5 0 0 0 .5-.42l.36-2.54c.59-.24 1.13-.56 1.62-.94l2.39.96c.24.1.52.02.66-.22l1.92-3.32a.5.5 0 0 0-.12-.64l-2.03-1.58ZM12 15.5A3.5 3.5 0 1 1 12 8.5a3.5 3.5 0 0 1 0 7Z"/></svg>
+      <span class="tip" data-tip="cog">Configurações</span>
+    </button>
+    <button class="dot-opt z-tip left" id="editBtn" role="menuitem" aria-pressed="false" aria-label="Editar Board" onclick="onToggleEdit()">
+      <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M11 4H4a2 2 0 0 0-2 2v14a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2v-7"/><path d="M18.5 2.5a2.12 2.12 0 0 1 3 3L12 15l-4 1 1-4Z"/></svg>
+      <span class="tip" id="editTip">Editar Board</span>
+    </button>
+  </div>
+
+  <!-- ================= BARRA FLUTUANTE ================= -->
+  <div class="float-bar">
+    <div class="px-4 py-[9px] flex items-center self-stretch">
+      <span class="text-primary font-bold text-[20px] leading-[normal]">DOB-23</span>
+    </div>
+    <div class="flex flex-col items-center justify-center gap-1 p-1">
+      <span class="bar-label" id="updLabel">Atualizar</span>
+      <div class="h-10 flex items-center justify-center z-tip">
+        <label class="upd-switch">
+          <input id="updToggle" type="checkbox" role="switch" aria-checked="false" aria-label="Atualizar" onchange="onToggleUpdate(this.checked)">
+          <span class="track" aria-hidden="true"><span class="thumb"></span></span>
+        </label>
+        <span class="tip" id="updTip">Ativar modo atualização</span>
+      </div>
+    </div>
+    <div class="flex flex-col items-center justify-center gap-1 p-1">
+      <span class="bar-label opacity-0 select-none">100%</span>
+      <div class="zoom-pill">
+        <button class="zoom-btn" aria-label="Reduzir zoom" onclick="toastMsg('Zoom: '+(zoom=Math.max(50,zoom-10))+'%')">
+          <svg width="24" height="24" viewBox="0 0 24 24" fill="currentColor"><path fill-rule="evenodd" d="M10.5 3.75a6.75 6.75 0 1 0 4.21 12.02l4.76 4.76a.75.75 0 1 0 1.06-1.06l-4.76-4.76A6.75 6.75 0 0 0 10.5 3.75Zm-3 6a.75.75 0 0 0 0 1.5h6a.75.75 0 0 0 0-1.5h-6Z" clip-rule="evenodd"/></svg>
+        </button>
+        <span class="divider"></span>
+        <button class="zoom-btn" aria-label="Aumentar zoom" onclick="toastMsg('Zoom: '+(zoom=Math.min(200,zoom+10))+'%')">
+          <svg width="24" height="24" viewBox="0 0 24 24" fill="currentColor"><path fill-rule="evenodd" d="M10.5 3.75a6.75 6.75 0 1 0 4.21 12.02l4.76 4.76a.75.75 0 1 0 1.06-1.06l-4.76-4.76A6.75 6.75 0 0 0 10.5 3.75Zm0 3a.75.75 0 0 1 .75.75v2.25h2.25a.75.75 0 0 1 0 1.5h-2.25v2.25a.75.75 0 0 1-1.5 0v-2.25H7.5a.75.75 0 0 1 0-1.5h2.25V7.5a.75.75 0 0 1 .75-.75Z" clip-rule="evenodd"/></svg>
+        </button>
+      </div>
+    </div>
+    <div class="flex flex-col items-center justify-center gap-1 p-1">
+      <span class="bar-label opacity-0 select-none">100%</span>
+      <button class="menu-circle" id="menuBtn" aria-label="Menu do board" aria-haspopup="true" aria-expanded="false" onclick="toggleMenu()">
+        <svg width="24" height="24" viewBox="0 0 24 24" fill="currentColor"><path d="M12 7.5a1.875 1.875 0 1 1 0-3.75 1.875 1.875 0 0 1 0 3.75Zm0 6.375a1.875 1.875 0 1 1 0-3.75 1.875 1.875 0 0 1 0 3.75Zm0 6.375a1.875 1.875 0 1 1 0-3.75 1.875 1.875 0 0 1 0 3.75Z"/></svg>
+      </button>
+    </div>
+  </div>
+
+  <!-- ================= QA STRIP ================= -->
+  <div class="qa-strip">
+    <span class="qa-lbl">QA</span>
+    <button class="qa-btn" onclick="simulateError()">Simular erro de persistência</button>
+    <button class="qa-btn" onclick="resetSession()">Nova sessão (refresh)</button>
+  </div>
+
+  <div id="toasts" aria-live="polite"></div>
+
+  <!-- ================= MODAL ZOOM ================= -->
+  <div id="zoomModal" class="overlay" onclick="if(event.target===this)closeModals()">
+    <div class="modal-card" role="dialog" aria-modal="true" aria-labelledby="zoomTitle">
+      <header class="flex items-center gap-2 px-5 h-[56px] border-b border-[#EBEEF2]">
+        <h2 id="zoomTitle" class="text-[16px] font-bold text-text">Gráfico</h2>
+        <span class="text-[13px] text-black/50">subtítulo</span>
+        <button class="icon-btn ml-auto" aria-label="Fechar" onclick="closeModals()">
+          <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><path d="M18 6 6 18M6 6l12 12"/></svg>
+        </button>
+      </header>
+      <div class="p-6 flex justify-center">
+        <div style="width:340px;margin:24px 0;">
+          <div class="chart" style="height:180px;">
+            <div class="grid-l" style="top:0"></div><div class="grid-l" style="top:45px"></div>
+            <div class="grid-l" style="top:90px"></div><div class="grid-l" style="top:135px"></div>
+            <div class="grid-l" style="top:179px"></div>
+            <div class="bars" id="zoomBars" style="inset:0 8px;"></div>
+          </div>
+          <div class="x-labels"><span>1</span><span>2</span><span>3</span><span>4</span><span>5</span><span>6</span><span>7</span></div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- ================= MODAL ATUALIZAÇÃO ================= -->
+  <div id="updateModal" class="overlay" onclick="if(event.target===this)closeModals()">
+    <div class="modal-card" role="dialog" aria-modal="true" aria-labelledby="updTitle2">
+      <header class="flex items-center gap-2 px-5 h-[56px] border-b border-[#EBEEF2]">
+        <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="#17457A" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M3 12a9 9 0 0 1 9-9 9 9 0 0 1 6.7 3M21 5v4h-4M21 12a9 9 0 0 1-9 9 9 9 0 0 1-6.7-3M3 19v-4h4"/></svg>
+        <h2 id="updTitle2" class="text-[16px] font-bold text-text">Atualização de dados — Gráfico</h2>
+        <button class="icon-btn ml-auto" aria-label="Fechar" onclick="closeModals()">
+          <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><path d="M18 6 6 18M6 6l12 12"/></svg>
+        </button>
+      </header>
+      <div class="px-6 py-6">
+        <div class="flex gap-5">
+          <div class="flex-1"><label class="field-label" for="updPeriodo">Período</label><input id="updPeriodo" class="z-input" type="text" value="7"></div>
+          <div class="flex-1"><label class="field-label" for="updValor">Valor</label><input id="updValor" class="z-input" type="text" placeholder="Informe o valor"></div>
+        </div>
+      </div>
+      <footer class="flex items-center justify-end gap-3 px-6 pb-6">
+        <button class="z-btn z-btn-outline" id="updCancel" onclick="closeModals()">Cancelar</button>
+        <button class="z-btn z-btn-primary" id="updSave" onclick="saveUpdate()">Salvar</button>
+      </footer>
+    </div>
+  </div>
+
+<script>
+/* ==========================================================================
+   US 66505 — Manter "Atualizar" e "Editar Board" ao trocar de board (6.5).
+   + Menu 3 pontos com 6 opções (node 13277:6119): avisos, apresentar,
+     tela cheia, sincronizar, configurações, Editar Board (pencil).
+   + Widget em modo edição (node 16707:14196 / 16739): mini-toolbar
+     (add/duplicar/config/excluir) + pill de tamanho WxH editável com
+     validação "múltiplos de 10".
+   ========================================================================== */
+
+let updateMode = false, editMode = false, currentBoard = 0, isLoading = false, zoom = 100, lang = 'pt';
+let wW = 180, wH = 180;            // tamanho do widget (default Figma 180x180)
+
+const BOARDS = ['INDICATORS','TABLE','MODULES','MEETINGS','VISUAL ELEMENTS','Test Ocean'];
+
+const I18N = {
+  pt:{ sala:'Sala', updLabel:'Atualizar', updTipOn:'Desativar modo atualização', updTipOff:'Ativar modo atualização',
+    editOn:'Sair do modo Editar Board', editOff:'Editar Board', titleZoom:'Ampliar widget', titleUpd:'Atualizar dados do widget',
+    chipUpdOn:'Atualizar: ligado', chipUpdOff:'Atualizar: desligado', chipEditOn:'Editar Board: ligado', chipEditOff:'Editar Board: desligado',
+    save:'Salvar', cancel:'Cancelar', keepUpd:'Atualizar continua ligado neste board', keepEdit:'Editar Board continua ligado neste board',
+    keepBoth:'Atualizar e Editar Board continuam ligados', errTitle:'Falha ao manter o estado dos modos',
+    saved:'Dados do widget atualizados', reset:'Nova sessão — modos reiniciados (default)',
+    mult:'Use apenas números múltiplos de 10', resized:'Tamanho do widget atualizado',
+    add:'Adicionar', dup:'Duplicar', cog:'Configurar', del:'Excluir',
+    m_alert:'Avisos', m_play:'Apresentar', m_expand:'Tela cheia', m_sync:'Sincronizar', m_cog:'Configurações',
+    a_alert:'Avisos do board', a_play:'Modo apresentação', a_expand:'Tela cheia', a_sync:'Board sincronizado', a_cog:'Configurações do board',
+    wAdd:'Novo widget adicionado', wDup:'Widget duplicado', wCog:'Configurações do widget', wDel:'Widget excluído' },
+  en:{ sala:'Room', updLabel:'Update', updTipOn:'Turn off updating mode', updTipOff:'Turn on updating mode',
+    editOn:'Exit Edit Board mode', editOff:'Edit Board', titleZoom:'Zoom widget', titleUpd:'Update widget data',
+    chipUpdOn:'Update: on', chipUpdOff:'Update: off', chipEditOn:'Edit Board: on', chipEditOff:'Edit Board: off',
+    save:'Save', cancel:'Cancel', keepUpd:'Update stays on in this board', keepEdit:'Edit Board stays on in this board',
+    keepBoth:'Update and Edit Board stay on', errTitle:'Failed to keep the modes state',
+    saved:'Widget data updated', reset:'New session — modes reset to default',
+    mult:'Use only multiples of 10', resized:'Widget size updated',
+    add:'Add', dup:'Duplicate', cog:'Settings', del:'Delete',
+    m_alert:'Alerts', m_play:'Present', m_expand:'Fullscreen', m_sync:'Sync', m_cog:'Settings',
+    a_alert:'Board alerts', a_play:'Presentation mode', a_expand:'Fullscreen', a_sync:'Board synced', a_cog:'Board settings',
+    wAdd:'New widget added', wDup:'Widget duplicated', wCog:'Widget settings', wDel:'Widget deleted' }
+};
+
+const $ = s => document.querySelector(s);
+const updToggle = $('#updToggle'), editBtn = $('#editBtn'), dotsMenu = $('#dotsMenu'), menuBtn = $('#menuBtn');
+const widgetCard = $('#widgetCard');
+
+/* ----- Gráfico ----- */
+const BASE = { h:[36,65,33,72,26,95,95], c:['red','green','red','green','red','green','green'] };
+function renderBars(targetId, seedShift, maxH){
+  const el = document.getElementById(targetId); if(!el) return;
+  const top = maxH || 96;
+  el.innerHTML = '';
+  BASE.h.forEach((h,i)=>{
+    let v = Math.max(14, Math.min(96, h + ((i + seedShift*3) % 5) * 4 - 8));
+    v = v/96 * top;
+    const bar = document.createElement('div');
+    bar.className = 'bar'; bar.style.height = v + 'px';
+    bar.style.background = BASE.c[i] === 'red' ? '#E22A2E' : '#5C9E31';
+    el.appendChild(bar);
+  });
+}
+
+/* ----- Sincronia controle <-> flag (6.13) ----- */
+function syncControls(){
+  const t = I18N[lang];
+  updToggle.checked = updateMode; updToggle.setAttribute('aria-checked', String(updateMode)); updToggle.disabled = isLoading;
+  $('#updTip').textContent = updateMode ? t.updTipOn : t.updTipOff;
+  $('#titleTip').textContent = updateMode ? t.titleUpd : t.titleZoom;
+  editBtn.classList.toggle('active', editMode); editBtn.setAttribute('aria-pressed', String(editMode));
+  $('#editTip').textContent = editMode ? t.editOn : t.editOff;
+  document.body.classList.toggle('edit-on', editMode);
+  if(!editMode){ widgetCard.classList.remove('resizing'); }
+}
+
+/* ----- Cliques toggle / editar (6.3 / 6.4 / 6.6) ----- */
+function onToggleUpdate(checked){ if(isLoading){ updToggle.checked = updateMode; return; } updateMode = checked; syncControls(); }
+function onToggleEdit(){ if(isLoading) return; editMode = !editMode; syncControls(); }
+
+/* ----- Menu 3 pontos ----- */
+function toggleMenu(){
+  const open = !dotsMenu.classList.contains('open');
+  dotsMenu.classList.toggle('open', open);
+  menuBtn.classList.toggle('open', open);
+  menuBtn.setAttribute('aria-expanded', String(open));
+}
+function closeMenu(){ dotsMenu.classList.remove('open'); menuBtn.classList.remove('open'); menuBtn.setAttribute('aria-expanded','false'); }
+function menuAction(k){ toastMsg(I18N[lang]['a_'+k]); closeMenu(); }
+
+/* ----- Troca de board: PRESERVA os modos (6.5) ----- */
+function switchBoard(idx, el){
+  if (idx === currentBoard || isLoading) return;
+  closeMenu();
+  document.querySelectorAll('.b-tab').forEach(t=>{
+    t.classList.toggle('active', t === el);
+    if (t === el) t.setAttribute('aria-selected','true'); else t.removeAttribute('aria-selected');
+  });
+  currentBoard = idx; closeModals();
+  widgetCard.classList.remove('resizing');
+  isLoading = true; syncControls();
+  $('#widgetWrap').classList.add('hidden'); $('#skeleton').classList.remove('hidden');
+  setTimeout(()=>{
+    isLoading = false;
+    $('#skeleton').classList.add('hidden'); $('#widgetWrap').classList.remove('hidden');
+    renderBars('bars', idx);
+    syncControls();                       // estado preservado (não altera as flags)
+    const t = I18N[lang];
+    if (updateMode && editMode) toastMsg(t.keepBoth);
+    else if (updateMode) toastMsg(t.keepUpd);
+    else if (editMode) toastMsg(t.keepEdit);
+  }, 600);
+}
+
+/* ----- Widget: título / ações de edição ----- */
+function openWidget(){
+  if (isLoading) return;
+  if (editMode) return;                   // em edição, o clique no título não amplia
+  if (updateMode){ $('#updateModal').classList.add('open'); }
+  else { renderBars('zoomBars', currentBoard, 178); $('#zoomModal').classList.add('open'); }
+}
+function widgetAction(k){ toastMsg(I18N[lang]['w'+k.charAt(0).toUpperCase()+k.slice(1)]); }
+
+/* ----- Resize do widget (validação múltiplos de 10) ----- */
+function startResize(){ $('#rsW').value = wW; $('#rsH').value = wH; widgetCard.classList.add('resizing'); validateResize(); $('#rsW').focus(); }
+function cancelResize(){ widgetCard.classList.remove('resizing'); $('#rsTip').classList.remove('show'); }
+function validResizeVal(v){ const n = parseInt(v,10); return !isNaN(n) && n>0 && n%10===0 && n>=100 && n<=400; }
+function validateResize(){
+  const wEl = $('#rsW'), hEl = $('#rsH');
+  const okW = validResizeVal(wEl.value), okH = validResizeVal(hEl.value);
+  wEl.classList.toggle('invalid', !okW); hEl.classList.toggle('invalid', !okH);
+  $('#rsTip').classList.toggle('show', !(okW && okH));
+  $('#rsConfirm').disabled = !(okW && okH);
+}
+function confirmResize(){
+  if (!(validResizeVal($('#rsW').value) && validResizeVal($('#rsH').value))) return;
+  wW = parseInt($('#rsW').value,10); wH = parseInt($('#rsH').value,10);
+  applySize(); widgetCard.classList.remove('resizing'); $('#rsTip').classList.remove('show');
+  toastMsg(I18N[lang].resized);
+}
+function applySize(){
+  widgetCard.style.width = wW + 'px';
+  widgetCard.style.minHeight = wH + 'px';
+  $('#wSizeText').textContent = wW + ' x ' + wH;
+}
+
+/* ----- Erro (6.12) / nova sessão (6.8) ----- */
+function simulateError(){
+  if (isLoading) return;
+  const keepU = updateMode, keepE = editMode;
+  updateMode = !updateMode; syncControls();
+  setTimeout(()=>{ updateMode = keepU; editMode = keepE; syncControls(); toastMsg(I18N[lang].errTitle, true); }, 450);
+}
+function resetSession(){
+  updateMode=false; editMode=false; currentBoard=0; isLoading=false; wW=180; wH=180;
+  closeMenu(); applySize(); widgetCard.classList.remove('resizing');
+  document.querySelectorAll('.b-tab').forEach(t=>{ const on=Number(t.dataset.board)===0;
+    t.classList.toggle('active', on); if(on)t.setAttribute('aria-selected','true'); else t.removeAttribute('aria-selected'); });
+  closeModals(); $('#skeleton').classList.add('hidden'); $('#widgetWrap').classList.remove('hidden');
+  renderBars('bars', 0); syncControls(); toastMsg(I18N[lang].reset);
+}
+
+/* ----- Toast ----- */
+function toastMsg(text, isError){
+  const box = $('#toasts'); const el = document.createElement('div');
+  el.className = 'toast' + (isError ? ' error' : ''); el.setAttribute('role','status'); el.textContent = text;
+  box.appendChild(el); requestAnimationFrame(()=> el.classList.add('show'));
+  setTimeout(()=>{ el.classList.remove('show'); setTimeout(()=>el.remove(), 260); }, 3000);
+}
+
+/* ----- Abas ----- */
+function scrollTabs(dir){ $('#tabsScroll').scrollBy({ left: dir * 240, behavior:'smooth' }); }
+function closeModals(){ document.querySelectorAll('.overlay').forEach(o=>o.classList.remove('open')); }
+function saveUpdate(){ closeModals(); renderBars('bars', currentBoard + 1); toastMsg(I18N[lang].saved); }
+
+document.querySelectorAll('.b-tab').forEach(t=>{
+  const idx = Number(t.dataset.board);
+  t.addEventListener('click', ()=> switchBoard(idx, t));
+  t.addEventListener('keydown', e=>{
+    if (e.key==='Enter' || e.key===' '){ e.preventDefault(); switchBoard(idx, t); }
+    if (e.key==='ArrowRight'){ e.preventDefault(); const n=t.nextElementSibling; if(n&&n.classList.contains('b-tab'))n.focus(); }
+    if (e.key==='ArrowLeft'){ e.preventDefault(); const p=t.previousElementSibling; if(p&&p.classList.contains('b-tab'))p.focus(); }
+  });
+});
+document.addEventListener('keydown', e=>{ if (e.key==='Escape'){ closeModals(); closeMenu(); } });
+// fecha o menu ao clicar fora
+document.addEventListener('click', e=>{
+  if (dotsMenu.classList.contains('open') && !dotsMenu.contains(e.target) && !menuBtn.contains(e.target)) closeMenu();
+});
+
+/* ----- init ----- */
+applySize(); renderBars('bars', currentBoard); syncControls();
+</script>
+
+<!-- ============================================================
+     CAMADA DE COMENTÁRIOS (feedback v2) — drop-in portátil
+     ============================================================ -->
+<script>window.RV_CONFIG = { key:'modo_atualizacao_obeya_v1', title:'Revisão — Modo de Atualização (Obeya)', modalSelector:'.overlay.open' };</script>
+<button id="rv-toggle">💬 Revisão</button>
+<div id="rv-bar">
+  <div class="rv-top"><span class="dot"></span> <span id="rv-title">Revisão de comentários</span> <span style="margin-left:auto;cursor:pointer" id="rv-min">—</span></div>
+  <div class="rv-sec">
+    <div><label>Seu nome (revisor)</label><input type="text" id="rv-name" placeholder="ex.: Maria"></div>
+    <button id="rv-mode">💬 Ativar modo comentário</button>
+    <div class="row">
+      <button id="rv-listbtn">📋 Lista (<span id="rv-count">0</span>)</button>
+      <button id="rv-export">⬇ Exportar</button>
+    </div>
+    <div class="row"><button id="rv-importbtn" style="flex:1">⬆ Importar comentários</button></div>
+    <input type="file" id="rv-import" accept=".html,.json" style="display:none">
+    <div class="hint">Ative o modo, <b>clique no ponto</b> que quer comentar e escreva. Ao terminar, <b>Exportar</b> gera um arquivo com os comentários salvos para enviar de volta.</div>
+  </div>
+</div>
+<div id="rv-layer"></div>
+<div id="rv-pop"></div>
+<div id="rv-panel"><h3>Comentários <button id="rv-close">×</button></h3><div id="rv-list"></div></div>
+<script type="application/json" id="rv-data">{"savedAt":0,"comments":[]}</script>
+
+<style>
+  #rv-bar{position:fixed;top:14px;right:14px;z-index:9000;background:#0f172a;color:#fff;border-radius:12px;box-shadow:0 8px 24px rgba(2,6,23,.35);font-size:13px;width:270px;overflow:hidden;font-family:-apple-system,BlinkMacSystemFont,"Segoe UI",Roboto,Arial,sans-serif}
+  #rv-bar .rv-top{display:flex;align-items:center;gap:8px;padding:11px 13px;font-weight:700}
+  #rv-bar .rv-top .dot{width:10px;height:10px;border-radius:50%;background:#f43f5e}
+  #rv-bar .rv-sec{padding:0 13px 13px;display:flex;flex-direction:column;gap:9px}
+  #rv-bar label{font-size:11px;color:#94a3b8;display:block;margin-bottom:3px}
+  #rv-bar input[type=text]{width:100%;padding:7px 9px;border-radius:7px;border:1px solid #334155;background:#1e293b;color:#fff;font-size:13px}
+  #rv-bar button{border:0;border-radius:8px;padding:8px 10px;font-size:12.5px;font-weight:600;cursor:pointer;color:#fff;background:#334155}
+  #rv-bar button.on{background:#f43f5e}
+  #rv-bar .row{display:flex;gap:7px}#rv-bar .row button{flex:1}
+  #rv-bar .hint{font-size:11px;color:#94a3b8;line-height:1.45}
+  #rv-toggle{position:fixed;top:14px;right:14px;z-index:9001;background:#0f172a;color:#fff;border:0;border-radius:10px;padding:9px 12px;font-weight:700;font-size:13px;cursor:pointer;box-shadow:0 6px 18px rgba(2,6,23,.3);display:none;font-family:inherit}
+  .rv-pin{position:absolute;z-index:8000;width:26px;height:26px;border-radius:50% 50% 50% 2px;background:#f43f5e;color:#fff;display:flex;align-items:center;justify-content:center;font-size:12px;font-weight:700;cursor:pointer;transform:translate(-3px,-26px);box-shadow:0 3px 8px rgba(0,0,0,.3);border:2px solid #fff}
+  .rv-pin.resolved{background:#16a34a;opacity:.85}
+  #rv-layer{position:absolute;top:0;left:0;width:100%;pointer-events:none;z-index:7000}
+  #rv-layer .rv-pin{pointer-events:auto}
+  body.rv-commenting{cursor:crosshair}
+  #rv-pop{position:fixed;z-index:9500;width:260px;background:#fff;border:1px solid #e2e8f0;border-radius:12px;box-shadow:0 12px 30px rgba(2,6,23,.25);padding:12px;display:none;font-family:-apple-system,BlinkMacSystemFont,"Segoe UI",Roboto,Arial,sans-serif}
+  #rv-pop textarea{width:100%;min-height:64px;border:1px solid #e2e8f0;border-radius:8px;padding:8px;font-size:13px;font-family:inherit;resize:vertical}
+  #rv-pop .meta{font-size:11px;color:#64748b;margin-bottom:6px}
+  #rv-pop .acts{display:flex;gap:7px;margin-top:8px}
+  #rv-pop button{border:0;border-radius:7px;padding:7px 10px;font-size:12px;font-weight:600;cursor:pointer}
+  #rv-pop .save{background:#0e7490;color:#fff;flex:1}#rv-pop .res{background:#dcfce7;color:#166534}#rv-pop .del{background:#fee2e2;color:#991b1b}
+  #rv-panel{position:fixed;top:0;right:-360px;width:340px;height:100%;background:#fff;z-index:8900;box-shadow:-6px 0 24px rgba(2,6,23,.18);transition:right .25s;display:flex;flex-direction:column;font-family:-apple-system,BlinkMacSystemFont,"Segoe UI",Roboto,Arial,sans-serif}
+  #rv-panel.open{right:0}
+  #rv-panel h3{margin:0;padding:16px 18px;border-bottom:1px solid #e2e8f0;font-size:15px;display:flex;justify-content:space-between;align-items:center}
+  #rv-panel h3 button{border:0;background:none;font-size:18px;cursor:pointer;color:#64748b}
+  #rv-list{overflow:auto;padding:10px 14px;flex:1}
+  .rv-item{border:1px solid #e2e8f0;border-radius:10px;padding:10px;margin-bottom:9px;cursor:pointer}
+  .rv-item:hover{background:#f8fafc}
+  .rv-item .h{display:flex;align-items:center;gap:8px;font-size:12px;font-weight:700;margin-bottom:4px}
+  .rv-item .h .b{background:#f43f5e;color:#fff;width:20px;height:20px;border-radius:50%;display:inline-flex;align-items:center;justify-content:center;font-size:11px}
+  .rv-item.resolved .b{background:#16a34a}
+  .rv-item .t{font-size:13px;white-space:pre-wrap}
+  .rv-item .when{font-size:10.5px;color:#64748b;margin-top:5px}
+  @media print{#rv-bar,#rv-toggle,#rv-panel,#rv-pop{display:none!important}.rv-pin{-webkit-print-color-adjust:exact;print-color-adjust:exact}}
+</style>
+
+<script>
+(function(){
+  var CFG=window.RV_CONFIG||{};
+  var KEY=CFG.key||('rv_'+(document.title||location.pathname).replace(/[^a-z0-9]+/gi,'_').toLowerCase());
+  if(CFG.title){document.getElementById('rv-title').textContent=CFG.title;}
+  var MODAL_SEL=CFG.modalSelector||'[role="dialog"],[aria-modal="true"],.modal,[data-rv-view]';
+  var layer=document.getElementById('rv-layer'),pop=document.getElementById('rv-pop'),panel=document.getElementById('rv-panel'),
+      list=document.getElementById('rv-list'),countEl=document.getElementById('rv-count'),nameInput=document.getElementById('rv-name'),
+      modeBtn=document.getElementById('rv-mode');
+  var comments=[],commentMode=false,seq=0,RVMO=null;
+  function parse(s){try{return JSON.parse(s)}catch(e){return null}}
+  var embedded=parse(document.getElementById('rv-data').textContent)||{savedAt:0,comments:[]};
+  var stored=parse(localStorage.getItem(KEY))||{savedAt:0,comments:[]};
+  var src=(embedded.savedAt>=stored.savedAt)?embedded:stored;
+  comments=src.comments||[]; seq=comments.reduce(function(m,c){return Math.max(m,c.n||0)},0);
+  var sn=localStorage.getItem(KEY+'_name'); if(sn) nameInput.value=sn;
+
+  function vis(e){ if(!e||e.closest('#rv-bar,#rv-panel,#rv-pop')) return false; if(!e.getClientRects().length) return false; var cs=getComputedStyle(e); return cs.display!=='none'&&cs.visibility!=='hidden'&&parseFloat(cs.opacity||'1')>0; }
+  function activeModal(){ var ns=document.querySelectorAll(MODAL_SEL),out=null; for(var i=0;i<ns.length;i++){ if(vis(ns[i])) out=ns[i]; } return out; }
+  function viewKey(){ var m=activeModal(); return m ? ('modal:'+(m.id||m.getAttribute('data-rv-view')||'dialog')) : 'doc'; }
+  function docScroller(){ var k=document.querySelector('[data-rv-scroll]'); if(k) return k; var mn=document.querySelector('main'); if(mn) return mn; return document.scrollingElement||document.documentElement; }
+  function innerScroller(root){ var best=null,area=0,els=root.querySelectorAll('*'); for(var i=0;i<els.length;i++){var e=els[i];if(e.closest('#rv-bar,#rv-panel,#rv-pop'))continue;var cs=getComputedStyle(e),oy=cs.overflowY;if((oy==='auto'||oy==='scroll')&&e.scrollHeight>e.clientHeight+4&&e.getClientRects().length){var a=e.clientWidth*e.clientHeight;if(a>area){area=a;best=e;}}} return best||root; }
+  function getAnchor(view){ if(view.indexOf('modal:')===0){ var m=activeModal(); return m?innerScroller(m):docScroller(); } return docScroller(); }
+  function isDoc(a){ return a===document.scrollingElement||a===document.documentElement||a===document.body; }
+  function scW(a){ return isDoc(a)?document.documentElement.scrollWidth:(a.scrollWidth||a.clientWidth||1); }
+  function scH(a){ return isDoc(a)?document.documentElement.scrollHeight:(a.scrollHeight||a.clientHeight||1); }
+
+  function save(){var p={savedAt:Date.now(),comments:comments};localStorage.setItem(KEY,JSON.stringify(p));localStorage.setItem(KEY+'_name',nameInput.value||'');document.getElementById('rv-data').textContent=JSON.stringify(p);}
+  function esc(s){return (s||'').replace(/[&<>"]/g,function(m){return {'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;'}[m]})}
+
+  function render(){
+    if(RVMO){RVMO.disconnect();}
+    var view=viewKey(), anchor=getAnchor(view), docMode=isDoc(anchor), host=docMode?document.body:anchor;
+    if(layer.parentNode!==host) host.appendChild(layer);
+    if(!docMode && getComputedStyle(anchor).position==='static') anchor.style.position='relative';
+    layer.style.height='0px';
+    var W=scW(anchor), H=scH(anchor);
+    layer.style.width=docMode?(W+'px'):'100%'; layer.style.height=H+'px'; layer.innerHTML='';
+    var shown=comments.filter(function(c){return (c.view||'doc')===view;});
+    shown.forEach(function(c){var pin=document.createElement('div');pin.className='rv-pin'+(c.resolved?' resolved':'');pin.textContent=c.n;pin.dataset.n=c.n;
+      pin.style.left=(c.xPct*W)+'px';pin.style.top=(c.yPct*H)+'px';pin.title=(c.author||'?')+': '+c.text;
+      pin.addEventListener('click',function(ev){ev.stopPropagation();openPop(c,pin)});layer.appendChild(pin);});
+    list.innerHTML=''; if(!shown.length){list.innerHTML='<p style="color:#94a3b8;font-size:13px;padding:6px">Nenhum comentário nesta visão.</p>';}
+    shown.slice().sort(function(a,b){return a.n-b.n}).forEach(function(c){var it=document.createElement('div');it.className='rv-item'+(c.resolved?' resolved':'');
+      it.innerHTML='<div class="h"><span class="b">'+c.n+'</span> '+esc(c.author||'—')+(c.resolved?' · ✓ resolvido':'')+'</div><div class="t">'+esc(c.text)+'</div><div class="when">'+new Date(c.ts).toLocaleString('pt-BR')+'</div>';
+      it.addEventListener('click',function(){var a=getAnchor(viewKey());try{(a.scrollTo?a:window).scrollTo({top:c.yPct*scH(a)-160,behavior:'smooth'});}catch(e){} var pin=layer.querySelector('.rv-pin[data-n="'+c.n+'"]');openPop(c,pin);});list.appendChild(it);});
+    countEl.textContent=shown.length;
+    if(RVMO){ try{ RVMO.observe(document.body,{childList:true,subtree:true,attributes:true,attributeFilter:['class','style']}); }catch(e){} }
+  }
+  function openPop(c,el){var r=el?el.getBoundingClientRect():{left:innerWidth/2,top:innerHeight/2};pop.style.display='block';
+    pop.style.left=Math.min(r.left+30,innerWidth-280)+'px';pop.style.top=Math.max(8,Math.min(r.top,innerHeight-180))+'px';
+    pop.innerHTML='<div class="meta">Pino #'+c.n+(c.author?(' · '+esc(c.author)):'')+'</div><textarea id="rv-ta">'+esc(c.text)+'</textarea><div class="acts"><button class="save" id="rv-sv">Salvar</button><button class="res" id="rv-rs">'+(c.resolved?'Reabrir':'Resolver')+'</button><button class="del" id="rv-dl">Excluir</button></div>';
+    var ta=document.getElementById('rv-ta');ta.focus();
+    document.getElementById('rv-sv').onclick=function(){c.text=ta.value.trim();c.author=nameInput.value||c.author||'Anônimo';c.ts=Date.now();if(!c.text){rm(c)}else{save();render()}pop.style.display='none';};
+    document.getElementById('rv-rs').onclick=function(){c.resolved=!c.resolved;save();render();pop.style.display='none';};
+    document.getElementById('rv-dl').onclick=function(){rm(c);pop.style.display='none';};
+  }
+  function rm(c){comments=comments.filter(function(x){return x!==c});save();render();}
+  document.addEventListener('click',function(ev){if(!commentMode)return;if(ev.target.closest('#rv-bar,#rv-toggle,#rv-panel,#rv-pop,.rv-pin'))return;
+    var view=viewKey(), anchor=getAnchor(view), docMode=isDoc(anchor), rect=anchor.getBoundingClientRect?anchor.getBoundingClientRect():{left:0,top:0};
+    var x,y;
+    if(docMode){ x=ev.pageX; y=ev.pageY; }
+    else { x=ev.clientX-(rect.left||0)+(anchor.scrollLeft||0); y=ev.clientY-(rect.top||0)+(anchor.scrollTop||0); }
+    var c={n:++seq,view:view,xPct:x/(scW(anchor)||1),yPct:y/(scH(anchor)||1),author:nameInput.value||'Anônimo',text:'',ts:Date.now(),resolved:false};
+    comments.push(c);save();render();var pins=layer.querySelectorAll('.rv-pin');openPop(c,pins[pins.length-1]);});
+  modeBtn.onclick=function(){commentMode=!commentMode;document.body.classList.toggle('rv-commenting',commentMode);modeBtn.classList.toggle('on',commentMode);modeBtn.textContent=commentMode?'✋ Sair do modo comentário':'💬 Ativar modo comentário';};
+  document.getElementById('rv-listbtn').onclick=function(){panel.classList.add('open')};
+  document.getElementById('rv-close').onclick=function(){panel.classList.remove('open')};
+  nameInput.onchange=save;
+  document.getElementById('rv-min').onclick=function(){document.getElementById('rv-bar').style.display='none';document.getElementById('rv-toggle').style.display='block';};
+  document.getElementById('rv-toggle').onclick=function(){document.getElementById('rv-bar').style.display='block';document.getElementById('rv-toggle').style.display='none';};
+  document.getElementById('rv-export').onclick=function(){save();var clone=document.documentElement.cloneNode(true);
+    var a=clone.querySelector('#rv-layer');if(a)a.innerHTML='';var b=clone.querySelector('#rv-list');if(b)b.innerHTML='';
+    var c=clone.querySelector('#rv-pop');if(c){c.innerHTML='';c.style.display='none';}
+    var name=(document.title||'arquivo').replace(/[^a-z0-9]+/gi,'-').toLowerCase()+'-COMENTADO.html';
+    dl(new Blob(['<!DOCTYPE html>\n'+clone.outerHTML],{type:'text/html'}),name);};
+  document.getElementById('rv-importbtn').onclick=function(){document.getElementById('rv-import').click()};
+  document.getElementById('rv-import').onchange=function(e){var f=e.target.files[0];if(!f)return;var rd=new FileReader();
+    rd.onload=function(){var data=null,t=rd.result;if(f.name.endsWith('.json')){data=parse(t)}else{var m=t.match(/<script[^>]*id="rv-data"[^>]*>([\s\S]*?)<\/script>/);if(m)data=parse(m[1]);}
+      if(data&&data.comments){comments=data.comments;seq=comments.reduce(function(mx,c){return Math.max(mx,c.n||0)},0);save();render();alert('Importados '+comments.length+' comentário(s).');}else alert('Não encontrei comentários nesse arquivo.');};
+    rd.readAsText(f);};
+  function dl(blob,name){var a=document.createElement('a');a.href=URL.createObjectURL(blob);a.download=name;a.click();setTimeout(function(){URL.revokeObjectURL(a.href)},2000);}
+  window.addEventListener('resize',render); window.addEventListener('load',render);
+  try{ RVMO=new MutationObserver(function(){clearTimeout(window.__rvmo);window.__rvmo=setTimeout(render,120);});
+    RVMO.observe(document.body,{childList:true,subtree:true,attributes:true,attributeFilter:['class','style']}); }catch(e){}
+  render();
+})();
+</script>
+</body>
+</html>
