@@ -154,7 +154,13 @@
   .topbar{ height:64px; flex:0 0 64px; display:flex; align-items:center; padding:0 24px; background:#fff; border-bottom:1px solid var(--color-input) }
   .topbar-logo{ display:flex; align-items:center; gap:8px; font-size:22px; font-weight:600; color:#0a0a0a }
   .topbar-right{ margin-left:auto; display:flex; align-items:center; gap:18px; color:var(--color-primary) }
-  .top-avatar{ width:36px;height:36px;border-radius:9999px;background:#2b2f42;color:#fff;display:flex;align-items:center;justify-content:center;font-size:12px;font-weight:600;flex:0 0 auto }
+  .top-avatar{ width:36px;height:36px;border-radius:9999px;background:#2b2f42;color:#fff;display:flex;align-items:center;justify-content:center;font-size:12px;font-weight:600;flex:0 0 auto;border:0;padding:0;cursor:pointer }
+  .top-avatar-wrap{ position:relative; flex:0 0 auto }
+  .avatar-menu{ position:absolute; top:46px; right:0; min-width:200px; background:#fff; border:1px solid var(--color-input); border-radius:12px; box-shadow:0 8px 24px rgba(13,18,47,.12); padding:6px; display:none; z-index:50 }
+  .avatar-menu.open{ display:block }
+  .avatar-menu-item{ width:100%; display:flex; align-items:center; gap:8px; height:38px; padding:0 10px; border:0; background:transparent; border-radius:8px; color:#0d122f; font-size:14px; font-weight:500; cursor:pointer }
+  .avatar-menu-item:hover{ background:#f4f4f6 }
+  .avatar-menu-item .loc-chev{ margin-left:auto; color:#6b7280 }
   .topbar-search{ flex:0 1 620px; display:flex; align-items:center; gap:8px; height:40px; padding:0 14px; margin-left:24px; background:#fff; border:1px solid var(--color-input); border-radius:10px; color:#999ba7 }
   .topbar-search input{ flex:1; min-width:0; border:0; outline:0; background:transparent; font-size:15px; color:#0d122f; font-family:inherit }
   .topbar-search input::placeholder{ color:#999ba7 }
@@ -165,9 +171,10 @@
   .top-icon{ position:relative; width:40px; height:40px; display:flex; align-items:center; justify-content:center; border-radius:10px; background:transparent; border:0; color:#0d122f; cursor:pointer }
   .top-icon:hover{ background:#f4f4f6 }
   .top-badge{ position:absolute; top:2px; right:3px; min-width:16px; height:16px; padding:0 4px; border-radius:9999px; background:#E22A2E; color:#fff; font-size:10px; font-weight:700; display:flex; align-items:center; justify-content:center; line-height:1; border:2px solid #fff }
-  .top-kc{ border:1px solid var(--color-input) }
+  .top-kc{ width:auto; gap:6px; padding:0 12px; border:1px solid var(--color-input); font-size:14px; font-weight:500 }
   .top-kc:hover{ background:#f4f4f6; border-color:var(--color-primary); color:var(--color-primary) }
   .hamburger{ display:none; background:transparent;border:0;color:var(--color-primary);margin-right:8px }
+  .topbar-logo svg{ display:block }
   /* ---- mobile backdrop + drawer (<1024) ---- */
   #sidebar-backdrop{ display:none; position:fixed; inset:0; background:rgba(0,0,0,.45); z-index:40 }
   @media (max-width:1023px){
@@ -231,6 +238,11 @@
   .tbl tbody td{ padding:16px; font-size:14px; border-bottom:1px solid var(--input); color:#2a2a2a; vertical-align:middle }
   .tbl tbody tr:nth-child(even){ background:#f8f9fb }
   .tbl tbody tr:hover{ background:#fafafe }
+  .tbl td.drag-cell{ width:36px; padding:0 4px 0 12px; text-align:center }
+  .drag-handle{ display:inline-flex; align-items:center; justify-content:center; color:#b0b4c0; cursor:grab } .drag-handle svg{ width:18px; height:18px } .drag-handle:active{ cursor:grabbing }
+  .tbl tbody tr.reg-row.dragging{ opacity:.45 }
+  .tbl tbody tr.reg-row.drag-over td{ box-shadow:inset 0 2px 0 var(--primary) }
+  .tbl tbody tr.reg-row:hover .drag-handle{ color:var(--primary) }
   .status{ display:inline-flex; align-items:center; justify-content:center; font-size:12px; font-weight:600; padding:4px 15px; border-radius:9999px; min-width:74px; border:1px solid transparent }
   .status-active{ background:#DCF5E6; color:#14AE5C; border-color:#14AE5C }
   .status-inactive{ background:#FDE7E7; color:#EC221F; border-color:#EC221F }
@@ -277,6 +289,17 @@
   .au-menu{ display:none; position:absolute; z-index:5; left:0; right:0; top:calc(100% + 4px); background:#fff; border:1px solid var(--input); border-radius:8px; box-shadow:0 12px 30px rgba(13,18,47,.16); padding:4px; max-height:220px; overflow:auto } .au-sel.open .au-menu{ display:block }
   .au-item{ display:flex; align-items:center; gap:9px; padding:8px 10px; border-radius:6px; font-size:13px; color:var(--text); cursor:pointer } .au-item:hover{ background:#f5f6fb }
   .au-box{ width:16px; height:16px; border:1.5px solid var(--input); border-radius:4px; display:inline-flex; align-items:center; justify-content:center; color:#fff; flex:0 0 auto } .au-item.on .au-box{ background:var(--primary); border-color:var(--primary) } .au-box svg{ width:11px; height:11px; opacity:0 } .au-item.on .au-box svg{ opacity:1 }
+  /* ---- top bar mobile (≤640px) — from /solvace-top-bar; kept at end so overrides win ---- */
+  @media (max-width:640px){
+    .topbar-search{ display:none }
+    .top-loc{ display:none }
+    .topbar-logo svg{ height:20px; width:auto }
+    .topbar-right{ gap:10px }
+    .top-icon{ width:36px; height:36px }
+    .top-kc{ padding:0 9px; gap:5px }
+    .top-avatar{ width:32px; height:32px }
+    .top-badge{ min-width:18px; height:18px; font-size:11px }
+  }
 </style>
 </head>
 <body>
@@ -343,8 +366,13 @@
       <div class="topbar-right">
         <button class="top-loc" title="Location"><svg width="18" height="18" viewBox="0 0 24 24" fill="currentColor"><path d="M12 2a7 7 0 0 0-7 7c0 5.25 7 13 7 13s7-7.75 7-13a7 7 0 0 0-7-7z"></path><circle cx="12" cy="9" r="2.6" fill="#fff"></circle></svg><span>Curitiba</span><svg class="loc-chev" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="m6 9 6 6 6-6"></path></svg></button>
         <button class="top-icon" title="Notifications"><svg width="21" height="21" viewBox="0 0 24 24" fill="currentColor"><path d="M12 2a6 6 0 0 0-6 6c0 7-3 9-3 9h18s-3-2-3-9a6 6 0 0 0-6-6Z"></path><path d="M10.3 21a2 2 0 0 0 3.4 0Z"></path></svg><span class="top-badge">3</span></button>
-        <span class="top-avatar">NU</span>
-        <button class="top-icon top-kc" title="Knowledge Center"><svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M2 3h6a4 4 0 0 1 4 4v14a3 3 0 0 0-3-3H2z"></path><path d="M22 3h-6a4 4 0 0 0-4 4v14a3 3 0 0 1 3-3h7z"></path></svg></button>
+        <div class="top-avatar-wrap">
+          <button class="top-avatar" id="avatarBtn" onclick="toggleAvatarMenu(event)" aria-haspopup="true" aria-expanded="false" title="Account">NU</button>
+          <div class="avatar-menu" id="avatarMenu" role="menu">
+            <button class="avatar-menu-item" role="menuitem" title="Location"><svg width="16" height="16" viewBox="0 0 24 24" fill="currentColor"><path d="M12 2a7 7 0 0 0-7 7c0 5.25 7 13 7 13s7-7.75 7-13a7 7 0 0 0-7-7z"></path><circle cx="12" cy="9" r="2.6" fill="#fff"></circle></svg><span>Curitiba</span><svg class="loc-chev" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="m6 9 6 6 6-6"></path></svg></button>
+          </div>
+        </div>
+        <button class="top-icon top-kc" title="Knowledge Center"><svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M2 3h6a4 4 0 0 1 4 4v14a3 3 0 0 0-3-3H2z"></path><path d="M22 3h-6a4 4 0 0 0-4 4v14a3 3 0 0 1 3-3h7z"></path></svg><span>Help</span></button>
       </div>
     </header>
     <div class="main-scroll">
@@ -440,7 +468,8 @@ const I={
   save:'<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M19 21H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h11l5 5v11a2 2 0 0 1-2 2z"/><polyline points="17 21 17 13 7 13 7 21"/><polyline points="7 3 7 8 15 8"/></svg>',
   info:'<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="10"/><path d="M12 16v-4M12 8h.01"/></svg>',
   chevL:'<svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="m15 18-6-6 6-6"/></svg>',
-  chevR:'<svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="m9 18 6-6-6-6"/></svg>'
+  chevR:'<svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="m9 18 6-6-6-6"/></svg>',
+  grip:'<svg viewBox="0 0 24 24" fill="currentColor"><circle cx="9" cy="6" r="1.5"/><circle cx="15" cy="6" r="1.5"/><circle cx="9" cy="12" r="1.5"/><circle cx="15" cy="12" r="1.5"/><circle cx="9" cy="18" r="1.5"/><circle cx="15" cy="18" r="1.5"/></svg>'
 };
 
 /* ===== data ===== */
@@ -497,10 +526,27 @@ function regData(v){ return v==='types'?typeData:topicData; }
 function renderReg(v){
   var cfg=REG[v], q=(regQ[v]||'').toLowerCase();
   var list=regData(v).filter(function(c){ return c.name.toLowerCase().indexOf(q)>=0; });
-  var rows=list.map(function(c){ return '<tr><td>'+c.name+'</td><td>'+statusBadge(c.active)+'</td><td style="width:96px;text-align:center;white-space:nowrap"><span style="display:inline-flex;gap:8px"><button class="kebab" style="color:var(--primary)" title="Edit" onclick="openReg(\''+v+'\','+c.id+')">'+I.pencil+'</button><button class="kebab" style="color:var(--primary)" title="Delete" onclick="delReg(\''+v+'\','+c.id+')">'+I.trash+'</button></span></td></tr>'; }).join('');
-  el('settingsView').innerHTML='<div class="perm-toolbar"><button class="btn btn-outline" onclick="openReg(\''+v+'\')">'+I.plus+' '+cfg.newLabel+'</button><div class="set-search"><span class="s-ico">'+I.search+'</span><input placeholder="Search" value="'+(regQ[v]||'')+'" oninput="regSearch(\''+v+'\',this.value)"></div><button class="kebab" title="More options" onclick="openKebab(this)">'+I.kebab+'</button></div><div class="tbl-bleed"><table class="tbl"><thead><tr><th>'+cfg.col+'</th><th style="width:120px">STATUS</th><th style="width:96px"></th></tr></thead><tbody>'+(rows||'<tr><td colspan="3" style="text-align:center;color:#8a90a6;padding:40px">No records found</td></tr>')+'</tbody></table></div>'+pag(list.length);
+  var drag=(v==='topics');
+  var rows=list.map(function(c){
+    var h=drag?'<td class="drag-cell"><span class="drag-handle" title="Drag to reorder">'+I.grip+'</span></td>':'';
+    var attr=drag?(' class="reg-row" draggable="true" data-id="'+c.id+'" ondragstart="dragTopicStart(event,'+c.id+')" ondragover="dragTopicOver(event,'+c.id+')" ondragleave="dragTopicLeave(event)" ondrop="dropTopic(event,'+c.id+')" ondragend="dragTopicEnd(event)"'):'';
+    return '<tr'+attr+'>'+h+'<td>'+c.name+'</td><td>'+statusBadge(c.active)+'</td><td style="width:96px;text-align:center;white-space:nowrap"><span style="display:inline-flex;gap:8px"><button class="kebab" style="color:var(--primary)" title="Edit" onclick="openReg(\''+v+'\','+c.id+')">'+I.pencil+'</button><button class="kebab" style="color:var(--primary)" title="Delete" onclick="delReg(\''+v+'\','+c.id+')">'+I.trash+'</button></span></td></tr>';
+  }).join('');
+  var saveBtn=drag?'<button class="btn btn-primary" onclick="saveTopicOrder()">'+I.save+' Save</button>':'';
+  var headDrag=drag?'<th style="width:36px"></th>':'';
+  var ncol=drag?4:3;
+  el('settingsView').innerHTML='<div class="perm-toolbar"><button class="btn btn-outline" onclick="openReg(\''+v+'\')">'+I.plus+' '+cfg.newLabel+'</button><div class="set-search"><span class="s-ico">'+I.search+'</span><input placeholder="Search" value="'+(regQ[v]||'')+'" oninput="regSearch(\''+v+'\',this.value)"></div>'+saveBtn+'<button class="kebab" title="More options" onclick="openKebab(this)">'+I.kebab+'</button></div><div class="tbl-bleed"><table class="tbl"><thead><tr>'+headDrag+'<th>'+cfg.col+'</th><th style="width:120px">STATUS</th><th style="width:96px"></th></tr></thead><tbody>'+(rows||'<tr><td colspan="'+ncol+'" style="text-align:center;color:#8a90a6;padding:40px">No records found</td></tr>')+'</tbody></table></div>'+pag(list.length);
 }
 function regSearch(v,q){ regQ[v]=q; renderReg(v); var i=el('settingsView').querySelector('.set-search input'); if(i){ i.focus(); i.setSelectionRange(i.value.length,i.value.length); } }
+/* ---- Topics: drag-and-drop reorder + save order ---- */
+var dragId=null, topicDirty=false;
+function dragTopicStart(ev,id){ dragId=id; try{ ev.dataTransfer.effectAllowed='move'; ev.dataTransfer.setData('text/plain',String(id)); }catch(_){} var tr=ev.target.closest('tr'); if(tr) tr.classList.add('dragging'); }
+function dragTopicOver(ev,id){ ev.preventDefault(); try{ ev.dataTransfer.dropEffect='move'; }catch(_){} var tr=ev.target.closest('tr'); if(tr && !tr.classList.contains('dragging')){ var vw=el('settingsView'); if(vw) vw.querySelectorAll('tr.reg-row.drag-over').forEach(function(x){ x.classList.remove('drag-over'); }); tr.classList.add('drag-over'); } }
+function dragTopicLeave(ev){ var tr=ev.target.closest('tr'); if(tr) tr.classList.remove('drag-over'); }
+function dropTopic(ev,id){ ev.preventDefault(); if(dragId==null||dragId===id){ dragTopicEnd(); return; } var from=topicData.findIndex(function(x){return x.id===dragId;}), to=topicData.findIndex(function(x){return x.id===id;}); if(from>=0 && to>=0){ var moved=topicData.splice(from,1)[0]; topicData.splice(to,0,moved); topicDirty=true; } dragId=null; renderReg('topics'); }
+function dragTopicEnd(){ dragId=null; var vw=el('settingsView'); if(vw) vw.querySelectorAll('tr.reg-row').forEach(function(x){ x.classList.remove('dragging','drag-over'); }); }
+function saveTopicOrder(){ try{ localStorage.setItem('obeya_topic_order', JSON.stringify(topicData.map(function(t){return t.id;}))); }catch(_){} topicDirty=false; toast('Changes saved successfully'); }
+function loadTopicOrder(){ try{ var raw=localStorage.getItem('obeya_topic_order'); if(!raw) return; var order=JSON.parse(raw)||[]; if(!order.length) return; topicData.sort(function(a,b){ var ia=order.indexOf(a.id); var ib=order.indexOf(b.id); if(ia<0) ia=1e9; if(ib<0) ib=1e9; return ia-ib; }); }catch(_){} }
 var regEdit=null;
 function openReg(v,id){
   var cfg=REG[v], item=id?regData(v).find(function(x){return x.id===id;}):null;
@@ -588,6 +634,10 @@ el('auModal').addEventListener('mousedown', function(e){ if(e.target===el('auMod
 
 el('rgModal').addEventListener('mousedown', function(e){ if(e.target===el('rgModal')) closeReg(); });
 document.addEventListener('keydown', function(e){ if(e.key==='Escape'){ closeReg(); closeDialog(); closeAddUser(); el('kebabMenu').classList.remove('open'); } });
+/* top bar avatar menu — on phones the location selector collapses in here */
+function toggleAvatarMenu(e){ if(e){ e.stopPropagation(); } var menu=document.getElementById('avatarMenu'), btn=document.getElementById('avatarBtn'); if(!menu) return; var open=menu.classList.toggle('open'); if(btn) btn.setAttribute('aria-expanded', open?'true':'false'); }
+document.addEventListener('click', function(ev){ if(!(ev.target.closest && ev.target.closest('.top-avatar-wrap'))){ var menu=document.getElementById('avatarMenu'); if(menu) menu.classList.remove('open'); var btn=document.getElementById('avatarBtn'); if(btn) btn.setAttribute('aria-expanded','false'); } });
+loadTopicOrder();
 render();
 
 /* floating bar adapter (Settings) */
