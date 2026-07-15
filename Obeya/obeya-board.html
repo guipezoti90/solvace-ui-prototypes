@@ -3283,7 +3283,7 @@
   function labelVal(mod,k,v){ var m=fieldMeta(mod,k); return (m&&m.t==='date')?MESES[v]:v; }
 
   var PAL=['#001391','#14ae5c','#e8b931','#ec221f','#6d6dff','#0ea5a5','#8b5cf6','#d6409f','#f59e0b','#0891b2'];
-  function fmt(n,d){ d=+d||0; return Number(n).toLocaleString('pt-BR',{minimumFractionDigits:d,maximumFractionDigits:d}); }
+  function fmt(n,d){ d=+d||0; return Number(n).toLocaleString('en-US',{minimumFractionDigits:d,maximumFractionDigits:d}); }
   function shorten(s,mx){ mx=mx||14; s=String(s); return s.length>mx?s.slice(0,mx-1)+'…':s; }
   function niceMax(v){ if(v<=0) return 10; var p=Math.pow(10,Math.floor(Math.log10(v))); var f=v/p; return (f<=1?1:f<=2?2:f<=5?5:10)*p; }
 
@@ -3324,7 +3324,7 @@
     return { cats:cats, seriesKeys:seriesKeys, isDate:isDate };
   }
   var AGGLBL={ sum:'Sum of ', avg:'Average of ', count:'Count of ', distinct:'Distinct count of ', min:'Min of ', max:'Max of ', median:'Median of ' };
-  function measureLabel(){ if(S.y==='__count') return 'Count'; var m=fieldMeta(S.source,S.y); return (AGGLBL[S.agg]||'Soma de ')+(m?m.l:S.y); }
+  function measureLabel(){ if(S.y==='__count') return 'Count'; var m=fieldMeta(S.source,S.y); return (AGGLBL[S.agg]||'Sum of ')+(m?m.l:S.y); }
   function subLabel(){ var xm=fieldMeta(S.source,S.x); return measureLabel()+' by '+(xm?xm.l:S.x)+(S.legend?(' · '+(fieldMeta(S.source,S.legend)||{}).l):''); }
 
   // ---- renderizadores ----
@@ -3338,7 +3338,7 @@
     var maxv=0; A.cats.forEach(function(c){ if(stacked){ var s=0; sk.forEach(function(k){ s+=(A.seriesKeys.length?(c.series[k]||0):c.total); }); maxv=Math.max(maxv,s); } else { sk.forEach(function(k){ maxv=Math.max(maxv, A.seriesKeys.length?(c.series[k]||0):c.total); }); } }); maxv=niceMax(maxv);
     for(var i=0;i<=4;i++){ var yy=T+ih-ih*i/4; g+='<line x1="'+L+'" y1="'+yy+'" x2="'+(W-R)+'" y2="'+yy+'" stroke="#eef0f3"/>'; if(S.showAxis) g+='<text x="'+(L-6)+'" y="'+(yy+3)+'" text-anchor="end" font-size="9" fill="#999ba7">'+fmt(maxv*i/4,S.decimals)+'</text>'; }
     if(S.showAxis) g+='<line x1="'+L+'" y1="'+T+'" x2="'+L+'" y2="'+(T+ih)+'" stroke="#c7ccd6"/>';
-    if(S.showObjetivo){ var tgt=(S.cf.target!=null&&S.cf.target!=='')?+S.cf.target:null; var oy=(tgt!=null?(T+ih-ih*Math.max(0,Math.min(tgt,maxv))/maxv):(T+ih*0.30)).toFixed(1); var mlbl=tgt!=null?('Meta '+fmt(tgt,S.decimals)):'Meta'; g+='<line x1="'+L+'" y1="'+oy+'" x2="'+(W-R)+'" y2="'+oy+'" stroke="#e8b931" stroke-width="1.5" stroke-dasharray="5 4"/><text x="'+(W-R-2)+'" y="'+(+oy-4)+'" text-anchor="end" font-size="9" fill="#b6871a">'+mlbl+'</text>'; }
+    if(S.showObjetivo){ var tgt=(S.cf.target!=null&&S.cf.target!=='')?+S.cf.target:null; var oy=(tgt!=null?(T+ih-ih*Math.max(0,Math.min(tgt,maxv))/maxv):(T+ih*0.30)).toFixed(1); var mlbl=tgt!=null?('Target '+fmt(tgt,S.decimals)):'Target'; g+='<line x1="'+L+'" y1="'+oy+'" x2="'+(W-R)+'" y2="'+oy+'" stroke="#e8b931" stroke-width="1.5" stroke-dasharray="5 4"/><text x="'+(W-R-2)+'" y="'+(+oy-4)+'" text-anchor="end" font-size="9" fill="#b6871a">'+mlbl+'</text>'; }
     var n=A.cats.length||1, gw=iw/n;
     A.cats.forEach(function(c,ci){ var cx=L+gw*ci, inner=gw*0.8, x0=cx+gw*0.1;
       if(stacked){ var yb=T+ih; sk.forEach(function(k,si){ var v=A.seriesKeys.length?(c.series[k]||0):c.total; var h=ih*v/maxv; yb-=h; g+='<rect x="'+x0.toFixed(1)+'" y="'+yb.toFixed(1)+'" width="'+inner.toFixed(1)+'" height="'+h.toFixed(1)+'" fill="'+barColor(si, A.seriesKeys.length?k:'')+'"'+drillAttr(c.key, A.seriesKeys.length?k:'')+(S.tip?'><title>'+tipTxt(labelVal(S.source,S.x,c.key), A.seriesKeys.length?k:'', v)+'</title></rect>':'/>'); }); }
@@ -3382,7 +3382,7 @@
   function cfIsGood(v, neg){ if(S.cf.target!=null && S.cf.target!==''){ var t=+S.cf.target; return S.cf.better==='lower' ? (+v<=t) : (+v>=t); } return !neg; }
   function opTest(v,op,a,b){ switch(op){ case 'gt':return v>a; case 'ge':return v>=a; case 'lt':return v<a; case 'le':return v<=a; case 'eq':return v===a; case 'ne':return v!==a; case 'between':return v>=a&&v<=b; } return false; }
   function cfRuleStyle(v, colKey){ for(var i=0;i<S.cf.rules.length;i++){ var r=S.cf.rules[i]; if(r.col!=='__any' && String(r.col)!==String(colKey)) continue; if(opTest(+v, r.op, +r.v1, +r.v2)) return r; } return null; }
-  function currentColKeys(){ var out=[{k:'__any',l:'Todas as medidas'}]; if(S.cols[0]){ distinct(S.cols[0], applyFilters(dataFor(S.source))).forEach(function(v){ out.push({k:String(v), l:labelVal(S.source,S.cols[0],v)}); }); } return out; }
+  function currentColKeys(){ var out=[{k:'__any',l:'All measures'}]; if(S.cols[0]){ distinct(S.cols[0], applyFilters(dataFor(S.source))).forEach(function(v){ out.push({k:String(v), l:labelVal(S.source,S.cols[0],v)}); }); } return out; }
   function dbCell(v, colMax, neg, colKey){ var val=fmt(v,S.decimals); if(v==null) return '<span class="cell">–</span>';
     if(S.cf.mode==='rules'){ var r=cfRuleStyle(v,colKey); return r?('<span class="cell" style="background:'+r.bg+';color:'+r.fg+';font-weight:600">'+val+'</span>'):('<span class="cell">'+val+'</span>'); }
     if(S.cf.mode==='none') return '<span class="cell">'+val+'</span>';
@@ -3454,7 +3454,7 @@
     var funnel='<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polygon points="22 3 2 3 10 12.46 10 19 14 21 14 12.46 22 3"/></svg>';
     var n=PV.filterCount();
     var filt='<div class="wpv-filtwrap"><button class="wpv-filt" data-filt-toggle title="Filters">'+funnel+'<span class="wpv-filt-count"'+(n?'':' style="display:none"')+'>'+n+'</span></button></div>';
-    var exp='<div class="wpv-exp"><button class="wpv-btn wpv-exp-btn" data-exp-toggle title="Exportar"><svg viewBox="0 0 24 24" fill="currentColor"><circle cx="12" cy="5" r="1.7"/><circle cx="12" cy="12" r="1.7"/><circle cx="12" cy="19" r="1.7"/></svg></button>'+
+    var exp='<div class="wpv-exp"><button class="wpv-btn wpv-exp-btn" data-exp-toggle title="Export"><svg viewBox="0 0 24 24" fill="currentColor"><circle cx="12" cy="5" r="1.7"/><circle cx="12" cy="12" r="1.7"/><circle cx="12" cy="19" r="1.7"/></svg></button>'+
       '<div class="wpv-exp-menu"><div class="wpv-exp-lbl">Export</div>'+
       '<button class="wpv-exp-item" data-exp="xlsx"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"/><path d="M14 2v6h6"/><path d="m9 13 6 5M15 13l-6 5"/></svg>Excel (.xlsx)</button>'+
       '<button class="wpv-exp-item" data-exp="csv"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"/><path d="M14 2v6h6"/><path d="M8 13h8M8 17h8M8 9h2"/></svg>CSV (.csv)</button>'+
