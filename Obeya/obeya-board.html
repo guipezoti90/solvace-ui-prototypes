@@ -303,6 +303,66 @@
   .wpivot-tb .wpv-btn:hover{ background:#f4f6ff; border-color:#c7ccf5; }
   .wpivot-tb .wpv-btn.on{ background:#001391; border-color:#001391; color:#fff; }
   .wpivot-view{ flex:1; min-height:0; overflow:auto; border:1px solid #e6e8ef; border-radius:10px; }
+  .wpivot-view{ padding:10px; }
+  .wpivot-view svg{ width:100%; height:auto; display:block; }
+  .wpivot-view .pv-legend{ display:flex; flex-wrap:wrap; gap:10px; margin:2px 2px 8px; font-size:10.5px; color:#4d5166; }
+  .wpivot-view .pv-legend span{ display:inline-flex; align-items:center; gap:5px; } .wpivot-view .pv-legend i{ width:10px; height:10px; border-radius:3px; display:inline-block; }
+  .wpivot-view .pvmx{ width:100%; border-collapse:collapse; font-size:12px; }
+  .wpivot-view .pvmx th{ background:#001391; color:#fff; padding:6px 10px; text-align:right; font-weight:600; white-space:nowrap; position:sticky; top:0; z-index:2; }
+  .wpivot-view .pvmx th:first-child{ text-align:left; }
+  .wpivot-view .pvmx td{ padding:0; text-align:right; border-bottom:1px solid #eef0f3; height:30px; }
+  .wpivot-view .pvmx td .cell{ padding:5px 10px; display:block; }
+  .wpivot-view .pvmx td:first-child, .wpivot-view .pvmx th:first-child{ text-align:left; }
+  .wpivot-view .pvmx .lbl{ display:flex; align-items:center; gap:6px; padding:5px 10px; white-space:nowrap; }
+  .wpivot-view .pvmx .mx-toggle{ width:14px; height:14px; flex:0 0 auto; color:#4d5166; cursor:pointer; display:inline-flex; align-items:center; justify-content:center; } .wpivot-view .pvmx .mx-toggle svg{ width:12px; height:12px; transition:transform .15s; } .wpivot-view .pvmx tr.collapsed .mx-toggle svg{ transform:rotate(-90deg); }
+  .wpivot-view .pvmx tr.mx-grand{ background:#dfe2fb; font-weight:700; } .wpivot-view .pvmx tr.mx-grand td{ border-bottom:1px solid #c7ccf5; }
+  .wpivot-view .pvmx tr.mx-group{ background:#eef1ff; font-weight:700; cursor:pointer; } .wpivot-view .pvmx tr.mx-group:hover{ background:#e4e8ff; }
+  .wpivot-view .pvmx tr.mx-leaf{ cursor:pointer; } .wpivot-view .pvmx tr.mx-leaf:hover{ background:#f7f8ff; }
+  .wpivot-view .db{ position:relative; display:flex; align-items:center; justify-content:flex-end; padding:0 10px; height:30px; }
+  .wpivot-view .db .db-bar{ position:absolute; top:5px; bottom:5px; left:6px; border-radius:3px; opacity:.85; } .wpivot-view .db .db-val{ position:relative; z-index:1; font-variant-numeric:tabular-nums; }
+  .wpivot-view .cf-scale{ border-radius:3px; }
+  .wpivot-view .drillable{ cursor:pointer; }
+  .wpv-filtwrap{ position:relative; }
+  .wpv-filt{ display:inline-flex; align-items:center; gap:4px; position:relative; height:26px; padding:0 9px; border-radius:7px; border:1px solid #d6dae8; background:#fff; color:#0d122f; cursor:pointer; }
+  .wpv-filt svg{ width:14px; height:14px; } .wpv-filt:hover{ background:#f4f6ff; border-color:#c7ccf5; }
+  .wpv-filt-count{ background:#001391; color:#fff; border-radius:99px; font-size:10px; font-weight:700; min-width:16px; height:16px; padding:0 4px; display:inline-flex; align-items:center; justify-content:center; }
+  .wpv-filters{ display:none; } .wpv-filters.open{ display:block; }
+  #pvFiltPop{ position:fixed; z-index:9600; width:300px; max-height:360px; overflow:auto; background:#fff; border:1px solid #e2e5ec; border-radius:12px; box-shadow:0 16px 40px rgba(13,18,47,.20); padding:12px; }
+  #pvFiltPop .f-head{ display:flex; align-items:center; justify-content:space-between; margin-bottom:8px; }
+  #pvFiltPop .f-head h5{ margin:0; font-size:11px; font-weight:700; text-transform:uppercase; letter-spacing:.03em; color:#8a90a6; }
+  #pvFiltPop .f-clear{ border:none; background:none; color:#001391; font-size:11px; font-weight:600; cursor:pointer; padding:2px 6px; border-radius:6px; } #pvFiltPop .f-clear:hover{ background:#eef1ff; } #pvFiltPop .f-clear:disabled{ color:#c4c8d4; cursor:default; }
+  #pvFiltPop .fdd{ margin-bottom:8px; position:relative; }
+  #pvFiltPop .fdd-btn{ width:100%; height:34px; border:1px solid #e2e5ec; border-radius:8px; background:#fff; padding:0 8px 0 10px; display:flex; align-items:center; gap:6px; font-size:12.5px; font-weight:600; color:#0d122f; cursor:pointer; }
+  #pvFiltPop .fdd-lbl{ flex:1; text-align:left; overflow:hidden; text-overflow:ellipsis; white-space:nowrap; }
+  #pvFiltPop .fdd-badge{ background:#001391; color:#fff; border-radius:99px; font-size:10px; font-weight:700; padding:1px 6px; }
+  #pvFiltPop .fdd-chev{ width:15px; height:15px; color:#4d5166; flex:0 0 auto; transition:transform .15s; } #pvFiltPop .fdd.open .fdd-chev{ transform:rotate(180deg); }
+  #pvFiltPop .fdd-menu{ display:none; margin-top:4px; border:1px solid #e2e5ec; border-radius:8px; padding:5px; max-height:170px; overflow:auto; }
+  #pvFiltPop .fdd.open .fdd-menu{ display:block; }
+  #pvFiltPop .fdd-item{ display:flex; align-items:center; gap:7px; font-size:12px; color:#0d122f; padding:5px 6px; border-radius:6px; cursor:pointer; } #pvFiltPop .fdd-item:hover{ background:#f5f6fb; }
+  .wpivot-tb .wpv-right{ margin-left:auto; display:flex; align-items:center; gap:6px; }
+  .wpivot-tb .wpv-right .wpv-exp{ margin-left:0; position:relative; }
+  .wpv-zoom{ padding:0 7px; } .wpv-zoom svg{ width:15px; height:15px; }
+  /* pivot edit drawer (conteúdo do modelo com design do board) */
+  #edPivotWrap .ed-ppanel{ display:none; } #edPivotWrap .ed-ppanel.active{ display:block; }
+  #edPivotWrap .ed-color{ width:44px; height:34px; border:1px solid #eeeff1; border-radius:8px; padding:2px; background:#fff; cursor:pointer; }
+  .pvw{ margin-bottom:10px; } .pvw-lbl{ display:flex; align-items:center; justify-content:space-between; font-size:11px; font-weight:700; text-transform:uppercase; letter-spacing:.03em; color:#8a90a6; margin-bottom:5px; }
+  .pvw-add{ width:20px; height:20px; border-radius:50%; border:none; background:#001391; color:#fff; cursor:pointer; font-size:14px; line-height:1; display:inline-flex; align-items:center; justify-content:center; }
+  .pvw-drop{ min-height:40px; border:1.5px dashed #e2e5ec; border-radius:8px; padding:6px; display:flex; flex-wrap:wrap; gap:6px; align-content:flex-start; background:#fafbfd; }
+  .pvw-chip{ display:inline-flex; align-items:center; gap:6px; background:#fff; border:1px solid #e2e5ec; border-radius:7px; padding:4px 8px; font-size:12.5px; color:#0d122f; }
+  .pvw-chip .pvw-agg{ border:1px solid #e2e5ec; border-radius:6px; font-size:11px; height:22px; color:#4d5166; background:#f5f6fb; }
+  .pvw-x{ cursor:pointer; color:#b6bac6; font-weight:700; } .pvw-x:hover{ color:#ec221f; }
+  .pvw-empty{ font-size:12px; color:#b6bac6; padding:2px 4px; }
+  .pvr-row{ display:flex; flex-wrap:wrap; align-items:center; gap:6px; border:1px solid #eef0f3; border-radius:8px; padding:8px; margin-bottom:8px; background:#fafbfd; }
+  .pvr-row select, .pvr-row input[type=number]{ height:30px; border:1px solid #e2e5ec; border-radius:6px; font-size:12px; padding:0 6px; background:#fff; } .pvr-row input[type=number]{ width:66px; }
+  .pvr-row input[type=color]{ width:28px; height:28px; border:1px solid #e2e5ec; border-radius:6px; padding:2px; background:#fff; cursor:pointer; }
+  .pvr-row .pvr-lbl{ font-size:11px; color:#8a90a6; } .pvr-row .pvr-del{ margin-left:auto; border:none; background:none; color:#b6bac6; cursor:pointer; } .pvr-row .pvr-del:hover{ color:#ec221f; }
+  .pvw-src{ margin-bottom:12px; }
+  .pvw-srclist{ border:1px solid #e2e5ec; border-radius:8px; padding:6px; display:flex; flex-wrap:wrap; gap:6px; background:#fff; min-height:40px; }
+  .pvw-srcitem{ display:inline-flex; align-items:center; gap:6px; padding:5px 8px; border:1px solid #e2e5ec; border-radius:7px; font-size:12.5px; color:#0d122f; background:#fff; cursor:grab; }
+  .pvw-srcitem .pvw-k{ font-size:10px; color:#8a90a6; }
+  .pvw-grip{ color:#c4c8d4; cursor:grab; letter-spacing:-2px; }
+  .pvw-chip{ cursor:grab; }
+  .pvw-drop.pvw-over, .pvw-srclist.pvw-over{ border-color:#001391; background:#eef1ff; }
   .wpivot-note{ padding-top:6px; font-size:10px; line-height:1.3; color:#999ba7; flex:0 0 auto; }
   .wpv-exp{ position:relative; margin-left:auto; }
   .wpv-exp-btn{ padding:0 7px; }
@@ -326,7 +386,7 @@
   .pvx-grid th{ background:#f4f6ff; color:#4d5166; font-weight:600; text-align:left; padding:8px 12px; border-bottom:1px solid #e2e5ec; white-space:nowrap; position:sticky; top:0; z-index:2; }
   .pvx-grid td{ padding:7px 12px; border-bottom:1px solid #f0f1f5; white-space:nowrap; color:#0d122f; }
   .pvx-grid tr:hover td{ background:#f9faff; }
-  .apact-card{ position:relative; width:440px; max-width:100%; background:#fff; border-radius:14px; box-shadow:0 30px 70px rgba(0,0,0,.3); display:flex; flex-direction:column; overflow:hidden; }
+  .apact-card{ position:relative; width:440px; max-width:100%; background:#fff; border-radius:14px; box-shadow:0 30px 70px rgba(0,0,0,.3); display:flex; flex-direction:column; overflow:visible; }
   .apact-head{ display:flex; align-items:center; justify-content:space-between; padding:16px 18px; border-bottom:1px solid #eef0f3; }
   .apact-title{ font-size:16px; font-weight:700; color:#0d122f; }
   .apact-body{ padding:16px 18px; }
@@ -339,6 +399,16 @@
   .apact-date{ position:relative; display:flex; align-items:center; }
   .apact-date svg{ position:absolute; right:10px; width:18px; height:18px; color:#8a90a6; pointer-events:none; }
   .apact-foot{ display:flex; justify-content:flex-end; gap:10px; padding:14px 18px; border-top:1px solid #eef0f3; }
+  .apsel{ position:relative; }
+  .apsel-btn{ width:100%; display:flex; align-items:center; gap:8px; border:1px solid #e2e5ec; border-radius:8px; padding:8px 10px; font-size:14px; color:#0d122f; background:#fff; cursor:pointer; box-sizing:border-box; }
+  .apsel-btn:hover{ border-color:#c7ccf5; } .apsel.open .apsel-btn{ border-color:#001391; }
+  .apsel-val{ flex:1; text-align:left; display:flex; align-items:center; gap:8px; overflow:hidden; text-overflow:ellipsis; white-space:nowrap; } .apsel-val.apsel-ph{ color:#8a90a6; }
+  .apsel-chev{ width:16px; height:16px; color:#8a90a6; flex:0 0 auto; transition:transform .15s; } .apsel.open .apsel-chev{ transform:rotate(180deg); }
+  .apsel-pop{ display:none; position:absolute; top:calc(100% + 4px); left:0; right:0; z-index:30; border:1px solid #e2e5ec; border-radius:8px; background:#fff; box-shadow:0 10px 26px rgba(13,18,47,.14); overflow:hidden; } .apsel.open .apsel-pop{ display:block; }
+  .apsel-srch{ display:flex; align-items:center; gap:6px; padding:7px 9px; border-bottom:1px solid #eef0f3; } .apsel-srch svg{ width:15px; height:15px; color:#8a90a6; flex:0 0 auto; } .apsel-srch input{ border:none; outline:none; font-size:13px; width:100%; color:#0d122f; background:none; }
+  .apsel-list{ max-height:170px; overflow:auto; padding:4px; }
+  .apsel-item{ display:flex; align-items:center; gap:8px; padding:7px 8px; border-radius:6px; font-size:13px; color:#0d122f; cursor:pointer; } .apsel-item:hover{ background:#f4f6ff; }
+  .apav-mini{ width:24px; height:24px; border-radius:50%; display:inline-flex; align-items:center; justify-content:center; font-size:10px; font-weight:700; flex:0 0 auto; }
   /* #218 checklist analytics modal */
   .chk-card{ position:relative; width:940px; max-width:100%; max-height:90vh; background:#fff; border-radius:14px; box-shadow:0 30px 70px rgba(0,0,0,.3); display:flex; flex-direction:column; overflow:hidden; }
   .chk-head{ display:flex; align-items:center; justify-content:space-between; padding:16px 20px; }
@@ -390,17 +460,18 @@
   .chartbox{ flex:1; display:flex; flex-direction:column; min-height:0; padding-top:2px; }
   .wcard:has(.chartbox){ gap:6px; }
   .minibars{ position:relative; flex:1; display:flex; align-items:flex-end; justify-content:space-between; gap:6px; min-height:0; }
+  .minibars.dense{ gap:1px; } .minibars.dense .mb{ border-radius:2px 2px 0 0; } .minibars.dense .mb-val{ display:none; } .minibars.dense .chart-target{ opacity:.5; }
   .chart-target{ position:absolute; left:-2px; right:-2px; height:2px; border:0; background:repeating-linear-gradient(90deg,#001391 0 5px,transparent 5px 9px); opacity:.7; pointer-events:none; z-index:1; }
   .chart-target::after{ display:none; }
   .mb-tgts{ position:absolute; inset:0; display:flex; justify-content:space-between; gap:6px; pointer-events:none; z-index:2; }
   .mb-tcol{ flex:1; position:relative; }
-  .mb-tgt{ position:absolute; left:-1px; right:-1px; height:3px; border-radius:2px; background:#001391; opacity:0; transition:opacity .12s, transform .12s; pointer-events:none; }
+  .mb-tgt{ position:absolute; left:-1px; right:-1px; height:2px; border-radius:2px; background:#001391; opacity:0; transition:opacity .12s, transform .12s; pointer-events:none; }
   #app[data-state="update"] .up-editable .mb-tgt{ opacity:1; pointer-events:auto; cursor:grab; }
-  #app[data-state="update"] .up-editable .mb-tgt::after{ content:""; position:absolute; left:50%; top:50%; transform:translate(-50%,-50%); width:12px; height:12px; border-radius:50%; background:#fff; border:2px solid #001391; }
-  #app[data-state="update"] .up-editable .mb-tgt:hover{ transform:scaleY(1.6); }
+  #app[data-state="update"] .up-editable .mb-tgt::after{ content:""; position:absolute; left:50%; top:50%; transform:translate(-50%,-50%); width:5px; height:5px; border-radius:50%; background:#001391; border:none; }
+  #app[data-state="update"] .up-editable .mb-tgt:hover{ transform:scaleY(1.3); }
   #app[data-state="update"] .up-editable .mb-tgt.grabbing{ cursor:grabbing; }
   .em-widget .mb-tgt{ opacity:1; pointer-events:auto; cursor:grab; }
-  .em-widget .mb-tgt::after{ content:""; position:absolute; left:50%; top:50%; transform:translate(-50%,-50%); width:14px; height:14px; border-radius:50%; background:#fff; border:2px solid #001391; }
+  .em-widget .mb-tgt::after{ content:""; position:absolute; left:50%; top:50%; transform:translate(-50%,-50%); width:6px; height:6px; border-radius:50%; background:#001391; border:none; }
   .minibars.alt .mb{ border-radius:99px; width:56%; margin:0 auto; box-shadow:inset 0 -7px 9px rgba(0,0,0,.14); }
   .minibars .mb{ flex:1; min-height:2px; border-radius:6px 6px 0 0; background:#14ae5c; }
   .minibars .mb.r{ background:#ec221f; }
@@ -748,7 +819,8 @@
   .wcont-rz svg{ width:13px; height:13px; }
   #app[data-state="edit"] .wcontainer .wcont-rz{ display:inline-flex; }
   /* in edit mode raise the container so its bar + bottom-right resize handle sit above the (translucent) widgets and stay clickable */
-  #app[data-state="edit"] .wcontainer{ z-index:30; }
+  #app[data-state="edit"] .wcontainer{ z-index:0; }
+  #app[data-state="edit"] .wcard{ z-index:1; }
   .wcont-name{ cursor:default; user-select:none; }
   .wcont-name.editing{ cursor:text; user-select:text; background:#fff; box-shadow:0 0 0 2px rgba(0,19,145,.35); }
   /* system tooltip (not native) for container controls */
@@ -869,6 +941,8 @@
   .menu .mi:hover{ background:#f2f2f4; }
   .menu .mi svg{ width:16px; height:16px; color:#4d5166; }
   .menu .mi .sc{ margin-left:auto; font-size:12px; color:#999ba7; }
+  .menu .mi .mi-chk{ margin-left:auto; width:16px; height:16px; color:#001391; display:none; }
+  .menu .mi.active .mi-chk{ display:inline-flex; }
   .menu .sep{ height:1px; background:#eeeff1; margin:6px 4px; }
   .board-list .mi{ font-size:14px; color:#4d5166; }
 
@@ -938,6 +1012,16 @@
   .em-widget{ flex:1 1 auto; min-width:0; display:flex; align-items:center; justify-content:center; overflow:hidden; }
   .em-widget .wcard{ position:static; box-shadow:0 24px 60px rgba(0,0,0,.20); overflow:hidden; }
   .edit-drawer{ position:relative; flex:0 0 530px; width:530px; max-width:46%; align-self:stretch; background:#fff; border:1px solid #eeeff1; border-radius:14px; box-shadow:0 24px 60px rgba(0,0,0,.22); display:flex; flex-direction:column; overflow:hidden; }
+  /* widget edit drawer: ritmo vertical compacto p/ caber sem rolagem desnecessária (mesmo padrão do room) */
+  #editDrawer .ed-body{ padding:14px 20px; }
+  #editDrawer .ed-label{ margin-bottom:4px; }
+  #editDrawer input.ed-input, #editDrawer select.ed-input, #editDrawer .ed-select{ height:34px; min-height:34px; }
+  #editDrawer .ed-inbox{ min-height:34px; }
+  #editDrawer .ed-grid2, #editDrawer .ed-grid3, #editDrawer .ed-grid4{ gap:10px; margin-bottom:4px; }
+  #editDrawer .ed-tr{ margin-bottom:10px; }
+  #editDrawer .ed-divider{ margin:12px 0 6px; }
+  #editDrawer [style*="margin-top:14px"]{ margin-top:10px !important; }
+  #editDrawer [style*="margin-top:16px"]{ margin-top:12px !important; }
   /* Room settings — right-side drawer (same pattern as the widget edit) */
   .room-modal{ position:absolute; inset:0; z-index:82; display:none; background:rgba(10,12,25,.45); }
   .room-modal.open{ display:block; }
@@ -1188,7 +1272,10 @@
   /* Andon rule rows (#78) */
   .andon-add{ width:26px; height:26px; border-radius:50%; border:none; background:#001391; color:#fff; display:inline-flex; align-items:center; justify-content:center; cursor:pointer; margin-bottom:14px; }
   .andon-add svg{ width:15px; height:15px; }
-  .andon-row{ display:grid; grid-template-columns:128px minmax(150px,1fr) 116px minmax(160px,1.4fr) 38px 28px; gap:14px; align-items:end; margin-bottom:16px; }
+  .andon-row{ border:1px solid #eef0f3; border-radius:10px; padding:12px; margin-bottom:14px; background:#fcfcfd; }
+  .andon-fields{ display:grid; grid-template-columns:1fr 1fr; gap:10px 12px; align-items:end; }
+  .andon-foot{ display:flex; align-items:center; gap:14px; margin-top:12px; }
+  .andon-foot .andon-del{ margin-left:auto; }
   .andon-f label{ display:block; font-size:12px; color:#6b7280; margin-bottom:6px; }
   .andon-f .ed-input{ width:100%; }
   .andon-series{ background:#f1f1f3; border:1px solid #e2e5ec; border-radius:8px; padding:9px 12px; font-size:13px; color:#667085; }
@@ -1199,6 +1286,24 @@
   .andon-del{ border:none; background:none; color:#001391; cursor:pointer; padding:0 0 4px; display:inline-flex; align-items:flex-end; }
   .andon-del:hover{ color:#dc2626; }
   .andon-del svg{ width:20px; height:20px; }
+  /* Series rows (General) */
+  .ser-head{ display:flex; align-items:center; gap:8px; margin-bottom:2px; }
+  .ser-title{ font-size:12px; font-weight:700; text-transform:uppercase; letter-spacing:.03em; color:#8a90a6; }
+  .ser-add{ width:22px; height:22px; border-radius:50%; border:none; background:#001391; color:#fff; display:inline-flex; align-items:center; justify-content:center; cursor:pointer; } .ser-add svg{ width:13px; height:13px; }
+  .ser-row{ display:grid; grid-template-columns:1fr 92px 54px 20px 20px; gap:8px; align-items:center; margin-top:10px; }
+  .ser-row .ed-input{ height:36px; min-height:36px; }
+  .ser-row .ed-inbox{ min-height:36px; padding:4px 6px; }
+  .ser-row .ed-select.sm{ height:36px; padding:0 6px; }
+  .ser-ck{ width:18px; height:18px; accent-color:#001391; cursor:pointer; }
+  .ser-del{ border:none; background:none; color:#001391; cursor:pointer; display:inline-flex; align-items:center; justify-content:center; padding:0; } .ser-del:hover{ color:#dc2626; } .ser-del svg{ width:18px; height:18px; }
+  /* Source tab (droplist variants) */
+  .ed-native{ -webkit-appearance:none; appearance:none; cursor:pointer; background-image:url("data:image/svg+xml;utf8,<svg xmlns='http://www.w3.org/2000/svg' width='16' height='16' viewBox='0 0 24 24' fill='none' stroke='%234d5166' stroke-width='2' stroke-linecap='round' stroke-linejoin='round'><path d='m6 9 6 6 6-6'/></svg>"); background-repeat:no-repeat; background-position:right 10px center; padding-right:34px; }
+  .ed-sec2{ font-size:12px; font-weight:700; text-transform:uppercase; letter-spacing:.03em; color:#8a90a6; margin:14px 0 6px; }
+  .ed-divider{ border-top:1px solid #eeeff1; margin:16px 0 8px; }
+  .ed-inbox.dis{ background:#f4f5f7; }
+  .calc-var{ border:1px solid #eef0f3; border-radius:10px; padding:10px; margin-top:10px; background:#fcfcfd; }
+  .calc-var-h{ display:flex; align-items:center; gap:8px; margin-bottom:8px; }
+  .calc-let{ width:60px; flex:0 0 60px; height:34px; min-height:34px; font-weight:600; }
   /* zoom date-range filter pills (chart full view #zoom-filter) */
   .zoom-filter{ display:flex; gap:8px; flex-wrap:wrap; margin:0 0 12px; flex:0 0 auto; }
   .zoom-filter .zf{ border:1px solid #c7ccf5; background:#fff; color:#001391; border-radius:8px; padding:6px 13px; font-size:14px; font-weight:500; cursor:pointer; }
@@ -1772,6 +1877,7 @@
     <div class="menu" id="ctxMenu" style="right:24px;bottom:96px;">
       <div class="mi" id="miRoom"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="10"/><path d="M12 16v-4"/><path d="M12 8h.01"/></svg>Room settings</div>
       <div class="mi"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="10"/><polygon points="10 8 16 12 10 16 10 8"/></svg>Reproduce</div>
+      <div class="mi" id="miTv"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="2" y="7" width="20" height="13" rx="2"/><path d="m8 3 4 4 4-4"/></svg>TV mode<svg class="mi-chk" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"><path d="M20 6 9 17l-5-5"/></svg></div>
       <div class="sep"></div>
       <div class="mi" id="miEdit"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M12 3H5a2 2 0 0 0-2 2v14a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2v-7"/><path d="M18.5 2.5a2.12 2.12 0 0 1 3 3L12 15l-4 1 1-4Z"/></svg>Edit mode<span class="sc">⌘K→C</span></div>
     </div>
@@ -1802,7 +1908,7 @@
       <aside class="edit-drawer" id="editDrawer">
       <div class="ed-head">
         <div>
-          <div class="ed-title">Edit Chart widget <span class="ed-tag">[Editing drawer]</span></div>
+          <div class="ed-title">Edit Chart widget</div>
           <div class="ed-sub">Chart description</div>
         </div>
         <button class="ed-close" id="edClose"><svg viewBox="0 0 24 24" width="18" height="18" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M18 6 6 18"/><path d="m6 6 12 12"/></svg></button>
@@ -1810,7 +1916,7 @@
       <div class="ed-tabs" id="edTabs">
         <button class="ed-tab active" data-tab="general">General</button>
         <button class="ed-tab" data-tab="advanced">Advanced</button>
-        <button class="ed-tab" data-tab="sources">Sources</button>
+        <button class="ed-tab" data-tab="sources">Source</button>
         <button class="ed-tab" data-tab="links">Links</button>
         <button class="ed-tab" data-tab="related">Related widgets <span class="ed-badge">1</span></button>
         <button class="ed-tab" data-tab="andon">Andon</button>
@@ -1821,28 +1927,33 @@
         <div class="ed-panel active" data-panel="general">
           <div class="ed-grid4">
             <div><label class="ed-label">Show Title</label><button class="zswitch on" type="button"></button></div>
-            <div><label class="ed-label">Title</label><input class="ed-input" value="Units Today"></div>
+            <div><label class="ed-label">Title</label><input class="ed-input" value="Incident Shift 1"></div>
             <div><label class="ed-label">Size</label><div class="ed-inbox"><span class="ed-chipcell">Small <span class="cx"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round"><path d="M18 6 6 18M6 6l12 12"/></svg></span></span></div></div>
             <div><label class="ed-label">Color</label><div class="ed-select"><span class="swatch" style="background:#0a0a0b"></span><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="m6 9 6 6 6-6"/></svg></div></div>
           </div>
-          <label class="ed-label" style="margin-top:14px">Decimal places</label>
-          <div class="ed-chips"><button class="ed-chip active">None</button><button class="ed-chip">One</button><button class="ed-chip">Two</button><button class="ed-chip">Three</button></div>
-          <div class="ed-grid2" style="margin-top:16px">
-            <div class="ed-tr" style="margin:0"><button class="zswitch" type="button"></button><span>Show Target</span></div>
-            <div class="ed-tr" style="margin:0"><button class="zswitch" type="button"></button><span>Apply Conditional Formatting</span></div>
+          <label class="ed-label" style="margin-top:14px">Input format</label>
+          <div class="ed-inbox"><span class="ed-chipcell">Daily <span class="cx"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round"><path d="M18 6 6 18M6 6l12 12"/></svg></span></span></div>
+          <div class="ed-grid2" style="margin-top:14px">
+            <div><label class="ed-label">Display format</label><div class="ed-inbox"><span class="ed-chipcell">Daily <span class="cx"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round"><path d="M18 6 6 18M6 6l12 12"/></svg></span></span></div></div>
+            <div><label class="ed-label">Display range</label><div class="ed-inbox"><span class="ed-chipcell">Last 7 days <span class="cx"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round"><path d="M18 6 6 18M6 6l12 12"/></svg></span></span></div></div>
           </div>
-          <div class="ed-grid4" style="margin-top:14px">
-            <div><label class="ed-label">Below Goal</label><div class="ed-select sm"><span class="swatch" style="background:#567714"></span><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="m6 9 6 6 6-6"/></svg></div></div>
-            <div><label class="ed-label">On Target</label><div class="ed-select sm"><span class="swatch" style="background:#e8b931"></span><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="m6 9 6 6 6-6"/></svg></div></div>
+          <label class="ed-label" style="margin-top:14px">display format</label>
+          <div class="ed-inbox"><span class="ed-chipcell">Standard <span class="cx"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round"><path d="M18 6 6 18M6 6l12 12"/></svg></span></span></div>
+          <div class="ed-tr" style="margin-top:14px"><button class="zswitch" type="button"></button><span>Show Target</span></div>
+          <div class="ed-tr"><button class="zswitch on" type="button"></button><span>Apply Conditional Formatting</span></div>
+          <div class="ed-grid3" style="margin-top:6px">
+            <div><label class="ed-label">Below Goal</label><div class="ed-select sm"><span class="swatch" style="background:#8bc34a"></span><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="m6 9 6 6 6-6"/></svg></div></div>
+            <div><label class="ed-label">On Target</label><div class="ed-select sm"><span class="swatch" style="background:#8bc34a"></span><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="m6 9 6 6 6-6"/></svg></div></div>
             <div><label class="ed-label">Above Goal</label><div class="ed-select sm"><span class="swatch" style="background:#ec221f"></span><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="m6 9 6 6 6-6"/></svg></div></div>
-            <div><label class="ed-label">Andon</label><input class="ed-input"></div>
           </div>
+          <label class="ed-label" style="margin-top:10px">Andon</label>
+          <div class="ed-inbox"><span class="ed-chipcell">Above target <span class="cx"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round"><path d="M18 6 6 18M6 6l12 12"/></svg></span></span></div>
           <div class="ed-grid2" style="margin-top:10px">
             <div><label class="ed-label">Objective Tolerance</label><input class="ed-input" value="0,00"></div>
             <div><label class="ed-label">&nbsp;</label><div class="ed-select sm"><span class="swatch" style="background:#0a0a0b"></span><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="m6 9 6 6 6-6"/></svg></div></div>
           </div>
-          <label class="ed-label" style="margin-top:14px">display format</label>
-          <div class="ed-inbox"><span class="ed-chipcell">Standard <span class="cx"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round"><path d="M18 6 6 18M6 6l12 12"/></svg></span></span></div>
+          <div class="ser-head" style="margin-top:16px"><span class="ser-title">Series</span><button class="ser-add" id="edSeriesAdd" type="button" title="Add series"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round"><path d="M5 12h14M12 5v14"/></svg></button></div>
+          <div id="edSeriesRows"></div>
         </div>
 
         <!-- ADVANCED (Figma 1233-20029) -->
@@ -1853,8 +1964,8 @@
             <div><label class="ed-label">Color</label><div class="ed-select"><span class="swatch" style="background:#9aa0ac"></span><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="m6 9 6 6 6-6"/></svg></div></div>
           </div>
           <div class="ed-grid3">
-            <div><label class="ed-label">Show Unit</label><button class="zswitch on" type="button"></button></div>
-            <div><label class="ed-label">Unit</label><input class="ed-input" value="min"></div>
+            <div><label class="ed-label">Show Unit</label><button class="zswitch" type="button"></button></div>
+            <div><label class="ed-label">Site</label><input class="ed-input"></div>
             <div></div>
           </div>
           <div class="ed-grid3">
@@ -1876,15 +1987,88 @@
           <div class="ed-inbox"><span class="ed-chipcell">Others <span class="cx"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round"><path d="M18 6 6 18M6 6l12 12"/></svg></span></span></div>
           <label class="ed-label" style="margin-top:14px">Owner</label>
           <input class="ed-input">
+          <div class="ed-divider"></div>
+          <div class="ed-grid2">
+            <div class="ed-tr" style="margin:0"><button class="zswitch" type="button"></button><span>Show Caption</span></div>
+            <div class="ed-tr" style="margin:0"><button class="zswitch on" type="button"></button><span>Show Label</span></div>
+          </div>
+          <label class="ed-label" style="margin-top:14px">Decimal places</label>
+          <div class="ed-inbox"><span class="ed-chipcell">None <span class="cx"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round"><path d="M18 6 6 18M6 6l12 12"/></svg></span></span></div>
+          <div class="ed-grid2" style="margin-top:14px">
+            <div><label class="ed-label">Vertical Axis</label><div class="ed-inbox"><span class="ed-chipcell">Automatic <span class="cx"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round"><path d="M18 6 6 18M6 6l12 12"/></svg></span></span></div></div>
+            <div><label class="ed-label">Maximum vertical axis value</label><input class="ed-input" value="0,00"></div>
+          </div>
+          <div class="ed-tr" style="margin-top:14px"><button class="zswitch" type="button"></button><span>Stack series</span></div>
         </div>
 
-        <!-- SOURCES -->
+        <!-- SOURCE -->
         <div class="ed-panel" data-panel="sources">
-          <div class="ed-sec">Data source</div>
-          <label class="ed-label">Source type</label>
-          <div class="ed-chips"><button class="ed-chip active">Manual</button><button class="ed-chip">Indicator</button><button class="ed-chip">Module</button><button class="ed-chip">Formula</button></div>          <div class="ed-sec">Series</div>
-          <div class="ed-empty">No series yet — add a series to plot data.</div>
-          <button class="zbtn zbtn-outline ed-addbtn"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M5 12h14"/><path d="M12 5v14"/></svg> Add series</button>
+          <label class="ed-label">SOURCE TYPE</label>
+          <select class="ed-input ed-native" id="edSrcType">
+            <option value="api">API</option>
+            <option value="calc">Calculation</option>
+            <option value="mirror">mirroring</option>
+            <option value="manual">Manual</option>
+            <option value="modules" selected>Solvace Modules</option>
+          </select>
+
+          <!-- API -->
+          <div class="src-variant" data-src="api">
+            <div class="ed-grid2" style="margin-top:14px">
+              <div><label class="ed-label">Target</label><button class="zswitch" type="button"></button></div>
+              <div><label class="ed-label">Value</label><button class="zswitch on" type="button"></button></div>
+            </div>
+          </div>
+
+          <!-- Calculation -->
+          <div class="src-variant" data-src="calc">
+            <label class="ed-label" style="margin-top:14px">Calculation Type</label>
+            <div class="ed-inbox"><span class="ed-chipcell">Formula <span class="cx"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round"><path d="M18 6 6 18M6 6l12 12"/></svg></span></span></div>
+            <div class="ed-sec2">FORMULA</div>
+            <div class="ed-inbox" style="gap:8px"><button class="ser-add" type="button" title="Add variable"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round"><path d="M5 12h14M12 5v14"/></svg></button><input class="ed-input" style="border:none;flex:1;height:30px;padding:0 4px" value="A+B"></div>
+            <div class="calc-var">
+              <div class="calc-var-h"><button class="ser-del" type="button" title="Remove"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M3 6h18"/><path d="M19 6v14a2 2 0 0 1-2 2H7a2 2 0 0 1-2-2V6m3 0V4a2 2 0 0 1 2-2h4a2 2 0 0 1 2 2v2"/></svg></button><input class="ed-input calc-let" value="A"></div>
+              <div class="ed-grid2">
+                <div><label class="ed-label">Site</label><div class="ed-inbox dis"><span class="ed-chipcell">Detroit</span></div></div>
+                <div><label class="ed-label">Room</label><div class="ed-inbox"><span class="ed-chipcell">(DOB-1) Lin… <span class="cx"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round"><path d="M18 6 6 18M6 6l12 12"/></svg></span></span></div></div>
+                <div><label class="ed-label">Board</label><div class="ed-inbox"><span class="ed-chipcell">DDS Line 1 <span class="cx"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round"><path d="M18 6 6 18M6 6l12 12"/></svg></span></span></div></div>
+                <div><label class="ed-label">Widget</label><div class="ed-inbox"><span class="ed-chipcell">Incident Shift 2 <span class="cx"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round"><path d="M18 6 6 18M6 6l12 12"/></svg></span></span></div></div>
+              </div>
+            </div>
+            <div class="calc-var">
+              <div class="calc-var-h"><button class="ser-del" type="button" title="Remove"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M3 6h18"/><path d="M19 6v14a2 2 0 0 1-2 2H7a2 2 0 0 1-2-2V6m3 0V4a2 2 0 0 1 2-2h4a2 2 0 0 1 2 2v2"/></svg></button><input class="ed-input calc-let" value="B"></div>
+              <div class="ed-grid2">
+                <div><label class="ed-label">Site</label><div class="ed-inbox dis"><span class="ed-chipcell">Detroit</span></div></div>
+                <div><label class="ed-label">Room</label><div class="ed-inbox"><span class="ed-chipcell">(DOB-1) Lin… <span class="cx"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round"><path d="M18 6 6 18M6 6l12 12"/></svg></span></span></div></div>
+                <div><label class="ed-label">Board</label><div class="ed-inbox"><span class="ed-chipcell">DDS Line 1 <span class="cx"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round"><path d="M18 6 6 18M6 6l12 12"/></svg></span></span></div></div>
+                <div><label class="ed-label">Widget</label><div class="ed-inbox"><span class="ed-chipcell">Incident Shift 3 <span class="cx"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round"><path d="M18 6 6 18M6 6l12 12"/></svg></span></span></div></div>
+              </div>
+            </div>
+          </div>
+
+          <!-- mirroring -->
+          <div class="src-variant" data-src="mirror">
+            <div class="ed-tr" style="margin-top:14px"><button class="zswitch" type="button"></button><span>Mirror goal</span></div>
+            <div class="ed-grid3" style="margin-top:6px">
+              <div><label class="ed-label">ROOM</label><input class="ed-input"></div>
+              <div><label class="ed-label">BOARD</label><input class="ed-input"></div>
+              <div><label class="ed-label">TOOL</label><input class="ed-input"></div>
+            </div>
+          </div>
+
+          <!-- Manual -->
+          <div class="src-variant" data-src="manual">
+            <div class="ed-empty" style="margin-top:14px">No extra settings for Manual source.</div>
+          </div>
+
+          <!-- Solvace Modules -->
+          <div class="src-variant" data-src="modules">
+            <div class="ed-grid3" style="margin-top:14px">
+              <div><label class="ed-label">Site</label><div class="ed-inbox"><span class="ed-chipcell">Detroit <span class="cx"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round"><path d="M18 6 6 18M6 6l12 12"/></svg></span></span></div></div>
+              <div><label class="ed-label">Module</label><input class="ed-input"></div>
+              <div><label class="ed-label">Indicator</label><input class="ed-input"></div>
+            </div>
+          </div>
         </div>
 
         <!-- LINKS (#76 — editable table; add as many rows as needed) -->
@@ -1918,6 +2102,56 @@
           <div id="edAndonRows"></div>
         </div>
 
+      </div>
+
+      <div id="edPivotWrap" style="display:none; flex-direction:column; flex:1; min-height:0;">
+        <div class="ed-tabs" id="edPivotTabs">
+          <button class="ed-tab active" data-ptab="geral">General</button>
+          <button class="ed-tab" data-ptab="avancado">Advanced</button>
+          <button class="ed-tab" data-ptab="fonte">Source</button>
+          <button class="ed-tab" data-ptab="links">Links</button>
+          <button class="ed-tab" data-ptab="related">Related widgets</button>
+        </div>
+        <div class="ed-body" id="edPivotBody">
+          <div class="ed-ppanel active" data-ppanel="geral">
+            <div class="ed-grid3">
+              <div><label class="ed-label">Show Title</label><button class="zswitch on" type="button" data-pvsw="showTitle"></button></div>
+              <div><label class="ed-label">Title</label><input class="ed-input" data-pv="title" value="Pivot Table"></div>
+              <div><label class="ed-label">Subtitle</label><input class="ed-input" data-pv="subtitle"></div>
+            </div>
+            <div class="ed-sec">Display</div>
+            <div class="ed-grid3"><div class="ed-tr" style="margin:0"><button class="zswitch" type="button" data-pvsw="showObjetivo"></button><span>Show target</span></div><div class="ed-tr" style="margin:0"><button class="zswitch on" type="button" data-pvsw="showFilterInWidget"></button><span>Show widget filters</span></div><div class="ed-tr" style="margin:0"><button class="zswitch on" type="button" data-pvsw="showLegend"></button><span>Show chart legend</span></div></div>
+            <div class="ed-sec">Data</div>
+            <div class="ed-grid3">
+              <div><label class="ed-label">Source</label><select class="ed-input ed-native" data-pv="fonte"><option value="planos">Action plans</option><option value="registros">Records</option><option value="checklist">Checklist</option><option value="rca">RCA</option><option value="defect">Defect Tag</option></select></div>
+              <div><label class="ed-label">Period</label><select class="ed-input ed-native" data-pv="periodo"><option value="7">Last 7 days</option><option value="14">Last 14 days</option><option value="30" selected>Last 30 days</option><option value="60">Last 60 days</option><option value="90">Last 3 months</option><option value="180">Last 6 months</option><option value="365">Last 12 months</option><option value="custom">Custom…</option></select></div>
+              <div><label class="ed-label">Chart type</label><select class="ed-input ed-native" data-pv="type"><option value="bar">Bar</option><option value="line">Line</option><option value="pie">Pie</option><option value="donut">Donut</option><option value="treemap">Treemap</option><option value="table">Table / Matrix</option></select></div>
+            </div>
+            <div class="ed-sec">Fields</div>
+            <div id="pvWells"></div>
+            <div class="ed-sec">Conditional formatting</div>
+            <div class="ed-grid3">
+              <div><label class="ed-label">Display type</label><select class="ed-input ed-native" data-pv="cf"><option value="none">None</option><option value="databar">Data bars</option><option value="colorscale">Color scale</option><option value="rules">By rules (conditions)</option></select></div>
+              <div class="pv-cfthresh"><label class="ed-label">Target</label><input class="ed-input" type="number" data-pv="target" placeholder="empty = column type"></div>
+              <div class="pv-cfthresh"><label class="ed-label">Better when</label><select class="ed-input ed-native" data-pv="better"><option value="higher">Higher is better</option><option value="lower">Lower is better</option></select></div>
+            </div>
+            <div class="ed-grid3 pv-cfthresh" style="margin-top:4px"><div><label class="ed-label">Within target</label><input type="color" class="ed-color" data-pv="cfok" value="#14ae5c"></div><div><label class="ed-label">Off target</label><input type="color" class="ed-color" data-pv="cfnok" value="#ec221f"></div><div></div></div>
+            <div class="pv-cfrules" style="display:none"><div id="pvRules"></div><button class="zbtn zbtn-outline" type="button" id="pvRuleAdd" style="height:32px;margin-top:6px">+ Add rule</button></div>
+            <div class="ed-sec">Subtotals</div>
+            <div class="ed-grid3"><div class="ed-tr" style="margin:0"><button class="zswitch on" type="button" data-pvsw="subGrand"></button><span>Grand total</span></div><div class="ed-tr" style="margin:0"><button class="zswitch on" type="button" data-pvsw="subGroups"></button><span>By groups</span></div><div class="ed-tr" style="margin:0"><button class="zswitch on" type="button" data-pvsw="subCollapsible"></button><span>Collapsible</span></div></div>
+          </div>
+          <div class="ed-ppanel" data-ppanel="avancado">
+            <div class="ed-grid3"><div class="ed-tr" style="margin:0"><button class="zswitch" type="button" data-pvsw="showCap"></button><span>Show caption</span></div><div><label class="ed-label">Caption</label><input class="ed-input" data-pv="capText"></div><div></div></div>
+            <div class="ed-grid3"><div class="ed-tr" style="margin:0"><button class="zswitch" type="button" data-pvsw="unit"></button><span>Show unit</span></div><div class="ed-tr" style="margin:0"><button class="zswitch on" type="button" data-pvsw="tip"></button><span>Show tip</span></div><div></div></div>
+            <div class="ed-grid3"><div class="ed-tr" style="margin:0"><button class="zswitch" type="button" data-pvsw="bTransp"></button><span>Transparent border</span></div><div class="ed-tr" style="margin:0"><button class="zswitch" type="button" data-pvsw="bgTransp"></button><span>Transparent background</span></div><div></div></div>
+            <div class="ed-grid3">
+              <div><label class="ed-label">Decimal places</label><select class="ed-input ed-native" data-pv="dec"><option value="0">None</option><option value="1">One</option><option value="2">Two</option></select></div><div class="ed-tr" style="margin:0"><button class="zswitch on" type="button" data-pvsw="showAxis"></button><span>Show vertical axis</span></div><div></div>
+            </div>
+          </div>
+          <div class="ed-ppanel" data-ppanel="fonte"><p style="font-size:13px;color:#4d5166">Source type: <b>Manual</b> or a Solvace module. The active source is chosen in the <b>General</b> tab (Source field).</p></div>
+          <div class="ed-ppanel" data-ppanel="links"><p style="font-size:13px;color:#4d5166"><b>Links</b> tab — to be defined.</p></div>
+          <div class="ed-ppanel" data-ppanel="related"><p style="font-size:13px;color:#4d5166"><b>Related widgets</b> tab — to be defined.</p></div>
+        </div>
       </div>
       <div class="ed-footer">
         <button class="zbtn zbtn-outline" id="edCancel">Cancel</button>
@@ -2622,6 +2856,11 @@
   // close menus on outside click
   document.addEventListener('click', function(){ closeMenus(); });
   ctxMenu.addEventListener('click', function(e){ e.stopPropagation(); });
+  // TV mode — flag no kebab da sala: zoom global proporcional à largura (toggle)
+  var tvMode=false;
+  function applyTvMode(){ if(tvMode){ var k=Math.max(1, Math.min(2, (window.innerWidth||1280)/1280)); document.documentElement.style.zoom=String(k); } else { document.documentElement.style.zoom=''; } }
+  window.addEventListener('resize', function(){ if(tvMode) applyTvMode(); });
+  (function(){ var mt=document.getElementById('miTv'); if(mt) mt.addEventListener('click', function(e){ e.stopPropagation(); tvMode=!tvMode; mt.classList.toggle('active', tvMode); applyTvMode(); }); })();
   boardList.addEventListener('click', function(e){ e.stopPropagation(); });
 
   // ===== Pan / zoom + widget editing =====
@@ -2803,7 +3042,8 @@
       +'<text x="100" y="92" text-anchor="middle" fill="'+color+'" style="font-size:40px;font-weight:700;font-family:Inter,sans-serif">'+val+'</text>'
       +'</svg><div class="scale"><span>0</span><span style="color:'+color+';font-weight:600">%</span><span>100</span></div></div>';
   }
-  function gBars(seed,red,yaxis,alt){ var days=['Mon','Tue','Wed','Thu','Fri','Sat','Sun'], b='', x='', i, thr=red?62:38, today=new Date(); var raw=[]; for(i=0;i<7;i++) raw.push(26+((seed*17+i*29+RVN*11)%64)); var mx=Math.max.apply(null,raw)||1, tgt=Math.max(2,Math.min(100,Math.round(thr/mx*100))); for(i=0;i<7;i++){ var v=raw[i], hp=Math.round(v/mx*100); var cls=(v<thr?'r':'g'); var dt=new Date(today.getTime()-(6-i)*86400000); var ds=('0'+dt.getDate()).slice(-2)+'/'+('0'+(dt.getMonth()+1)).slice(-2)+'/'+dt.getFullYear(); var pct=Math.round(v/thr*100); b+='<span class="mb '+cls+'" style="height:'+hp+'%" data-d="'+ds+'" data-v="'+v+'" data-t="'+thr+'" data-p="'+pct+'">'+(yaxis?'<b class="mb-val">'+v+'</b>':'')+'</span>'; x+='<span>'+dt.getDate()+'</span>'; } var tg2=''; for(var k=0;k<7;k++){ tg2+='<span class="mb-tcol"><i class="mb-tgt" style="bottom:'+tgt+'%" data-di="'+k+'" title="Drag to move target — hold CTRL for whole period"></i></span>'; } var plot='<div class="minibars'+(alt?' alt':'')+'"><span class="chart-target" style="bottom:'+tgt+'%" title="Target"></span>'+b+'<div class="mb-tgts">'+tg2+'</div></div>'; var xax='<div class="minibars-x">'+x+'</div>'; if(yaxis){ var yt=[mx,Math.round(mx*0.66),Math.round(mx*0.33),0], yh='', q; for(q=0;q<yt.length;q++) yh+='<span>'+yt[q]+'</span>'; return '<div class="chartbox has-yaxis" data-seed="'+seed+'" data-red="'+(red?1:0)+'"><div class="wperiod"><button class="wp active">7d</button><button class="wp">30d</button><button class="wp">90d</button></div><div class="mb-row"><div class="minibars-y">'+yh+'</div><div class="mb-colwrap">'+plot+xax+'</div></div></div>'; } return '<div class="chartbox">'+plot+xax+'</div>'; }
+  function gBars(seed,red,yaxis,alt,days){ days=days||7; var b='', x='', i, thr=red?62:38, today=new Date(); var raw=[]; for(i=0;i<days;i++) raw.push(26+((seed*17+i*29+RVN*11)%64)); var mx=Math.max.apply(null,raw)||1, tgt=Math.max(2,Math.min(100,Math.round(thr/mx*100))); var step=Math.ceil(days/8); for(i=0;i<days;i++){ var v=raw[i], hp=Math.round(v/mx*100); var cls=(v<thr?'r':'g'); var dt=new Date(today.getTime()-(days-1-i)*86400000); var ds=('0'+dt.getDate()).slice(-2)+'/'+('0'+(dt.getMonth()+1)).slice(-2)+'/'+dt.getFullYear(); var pct=Math.round(v/thr*100); b+='<span class="mb '+cls+'" style="height:'+hp+'%" data-d="'+ds+'" data-v="'+v+'" data-t="'+thr+'" data-p="'+pct+'">'+(yaxis?'<b class="mb-val">'+v+'</b>':'')+'</span>'; x+='<span>'+((i%step===0||i===days-1)?dt.getDate():'')+'</span>'; } var tg2=''; if(days<=14){ for(var k=0;k<days;k++){ tg2+='<span class="mb-tcol"><i class="mb-tgt" style="bottom:'+tgt+'%" data-di="'+k+'" title="Drag to move target — hold CTRL for whole period"></i></span>'; } } var plot='<div class="minibars'+(alt?' alt':'')+(days>14?' dense':'')+'"><span class="chart-target" style="bottom:'+tgt+'%" title="Target"></span>'+b+(tg2?'<div class="mb-tgts">'+tg2+'</div>':'')+'</div>'; var xax='<div class="minibars-x">'+x+'</div>'; if(yaxis){ var yt=[mx,Math.round(mx*0.66),Math.round(mx*0.33),0], yh='', q; for(q=0;q<yt.length;q++) yh+='<span>'+yt[q]+'</span>'; return '<div class="chartbox has-yaxis" data-seed="'+seed+'" data-red="'+(red?1:0)+'" data-alt="'+(alt?1:0)+'" data-days="'+days+'"><div class="wperiod"><button class="wp'+(days===7?' active':'')+'" data-days="7">7d</button><button class="wp'+(days===30?' active':'')+'" data-days="30">30d</button><button class="wp'+(days===90?' active':'')+'" data-days="90">90d</button></div><div class="mb-row"><div class="minibars-y">'+yh+'</div><div class="mb-colwrap">'+plot+xax+'</div></div></div>'; } return '<div class="chartbox">'+plot+xax+'</div>'; }
+  document.addEventListener('click', function(e){ var wp=e.target.closest && e.target.closest('.wperiod .wp'); if(!wp) return; e.stopPropagation(); var box=wp.closest('.chartbox'); if(!box) return; var seed=+box.getAttribute('data-seed')||1, red=box.getAttribute('data-red')==='1', alt=box.getAttribute('data-alt')==='1', dys=+wp.getAttribute('data-days')||7; box.outerHTML=gBars(seed,red,true,alt,dys); });
   function gTbl(rows){ var txt=['Loren ipsum','Dolor sit','Amet cons','Elit sed','Tempor ut','Labore et','Magna ali','Veniam qua','Nostrud ex','Aliquip ea','Commodo','Cupidat','Proident'], b='', i; for(i=0;i<rows;i++) b+='<tr><td>'+txt[i%txt.length]+'</td><td>'+((i*3719+1234)%900000+1000)+'</td><td>'+(((i*5)%28)+1)+'/0'+((i%9)+1)+'/2026</td></tr>'; return '<div class="wtable-wrap"><table class="wtable"><thead><tr><th>TEXT</th><th>NUMBER</th><th>DATE</th></tr></thead><tbody>'+b+'</tbody></table></div>'; }
   function gList(rows){ var cc=['#001391','#14ae5c','#e8b931','#ec221f'], o='', i; for(i=0;i<rows;i++) o+='<div class="li"><div class="bar" style="background:'+cc[i%4]+'"></div><div class="tx"><div class="l1" style="width:'+(60+(i*13)%30)+'%"></div><div class="l2" style="width:'+(40+(i*17)%25)+'%"></div></div></div>'; return '<div class="wlist">'+o+'</div>'; }
   function gFeed(n,msgs){ msgs=msgs||[['#d7e9ff','Jack M.','5:02 am','👏 Recognition — Congrats to Jack for his nomination!','linear-gradient(135deg,#f97316,#a855f7)','JM'],['#ffe3c2','Ana B.','4:47 am','Zoom Reports Update — download links shared with the team.','','AB'],['#dcf5e6','Team','4:30 am','Daily kicked off, all stations green.','','EQ']]; var send='<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M22 2 11 13"/><path d="M22 2 15 22l-4-9-9-4Z"/></svg>'; var acts='<div class="facts"><button>React</button><span class="sep">|</span><button>Reply</button><span class="sep">|</span><button>Translate</button></div>'; var o='', i; for(i=0;i<Math.min(n,msgs.length);i++){ var m=msgs[i]; o+='<div class="fm"><span class="fa" title="'+m[1]+'" style="background:'+m[0]+'">'+(m[5]||'')+'</span><div class="fb"><div class="fbub"><div class="fbh"><b>'+m[1]+'</b><span>'+m[2]+'</span></div><div class="fbt">'+m[3]+'</div>'+(m[4]?'<div class="fimg" style="background:'+m[4]+'">👏 Recognition</div>':'')+'</div>'+acts+'</div></div>'; } return '<div class="wfeed"><div class="wfeed-compose"><input placeholder="Comment"><button class="fsend">'+send+'</button></div><div class="wfeed-list">'+o+'</div></div>'; }
@@ -2841,7 +3081,7 @@
   }
   function stBadge(s){ var t=(s||'').toLowerCase(), cls='warn'; if(/solved|complet|execut|on time|\bok\b|conclu|done/.test(t)) cls='ok'; else if(/late|atrasad|delay|overdue|fail|reprov/.test(t)) cls='bad'; else if(/cmms/.test(t)) cls='cmms'; else if(/open|abert|\bnew\b|novo/.test(t)) cls='info'; return s?'<span class="rbadge '+cls+'">'+s+'</span>':''; }
   function gTblD(h,r,title,plain){ var th='', k, b='', i, j; for(k=0;k<h.length;k++) th+='<th>'+h[k]+'</th>'; th+='<th class="rowtools"></th>'; var dcount={ok:0,bad:0,info:0,warn:0}, total=r?r.length:0; if(!r||!r.length){ b='<tr><td colspan="'+(h.length+1)+'" style="text-align:center;color:#999ba7;padding:18px">No records found.</td></tr>'; } else { for(i=0;i<r.length;i++){ var sc=(r[i][r[i].length-1]||'').toLowerCase(), cc='warn'; if(/solved|complet|execut|on time|\bok\b|conclu|done|finish/.test(sc)) cc='ok'; else if(/late|atrasad|delay|overdue|fail|reprov/.test(sc)) cc='bad'; else if(/cmms|open|abert|\bnew\b|novo|progress|andamento/.test(sc)) cc='info'; dcount[cc]++; var tds=''; for(j=0;j<r[i].length;j++){ var last=(j===r[i].length-1); if(j===0){ tds+= plain ? '<td class="rnum">'+r[i][j]+'</td>' : '<td class="rnum"><a class="rcode">'+r[i][j]+'</a></td>'; } else if(last){ tds+= plain ? '<td style="text-align:center"><span class="wtsq wtsq-'+cc+'" title="'+r[i][j]+'"></span></td>' : '<td>'+stBadge(r[i][j])+'</td>'; } else { tds+='<td>'+r[i][j]+'</td>'; } } b+='<tr data-st="'+cc+'">'+tds+RT_TD+'</tr>'; } } var _p='<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><path d="M12 5v14M5 12h14"/></svg>',_s='<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><circle cx="11" cy="11" r="7"/><path d="m21 21-4.3-4.3"/></svg>',_f='<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M22 3H2l8 9.46V19l4 2v-8.54L22 3z"/></svg>'; var tbl='<div class="wtable-wrap"><table class="wtable"><thead><tr>'+th+'</tr></thead><tbody>'+b+'</tbody></table></div>'; if(plain){ var pbar='<div class="wdefect-bar"><span class="srch">'+_s+'<input placeholder="Search"></span><span class="ic out">'+_f+'</span></div>'; return '<div class="wdefect">'+pbar+tbl+'<button class="wtable-addrow">'+_p+' Add row</button></div>'; } var _bar='<div class="wdefect-bar"><span class="ic pri">'+_p+'</span><span class="srch">'+_s+'<input placeholder="Search"></span><span class="ic out">'+_f+'</span></div>'; return '<div class="wdefect"><button class="wdh-show" title="Show totals"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M2 12s3-8 10-8 10 8 10 8-3 8-10 8-10-8-10-8Z"/><circle cx="12" cy="12" r="3"/></svg> Show totals</button>'+regTot(dcount, total, title||'Records')+_bar+tbl+'</div>'; }
-  function gAction(rows){ var msg='<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M21 15a2 2 0 0 1-2 2H7l-4 4V5a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2z"/></svg>', clk='<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="10"/><polyline points="12 6 12 12 16 14"/></svg>', plus='<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><path d="M12 5v14M5 12h14"/></svg>', srch='<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><circle cx="11" cy="11" r="7"/><path d="m21 21-4.3-4.3"/></svg>', filt='<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M22 3H2l8 9.46V19l4 2v-8.54L22 3z"/></svg>', grid='<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="4" width="5" height="16" rx="1"/><rect x="10" y="4" width="5" height="11" rx="1"/><rect x="17" y="4" width="5" height="14" rx="1"/></svg>'; var av=[['OO','#dcf5e6','#2d6a4f','1','warn','Otto O.'],['RC','#ffe0e0','#c0392b','1','bad','Rita C.'],['ND','#ffe3c2','#9a4a00','1','bad','Nina D.'],['AR','#d7e9ff','#17457a','2','bad','Alan R.'],['VQ','#e9d8fd','#6b21a8','1','bad','Vic Q.']]; var it=[['ACP-499','Clean maneuver area','594','3','OO','#dcf5e6','#2d6a4f','Otto O.'],['ACP-564','Organize office files','573','0','RC','#ffe0e0','#c0392b','Rita C.'],['ACP-562','Train operators on the new procedure','454','1','ND','#ffe3c2','#9a4a00','Nina D.'],['ACP-607','Information required on OEE below target','414','0','AR','#d7e9ff','#17457a','Alan R.'],['ACP-609','How to scale an action plan within your own Site','398','1','AR','#d7e9ff','#17457a','Alan R.'],['ACP-620','Analyse downtime root causes','372','2','VQ','#e9d8fd','#6b21a8','Vic Q.']]; var avs='', k; for(k=0;k<av.length;k++){ var a=av[k]; avs+='<span class="apav" title="'+a[5]+'" data-person="'+a[5]+'" style="background:'+a[1]+';color:'+a[2]+'">'+a[0]+'<span class="apcount '+a[4]+'">'+a[3]+'</span></span>'; } var bar='<div class="wdefect-bar"><span class="ic pri ap-add">'+plus+'</span><span class="srch">'+srch+'<input placeholder="Search"></span><span class="ic out">'+filt+'</span><span class="ic out ap-kanban" title="Kanban view">'+grid+'</span></div>'; var o='', i; for(i=0;i<Math.min(rows,it.length);i++){ var c=it[i]; o+='<div class="rcard" data-person="'+(c[7]||'')+'"><div class="rcard-top"><span class="apleft"><span class="apav-sm" title="'+(c[7]||'')+'" style="background:'+c[5]+';color:'+c[6]+'">'+c[4]+'</span><span class="rid">'+c[0]+'</span></span><span class="rcard-r"><span class="rbadge bad">Delayed</span><button class="ap-kebab" title="Options"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="5" r="1"/><circle cx="12" cy="12" r="1"/><circle cx="12" cy="19" r="1"/></svg></button><div class="ap-menu"><button data-act="finish">Finalizar</button><button data-act="escalate">Escalar</button><button data-act="reschedule">Reagendar</button></div></span></div><div class="rtxt">'+c[1]+'</div><div class="rmeta">'+((c[3]&&c[3]!=='0')?'<span class="rmc">'+msg+c[3]+'</span>':'')+'<span class="rmc rmc-over">'+clk+'Overdue '+c[2]+' days</span></div></div>'; } return '<div class="wap"><div class="wtbadges"><span class="wb warn">0 On time</span><span class="wb bad">19 Delayed</span></div><div class="apstack">'+avs+'</div>'+bar+'<div class="wrca">'+o+'</div></div>'; }
+  function gAction(rows){ var msg='<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M21 15a2 2 0 0 1-2 2H7l-4 4V5a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2z"/></svg>', clk='<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="10"/><polyline points="12 6 12 12 16 14"/></svg>', plus='<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><path d="M12 5v14M5 12h14"/></svg>', srch='<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><circle cx="11" cy="11" r="7"/><path d="m21 21-4.3-4.3"/></svg>', filt='<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M22 3H2l8 9.46V19l4 2v-8.54L22 3z"/></svg>', grid='<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="4" width="5" height="16" rx="1"/><rect x="10" y="4" width="5" height="11" rx="1"/><rect x="17" y="4" width="5" height="14" rx="1"/></svg>'; var av=[['OO','#dcf5e6','#2d6a4f','1','warn','Otto O.'],['RC','#ffe0e0','#c0392b','1','bad','Rita C.'],['ND','#ffe3c2','#9a4a00','1','bad','Nina D.'],['AR','#d7e9ff','#17457a','2','bad','Alan R.'],['VQ','#e9d8fd','#6b21a8','1','bad','Vic Q.']]; var it=[['ACP-499','Clean maneuver area','594','3','OO','#dcf5e6','#2d6a4f','Otto O.'],['ACP-564','Organize office files','573','0','RC','#ffe0e0','#c0392b','Rita C.'],['ACP-562','Train operators on the new procedure','454','1','ND','#ffe3c2','#9a4a00','Nina D.'],['ACP-607','Information required on OEE below target','414','0','AR','#d7e9ff','#17457a','Alan R.'],['ACP-609','How to scale an action plan within your own Site','398','1','AR','#d7e9ff','#17457a','Alan R.'],['ACP-620','Analyse downtime root causes','372','2','VQ','#e9d8fd','#6b21a8','Vic Q.']]; var avs='', k; for(k=0;k<av.length;k++){ var a=av[k]; avs+='<span class="apav" title="'+a[5]+'" data-person="'+a[5]+'" style="background:'+a[1]+';color:'+a[2]+'">'+a[0]+'<span class="apcount '+a[4]+'">'+a[3]+'</span></span>'; } var bar='<div class="wdefect-bar"><span class="ic pri ap-add">'+plus+'</span><span class="srch">'+srch+'<input placeholder="Search"></span><span class="ic out">'+filt+'</span><span class="ic out ap-kanban" title="Kanban view">'+grid+'</span></div>'; var o='', i; for(i=0;i<Math.min(rows,it.length);i++){ var c=it[i]; o+='<div class="rcard" data-person="'+(c[7]||'')+'"><div class="rcard-top"><span class="apleft"><span class="apav-sm" title="'+(c[7]||'')+'" style="background:'+c[5]+';color:'+c[6]+'">'+c[4]+'</span><span class="rid">'+c[0]+'</span></span><span class="rcard-r"><span class="rbadge bad">Delayed</span><button class="ap-kebab" title="Options"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="5" r="1"/><circle cx="12" cy="12" r="1"/><circle cx="12" cy="19" r="1"/></svg></button><div class="ap-menu"><button data-act="finish">Finalize</button><button data-act="escalate">Escalate</button><button data-act="reschedule">Reschedule</button></div></span></div><div class="rtxt">'+c[1]+'</div><div class="rmeta">'+((c[3]&&c[3]!=='0')?'<span class="rmc">'+msg+c[3]+'</span>':'')+'<span class="rmc rmc-over">'+clk+'Overdue '+c[2]+' days</span></div></div>'; } return '<div class="wap"><div class="wtbadges"><span class="wb warn">0 On time</span><span class="wb bad">19 Delayed</span></div><div class="apstack">'+avs+'</div>'+bar+'<div class="wrca">'+o+'</div></div>'; }
   function gRCA(rows){ var plus='<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><path d="M12 5v14M5 12h14"/></svg>', srch='<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><circle cx="11" cy="11" r="7"/><path d="m21 21-4.3-4.3"/></svg>', filt='<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M22 3H2l8 9.46V19l4 2v-8.54L22 3z"/></svg>';
     var it=[['RCA-57','Operator from shift 1 slipped and almost fell on the floor','Opened','warn','1','820 days'],['RCA-58','Case packer stopped working for 1.5 h','Opened','warn','2','820 days'],['RCA-59','Label misalignment on line 2','Opened','warn','1','640 days'],['RCA-60','Pallet wrapper jam','Closed','ok','3','512 days']], o='', i, dcount={ok:0,bad:0,info:0,warn:0}, total=0;
     for(i=0;i<it.length;i++){ dcount[it[i][3]]=(dcount[it[i][3]]||0)+1; total++; }
@@ -2961,7 +3201,7 @@
     {l:820,t:1030,w:190,h:180,type:'chart',title:'Absenteism Shift 3',red:1},
     {l:440,t:3380,w:360,h:370,type:'pie',title:'Quality split',sub:'Last 30 days'},
     {l:820,t:3380,w:360,h:370,type:'spider',title:'KPI radar',sub:'Current month'},
-    {l:1200,t:3380,w:600,h:400,type:'pivot',title:'Pivot Table',sub:'Área × Departamento · somando Total OK/NOK por Mês',badge:'dados fictícios'},
+    {l:1200,t:3380,w:600,h:400,type:'pivot',title:'Pivot Table',sub:'Área × Departamento'},
     {l:20,t:3820,w:360,h:320,type:'table',title:'Production Records',ed:1,sub:'Last 24 hours',dat:{h:['N°','ITEM','STATUS'],r:[['WO-901','Line A batch #88','Completed'],['WO-902','Line B batch #41','Open'],['WO-903','Line C batch #12','Completed']]}},
     {l:400,t:3820,w:240,h:320,type:'status',title:'Line Status',sub:'Real time'},
     {l:660,t:3820,w:320,h:320,type:'calendar',title:'Delivery Calendar',sub:'May 2026'},
@@ -3008,88 +3248,216 @@
     var h='', i, j; for(i=0;i<cols.length;i++){ var col=cols[i], isDel=(col[1]==='bad'), cards=''; for(j=0;j<col[2].length;j++){ var c=col[2][j]; cards+='<div class="kb-card">'+(c[8]?'<div class="kb-photo" style="background-image:url('+c[8]+')"></div>':'')+'<div class="kb-crow"><span class="apav-sm" title="'+c[2]+'" style="background:'+c[3]+';color:'+c[4]+'">'+c[2]+'</span><div class="kb-cmain"><div class="kb-idrow"><a class="kb-id">'+c[0]+'</a>'+(isDel?alert:'')+'</div><div class="kb-txt">'+c[1]+'</div><div class="kb-src">'+c[6]+'</div></div><div class="kb-cside">'+(c[7]?'<span class="kb-cmt">'+cmt+c[7]+'</span>':'')+'<span class="rbadge '+col[1]+'">'+col[0]+'</span>'+(c[5]?'<span class="kb-due">'+c[5]+'</span>':'')+'</div></div></div>'; } h+='<div class="kb-col"><div class="kb-colh"><span class="rbadge '+col[1]+'">'+col[0]+'</span><span class="kb-count">'+col[2].length+'</span></div><div class="kb-list">'+cards+'</div></div>'; } return '<div class="kb-board">'+h+'</div>';
   }
   function defectCalHTML(){ var DOW=['Sun','Mon','Tue','Wed','Thu','Fri','Sat']; var year=2026, month=4; var lead=new Date(year,month,1).getDay(), dim=new Date(year,month+1,0).getDate(); var chipsByDay={3:[['DFT-231','info']],4:[['DFT-225','bad']],7:[['DFT-129','warn']],10:[['DFT-219','info'],['DFT-214','warn']],14:[['DFT-208','ok']],17:[['DFT-150','mut']],18:[['DFT-164','bad']],24:[['DFT-161','bad']],27:[['DFT-99','warn']]}; var col={bad:['#fde7e7','#ec221f'],warn:['#fdf3d6','#a07d12'],info:['#e7e9f5','#3a4790'],ok:['#dcf5e6','#14ae5c'],mut:['#eceef4','#6b7280']}; var cells='',i,d; for(i=0;i<lead;i++) cells+='<div class="dcal-cell mut"></div>'; for(d=1;d<=dim;d++){ var aps=chipsByDay[d]||[]; var chips=aps.map(function(a){ var c=col[a[1]]; return '<div class="dcal-ap" style="background:'+c[0]+';color:'+c[1]+';border-color:'+c[1]+'"><span class="dcal-dot" style="background:'+c[1]+'"></span>'+a[0]+'</div>'; }).join(''); cells+='<div class="dcal-cell"><div class="dcal-dn">'+d+'</div>'+chips+'</div>'; } return '<div class="dcal-wrap"><div class="dcal-top"><b>May 2026</b></div><div class="dcal-grid">'+DOW.map(function(x){return '<div class="dcal-dow">'+x+'</div>';}).join('')+cells+'</div></div>'; }
-  // ===== Pivot Table (portado da Galeria de Widgets — motor de pivô mock, sem dependências) =====
+  // ===== Pivot Table — motor portado do modelo pivot-widget.html (idêntico ao anexo) =====
   var PV=(function(){
-    var _seed=20260619; function rnd(){ _seed=(_seed*1103515245+12345)&0x7fffffff; return _seed/0x7fffffff; }
-    function pick(a){ return a[Math.floor(rnd()*a.length)]; } function iRange(mn,mx){ return mn+Math.floor(rnd()*(mx-mn+1)); }
-    var PLANTAS=["Curitiba (CWB)","Capivari (CAO)","Bahrain (BIC)","Manaus (MAO)"];
-    var AREAS={"Produção":["Montagem","Embalagem"],"Logística":["Recebimento","Expedição"],"Qualidade":["Inspeção","Laboratório"],"Manutenção":["Preventiva","Corretiva"],"Segurança":["SESMT","Brigada"]};
-    var TURNOS=["1º Turno","2º Turno","3º Turno"];
-    var MESES=["01 Jan","02 Fev","03 Mar","04 Abr","05 Mai","06 Jun","07 Jul","08 Ago","09 Set","10 Out","11 Nov","12 Dez"];
-    var areaKeys=Object.keys(AREAS), DATA=[];
-    for(var _i=0;_i<320;_i++){ var area=pick(areaKeys), depto=pick(AREAS[area]), m=iRange(0,11); DATA.push({Area:area,Departamento:depto,Planta:pick(PLANTAS),Turno:pick(TURNOS),Mes:MESES[m],mesIdx:m,OK:iRange(5,50),NOK:iRange(0,10)}); }
-    var PIVOTS={ area:{rows:["Area","Departamento"],col:"Mes",label:["Área","Departamento"]}, planta:{rows:["Planta","Area"],col:"Mes",label:["Planta","Área"]}, turno:{rows:["Planta","Turno"],col:null,label:["Planta","Turno"]} };
-    var PAL=['#1a1aff','#14ae5c','#e8b931','#ec221f','#6d6dff','#0ea5a5','#8b5cf6'];
-    function fmt(n){ return n.toLocaleString('pt-BR'); }
-    function shorten(s,mx){ mx=mx||14; s=String(s); return s.length>mx?s.slice(0,mx-1)+'…':s; }
-    function niceMax(v){ if(v<=0) return 10; var p=Math.pow(10,Math.floor(Math.log10(v))); var f=v/p; var nf=f<=1?1:f<=2?2:f<=5?5:10; return nf*p; }
-    function aggBy(dim){ var m={}; DATA.forEach(function(r){ var k=r[dim]; if(!m[k]) m[k]={key:k,ok:0,nok:0}; m[k].ok+=r.OK; m[k].nok+=r.NOK; }); return Object.keys(m).map(function(k){return m[k];}).sort(function(a,b){return b.ok-a.ok;}); }
-    function aggMonth(){ var m={}; DATA.forEach(function(r){ var k=r.mesIdx; if(!m[k]) m[k]={idx:k,ok:0,nok:0}; m[k].ok+=r.OK; m[k].nok+=r.NOK; }); return Object.keys(m).map(function(k){return m[k];}).sort(function(a,b){return a.idx-b.idx;}); }
-    function renderTable(st){
-      var cfg=PIVOTS[st.pivot], d1=cfg.rows[0], d2=cfg.rows[1], col=cfg.col, collapsed=st.collapsed||{};
-      var mons=col?MESES.filter(function(mo){return DATA.some(function(r){return r.Mes===mo;});}):[];
-      var G={}, order=[];
-      DATA.forEach(function(r){ var k1=r[d1],k2=r[d2],cm=r.Mes; if(!G[k1]){G[k1]={ok:0,nok:0,cells:{},ch:{},chOrder:[]};order.push(k1);} var g=G[k1];g.ok+=r.OK;g.nok+=r.NOK; if(col){g.cells[cm]=g.cells[cm]||{ok:0,nok:0};g.cells[cm].ok+=r.OK;g.cells[cm].nok+=r.NOK;} if(!g.ch[k2]){g.ch[k2]={ok:0,nok:0,cells:{}};g.chOrder.push(k2);} var c=g.ch[k2];c.ok+=r.OK;c.nok+=r.NOK; if(col){c.cells[cm]=c.cells[cm]||{ok:0,nok:0};c.cells[cm].ok+=r.OK;c.cells[cm].nok+=r.NOK;} });
-      order.sort();
-      var grand={ok:0,nok:0,cells:{}};
-      order.forEach(function(k){ var g=G[k]; grand.ok+=g.ok; grand.nok+=g.nok; mons.forEach(function(m){ var cc=g.cells[m]||{ok:0,nok:0}; grand.cells[m]=grand.cells[m]||{ok:0,nok:0}; grand.cells[m].ok+=cc.ok; grand.cells[m].nok+=cc.nok; }); });
-      var colsList=mons.concat(['__T']), HEAD='#1a1aff', CORNER='#1414cc';
-      var cf=st.cf||'databar';
-      var maxOK=0; order.forEach(function(k){ if(G[k].ok>maxOK) maxOK=G[k].ok; });
-      var maxCellOK=1; order.forEach(function(k){ var g=G[k]; colsList.forEach(function(m){ if(m!=='__T'){ var cc=g.cells[m]; if(cc&&cc.ok>maxCellOK) maxCellOK=cc.ok; } }); });
-      function valcells(node){ var s=''; colsList.forEach(function(m,ix){ var c=m==='__T'?{ok:node.ok,nok:node.nok}:(node.cells[m]||{ok:0,nok:0}); var bl=ix===0?'border-left:0':(m==='__T'?'border-left:2px solid #cdd3f0':'border-left:1px solid #e9ebef'); if(m==='__T'&&cf==='databar'){ var frac=maxOK>0?Math.max(0,Math.min(1,c.ok/maxOK)):0; s+='<td style="'+bl+';border-bottom:1px solid #eef0f3;padding:0"><span style="position:relative;display:block;padding:4px 8px;text-align:right"><span style="position:absolute;top:3px;bottom:3px;left:4px;width:calc('+(frac*100).toFixed(1)+'% - 8px);min-width:'+(c.ok?'2px':'0')+';background:rgba(20,174,92,.18);border-radius:3px"></span><span style="position:relative;font-variant-numeric:tabular-nums">'+(c.ok?fmt(c.ok):'–')+'</span></span></td>'; } else { var okbg=''; if(cf==='colorscale'&&c.ok){ var ref=(m==='__T')?maxOK:maxCellOK, fr2=ref>0?Math.max(0,Math.min(1,c.ok/ref)):0; okbg='background:rgba(20,174,92,'+(0.06+0.5*fr2).toFixed(3)+');'; } s+='<td style="'+bl+';'+okbg+'border-bottom:1px solid #eef0f3;padding:4px 8px;text-align:right">'+(c.ok?fmt(c.ok):'–')+'</td>'; } s+='<td style="border-bottom:1px solid #eef0f3;padding:4px 8px;text-align:right;color:'+(c.nok?'#ec221f':'#c7ccd6')+'">'+fmt(c.nok)+'</td>'; }); return s; }
-      var th='<tr style="background:'+HEAD+';color:#fff">';
-      th+='<th rowspan="2" style="position:sticky;left:0;z-index:3;background:'+CORNER+';color:#fff;text-align:left;padding:6px 10px;font-weight:600;min-width:148px">'+cfg.label[0]+' / '+cfg.label[1]+'</th>';
-      mons.forEach(function(m){ th+='<th colspan="2" style="border-left:1px solid rgba(255,255,255,.25);padding:6px 8px;text-align:center;font-weight:600;white-space:nowrap">'+m+'</th>'; });
-      th+='<th colspan="2" style="border-left:2px solid rgba(255,255,255,.5);padding:6px 8px;text-align:center;font-weight:700">Total</th></tr>';
-      th+='<tr style="background:'+HEAD+';color:rgba(255,255,255,.92);font-size:11px">';
-      colsList.forEach(function(m){ var bl=m==='__T'?'border-left:2px solid rgba(255,255,255,.5)':'border-left:1px solid rgba(255,255,255,.2)'; th+='<th style="'+bl+';padding:4px 8px;font-weight:500">OK</th><th style="padding:4px 8px;font-weight:500">NOK</th>'; });
-      th+='</tr>';
-      var body='';
-      order.forEach(function(k){ var g=G[k], isC=collapsed[k]; body+='<tr data-group="'+k+'" style="cursor:pointer;background:#eef0f7;font-weight:600">'; body+='<td style="position:sticky;left:0;z-index:1;background:#eef0f7;padding:5px 10px;border-bottom:1px solid #e2e5ec"><span style="color:#8b90a0;margin-right:5px">'+(isC?'▸':'▾')+'</span>'+k+'</td>'; body+=valcells(g)+'</tr>'; if(!isC){ g.chOrder.slice().sort().forEach(function(ck,ci){ var c=g.ch[ck]; var bg=ci%2?'rgba(26,26,255,.035)':'#ffffff'; body+='<tr class="pv-leaf" data-leaf="'+String(ck).replace(/"/g,'&quot;')+'" data-pg="'+String(k).replace(/"/g,'&quot;')+'" title="Ver registros" style="cursor:pointer;background:'+bg+'">'; body+='<td style="position:sticky;left:0;z-index:1;background:'+bg+';padding:4px 10px 4px 30px;color:#4d5166;border-bottom:1px solid #eef0f3">'+ck+'</td>'; body+=valcells(c)+'</tr>'; }); } });
-      body+='<tr style="background:#e5e7fb;font-weight:700;border-top:2px solid rgba(26,26,255,.35)"><td style="position:sticky;left:0;z-index:1;background:#e5e7fb;padding:5px 10px">Total</td>'+valcells(grand)+'</tr>';
-      return '<table style="width:100%;border-collapse:collapse;font-size:12px;font-variant-numeric:tabular-nums;white-space:nowrap"><thead>'+th+'</thead><tbody style="color:#0d122f">'+body+'</tbody></table>';
+  var PRNG=20260706; function rnd(){ PRNG=(PRNG*1103515245+12345)&0x7fffffff; return PRNG/0x7fffffff; }
+  function pick(a){ return a[Math.floor(rnd()*a.length)]; } function iR(a,b){ return a+Math.floor(rnd()*(b-a+1)); }
+  var NAMES=['Otto O.','Rita C.','Nina D.','Alan R.','Vic Q.','Jack M.','Ana B.','Marco L.','Sofia P.','Ravi K.','Leo T.','Bea S.','Igor N.','Cris D.','Paula F.','Théo M.','Lara V.','Enzo G.'];
+  var POOL={ person:NAMES, area:['Production','Logistics','Quality','Maintenance','Safety'], priority:['High','Medium','Low'], status:['On time','Delayed','Completed','Open'], bool:['Yes','No'], tipo:['Corrective','Preventive','Improvement','5S'] };
+  var MESES=['Jan','Feb','Mar','Apr','May','Jun','Jul','Aug','Sep','Oct','Nov','Dec'];
+
+  // ---- módulos e seus campos (dim / date / measure) ----
+  var MODULES={
+    planos:{ label:'Action plans', fields:[
+      {k:'ORIGINATOR',l:'Originator',t:'person'},{k:'AREA_NAME',l:'Area',t:'area'},{k:'PRIORITY_NAME',l:'Priority',t:'priority'},{k:'STATUS_NAME',l:'Status',t:'status'},
+      {k:'APPROVER',l:'Approver',t:'person'},{k:'RESPONSIBLE',l:'Responsible',t:'person'},{k:'CONFIDENTIAL',l:'Confidential',t:'bool'},
+      {k:'CREATION_DATE',l:'Created (month)',t:'date'},{k:'FINISHED_DATE',l:'Finished (month)',t:'date'},
+      {k:'REPROGRAM_COUNT',l:'Reschedules',t:'measure'},{k:'DIAS',l:'Days to finish',t:'measure'} ] },
+    registros:{ label:'Records', fields:[ {k:'TIPO',l:'Type',t:'tipo'},{k:'AREA_NAME',l:'Area',t:'area'},{k:'STATUS_NAME',l:'Status',t:'status'},{k:'RESPONSIBLE',l:'Responsible',t:'person'},{k:'CREATION_DATE',l:'Date (month)',t:'date'},{k:'QTD',l:'Quantity',t:'measure'} ] },
+    checklist:{ label:'Checklist', fields:[ {k:'AREA_NAME',l:'Area',t:'area'},{k:'STATUS_NAME',l:'Status',t:'status'},{k:'RESPONSIBLE',l:'Responsible',t:'person'},{k:'CREATION_DATE',l:'Date (month)',t:'date'},{k:'ITENS',l:'Items',t:'measure'} ] },
+    rca:{ label:'RCA', fields:[ {k:'AREA_NAME',l:'Area',t:'area'},{k:'PRIORITY_NAME',l:'Priority',t:'priority'},{k:'RESPONSIBLE',l:'Responsible',t:'person'},{k:'CREATION_DATE',l:'Date (month)',t:'date'},{k:'CAUSAS',l:'Causes',t:'measure'} ] },
+    defect:{ label:'Defect Tag', fields:[ {k:'AREA_NAME',l:'Area',t:'area'},{k:'STATUS_NAME',l:'Status',t:'status'},{k:'PRIORITY_NAME',l:'Priority',t:'priority'},{k:'CREATION_DATE',l:'Date (month)',t:'date'},{k:'IDADE',l:'Age (days)',t:'measure'} ] }
+  };
+  var _cache={};
+  function dataFor(mod){ if(_cache[mod]) return _cache[mod]; var f=MODULES[mod].fields, rows=[], i, fi; PRNG=20260706+mod.length*13; for(i=0;i<240;i++){ var r={}; for(fi=0;fi<f.length;fi++){ var fd=f[fi]; if(fd.t==='date') r[fd.k]=iR(0,11); else if(fd.t==='measure') r[fd.k]=(fd.k==='DIAS'||fd.k==='IDADE')?iR(1,120):iR(0,6); else r[fd.k]=pick(POOL[fd.t]); } rows.push(r); } _cache[mod]=rows; return rows; }
+  function fieldsOf(mod){ return MODULES[mod].fields; }
+  function fieldMeta(mod,k){ var f=fieldsOf(mod); for(var i=0;i<f.length;i++) if(f[i].k===k) return f[i]; return null; }
+  function dims(mod){ return fieldsOf(mod).filter(function(f){return f.t!=='measure';}); }
+  function measures(mod){ return fieldsOf(mod).filter(function(f){return f.t==='measure';}); }
+  function labelVal(mod,k,v){ var m=fieldMeta(mod,k); return (m&&m.t==='date')?MESES[v]:v; }
+
+  var PAL=['#001391','#14ae5c','#e8b931','#ec221f','#6d6dff','#0ea5a5','#8b5cf6','#d6409f','#f59e0b','#0891b2'];
+  function fmt(n,d){ d=+d||0; return Number(n).toLocaleString('pt-BR',{minimumFractionDigits:d,maximumFractionDigits:d}); }
+  function shorten(s,mx){ mx=mx||14; s=String(s); return s.length>mx?s.slice(0,mx-1)+'…':s; }
+  function niceMax(v){ if(v<=0) return 10; var p=Math.pow(10,Math.floor(Math.log10(v))); var f=v/p; return (f<=1?1:f<=2?2:f<=5?5:10)*p; }
+
+  // ---- estado único ----
+  var S={ source:'planos', type:'table', x:'AREA_NAME', y:'__count', agg:'count', legend:'', small:'', descr:'',
+          rows:['AREA_NAME','PRIORITY_NAME'], cols:[], sortBy:[], values:[],
+          wFilters:['AREA_NAME'], fexcl:{}, showCap:true, capText:'', unit:false, tip:true, bTransp:false, bgTransp:false,
+          showLegend:true, decimals:0, showAxis:true, title:'Pivot Table', showTitle:true, subtitle:'',
+          showObjetivo:false, showFilterInWidget:true, dtPreset:'30',
+          cf:{ mode:'databar', ok:'#14ae5c', nok:'#ec221f', target:null, better:'higher', rules:[ {col:'__any',op:'ge',v1:15,v2:null,bg:'#e7f7ee',fg:'#0f7a43'}, {col:'__any',op:'le',v1:5,v2:null,bg:'#fdecec',fg:'#b42318'} ] },
+          subGrand:true, subGroups:true, subCollapsible:true,
+          drill:null, collapsed:{}, fullscreen:false };
+  // colunas/campos "negativos" (recebem a cor NOK na formatação condicional)
+  function isNegField(k){ return /NOK|ATRAS|DELAY|DEFE|REPROGRAM|IDADE|CAUSA|CONFIDENC/i.test(k||''); }
+
+  // ---- agregação ----
+  function applyFilters(rows){ if(!S.wFilters.length) return rows; return rows.filter(function(r){ for(var i=0;i<S.wFilters.length;i++){ var f=S.wFilters[i], ex=S.fexcl[f]; if(ex && ex.indexOf(String(r[f]))>=0) return false; } return true; }); }
+  function aggVal(rows){ if(S.y==='__count') return rows.length; if(!rows.length) return 0;
+    if(S.agg==='distinct'){ var m={}; rows.forEach(function(r){ m[r[S.y]]=1; }); return Object.keys(m).length; }
+    var vals=rows.map(function(r){return +r[S.y]||0;}); if(!vals.length) return 0;
+    switch(S.agg){
+      case 'count': return vals.length;
+      case 'min': return Math.min.apply(null,vals);
+      case 'max': return Math.max.apply(null,vals);
+      case 'avg': return vals.reduce(function(a,b){return a+b;},0)/vals.length;
+      case 'median': { var s=vals.slice().sort(function(a,b){return a-b;}), n=s.length; return n%2?s[(n-1)/2]:(s[n/2-1]+s[n/2])/2; }
+      default: return vals.reduce(function(a,b){return a+b;},0);
     }
-    function chartWrap(inner){ return '<div style="display:flex;flex-direction:column;height:100%;padding:14px">'+inner+'</div>'; }
-    function legend(arr){ var h=''; for(var i=0;i<arr.length;i+=2){ h+='<span style="display:inline-flex;align-items:center;gap:5px;margin-right:16px;font-size:11px;color:#4d5166"><span style="width:11px;height:11px;border-radius:3px;background:'+arr[i]+'"></span>'+arr[i+1]+'</span>'; } return '<div style="margin-bottom:8px">'+h+'</div>'; }
-    function pol(cx,cy,rr,a){ return [cx+rr*Math.cos(a), cy+rr*Math.sin(a)]; }
-    function donutArc(cx,cy,r,ir,a0,a1){ var large=(a1-a0)>Math.PI?1:0, p1=pol(cx,cy,r,a0),p2=pol(cx,cy,r,a1),p3=pol(cx,cy,ir,a1),p4=pol(cx,cy,ir,a0); return 'M'+p1[0].toFixed(1)+' '+p1[1].toFixed(1)+' A'+r+' '+r+' 0 '+large+' 1 '+p2[0].toFixed(1)+' '+p2[1].toFixed(1)+' L'+p3[0].toFixed(1)+' '+p3[1].toFixed(1)+' A'+ir+' '+ir+' 0 '+large+' 0 '+p4[0].toFixed(1)+' '+p4[1].toFixed(1)+' Z'; }
-    function squarify(items,x,y,w,h){ if(items.length===0) return []; if(items.length===1) return [{x:x,y:y,w:w,h:h,item:items[0]}]; var total=items.reduce(function(s,i){return s+i.ok;},0), half=total/2, acc=0, idx=1; for(var i=0;i<items.length;i++){ if(acc+items[i].ok>half && i>0){ idx=i; break; } acc+=items[i].ok; idx=i+1; } var a=items.slice(0,idx), b=items.slice(idx); var aVal=a.reduce(function(s,i){return s+i.ok;},0), frac=total?aVal/total:0.5, res=[]; if(w>=h){ var wa=w*frac; res=squarify(a,x,y,wa,h).concat(squarify(b,x+wa,y,w-wa,h)); } else { var ha=h*frac; res=squarify(a,x,y,w,ha).concat(squarify(b,x,y+ha,w,h-ha)); } return res; }
-    function renderBar(st){ var data=aggBy(PIVOTS[st.pivot].rows[0]); var W=560,H=250,L=42,R=14,T=10,B=44,iw=W-L-R,ih=H-T-B; var maxv=niceMax(Math.max.apply(null,data.map(function(d){return d.ok;}))); var n=data.length, gw=iw/n, bw=Math.min(28,gw*0.3), g=''; for(var i=0;i<=4;i++){ var yy=T+ih-ih*i/4; g+='<line x1="'+L+'" y1="'+yy+'" x2="'+(W-R)+'" y2="'+yy+'" stroke="#eef0f3"/>'; g+='<text x="'+(L-6)+'" y="'+(yy+3)+'" text-anchor="end" font-size="9" fill="#999ba7">'+fmt(Math.round(maxv*i/4))+'</text>'; } data.forEach(function(d,ix){ var cx=L+gw*ix+gw/2, hOK=ih*d.ok/maxv, hNOK=ih*d.nok/maxv; g+='<rect x="'+(cx-bw-2)+'" y="'+(T+ih-hOK)+'" width="'+bw+'" height="'+hOK+'" rx="3" fill="#14ae5c"/>'; g+='<rect x="'+(cx+2)+'" y="'+(T+ih-hNOK)+'" width="'+bw+'" height="'+hNOK+'" rx="3" fill="#ec221f"/>'; g+='<text x="'+cx+'" y="'+(T+ih+15)+'" text-anchor="middle" font-size="10" fill="#4d5166">'+shorten(d.key,12)+'</text>'; }); return legend(['#14ae5c','Total OK','#ec221f','Total NOK'])+'<svg viewBox="0 0 '+W+' '+H+'" preserveAspectRatio="xMidYMid meet" style="width:100%;flex:1;min-height:0">'+g+'</svg>'; }
-    function renderLine(){ var d=aggMonth(), W=560,H=250,L=42,R=14,T=10,B=38,iw=W-L-R,ih=H-T-B; var maxv=niceMax(Math.max.apply(null,d.map(function(x){return x.ok;}))); var n=d.length, step=n>1?iw/(n-1):iw, pts=d.map(function(x,ix){ return [L+step*ix, T+ih-ih*x.ok/maxv]; }); var line=pts.map(function(p,i){return (i?'L':'M')+p[0].toFixed(1)+' '+p[1].toFixed(1);}).join(' '); var area=line+' L '+pts[n-1][0].toFixed(1)+' '+(T+ih)+' L '+pts[0][0].toFixed(1)+' '+(T+ih)+' Z'; var g=''; for(var i=0;i<=4;i++){ var yy=T+ih-ih*i/4; g+='<line x1="'+L+'" y1="'+yy+'" x2="'+(W-R)+'" y2="'+yy+'" stroke="#eef0f3"/>'; g+='<text x="'+(L-6)+'" y="'+(yy+3)+'" text-anchor="end" font-size="9" fill="#999ba7">'+fmt(Math.round(maxv*i/4))+'</text>'; } g+='<path d="'+area+'" fill="rgba(26,26,255,.10)"/>'; g+='<polyline points="'+pts.map(function(p){return p[0].toFixed(1)+','+p[1].toFixed(1);}).join(' ')+'" fill="none" stroke="#1a1aff" stroke-width="2.5" stroke-linejoin="round" stroke-linecap="round"/>'; pts.forEach(function(p,ix){ g+='<circle cx="'+p[0].toFixed(1)+'" cy="'+p[1].toFixed(1)+'" r="3" fill="#fff" stroke="#1a1aff" stroke-width="2"/>'; g+='<text x="'+p[0].toFixed(1)+'" y="'+(T+ih+14)+'" text-anchor="middle" font-size="8.5" fill="#4d5166">'+MESES[d[ix].idx].slice(3)+'</text>'; }); return legend(['#1a1aff','Total OK por mês'])+'<svg viewBox="0 0 '+W+' '+H+'" preserveAspectRatio="xMidYMid meet" style="width:100%;flex:1;min-height:0">'+g+'</svg>'; }
-    function renderPizza(st){ var data=aggBy(PIVOTS[st.pivot].rows[0]), total=data.reduce(function(s,d){return s+d.ok;},0); var W=560,H=250,cx=135,cy=125,r=95,ir=56,a=-Math.PI/2,g=''; data.forEach(function(d,ix){ var a2=a+(d.ok/total)*2*Math.PI; g+='<path d="'+donutArc(cx,cy,r,ir,a,a2)+'" fill="'+PAL[ix%PAL.length]+'"/>'; a=a2; }); g+='<text x="'+cx+'" y="'+(cy-3)+'" text-anchor="middle" font-size="11" fill="#999ba7">Total OK</text>'; g+='<text x="'+cx+'" y="'+(cy+19)+'" text-anchor="middle" font-size="22" font-weight="700" fill="#0d122f">'+fmt(total)+'</text>'; data.forEach(function(d,ix){ var yy=42+ix*24, pct=Math.round(d.ok/total*100); g+='<rect x="290" y="'+(yy-10)+'" width="12" height="12" rx="3" fill="'+PAL[ix%PAL.length]+'"/>'; g+='<text x="310" y="'+yy+'" font-size="12" fill="#0d122f">'+shorten(d.key,16)+'</text>'; g+='<text x="548" y="'+yy+'" text-anchor="end" font-size="12" font-weight="600" fill="#4d5166">'+pct+'%</text>'; }); return '<svg viewBox="0 0 '+W+' '+H+'" preserveAspectRatio="xMidYMid meet" style="width:100%;flex:1;min-height:0">'+g+'</svg>'; }
-    function renderTreemap(st){ var data=aggBy(PIVOTS[st.pivot].rows[0]).map(function(d,ix){ return {key:d.key,ok:d.ok,c:PAL[ix%PAL.length]}; }); var W=560,H=250, rects=squarify(data,0,0,W,H), g=''; rects.forEach(function(R){ if(R.w<1||R.h<1) return; g+='<rect x="'+(R.x+1.5)+'" y="'+(R.y+1.5)+'" width="'+Math.max(0,R.w-3)+'" height="'+Math.max(0,R.h-3)+'" rx="5" fill="'+R.item.c+'"/>'; if(R.w>66&&R.h>30){ g+='<text x="'+(R.x+9)+'" y="'+(R.y+20)+'" font-size="12.5" font-weight="600" fill="#fff">'+shorten(R.item.key,Math.floor(R.w/8))+'</text>'; g+='<text x="'+(R.x+9)+'" y="'+(R.y+36)+'" font-size="11" fill="rgba(255,255,255,.85)">'+fmt(R.item.ok)+'</text>'; } }); return '<svg viewBox="0 0 '+W+' '+H+'" preserveAspectRatio="xMidYMid meet" style="width:100%;flex:1;min-height:0">'+g+'</svg>'; }
-    function renderView(st){ var p=st.plugin; if(p==='Datagrid') return renderTable(st); if(p==='Y Bar') return chartWrap(renderBar(st)); if(p==='Y Line') return chartWrap(renderLine()); if(p==='Sunburst') return chartWrap(renderPizza(st)); return chartWrap(renderTreemap(st)); }
-    function recordsFor(pivotKey, groupKey, leafKey){ var cfg=PIVOTS[pivotKey]||PIVOTS.area, d1=cfg.rows[0], d2=cfg.rows[1]; return DATA.filter(function(r){ return String(r[d1])===String(groupKey) && String(r[d2])===String(leafKey); }); }
-    function pivotLabels(pivotKey){ var cfg=PIVOTS[pivotKey]||PIVOTS.area; return cfg.label; }
-    return { renderView:renderView, recordsFor:recordsFor, pivotLabels:pivotLabels };
+  }
+  function aggregate(rows){ // -> {cats:[{key,total,series:{}}], seriesKeys:[]}
+    var xm=fieldMeta(S.source,S.x), isDate=xm&&xm.t==='date';
+    var byX={}, seriesSet={}, order=[];
+    rows.forEach(function(r){ var xv=r[S.x]; if(!(xv in byX)){ byX[xv]={key:xv, rows:[], series:{}}; order.push(xv); } byX[xv].rows.push(r); if(S.legend){ var lv=r[S.legend]; (byX[xv].series[lv]=byX[xv].series[lv]||[]).push(r); seriesSet[lv]=1; } });
+    var cats=order.map(function(k){ var g=byX[k], o={key:k, total:aggVal(g.rows), series:{}}; if(S.legend){ for(var lv in g.series) o.series[lv]=aggVal(g.series[lv]); } return o; });
+    if(isDate) cats.sort(function(a,b){return a.key-b.key;}); else cats.sort(function(a,b){return b.total-a.total;});
+    if(!isDate && cats.length>12) cats=cats.slice(0,12);
+    var seriesKeys=Object.keys(seriesSet).sort(); if(seriesKeys.length>8) seriesKeys=seriesKeys.slice(0,8);
+    return { cats:cats, seriesKeys:seriesKeys, isDate:isDate };
+  }
+  var AGGLBL={ sum:'Sum of ', avg:'Average of ', count:'Count of ', distinct:'Distinct count of ', min:'Min of ', max:'Max of ', median:'Median of ' };
+  function measureLabel(){ if(S.y==='__count') return 'Count'; var m=fieldMeta(S.source,S.y); return (AGGLBL[S.agg]||'Soma de ')+(m?m.l:S.y); }
+  function subLabel(){ var xm=fieldMeta(S.source,S.x); return measureLabel()+' by '+(xm?xm.l:S.x)+(S.legend?(' · '+(fieldMeta(S.source,S.legend)||{}).l):''); }
+
+  // ---- renderizadores ----
+  function seriesColor(i){ return PAL[i%PAL.length]; }
+  function enc(v){ return String(v).replace(/&/g,'&amp;').replace(/"/g,'&quot;'); }
+  function drillAttr(key, series){ return ' class="drillable" data-drill="'+enc(key)+'"'+(series?(' data-series="'+enc(series)+'"'):'')+' style="cursor:pointer"'; }
+  function barColor(si, seriesKey){ if(S.cf.mode!=='none' && !seriesKey){ return isNegField(S.y)?S.cf.nok:S.cf.ok; } return seriesColor(si); }
+  function tipTxt(cat, sName, val){ var t=cat+(sName?(' · '+sName):'')+': '+fmt(val,S.decimals)+(S.unit?' un':''); if(S.descr){ t+=' · '+(fieldMeta(S.source,S.descr)||{}).l; } return t; }
+  function svgBars(A, stacked){ var W=560,H=250,L=S.showAxis?48:14,R=14,T=12,B=54,iw=W-L-R,ih=H-T-B;
+    var sk=A.seriesKeys.length?A.seriesKeys:['__t']; var g='';
+    var maxv=0; A.cats.forEach(function(c){ if(stacked){ var s=0; sk.forEach(function(k){ s+=(A.seriesKeys.length?(c.series[k]||0):c.total); }); maxv=Math.max(maxv,s); } else { sk.forEach(function(k){ maxv=Math.max(maxv, A.seriesKeys.length?(c.series[k]||0):c.total); }); } }); maxv=niceMax(maxv);
+    for(var i=0;i<=4;i++){ var yy=T+ih-ih*i/4; g+='<line x1="'+L+'" y1="'+yy+'" x2="'+(W-R)+'" y2="'+yy+'" stroke="#eef0f3"/>'; if(S.showAxis) g+='<text x="'+(L-6)+'" y="'+(yy+3)+'" text-anchor="end" font-size="9" fill="#999ba7">'+fmt(maxv*i/4,S.decimals)+'</text>'; }
+    if(S.showAxis) g+='<line x1="'+L+'" y1="'+T+'" x2="'+L+'" y2="'+(T+ih)+'" stroke="#c7ccd6"/>';
+    if(S.showObjetivo){ var tgt=(S.cf.target!=null&&S.cf.target!=='')?+S.cf.target:null; var oy=(tgt!=null?(T+ih-ih*Math.max(0,Math.min(tgt,maxv))/maxv):(T+ih*0.30)).toFixed(1); var mlbl=tgt!=null?('Meta '+fmt(tgt,S.decimals)):'Meta'; g+='<line x1="'+L+'" y1="'+oy+'" x2="'+(W-R)+'" y2="'+oy+'" stroke="#e8b931" stroke-width="1.5" stroke-dasharray="5 4"/><text x="'+(W-R-2)+'" y="'+(+oy-4)+'" text-anchor="end" font-size="9" fill="#b6871a">'+mlbl+'</text>'; }
+    var n=A.cats.length||1, gw=iw/n;
+    A.cats.forEach(function(c,ci){ var cx=L+gw*ci, inner=gw*0.8, x0=cx+gw*0.1;
+      if(stacked){ var yb=T+ih; sk.forEach(function(k,si){ var v=A.seriesKeys.length?(c.series[k]||0):c.total; var h=ih*v/maxv; yb-=h; g+='<rect x="'+x0.toFixed(1)+'" y="'+yb.toFixed(1)+'" width="'+inner.toFixed(1)+'" height="'+h.toFixed(1)+'" fill="'+barColor(si, A.seriesKeys.length?k:'')+'"'+drillAttr(c.key, A.seriesKeys.length?k:'')+(S.tip?'><title>'+tipTxt(labelVal(S.source,S.x,c.key), A.seriesKeys.length?k:'', v)+'</title></rect>':'/>'); }); }
+      else { var m=sk.length, bw=inner/m; sk.forEach(function(k,si){ var v=A.seriesKeys.length?(c.series[k]||0):c.total; var h=ih*v/maxv; g+='<rect x="'+(x0+bw*si).toFixed(1)+'" y="'+(T+ih-h).toFixed(1)+'" width="'+Math.max(1,bw-2).toFixed(1)+'" height="'+h.toFixed(1)+'" rx="2" fill="'+barColor(si, A.seriesKeys.length?k:'')+'"'+drillAttr(c.key, A.seriesKeys.length?k:'')+(S.tip?'><title>'+tipTxt(labelVal(S.source,S.x,c.key), A.seriesKeys.length?k:'', v)+'</title></rect>':'/>'); }); }
+      g+='<text x="'+(cx+gw/2).toFixed(1)+'" y="'+(T+ih+14)+'" text-anchor="end" font-size="9" fill="#4d5166" transform="rotate(-30 '+(cx+gw/2).toFixed(1)+' '+(T+ih+14)+')">'+shorten(labelVal(S.source,S.x,c.key),14)+'</text>'; });
+    return '<svg viewBox="0 0 '+W+' '+H+'" preserveAspectRatio="xMidYMid meet">'+g+'</svg>';
+  }
+  function svgLine(A){ var W=560,H=250,L=S.showAxis?48:14,R=14,T=12,B=40,iw=W-L-R,ih=H-T-B; var sk=A.seriesKeys.length?A.seriesKeys:['__t'];
+    var maxv=0; A.cats.forEach(function(c){ sk.forEach(function(k){ maxv=Math.max(maxv,A.seriesKeys.length?(c.series[k]||0):c.total); }); }); maxv=niceMax(maxv);
+    var g=''; for(var i=0;i<=4;i++){ var yy=T+ih-ih*i/4; g+='<line x1="'+L+'" y1="'+yy+'" x2="'+(W-R)+'" y2="'+yy+'" stroke="#eef0f3"/>'; if(S.showAxis) g+='<text x="'+(L-6)+'" y="'+(yy+3)+'" text-anchor="end" font-size="9" fill="#999ba7">'+fmt(maxv*i/4,S.decimals)+'</text>'; }
+    var n=A.cats.length, step=n>1?iw/(n-1):iw;
+    sk.forEach(function(k,si){ var pts=A.cats.map(function(c,ci){ var v=A.seriesKeys.length?(c.series[k]||0):c.total; return [L+step*ci, T+ih-ih*v/maxv]; }); g+='<polyline points="'+pts.map(function(p){return p[0].toFixed(1)+','+p[1].toFixed(1);}).join(' ')+'" fill="none" stroke="'+seriesColor(si)+'" stroke-width="2.5" stroke-linejoin="round"/>'; pts.forEach(function(p,ci){ g+='<circle cx="'+p[0].toFixed(1)+'" cy="'+p[1].toFixed(1)+'" r="4" fill="#fff" stroke="'+seriesColor(si)+'" stroke-width="2"'+drillAttr(A.cats[ci].key, A.seriesKeys.length?k:'')+'/>'; }); });
+    A.cats.forEach(function(c,ci){ g+='<text x="'+(L+step*ci).toFixed(1)+'" y="'+(T+ih+14)+'" text-anchor="middle" font-size="8.5" fill="#4d5166">'+shorten(labelVal(S.source,S.x,c.key),8)+'</text>'; });
+    return '<svg viewBox="0 0 '+W+' '+H+'" preserveAspectRatio="xMidYMid meet">'+g+'</svg>';
+  }
+  function svgPie(A,donut){ var W=560,H=250,cx=140,cy=125,r=95,ir=donut?55:0; var total=A.cats.reduce(function(s,c){return s+c.total;},0)||1, a=-Math.PI/2, g='';
+    function P(rr,an){ return [cx+rr*Math.cos(an),cy+rr*Math.sin(an)]; }
+    A.cats.forEach(function(c,ix){ var a2=a+(c.total/total)*2*Math.PI, big=(a2-a)>Math.PI?1:0, p1=P(r,a),p2=P(r,a2); var d; if(ir>0){ var p3=P(ir,a2),p4=P(ir,a); d='M'+p1[0].toFixed(1)+' '+p1[1].toFixed(1)+' A'+r+' '+r+' 0 '+big+' 1 '+p2[0].toFixed(1)+' '+p2[1].toFixed(1)+' L'+p3[0].toFixed(1)+' '+p3[1].toFixed(1)+' A'+ir+' '+ir+' 0 '+big+' 0 '+p4[0].toFixed(1)+' '+p4[1].toFixed(1)+' Z'; } else { d='M'+cx+' '+cy+' L'+p1[0].toFixed(1)+' '+p1[1].toFixed(1)+' A'+r+' '+r+' 0 '+big+' 1 '+p2[0].toFixed(1)+' '+p2[1].toFixed(1)+' Z'; } g+='<path d="'+d+'" fill="'+seriesColor(ix)+'"'+drillAttr(c.key)+(S.tip?'><title>'+tipTxt(labelVal(S.source,S.x,c.key),'',c.total)+' ('+Math.round(c.total/total*100)+'%)</title></path>':'/>'); a=a2; });
+    if(donut) g+='<text x="'+cx+'" y="'+(cy+6)+'" text-anchor="middle" font-size="20" font-weight="700" fill="#0d122f">'+fmt(total,S.decimals)+'</text>';
+    A.cats.forEach(function(c,ix){ var yy=40+ix*22; if(yy>H-10) return; g+='<rect x="300" y="'+(yy-10)+'" width="11" height="11" rx="3" fill="'+seriesColor(ix)+'"/><text x="318" y="'+yy+'" font-size="12" fill="#0d122f">'+shorten(labelVal(S.source,S.x,c.key),18)+'</text><text x="548" y="'+yy+'" text-anchor="end" font-size="12" font-weight="600" fill="#4d5166">'+Math.round(c.total/total*100)+'%</text>'; });
+    return '<svg viewBox="0 0 '+W+' '+H+'" preserveAspectRatio="xMidYMid meet">'+g+'</svg>';
+  }
+  function svgTreemap(A){ var W=560,H=250; function sq(items,x,y,w,h){ if(!items.length) return []; if(items.length===1) return [{x:x,y:y,w:w,h:h,it:items[0]}]; var tot=items.reduce(function(s,i){return s+i.total;},0),half=tot/2,acc=0,idx=1,i; for(i=0;i<items.length;i++){ if(acc+items[i].total>half&&i>0){idx=i;break;} acc+=items[i].total; idx=i+1; } var a=items.slice(0,idx),b=items.slice(idx),av=a.reduce(function(s,i){return s+i.total;},0),fr=tot?av/tot:.5,res; if(w>=h){ var wa=w*fr; res=sq(a,x,y,wa,h).concat(sq(b,x+wa,y,w-wa,h)); } else { var ha=h*fr; res=sq(a,x,y,w,ha).concat(sq(b,x,y+ha,w,h-ha)); } return res; }
+    var rects=sq(A.cats.slice(),0,0,W,H), g=''; rects.forEach(function(R,ix){ if(R.w<1||R.h<1) return; g+='<rect x="'+(R.x+1.5)+'" y="'+(R.y+1.5)+'" width="'+Math.max(0,R.w-3)+'" height="'+Math.max(0,R.h-3)+'" rx="5" fill="'+seriesColor(ix)+'"'+drillAttr(R.it.key)+(S.tip?'><title>'+tipTxt(labelVal(S.source,S.x,R.it.key),'',R.it.total)+'</title></rect>':'/>'); if(R.w>70&&R.h>28){ g+='<text x="'+(R.x+9)+'" y="'+(R.y+20)+'" font-size="12" font-weight="600" fill="#fff">'+shorten(labelVal(S.source,S.x,R.it.key),Math.floor(R.w/8))+'</text><text x="'+(R.x+9)+'" y="'+(R.y+36)+'" font-size="11" fill="rgba(255,255,255,.85)">'+fmt(R.it.total,S.decimals)+'</text>'; } });
+    return '<svg viewBox="0 0 '+W+' '+H+'" preserveAspectRatio="xMidYMid meet">'+g+'</svg>';
+  }
+  function htmlTable(A){ var sk=A.seriesKeys; var h='<table class="pvtable"><thead><tr><th>'+((fieldMeta(S.source,S.x)||{}).l||S.x)+'</th>';
+    if(sk.length){ sk.forEach(function(k){ h+='<th>'+shorten(k,10)+'</th>'; }); h+='<th>Total</th>'; } else { h+='<th>'+measureLabel()+'</th>'; }
+    h+='</tr></thead><tbody>'; var colTot={},grand=0;
+    A.cats.forEach(function(c){ h+='<tr><td>'+labelVal(S.source,S.x,c.key)+'</td>'; if(sk.length){ sk.forEach(function(k){ var v=c.series[k]||0; colTot[k]=(colTot[k]||0)+v; h+='<td>'+(v?fmt(v,S.decimals):'–')+'</td>'; }); h+='<td>'+fmt(c.total,S.decimals)+'</td>'; grand+=c.total; } else { h+='<td>'+fmt(c.total,S.decimals)+'</td>'; grand+=c.total; } h+='</tr>'; });
+    h+='<tr class="tot"><td>Total</td>'; if(sk.length){ sk.forEach(function(k){ h+='<td>'+fmt(colTot[k]||0,S.decimals)+'</td>'; }); } h+='<td>'+fmt(grand,S.decimals)+'</td></tr>';
+    return h+'</tbody></table>';
+  }
+  function chartFor(rows){ var A=aggregate(rows); switch(S.type){ case 'stacked': return svgBars(A,true); case 'line': return svgLine(A); case 'pie': return svgPie(A,false); case 'donut': return svgPie(A,true); case 'treemap': return svgTreemap(A); case 'table': return htmlMatrix(rows); default: return svgBars(A,false); } }
+  function chartLegend(){ if(!S.showLegend || S.type==='table' || S.type==='treemap' || S.type==='pie' || S.type==='donut') return ''; if(!S.legend) return '<div class="pv-legend"><span><i style="background:'+seriesColor(0)+'"></i>'+measureLabel()+'</span></div>'; var rows=applyFilters(dataFor(S.source)); var A=aggregate(rows); return '<div class="pv-legend">'+A.seriesKeys.map(function(k,i){return '<span><i style="background:'+seriesColor(i)+'"></i>'+shorten(k,16)+'</span>';}).join('')+'</div>'; }
+
+  function distinct(field, rows){ var m={}, o=[]; rows.forEach(function(r){ var v=r[field]; if(!(String(v) in m)){ m[String(v)]=1; o.push(v); } }); return o; }
+  function hex2rgb(h){ h=String(h).replace('#',''); if(h.length===3) h=h.replace(/(.)/g,'$1$1'); return [parseInt(h.slice(0,2),16),parseInt(h.slice(2,4),16),parseInt(h.slice(4,6),16)]; }
+  function mix(a,b,t){ var A=hex2rgb(a),B=hex2rgb(b); return 'rgb('+A.map(function(x,i){return Math.round(x+(B[i]-x)*t);}).join(',')+')'; }
+  function cfColLabelNeg(colKey, colDim){ if(!colDim) return isNegField(S.y); return /atras|delay|nok|defe|aberto|reprogram|pendent|n[aã]o|cancel|alt[ao]/i.test(String(colKey)); }
+  function cfIsGood(v, neg){ if(S.cf.target!=null && S.cf.target!==''){ var t=+S.cf.target; return S.cf.better==='lower' ? (+v<=t) : (+v>=t); } return !neg; }
+  function opTest(v,op,a,b){ switch(op){ case 'gt':return v>a; case 'ge':return v>=a; case 'lt':return v<a; case 'le':return v<=a; case 'eq':return v===a; case 'ne':return v!==a; case 'between':return v>=a&&v<=b; } return false; }
+  function cfRuleStyle(v, colKey){ for(var i=0;i<S.cf.rules.length;i++){ var r=S.cf.rules[i]; if(r.col!=='__any' && String(r.col)!==String(colKey)) continue; if(opTest(+v, r.op, +r.v1, +r.v2)) return r; } return null; }
+  function currentColKeys(){ var out=[{k:'__any',l:'Todas as medidas'}]; if(S.cols[0]){ distinct(S.cols[0], applyFilters(dataFor(S.source))).forEach(function(v){ out.push({k:String(v), l:labelVal(S.source,S.cols[0],v)}); }); } return out; }
+  function dbCell(v, colMax, neg, colKey){ var val=fmt(v,S.decimals); if(v==null) return '<span class="cell">–</span>';
+    if(S.cf.mode==='rules'){ var r=cfRuleStyle(v,colKey); return r?('<span class="cell" style="background:'+r.bg+';color:'+r.fg+';font-weight:600">'+val+'</span>'):('<span class="cell">'+val+'</span>'); }
+    if(S.cf.mode==='none') return '<span class="cell">'+val+'</span>';
+    var color=cfIsGood(v,neg)?S.cf.ok:S.cf.nok;
+    if(S.cf.mode==='colorscale'){ var t=colMax?Math.max(0,Math.min(1,v/colMax)):0; return '<span class="cell cf-scale" style="background:'+mix('#ffffff',color,0.10+0.55*t)+'">'+val+'</span>'; }
+    var pct=colMax?Math.max(3,Math.round(v/colMax*100)):0; return '<span class="db"><span class="db-bar" style="width:calc('+pct+'% - 12px);background:'+color+'"></span><span class="db-val">'+val+'</span></span>';
+  }
+
+  function matrixData(rows){
+    var rowDims=S.rows.slice(), colDim=S.cols[0]||null;
+    var colKeys=colDim?distinct(colDim,rows):[null];
+    if(colDim){ var cm=fieldMeta(S.source,colDim); if(cm&&cm.t==='date') colKeys.sort(function(a,b){return a-b;}); else colKeys.sort(); if(colKeys.length>12) colKeys=colKeys.slice(0,12); }
+    function cellVal(subset,ck){ var s=colDim?subset.filter(function(r){return String(r[colDim])===String(ck);}):subset; return aggVal(s); }
+    function mkCells(subset){ return colKeys.map(function(ck){ return cellVal(subset,ck); }); }
+    function rowTot(subset){ return colDim?aggVal(subset):null; }
+    var out={ head:[], colKeys:colKeys, colDim:colDim, rowDims:rowDims, rows:[], colMax:{}, totalMax:0 };
+    out.head=[ rowDims.map(function(d){return (fieldMeta(S.source,d)||{}).l||d;}).join(' · ')||'—' ];
+    colKeys.forEach(function(ck){ out.head.push(colDim?labelVal(S.source,colDim,ck):measureLabel()); });
+    if(colDim) out.head.push('Total');
+    if(S.subGrand) out.rows.push({ kind:'grand', depth:-1, label:'TOTAL', path:[], pkey:'__all', cells:mkCells(rows), tot:rowTot(rows) });
+    function walk(subset, depth, path){
+      var dim=rowDims[depth], keys=distinct(dim,subset), byK={};
+      keys.forEach(function(k){ byK[k]=subset.filter(function(r){return String(r[dim])===String(k);}); });
+      keys.sort(function(a,b){ return aggVal(byK[b])-aggVal(byK[a]); });
+      keys.forEach(function(k){ var sub=byK[k], npath=path.concat([k]), pkey=JSON.stringify(npath), isLeaf=(depth===rowDims.length-1);
+        out.rows.push({ kind:isLeaf?'leaf':'group', depth:depth, label:labelVal(S.source,dim,k), path:npath, pkey:pkey, cells:mkCells(sub), tot:rowTot(sub) });
+        if(!isLeaf && !S.collapsed[pkey]) walk(sub, depth+1, npath);
+      });
+    }
+    if(rowDims.length) walk(rows, 0, []);
+    colKeys.forEach(function(ck){ out.colMax[ck]=0; });
+    out.rows.forEach(function(r){ if(r.kind==='group' && !S.subGroups) return; r.cells.forEach(function(v,i){ var ck=colKeys[i]; if(v>out.colMax[ck]) out.colMax[ck]=v; }); if(colDim && r.tot>out.totalMax) out.totalMax=r.tot; });
+    return out;
+  }
+  function htmlMatrix(rows){
+    if(!S.rows[0]) return '<div style="padding:16px;color:#8a90a6;font-size:12px">Add at least one field to “Group by (rows)”.</div>';
+    var M=matrixData(rows);
+    var chev='<span class="mx-toggle"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><path d="m6 9 6 6 6-6"/></svg></span>';
+    function pad(depth){ return 'padding-left:'+(10+Math.max(0,depth)*18)+'px'; }
+    function tds(r, blank){ var out=''; r.cells.forEach(function(v,i){ var ck=M.colKeys[i]; out+='<td>'+(blank?'<span class="cell"></span>':dbCell(v,M.colMax[ck],cfColLabelNeg(ck,M.colDim),ck))+'</td>'; }); if(M.colDim) out+='<td>'+(blank?'<span class="cell"></span>':dbCell(r.tot,M.totalMax,false,'__total'))+'</td>'; return out; }
+    var h='<table class="pvmx"><thead><tr>'+M.head.map(function(hd){return '<th>'+enc(hd)+'</th>';}).join('')+'</tr></thead><tbody>';
+    M.rows.forEach(function(r){
+      if(r.kind==='grand'){ h+='<tr class="mx-grand" data-mxdrill data-path="[]"><td><span class="lbl" style="padding-left:10px">TOTAL</span></td>'+tds(r,false)+'</tr>'; }
+      else if(r.kind==='group'){ var col=S.collapsed[r.pkey]; h+='<tr class="mx-group'+(col?' collapsed':'')+'" data-toggle data-pkey="'+enc(r.pkey)+'"><td><span class="lbl" style="'+pad(r.depth)+'">'+(S.subCollapsible?chev:'')+enc(r.label)+'</span></td>'+tds(r, !S.subGroups)+'</tr>'; }
+      else { h+='<tr class="mx-leaf" data-mxdrill data-path="'+enc(JSON.stringify(r.path))+'"><td><span class="lbl" style="'+pad(r.depth)+'">'+enc(r.label)+'</span></td>'+tds(r,false)+'</tr>'; }
+    });
+    return h+'</tbody></table>';
+  }
+  function syncEngine(){ var ds=dims(S.source); S.x=S.rows[0]||(ds[0]&&ds[0].k); S.legend=S.cols[0]||''; if(S.values.length){ S.y=S.values[0].k; S.agg=S.values[0].agg; } else { S.y='__count'; S.agg='count'; } }
+    S.type='bar';           // abre em modo gráfico (barras)
+    function view(){ syncEngine(); var rows=applyFilters(dataFor(S.source)); return chartLegend()+chartFor(rows); }
+    function recordsFor(match){ var rows=applyFilters(dataFor(S.source)); return rows.filter(function(r){ for(var k in match){ if(String(r[k])!==String(match[k])) return false; } return true; }); }
+    syncEngine();
+    function distinctVals(field){ var m={}, o=[]; dataFor(S.source).forEach(function(r){ var v=r[field]; if(!(String(v) in m)){ m[String(v)]=1; o.push(v); } }); return o; }
+    function filterCount(){ var n=0; S.wFilters.forEach(function(f){ if((S.fexcl[f]||[]).length) n++; }); return n; }
+    function fddBadgeText(field){ var vals=distinctVals(field), ex=S.fexcl[field]||[]; return ex.length?((vals.length-ex.length)+'/'+vals.length):''; }
+    function toggleExclude(field,v){ S.fexcl[field]=S.fexcl[field]||[]; var i=S.fexcl[field].indexOf(String(v)); if(i>=0) S.fexcl[field].splice(i,1); else S.fexcl[field].push(String(v)); }
+    function clearFilters(){ S.fexcl={}; }
+    function filtersHTML(){ if(!S.wFilters.length) return '<div style="font-size:12px;color:#8a90a6;padding:6px 4px">No filters configured.<br>Set it in Settings.</div>';
+      var anyEx=S.wFilters.some(function(f){return (S.fexcl[f]||[]).length;});
+      var chev='<svg class="fdd-chev" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="m6 9 6 6 6-6"/></svg>';
+      var h='<div class="f-head"><h5>Filters</h5><button type="button" class="f-clear" data-clear'+(anyEx?'':' disabled')+'>Clear filters</button></div>';
+      S.wFilters.forEach(function(field){ var vals=distinctVals(field), ex=S.fexcl[field]||[]; var badge=ex.length?('<span class="fdd-badge">'+(vals.length-ex.length)+'/'+vals.length+'</span>'):'';
+        h+='<div class="fdd" data-field="'+enc(field)+'"><button type="button" class="fdd-btn"><span class="fdd-lbl">'+enc((fieldMeta(S.source,field)||{}).l||field)+'</span>'+badge+chev+'</button><div class="fdd-menu">'+vals.map(function(v){ var on=ex.indexOf(String(v))<0; return '<label class="fdd-item"><input type="checkbox" data-fv="'+enc(field)+'" data-v="'+enc(String(v))+'"'+(on?' checked':'')+'>'+enc(labelVal(S.source,field,v))+'</label>'; }).join('')+'</div></div>'; });
+      return h; }
+    return { S:S, view:view, recordsFor:recordsFor, fields:function(){return fieldsOf(S.source);}, fieldMeta:function(k){return fieldMeta(S.source,k);}, labelVal:function(k,v){return labelVal(S.source,k,v);}, MESES:MESES, filtersHTML:filtersHTML, filterCount:filterCount, fddBadgeText:fddBadgeText, toggleExclude:toggleExclude, clearFilters:clearFilters };
   })();
-  var PVIC={ table:'<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="3" y="3" width="18" height="18" rx="2"/><path d="M3 9h18M3 15h18M9 3v18"/></svg>', bar:'<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><path d="M3 3v18h18"/><rect x="7" y="10" width="3" height="7"/><rect x="12" y="6" width="3" height="11"/><rect x="17" y="13" width="3" height="4"/></svg>', line:'<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M3 3v18h18"/><path d="m7 14 3-4 4 3 4-6"/></svg>', pie:'<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M21 12A9 9 0 1 1 12 3v9z"/></svg>', grid:'<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="3" y="3" width="7" height="7" rx="1"/><rect x="14" y="3" width="7" height="7" rx="1"/><rect x="3" y="14" width="7" height="7" rx="1"/><rect x="14" y="14" width="7" height="7" rx="1"/></svg>' };
   function gPivot(){
-    var tb='<div class="wpivot-tb"><span class="wpv-lbl">Gráfico</span>'+
-      '<button class="wpv-btn on" data-plugin="Datagrid">'+PVIC.table+'Tabela</button>'+
-      '<button class="wpv-btn" data-plugin="Y Bar">'+PVIC.bar+'Barras</button>'+
-      '<button class="wpv-btn" data-plugin="Y Line">'+PVIC.line+'Linhas</button>'+
-      '<button class="wpv-btn" data-plugin="Sunburst">'+PVIC.pie+'Pizza</button>'+
-      '<button class="wpv-btn" data-plugin="Treemap">'+PVIC.grid+'Treemap</button>'+
-      '<span class="wpv-div"></span><span class="wpv-lbl">Pivot</span>'+
-      '<button class="wpv-btn on" data-pivot="area">Área × Mês</button>'+
-      '<button class="wpv-btn" data-pivot="planta">Planta × Mês</button>'+
-      '<button class="wpv-btn" data-pivot="turno">Planta × Turno</button>'+
-      '<span class="wpv-div"></span><span class="wpv-lbl">Realce</span>'+
-      '<button class="wpv-btn on" data-cf="databar">Barras</button>'+
-      '<button class="wpv-btn" data-cf="colorscale">Cores</button>'+
-      '<button class="wpv-btn" data-cf="none">Nenhum</button>'+
-      '<div class="wpv-exp"><button class="wpv-btn wpv-exp-btn" data-exp-toggle title="Exportar"><svg viewBox="0 0 24 24" fill="currentColor"><circle cx="12" cy="5" r="1.7"/><circle cx="12" cy="12" r="1.7"/><circle cx="12" cy="19" r="1.7"/></svg></button>'+
-      '<div class="wpv-exp-menu"><div class="wpv-exp-lbl">Exportar</div>'+
+    var funnel='<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polygon points="22 3 2 3 10 12.46 10 19 14 21 14 12.46 22 3"/></svg>';
+    var n=PV.filterCount();
+    var filt='<div class="wpv-filtwrap"><button class="wpv-filt" data-filt-toggle title="Filters">'+funnel+'<span class="wpv-filt-count"'+(n?'':' style="display:none"')+'>'+n+'</span></button></div>';
+    var exp='<div class="wpv-exp"><button class="wpv-btn wpv-exp-btn" data-exp-toggle title="Exportar"><svg viewBox="0 0 24 24" fill="currentColor"><circle cx="12" cy="5" r="1.7"/><circle cx="12" cy="12" r="1.7"/><circle cx="12" cy="19" r="1.7"/></svg></button>'+
+      '<div class="wpv-exp-menu"><div class="wpv-exp-lbl">Export</div>'+
       '<button class="wpv-exp-item" data-exp="xlsx"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"/><path d="M14 2v6h6"/><path d="m9 13 6 5M15 13l-6 5"/></svg>Excel (.xlsx)</button>'+
       '<button class="wpv-exp-item" data-exp="csv"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"/><path d="M14 2v6h6"/><path d="M8 13h8M8 17h8M8 9h2"/></svg>CSV (.csv)</button>'+
-      '<button class="wpv-exp-item" data-exp="png"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="3" width="18" height="18" rx="2"/><circle cx="9" cy="9" r="2"/><path d="m21 15-3.09-3.09a2 2 0 0 0-2.82 0L6 21"/></svg>Imagem (.png)</button>'+
+      '<button class="wpv-exp-item" data-exp="png"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="3" width="18" height="18" rx="2"/><circle cx="9" cy="9" r="2"/><path d="m21 15-3.09-3.09a2 2 0 0 0-2.82 0L6 21"/></svg>Image (.png)</button>'+
       '<button class="wpv-exp-item" data-exp="pdf"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"/><path d="M14 2v6h6"/><path d="M10 12h1.5a1.5 1.5 0 0 1 0 3H10zM10 12v6"/></svg>PDF</button>'+
-      '</div></div></div>';
-    var view='<div class="wpivot-view">'+PV.renderView({plugin:'Datagrid',pivot:'area',collapsed:{},cf:'databar'})+'</div>';
-    var note='<div class="wpivot-note">* Pizza = Sunburst (donut). Agregação no browser · open-source (Apache-2.0).</div>';
-    return '<div class="wpivot-w">'+tb+view+note+'</div>';
+      '</div></div>';
+    var zoom='<button class="wpv-btn wpv-zoom" data-pv-zoom title="Zoom chart"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="11" cy="11" r="7"/><path d="m21 21-4.35-4.35"/><path d="M11 8v6"/><path d="M8 11h6"/></svg></button>';
+    var tb='<div class="wpivot-tb">'+filt+'<div class="wpv-right">'+zoom+exp+'</div></div>';
+    return '<div class="wpivot-w">'+tb+'<div class="wpivot-view">'+PV.view()+'</div></div>';
   }
   function gBody(d){
     var t=d.type;
@@ -3362,6 +3730,7 @@
     emWidget.innerHTML=''; emWidget.appendChild(clone);
     editToolbar.style.display='none'; hideEditMenus();
     editModal.classList.add('open');
+    pvSetupDrawer(selectedWidget);
     // reset to the General tab
     var et=document.querySelectorAll('#edTabs .ed-tab');
     for(var i=0;i<et.length;i++) et[i].classList.toggle('active', et[i].getAttribute('data-tab')==='general');
@@ -3400,6 +3769,69 @@
     var sws=document.querySelectorAll('.edit-drawer .zswitch');
     for(var n=0;n<sws.length;n++){ sws[n].addEventListener('click', function(){ this.classList.toggle('on'); }); }
   })();
+  // ===== Pivot edit drawer: mostra a config do modelo (design do board) só p/ o widget de Pivot =====
+  function pvSetupDrawer(card){
+    var isPivot=!!(card && card.querySelector && card.querySelector('.wpivot-w'));
+    var gT=document.getElementById('edTabs'), gB=document.getElementById('edBody'), pW=document.getElementById('edPivotWrap');
+    if(gT) gT.style.display=isPivot?'none':''; if(gB) gB.style.display=isPivot?'none':''; if(pW) pW.style.display=isPivot?'flex':'none';
+    var tt=document.querySelector('#editDrawer .ed-title'); if(tt&&tt.childNodes[0]) tt.childNodes[0].nodeValue=(isPivot?'Edit Pivot Table widget ':'Edit Chart widget ');
+    if(isPivot) initPivotConfig();
+  }
+  function pvApply(){ document.querySelectorAll('.wpivot-view').forEach(function(v){ v.innerHTML=PV.view(); }); document.querySelectorAll('.wpivot-w .wpv-filtwrap').forEach(function(el){ el.style.display=PV.S.showFilterInWidget?'':'none'; }); }
+  function pvSetSwitch(el,on){ el.classList.toggle('on',!!on); }
+  function pvDimsMeasures(){ var f=PV.fields(); return { dims:f.filter(function(x){return x.t!=='measure';}), measures:f.filter(function(x){return x.t==='measure';}) }; }
+  function pvFieldKind(k){ var f=PV.fields().filter(function(x){return x.k===k;})[0]; return (f&&f.t==='measure')?'measure':'dim'; }
+  function pvFwAdd(well,k){ var S=PV.S; if(well==='rows'){ if(S.rows.indexOf(k)<0) S.rows.push(k); } else if(well==='cols'){ if(S.cols.indexOf(k)<0) S.cols.push(k); } else if(well==='sort'){ if(S.sortBy.indexOf(k)<0) S.sortBy.push(k); } else if(well==='where'){ if(S.wFilters.indexOf(k)<0) S.wFilters.push(k); } else if(well==='values'){ if(!S.values.some(function(v){return v.k===k;})) S.values.push({k:k,agg:'sum'}); } }
+  function pvFwRemove(from,k){ var S=PV.S; if(from==='rows') S.rows=S.rows.filter(function(x){return x!==k;}); else if(from==='cols') S.cols=S.cols.filter(function(x){return x!==k;}); else if(from==='sort') S.sortBy=S.sortBy.filter(function(x){return x!==k;}); else if(from==='where'){ S.wFilters=S.wFilters.filter(function(x){return x!==k;}); delete S.fexcl[k]; } else if(from==='values') S.values=S.values.filter(function(x){return x.k!==k;}); }
+  function pvRenderWells(){ var host=document.getElementById('pvWells'); if(!host) return; var S=PV.S; var grip='<span class="pvw-grip">⁞⁞</span>';
+    var src=PV.fields().map(function(f){ return '<div class="pvw-srcitem" draggable="true" data-k="'+f.k+'" data-from="src">'+grip+'<span>'+f.l+'</span><span class="pvw-k">'+(f.t==='measure'?'#':'Abc')+'</span></div>'; }).join('');
+    function chips(arr,well,isVal){ if(!arr.length) return '<span class="pvw-empty">Drag fields here</span>'; return arr.map(function(it){ var k=isVal?it.k:it, lbl=(PV.fieldMeta(k)||{}).l||k; var agg=isVal?('<select class="pvw-agg" data-aggk="'+k+'" draggable="false">'+[['sum','Sum'],['avg','Average'],['count','Count'],['distinct','Distinct count'],['min','Min'],['max','Max'],['median','Median']].map(function(a){return '<option value="'+a[0]+'"'+(a[0]===it.agg?' selected':'')+'>'+a[1]+'</option>';}).join('')+'</select>'):''; return '<span class="pvw-chip" draggable="true" data-k="'+k+'" data-from="'+well+'">'+grip+'<span>'+lbl+'</span>'+agg+'<span class="pvw-x" data-well="'+well+'" data-k="'+k+'">×</span></span>'; }).join(''); }
+    function well(lbl,wl,arr,acc,isVal){ return '<div class="pvw"><div class="pvw-lbl">'+lbl+'</div><div class="pvw-drop" data-well="'+wl+'" data-accept="'+acc+'">'+chips(arr,wl,isVal)+'</div></div>'; }
+    host.innerHTML='<div class="pvw-src"><div class="pvw-lbl">All columns</div><div class="pvw-srclist" data-well="src" data-accept="any">'+src+'</div></div>'
+      +well('Group by (rows)','rows',S.rows,'dim')+well('Split by (columns)','cols',S.cols,'dim')+well('Sort by','sort',S.sortBy,'any')+well('Widget filters','where',S.wFilters,'dim')+well('Values','values',S.values,'measure',true);
+  }
+  function pvRenderRules(){ var host=document.getElementById('pvRules'); if(!host) return; var OPS=[['gt','&gt;'],['ge','≥'],['lt','&lt;'],['le','≤'],['eq','='],['ne','≠'],['between','entre']];
+    host.innerHTML=(PV.S.cf.rules||[]).map(function(r,i){ var op=OPS.map(function(o){return '<option value="'+o[0]+'"'+(o[0]===r.op?' selected':'')+'>'+o[1]+'</option>';}).join(''); return '<div class="pvr-row" data-i="'+i+'"><span class="pvr-lbl">Se</span><select data-rf="op">'+op+'</select><input type="number" data-rf="v1" value="'+(r.v1==null?'':r.v1)+'">'+(r.op==='between'?'<span class="pvr-lbl">e</span><input type="number" data-rf="v2" value="'+(r.v2==null?'':r.v2)+'">':'')+'<span class="pvr-lbl">→</span><input type="color" data-rf="bg" value="'+(r.bg||'#eef1ff')+'"><input type="color" data-rf="fg" value="'+(r.fg||'#001391')+'"><button type="button" class="pvr-del">✕</button></div>'; }).join('') || '<span class="pvw-empty">Nenhuma regra.</span>'; }
+  function pvToggleCF(){ var mode=PV.S.cf.mode; document.querySelectorAll('#edPivotWrap .pv-cfthresh').forEach(function(el){ el.style.display=(mode==='databar'||mode==='colorscale')?'':'none'; }); var rw=document.querySelector('#edPivotWrap .pv-cfrules'); if(rw) rw.style.display=(mode==='rules')?'block':'none'; if(mode==='rules') pvRenderRules(); }
+  function initPivotConfig(){ var S=PV.S, W=document.getElementById('edPivotWrap'); if(!W) return;
+    function setv(sel,val){ var e=W.querySelector('[data-pv="'+sel+'"]'); if(e!=null) e.value=(val==null?'':val); }
+    setv('title',S.title); setv('subtitle',S.subtitle); setv('fonte',S.source); setv('periodo',S.dtPreset); setv('type',S.type); setv('cf',S.cf.mode); setv('target',S.cf.target); setv('better',S.cf.better); setv('cfok',S.cf.ok); setv('cfnok',S.cf.nok); setv('capText',S.capText); setv('dec',S.decimals);
+    var m={showTitle:S.showTitle,showObjetivo:S.showObjetivo,showFilterInWidget:S.showFilterInWidget,showLegend:S.showLegend,subGrand:S.subGrand,subGroups:S.subGroups,subCollapsible:S.subCollapsible,showCap:S.showCap,unit:S.unit,tip:S.tip,bTransp:S.bTransp,bgTransp:S.bgTransp,showAxis:S.showAxis};
+    W.querySelectorAll('[data-pvsw]').forEach(function(sw){ pvSetSwitch(sw, m[sw.getAttribute('data-pvsw')]); });
+    pvRenderWells(); pvToggleCF();
+  }
+  (function(){ var W=document.getElementById('edPivotWrap'); if(!W) return;
+    // tabs
+    W.querySelectorAll('#edPivotTabs .ed-tab').forEach(function(t){ t.addEventListener('click', function(){ W.querySelectorAll('#edPivotTabs .ed-tab').forEach(function(x){x.classList.remove('active');}); this.classList.add('active'); var k=this.getAttribute('data-ptab'); W.querySelectorAll('.ed-ppanel').forEach(function(p){ p.classList.toggle('active', p.getAttribute('data-ppanel')===k); }); }); });
+    // switches
+    W.addEventListener('click', function(e){ var sw=e.target.closest('[data-pvsw]'); if(sw){ PV.S[sw.getAttribute('data-pvsw')]=sw.classList.contains('on'); pvApply(); return; }
+      var x=e.target.closest('.pvw-x'); if(x){ var w2=x.getAttribute('data-well'), k=x.getAttribute('data-k'); if(w2==='values') PV.S.values=PV.S.values.filter(function(v){return v.k!==k;}); else { var a2=w2==='rows'?PV.S.rows:w2==='cols'?PV.S.cols:w2==='sort'?PV.S.sortBy:PV.S.wFilters; var ix=a2.indexOf(k); if(ix>=0) a2.splice(ix,1); if(w2==='where') delete PV.S.fexcl[k]; } pvRenderWells(); pvApply(); return; }
+      var radd=e.target.closest('#pvRuleAdd'); if(radd){ PV.S.cf.rules.push({col:'__any',op:'gt',v1:0,v2:null,bg:'#eef1ff',fg:'#001391'}); pvRenderRules(); pvApply(); return; }
+      var rdel=e.target.closest('.pvr-del'); if(rdel){ var i=+rdel.closest('.pvr-row').getAttribute('data-i'); PV.S.cf.rules.splice(i,1); pvRenderRules(); pvApply(); return; }
+    });
+    // selects + inputs
+    W.addEventListener('change', function(e){ var t=e.target, pv=t.getAttribute&&t.getAttribute('data-pv');
+      if(pv==='type'){ PV.S.type=t.value; pvApply(); return; }
+      if(pv==='periodo'){ PV.S.dtPreset=t.value; return; }
+      if(pv==='fonte'){ PV.S.source=t.value; var dm=pvDimsMeasures(); PV.S.rows=[dm.dims[0].k]; PV.S.cols=[]; PV.S.values=[]; PV.S.sortBy=[]; PV.S.wFilters=dm.dims[0]?[dm.dims[0].k]:[]; PV.S.fexcl={}; pvRenderWells(); pvApply(); return; }
+      if(pv==='cf'){ PV.S.cf.mode=t.value; pvToggleCF(); pvApply(); return; }
+      if(pv==='better'){ PV.S.cf.better=t.value; pvApply(); return; }
+      if(pv==='dec'){ PV.S.decimals=+t.value; pvApply(); return; }
+      var aggk=t.getAttribute&&t.getAttribute('data-aggk'); if(aggk){ var v=PV.S.values.filter(function(x){return x.k===aggk;})[0]; if(v){ v.agg=t.value; pvApply(); } return; }
+      var rf=t.getAttribute&&t.getAttribute('data-rf'); if(rf){ var row=t.closest('.pvr-row'), i=+row.getAttribute('data-i'), r=PV.S.cf.rules[i]; if(rf==='v1'||rf==='v2') r[rf]=t.value===''?null:+t.value; else r[rf]=t.value; if(rf==='op') pvRenderRules(); pvApply(); return; }
+    });
+    W.addEventListener('input', function(e){ var t=e.target, pv=t.getAttribute&&t.getAttribute('data-pv'); if(!pv) return;
+      if(pv==='title'){ PV.S.title=t.value; pvApply(); } else if(pv==='subtitle'){ PV.S.subtitle=t.value; } else if(pv==='capText'){ PV.S.capText=t.value; pvApply(); }
+      else if(pv==='target'){ PV.S.cf.target=t.value===''?null:+t.value; pvApply(); }
+      else if(pv==='cfok'){ PV.S.cf.ok=t.value; pvApply(); } else if(pv==='cfnok'){ PV.S.cf.nok=t.value; pvApply(); }
+    });
+  })();
+  (function(){ var host=document.getElementById('pvWells'); if(!host) return; var dK=null,dF=null;
+    host.addEventListener('dragstart', function(e){ var el=e.target.closest('[draggable="true"]'); if(!el) return; dK=el.getAttribute('data-k'); dF=el.getAttribute('data-from'); if(e.dataTransfer){ e.dataTransfer.effectAllowed='move'; try{ e.dataTransfer.setData('text/plain', dK); }catch(_){} } });
+    host.addEventListener('dragover', function(e){ var d=e.target.closest('.pvw-drop, .pvw-srclist'); if(d){ e.preventDefault(); d.classList.add('pvw-over'); } });
+    host.addEventListener('dragleave', function(e){ var d=e.target.closest('.pvw-drop, .pvw-srclist'); if(d) d.classList.remove('pvw-over'); });
+    host.addEventListener('drop', function(e){ var d=e.target.closest('.pvw-drop, .pvw-srclist'); if(!d||dK==null) return; e.preventDefault(); d.classList.remove('pvw-over'); var well=d.getAttribute('data-well'), acc=d.getAttribute('data-accept'), kind=pvFieldKind(dK); if(well==='src'){ pvFwRemove(dF,dK); } else { if(acc==='dim'&&kind!=='dim'){ dK=null; return; } if(acc==='measure'&&kind!=='measure'){ dK=null; return; } pvFwRemove(dF,dK); pvFwAdd(well,dK); } dK=null; dF=null; pvRenderWells(); pvApply(); });
+  })();
   // editModal tables: Links (#76) add/remove rows + clear chips; Andon (#78) repeatable rules
   (function(){
     var TRASH='<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M3 6h18"/><path d="M19 6v14a2 2 0 0 1-2 2H7a2 2 0 0 1-2-2V6m3 0V4a2 2 0 0 1 2-2h4a2 2 0 0 1 2 2v2"/></svg>';
@@ -3408,10 +3840,24 @@
     if(linkAdd&&linkRows) linkAdd.addEventListener('click', function(){ linkRows.appendChild(emptyLinkRow()); });
     if(linkRows) linkRows.addEventListener('click', function(e){ var t=e.target.closest('.ed-trash'); if(t){ var tr=t.closest('tr'); if(tr&&tr.parentNode) tr.parentNode.removeChild(tr); return; } var cx=e.target.closest('.cx'); if(cx){ var td=cx.closest('td'); if(td) td.innerHTML='<input class="ed-cell">'; } });
     var andonAdd=document.getElementById('edAndonAdd'), andonRows=document.getElementById('edAndonRows');
-    function andonRow(){ var d=document.createElement('div'); d.className='andon-row'; d.innerHTML='<div class="andon-f"><label>With</label><div class="andon-series">Series</div></div><div class="andon-f"><label>Regarding Target for</label><input class="ed-input"></div><div class="andon-f"><label>in (units)</label><input class="ed-input"></div><div class="andon-f"><label>Notify</label><input class="ed-input"></div><div class="andon-bellck"><button class="andon-bell" title="Notification"><svg viewBox="0 0 24 24" fill="currentColor"><path d="M12 2a6 6 0 0 0-6 6c0 7-3 9-3 9h18s-3-2-3-9a6 6 0 0 0-6-6z"/><path d="M10.5 21a1.5 1.5 0 0 0 3 0z"/></svg></button><input class="andon-ck" type="checkbox" checked></div><button class="andon-del" title="Remove">'+TRASH+'</button>'; return d; }
+    function andonRow(){ var d=document.createElement('div'); d.className='andon-row'; d.innerHTML='<div class="andon-fields"><div class="andon-f"><label>With</label><div class="andon-series">Series</div></div><div class="andon-f"><label>Regarding Target for</label><input class="ed-input"></div><div class="andon-f"><label>in (units)</label><input class="ed-input"></div><div class="andon-f"><label>Notify</label><input class="ed-input"></div></div><div class="andon-foot"><button class="andon-bell" title="Notification"><svg viewBox="0 0 24 24" fill="currentColor"><path d="M12 2a6 6 0 0 0-6 6c0 7-3 9-3 9h18s-3-2-3-9a6 6 0 0 0-6-6z"/><path d="M10.5 21a1.5 1.5 0 0 0 3 0z"/></svg></button><input class="andon-ck" type="checkbox" checked><button class="andon-del" title="Remove">'+TRASH+'</button></div>'; return d; }
     if(andonRows){ for(var i=0;i<3;i++) andonRows.appendChild(andonRow()); }
     if(andonAdd&&andonRows) andonAdd.addEventListener('click', function(){ andonRows.appendChild(andonRow()); });
     if(andonRows) andonRows.addEventListener('click', function(e){ var d=e.target.closest('.andon-del'); if(d){ var row=d.closest('.andon-row'); if(row&&row.parentNode) row.parentNode.removeChild(row); } });
+
+    // Series rows (General)
+    var seriesAdd=document.getElementById('edSeriesAdd'), seriesRows=document.getElementById('edSeriesRows');
+    var CX_='<span class="cx"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round"><path d="M18 6 6 18M6 6l12 12"/></svg></span>';
+    var CHEV_='<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="m6 9 6 6 6-6"/></svg>';
+    function seriesRow(name){ var d=document.createElement('div'); d.className='ser-row'; d.innerHTML='<input class="ed-input" '+(name?('value="'+name+'"'):'placeholder="Name"')+'><div class="ed-inbox"><span class="ed-chipcell">Bar '+CX_+'</span></div><div class="ed-select sm"><span class="swatch" style="background:#0a0a0b"></span>'+CHEV_+'</div><input class="ser-ck" type="checkbox" checked><button class="ser-del" type="button" title="Remove">'+TRASH+'</button>'; return d; }
+    if(seriesRows){ seriesRows.appendChild(seriesRow('Series')); seriesRows.appendChild(seriesRow('')); }
+    if(seriesAdd&&seriesRows) seriesAdd.addEventListener('click', function(){ seriesRows.appendChild(seriesRow('')); });
+    if(seriesRows) seriesRows.addEventListener('click', function(e){ var d=e.target.closest('.ser-del'); if(d){ var row=d.closest('.ser-row'); if(row&&row.parentNode) row.parentNode.removeChild(row); } });
+
+    // Source type variants (fields change with the droplist)
+    var srcType=document.getElementById('edSrcType');
+    function updSrc(){ var v=srcType?srcType.value:''; Array.prototype.forEach.call(document.querySelectorAll('.src-variant'), function(el){ el.style.display = el.getAttribute('data-src')===v ? 'block' : 'none'; }); }
+    if(srcType){ srcType.addEventListener('change', updSrc); updSrc(); }
   })();
 
   // overlays are outside the viewport, so they never trigger pan; keep clicks local
@@ -3422,6 +3868,7 @@
   // ---- edit mode: mostrar a barra de atalhos do widget já no hover (sem precisar clicar) ----
   var hoverTB=null, hoverHideT=null;
   function showHoverTB(card){
+    return; /* 305: sem hover; toolbar só no selecionado */
     if(app.getAttribute('data-state')!=='edit') return;
     if(ptr) return;                 // não durante arraste/resize/pan
     if(selGroup.length>0) return;   // seleção ativa (1 ou vários): mantém o comportamento normal
@@ -3673,27 +4120,57 @@
     else if(kind==='pdf'){ window.print(); }
   }
   function ensurePvxModal(){ if(document.getElementById('pvxModal')) return; var d=document.createElement('div'); d.id='pvxModal'; d.className='pvx-modal'; d.innerHTML='<div class="pvx-back" data-pvx-close></div><div class="pvx-card"><div class="pvx-head"><div><div class="pvx-t"></div><div class="pvx-s"></div></div><button class="pvx-close" data-pvx-close aria-label="Fechar"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M18 6 6 18M6 6l12 12"/></svg></button></div><div class="pvx-body"></div></div>'; document.body.appendChild(d); d.addEventListener('click', function(ev){ if(ev.target.closest('[data-pvx-close]')) d.classList.remove('open'); }); document.addEventListener('keydown', function(ev){ if(ev.key==='Escape') d.classList.remove('open'); }); }
-  function pvDrill(w, leaf, pg){ var pv=w.querySelector('[data-pivot].on'); var pivotKey=pv?pv.getAttribute('data-pivot'):'area'; var recs=PV.recordsFor(pivotKey, pg, leaf), labels=PV.pivotLabels(pivotKey); ensurePvxModal(); var m=document.getElementById('pvxModal'); m.querySelector('.pvx-t').textContent=pg+' › '+leaf; m.querySelector('.pvx-s').textContent=recs.length+' registro'+(recs.length===1?'':'s')+' · '+labels[0]+' / '+labels[1]; var head='<tr><th>Planta</th><th>Turno</th><th>Mês</th><th style="text-align:right">OK</th><th style="text-align:right">NOK</th></tr>'; var body=recs.map(function(r){ return '<tr><td>'+r.Planta+'</td><td>'+r.Turno+'</td><td>'+r.Mes+'</td><td style="text-align:right">'+r.OK+'</td><td style="text-align:right;color:'+(r.NOK?'#ec221f':'#c7ccd6')+'">'+r.NOK+'</td></tr>'; }).join(''); if(!recs.length) body='<tr><td colspan="5" style="text-align:center;color:#999ba7;padding:20px">Sem registros.</td></tr>'; m.querySelector('.pvx-body').innerHTML='<table class="pvx-grid"><thead>'+head+'</thead><tbody>'+body+'</tbody></table>'; m.classList.add('open'); }
+  function pvDrill(match, title){ var recs=PV.recordsFor(match), flds=PV.fields(); ensurePvxModal(); var m=document.getElementById('pvxModal'); m.querySelector('.pvx-t').textContent='Records'; m.querySelector('.pvx-s').textContent=(title?title+' · ':'')+recs.length+' record'+(recs.length===1?'':'s'); var head='<tr>'+flds.map(function(f){return '<th>'+f.l+'</th>';}).join('')+'</tr>'; var body=recs.slice(0,300).map(function(r){ return '<tr>'+flds.map(function(f){ var v=r[f.k]; return '<td>'+(f.t==='date'?PV.MESES[v]:v)+'</td>'; }).join('')+'</tr>'; }).join(''); if(!recs.length) body='<tr><td colspan="'+flds.length+'" style="text-align:center;color:#999ba7;padding:20px">No records.</td></tr>'; m.querySelector('.pvx-body').innerHTML='<table class="pvx-grid"><thead>'+head+'</thead><tbody>'+body+'</tbody></table>'; m.classList.add('open'); }
   document.addEventListener('click', function(e){
     var exps=document.querySelectorAll('.wpv-exp.open'); for(var q=0;q<exps.length;q++){ if(!exps[q].contains(e.target)) exps[q].classList.remove('open'); }
     var w=e.target.closest && e.target.closest('.wpivot-w'); if(!w) return;
-    function render(){ var pl=w.querySelector('[data-plugin].on'), pv=w.querySelector('[data-pivot].on'), cfb=w.querySelector('[data-cf].on'), vw=w.querySelector('.wpivot-view'); if(vw) vw.innerHTML=PV.renderView({plugin:pl?pl.getAttribute('data-plugin'):'Datagrid', pivot:pv?pv.getAttribute('data-pivot'):'area', collapsed:w._pvC||{}, cf:cfb?cfb.getAttribute('data-cf'):'databar'}); }
+    function rerender(){ var vw=w.querySelector('.wpivot-view'); if(vw) vw.innerHTML=PV.view(); }
     var expT=e.target.closest('[data-exp-toggle]'); if(expT){ e.stopPropagation(); expT.closest('.wpv-exp').classList.toggle('open'); return; }
     var expI=e.target.closest('[data-exp]'); if(expI){ e.stopPropagation(); var bx=expI.closest('.wpv-exp'); if(bx) bx.classList.remove('open'); pvExport(w, expI.getAttribute('data-exp')); return; }
-    var lf=e.target.closest('[data-leaf]'); if(lf){ e.stopPropagation(); pvDrill(w, lf.getAttribute('data-leaf'), lf.getAttribute('data-pg')); return; }
-    var pb=e.target.closest('[data-plugin]'), db=e.target.closest('[data-pivot]'), cb=e.target.closest('[data-cf]'), gr=e.target.closest('[data-group]'); if(!pb&&!db&&!cb&&!gr) return; e.stopPropagation(); w._pvC=w._pvC||{}; var i,bs;
-    if(pb){ bs=w.querySelectorAll('[data-plugin]'); for(i=0;i<bs.length;i++) bs[i].classList.toggle('on',bs[i]===pb); }
-    else if(db){ bs=w.querySelectorAll('[data-pivot]'); for(i=0;i<bs.length;i++) bs[i].classList.toggle('on',bs[i]===db); w._pvC={}; }
-    else if(cb){ bs=w.querySelectorAll('[data-cf]'); for(i=0;i<bs.length;i++) bs[i].classList.toggle('on',bs[i]===cb); }
-    else if(gr){ var k=gr.getAttribute('data-group'); w._pvC[k]=!w._pvC[k]; }
-    render();
+    var zb=e.target.closest('[data-pv-zoom]'); if(zb){ e.stopPropagation(); openKanban('Pivot Table', '<div class="wpivot-w" style="height:100%"><div class="wpivot-view" style="border:none;height:100%;padding:14px">'+PV.view()+'</div></div>', true); return; }
+    var ftog=e.target.closest('[data-filt-toggle]'); if(ftog){ e.stopPropagation(); pvOpenFilter(ftog); return; }
+    var gr=e.target.closest('tr.mx-group'); if(gr){ e.stopPropagation(); var pk=gr.getAttribute('data-pkey'); PV.S.collapsed[pk]=!PV.S.collapsed[pk]; rerender(); return; }
+    var d=e.target.closest('.drillable'); if(d){ e.stopPropagation(); var key=d.getAttribute('data-drill'), series=d.getAttribute('data-series'); var mt={}, ti=[]; mt[PV.S.x]=key; ti.push((PV.fieldMeta(PV.S.x)||{}).l+': '+PV.labelVal(PV.S.x,key)); if(series){ mt[PV.S.legend]=series; ti.push((PV.fieldMeta(PV.S.legend)||{}).l+': '+series); } pvDrill(mt, ti.join(' · ')); return; }
+    var mx=e.target.closest('tr[data-mxdrill]'); if(mx){ e.stopPropagation(); var path=[]; try{ path=JSON.parse(mx.getAttribute('data-path')||'[]'); }catch(_){ } var mt2={}, ti2=[]; path.forEach(function(v,i){ var dd=PV.S.rows[i]; if(!dd) return; mt2[dd]=v; ti2.push((PV.fieldMeta(dd)||{}).l+': '+PV.labelVal(dd,v)); }); pvDrill(mt2, ti2.join(' · ')); return; }
   });
+  function pvUpdCounts(){ document.querySelectorAll('.wpivot-w .wpv-filt-count').forEach(function(bdg){ var n=PV.filterCount(); bdg.textContent=n; bdg.style.display=n?'inline-flex':'none'; }); }
+  function pvFiltPopEl(){ var p=document.getElementById('pvFiltPop'); if(p) return p; p=document.createElement('div'); p.id='pvFiltPop'; p.className='wpv-filters'; document.body.appendChild(p);
+    p.addEventListener('click', function(e){ var fdb=e.target.closest('.fdd-btn'); if(fdb){ e.stopPropagation(); var dd=fdb.closest('.fdd'), was=dd.classList.contains('open'); p.querySelectorAll('.fdd.open').forEach(function(x){x.classList.remove('open');}); if(!was) dd.classList.add('open'); return; } var fcl=e.target.closest('[data-clear]'); if(fcl){ e.stopPropagation(); PV.clearFilters(); p.innerHTML=PV.filtersHTML(); pvApply(); pvUpdCounts(); return; } e.stopPropagation(); });
+    p.addEventListener('change', function(e){ var cb=e.target.closest('input[data-fv]'); if(!cb) return; PV.toggleExclude(cb.getAttribute('data-fv'), cb.getAttribute('data-v')); pvApply(); pvUpdCounts(); var dd=cb.closest('.fdd'); if(dd){ var f=dd.getAttribute('data-field'), txt=PV.fddBadgeText(f), btn=dd.querySelector('.fdd-btn'), old=btn.querySelector('.fdd-badge'); if(old) old.remove(); if(txt){ var bb=document.createElement('span'); bb.className='fdd-badge'; bb.textContent=txt; btn.insertBefore(bb, btn.querySelector('.fdd-chev')); } } });
+    return p; }
+  function pvOpenFilter(btn){ var p=pvFiltPopEl(); if(p.classList.contains('open')){ p.classList.remove('open'); return; } p.innerHTML=PV.filtersHTML(); var r=btn.getBoundingClientRect(); p.style.top=(r.bottom+6)+'px'; p.style.left=Math.max(8,Math.min(r.left,(window.innerWidth||1200)-320))+'px'; p.classList.add('open'); }
+  document.addEventListener('click', function(e){ if(e.target.closest && (e.target.closest('#pvFiltPop')||e.target.closest('.wpv-filtwrap'))) return; var p=document.getElementById('pvFiltPop'); if(p) p.classList.remove('open'); });
   // CS #23 — click person avatar in Action Plan filters its plans
   document.addEventListener('click', function(e){ var av=e.target.closest && e.target.closest('.wap .apstack .apav[data-person]'); if(!av) return; e.stopPropagation(); var wap=av.closest('.wap'), p=av.getAttribute('data-person'), on=av.classList.contains('filt-on'); var avs=wap.querySelectorAll('.apstack .apav'); for(var i=0;i<avs.length;i++) avs[i].classList.remove('filt-on'); var cards=wap.querySelectorAll('.wrca .rcard'); for(var j=0;j<cards.length;j++){ if(on) cards[j].classList.remove('filt-hidden'); else cards[j].classList.toggle('filt-hidden', cards[j].getAttribute('data-person')!==p); } if(!on) av.classList.add('filt-on'); });
   // CS #30 — kebab menu on each action plan
   document.addEventListener('click', function(e){ var kb=e.target.closest && e.target.closest('.ap-kebab'); if(kb){ e.stopPropagation(); var m=kb.parentNode.querySelector('.ap-menu'), was=m&&m.classList.contains('open'), op=document.querySelectorAll('.ap-menu.open'); for(var i=0;i<op.length;i++) op[i].classList.remove('open'); if(m&&!was) m.classList.add('open'); return; } var mi=e.target.closest && e.target.closest('.ap-menu button'); if(mi){ e.stopPropagation(); var mm=mi.closest('.ap-menu'); if(mm) mm.classList.remove('open'); var card=mi.closest('.rcard'); var rid=card&&card.querySelector('.rid')?card.querySelector('.rid').textContent:''; openApAct(mi.getAttribute('data-act'), rid); return; } var o2=document.querySelectorAll('.ap-menu.open'); for(var k=0;k<o2.length;k++) o2[k].classList.remove('open'); });
   function ensureApAct(){ if(document.getElementById('apActModal')) return; var d=document.createElement('div'); d.id='apActModal'; d.className='pvx-modal apact-modal'; d.innerHTML='<div class="pvx-back" data-apact-close></div><div class="apact-card"><div class="apact-head"><div class="apact-title"></div><button class="pvx-close" data-apact-close><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M18 6 6 18M6 6l12 12"/></svg></button></div><div class="apact-body"></div><div class="apact-foot"><button class="zbtn zbtn-outline" data-apact-close>Cancel</button><button class="zbtn zbtn-default" data-apact-ok>Change</button></div></div>'; document.body.appendChild(d); d.addEventListener('click', function(ev){ if(ev.target.closest('[data-apact-close]')||ev.target.closest('[data-apact-ok]')) d.classList.remove('open'); }); document.addEventListener('keydown', function(ev){ if(ev.key==='Escape') d.classList.remove('open'); }); }
-  function openApAct(act, id){ ensureApAct(); var m=document.getElementById('apActModal'); var t=m.querySelector('.apact-title'), b=m.querySelector('.apact-body'); var cal='<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="4" width="18" height="18" rx="2"/><path d="M3 10h18M8 2v4M16 2v4"/></svg>'; if(act==='finish'){ t.textContent='Finalize '+(id||'action plan'); b.innerHTML='<p class="apact-msg">Confirm you want to finalize <b>'+(id||'this action plan')+'</b>? It will be marked as completed.</p>'; } else if(act==='reschedule'){ t.textContent='Reschedule '+(id||''); b.innerHTML='<label class="apact-lbl">New due date</label><div class="apact-date"><input placeholder="dd/mm/yyyy" inputmode="numeric">'+cal+'</div><label class="apact-lbl">Comment (optional)</label><textarea placeholder="Type here"></textarea>'; } else { t.textContent='Escalate '+(id||''); b.innerHTML='<label class="apact-lbl">Responsible</label><select class="apact-sel"><option value="">Select</option><option>Jardel F.</option><option>Maria R.</option><option>Ana S.</option><option>Marcus L.</option></select><label class="apact-lbl">System</label><select class="apact-sel"><option value="">Select</option><option>CMMS</option><option>SAP PM</option><option>Solvace</option></select><label class="apact-lbl">Comment (optional)</label><textarea placeholder="Type here"></textarea>'; } m.classList.add('open'); }
+  // #312 — Escalate: system-style droplists (Responsible w/ avatar+search; Room -> Board cascade)
+  var AP_PEOPLE=[['Jardel F.','JF','#d7e9ff','#17457a'],['Maria R.','MR','#ffe0e0','#c0392b'],['Ana S.','AS','#dcf5e6','#2d6a4f'],['Marcus L.','ML','#e9d8fd','#6b21a8'],['Nina D.','ND','#ffe3c2','#9a4a00'],['Otto O.','OO','#e7e9f5','#3a4790']];
+  var AP_ROOMS={'(DOB-1) Line 1':['DDS Line 1','SQCDP','Daily meeting'],'(DOB-2) Line 2':['DDS Line 2','Quality board'],'Detroit — DDS':['Tier 1 board','Tier 2 board'],'Packaging Hall':['OEE board','5S board'],'Maintenance Bay':['CMMS board','Preventive plan']};
+  function apselField(key,ph,extra){ return '<div class="apsel" data-apsel="'+key+'"'+(extra||'')+'><button type="button" class="apsel-btn"><span class="apsel-val apsel-ph">'+ph+'</span><svg class="apsel-chev" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="m6 9 6 6 6-6"/></svg></button><div class="apsel-pop"><div class="apsel-srch"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><circle cx="11" cy="11" r="7"/><path d="m21 21-4.3-4.3"/></svg><input placeholder="Search"></div><div class="apsel-list">__LIST__</div></div></div>'; }
+  function escalateHTML(){
+    var resp=AP_PEOPLE.map(function(p){ return '<div class="apsel-item" data-v="'+p[0]+'"><span class="apav-mini" style="background:'+p[2]+';color:'+p[3]+'">'+p[1]+'</span><span class="apsel-itxt">'+p[0]+'</span></div>'; }).join('');
+    var rooms=Object.keys(AP_ROOMS).map(function(r){ return '<div class="apsel-item" data-v="'+r+'"><span class="apsel-itxt">'+r+'</span></div>'; }).join('');
+    var h='<label class="apact-lbl">Responsible</label>'+apselField('resp','Select','').replace('__LIST__',resp);
+    h+='<label class="apact-lbl">Room</label>'+apselField('room','Select','').replace('__LIST__',rooms);
+    h+='<label class="apact-lbl apboard-lbl" style="display:none">Board</label>'+apselField('board','Select',' style="display:none"').replace('__LIST__','');
+    h+='<label class="apact-lbl">Comment (optional)</label><textarea placeholder="Type here"></textarea>';
+    return h;
+  }
+  (function(){
+    document.addEventListener('click', function(e){
+      var btn=e.target.closest && e.target.closest('#apActModal .apsel-btn');
+      if(btn){ e.stopPropagation(); var sel=btn.closest('.apsel'), was=sel.classList.contains('open'); document.querySelectorAll('#apActModal .apsel.open').forEach(function(x){x.classList.remove('open');}); if(!was){ sel.classList.add('open'); var inp=sel.querySelector('.apsel-srch input'); if(inp){ inp.value=''; sel.querySelectorAll('.apsel-item').forEach(function(it){it.style.display='';}); } } return; }
+      var item=e.target.closest && e.target.closest('#apActModal .apsel-item');
+      if(item){ e.stopPropagation(); var sel2=item.closest('.apsel'), val=sel2.querySelector('.apsel-val'); val.innerHTML=item.innerHTML; val.classList.remove('apsel-ph'); sel2.setAttribute('data-value', item.getAttribute('data-v')||''); sel2.classList.remove('open');
+        if(sel2.getAttribute('data-apsel')==='room'){ var board=document.querySelector('#apActModal .apsel[data-apsel="board"]'), bl=document.querySelector('#apActModal .apboard-lbl'); if(board){ var rm=item.getAttribute('data-v'); board.querySelector('.apsel-list').innerHTML=(AP_ROOMS[rm]||[]).map(function(bn){ return '<div class="apsel-item" data-v="'+bn+'"><span class="apsel-itxt">'+bn+'</span></div>'; }).join(''); var bv=board.querySelector('.apsel-val'); bv.textContent='Select'; bv.classList.add('apsel-ph'); board.removeAttribute('data-value'); board.style.display=''; if(bl) bl.style.display=''; } }
+        return; }
+      if(!(e.target.closest && e.target.closest('#apActModal .apsel'))){ document.querySelectorAll('#apActModal .apsel.open').forEach(function(x){x.classList.remove('open');}); }
+    });
+    document.addEventListener('input', function(e){ var inp=e.target.closest && e.target.closest('#apActModal .apsel-srch input'); if(!inp) return; var q=inp.value.toLowerCase().trim(), items=inp.closest('.apsel').querySelectorAll('.apsel-item'); for(var i=0;i<items.length;i++){ items[i].style.display=(!q||items[i].textContent.toLowerCase().indexOf(q)>=0)?'':'none'; } });
+  })();
+  function openApAct(act, id){ ensureApAct(); var m=document.getElementById('apActModal'); var t=m.querySelector('.apact-title'), b=m.querySelector('.apact-body'); var cal='<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="4" width="18" height="18" rx="2"/><path d="M3 10h18M8 2v4M16 2v4"/></svg>'; if(act==='finish'){ t.textContent='Finalize '+(id||'action plan'); b.innerHTML='<p class="apact-msg">Confirm you want to finalize <b>'+(id||'this action plan')+'</b>? It will be marked as completed.</p>'; } else if(act==='reschedule'){ t.textContent='Reschedule '+(id||''); b.innerHTML='<label class="apact-lbl">New due date</label><div class="apact-date"><input placeholder="dd/mm/yyyy" inputmode="numeric">'+cal+'</div><label class="apact-lbl">Comment (optional)</label><textarea placeholder="Type here"></textarea>'; } else { t.textContent='Escalate '+(id||''); b.innerHTML=escalateHTML(); } m.classList.add('open'); }
   // CS #13 — widget foot meta icons open the full view on that tab
   document.addEventListener('click', function(e){ var mt=e.target.closest && e.target.closest('.w-meta'); if(!mt) return; e.stopPropagation(); var card=mt.closest('.wcard'); if(card && typeof openFullView==='function' && document.getElementById('app').getAttribute('data-state')!=='edit'){ openFullView(card); var tab=mt.getAttribute('data-ftab'); if(typeof setFullTab==='function') setTimeout(function(){ setFullTab(tab); }, 50); } });
   // Team widget pagination (Figma 23613-50257)
@@ -4183,8 +4660,8 @@
     var isBatch=(st==='update' && /^(chart|gauge|radial|number|calendar)$/.test(typ));
     var fTabs=document.getElementById('fullTabs'); var sub=fullDrawer?fullDrawer.querySelector('.ed-sub'):null;
     var fcb=document.getElementById('fullCloseBtn');
-    if(isBatch){ if(fTabs) fTabs.style.display='none'; startFullBatch(fullTitle.textContent); if(sub) sub.textContent='Batch update'; if(fullPrimary){ fullPrimary.style.display='inline-flex'; fullPrimary.textContent='Apply'; } if(fcb) fcb.textContent='Cancel'; }
-    else { fbState=null; if(fTabs) fTabs.style.display=''; if(fullBodyEl) fullBodyEl.innerHTML=fullBodyHTML; if(sub) sub.textContent='Full view'; if(fcb) fcb.textContent='Close'; setFullTab('feed'); }
+    if(isBatch){ if(fTabs) fTabs.style.display='none'; startFullBatch(fullTitle.textContent); if(sub){ sub.textContent=''; sub.style.display='none'; } if(fullPrimary){ fullPrimary.style.display='inline-flex'; fullPrimary.textContent='Apply'; } if(fcb) fcb.textContent='Cancel'; }
+    else { fbState=null; if(fTabs) fTabs.style.display=''; if(fullBodyEl) fullBodyEl.innerHTML=fullBodyHTML; if(sub){ sub.textContent='Full view'; sub.style.display=''; } if(fcb) fcb.textContent='Close'; setFullTab('feed'); }
     // #192 — presence zoom is just the big widget + Links (no side drawer, no download/upload)
     var noDrawer = !isBatch && /^presence$/.test(typ);
     if(fullDrawer) fullDrawer.style.display = noDrawer ? 'none' : '';
@@ -4329,6 +4806,8 @@
   #rv-layer .rv-pin{pointer-events:auto;cursor:grab}
   #rv-layer .rv-pin.rv-dragging{cursor:grabbing;opacity:.85}
   #rv-layer.pins-hidden .rv-pin{display:none!important}
+  /* esconder pinos de comentário quando um modal de configuração está aberto (evita rolagem lateral e pinos por cima do modal) */
+  body:has(#editModal.open) #rv-layer, body:has(#roomModal.open) #rv-layer{ display:none!important; }
   body.rv-commenting{cursor:crosshair}
   #rv-pop{position:fixed;z-index:9500;width:260px;max-height:72vh;overflow:auto;background:#fff;border:1px solid #e2e8f0;border-radius:12px;box-shadow:0 12px 30px rgba(2,6,23,.25);padding:12px;display:none;font-family:-apple-system,BlinkMacSystemFont,"Segoe UI",Roboto,Arial,sans-serif}
   #rv-pop .rv-x{position:absolute;top:6px;right:6px;width:22px;height:22px;padding:0;border-radius:6px;background:none;color:#94a3b8;font-size:17px;line-height:1;display:inline-flex;align-items:center;justify-content:center;flex:none}
