@@ -180,7 +180,7 @@
   .top-icon{ position:relative; width:40px; height:40px; display:flex; align-items:center; justify-content:center; border-radius:10px; background:transparent; border:0; color:#0d122f; cursor:pointer }
   .top-icon:hover{ background:#f4f4f6 }
   .top-badge{ position:absolute; top:2px; right:3px; min-width:16px; height:16px; padding:0 4px; border-radius:9999px; background:#E22A2E; color:#fff; font-size:10px; font-weight:700; display:flex; align-items:center; justify-content:center; line-height:1; border:2px solid #fff }
-  .top-kc{ border:1px solid var(--color-input) }
+  .top-kc{ width:auto; gap:6px; padding:0 12px; border:1px solid var(--color-input); font-size:14px; font-weight:500 }
   .top-kc:hover{ background:#f4f4f6; border-color:var(--color-primary); color:var(--color-primary) }
   .hamburger{ display:none; background:transparent;border:0;color:var(--color-primary);margin-right:8px }
   /* ---- mobile backdrop + drawer (<1024) ---- */
@@ -288,6 +288,11 @@
   #settingsView .tbl tbody td{ padding:16px; font-size:14px; border-bottom:1px solid var(--input); color:#2a2a2a; vertical-align:middle }
   #settingsView .tbl tbody tr:nth-child(even){ background:#f8f9fb }
   #settingsView .tbl tbody tr:hover{ background:#fafafe }
+  #settingsView .tbl td.drag-cell{ width:36px; padding:0 4px 0 12px; text-align:center }
+  #settingsView .drag-handle{ display:inline-flex; align-items:center; justify-content:center; color:#b0b4c0; cursor:grab } #settingsView .drag-handle svg{ width:18px; height:18px } #settingsView .drag-handle:active{ cursor:grabbing }
+  #settingsView .tbl tbody tr.reg-row.dragging{ opacity:.45 }
+  #settingsView .tbl tbody tr.reg-row.drag-over td{ box-shadow:inset 0 2px 0 var(--primary) }
+  #settingsView .tbl tbody tr.reg-row:hover .drag-handle{ color:var(--primary) }
   .status{ display:inline-flex; align-items:center; justify-content:center; font-size:12px; font-weight:600; padding:4px 15px; border-radius:9999px; min-width:74px; border:1px solid transparent }
   .status-active{ background:#DCF5E6; color:#14AE5C; border-color:#14AE5C }
   .status-inactive{ background:#FDE7E7; color:#EC221F; border-color:#EC221F }
@@ -511,7 +516,7 @@
             <button class="avatar-menu-item" role="menuitem" title="Location"><svg width="16" height="16" viewBox="0 0 24 24" fill="currentColor"><path d="M12 2a7 7 0 0 0-7 7c0 5.25 7 13 7 13s7-7.75 7-13a7 7 0 0 0-7-7z"></path><circle cx="12" cy="9" r="2.6" fill="#fff"></circle></svg><span>Curitiba</span><svg class="loc-chev" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="m6 9 6 6 6-6"></path></svg></button>
           </div>
         </div>
-        <button class="top-icon top-kc" title="Knowledge Center"><svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M2 3h6a4 4 0 0 1 4 4v14a3 3 0 0 0-3-3H2z"></path><path d="M22 3h-6a4 4 0 0 0-4 4v14a3 3 0 0 1 3-3h7z"></path></svg></button>
+        <button class="top-icon top-kc" title="Knowledge Center"><svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M2 3h6a4 4 0 0 1 4 4v14a3 3 0 0 0-3-3H2z"></path><path d="M22 3h-6a4 4 0 0 0-4 4v14a3 3 0 0 1 3-3h7z"></path></svg><span>Help</span></button>
       </div>
     </header>
     <div class="main-scroll" data-rv-scroll>
@@ -635,7 +640,8 @@ const I = {
   minusC:'<svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="9"/><path d="M8 12h8"/></svg>',
   lockC:'<svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="3" y="11" width="18" height="11" rx="2"/><path d="M7 11V7a5 5 0 0 1 10 0v4"/></svg>',
   chevL:'<svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="m15 18-6-6 6-6"/></svg>',
-  chevR:'<svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="m9 18 6-6-6-6"/></svg>'
+  chevR:'<svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="m9 18 6-6-6-6"/></svg>',
+  grip:'<svg viewBox="0 0 24 24" fill="currentColor"><circle cx="9" cy="6" r="1.5"/><circle cx="15" cy="6" r="1.5"/><circle cx="9" cy="12" r="1.5"/><circle cx="15" cy="12" r="1.5"/><circle cx="9" cy="18" r="1.5"/><circle cx="15" cy="18" r="1.5"/></svg>'
 };
 
 /* ===== M CONTRACT — Digital Obeya (rooms) ===== */
@@ -1133,10 +1139,28 @@ function regData(v){ return v==='types'?typeData:topicData; }
 function renderReg(v){
   var cfg=REG[v], q=(regQ[v]||'').toLowerCase();
   var list=regData(v).filter(function(c){ return c.name.toLowerCase().indexOf(q)>=0; });
-  var rows=list.map(function(c){ return '<tr><td>'+c.name+'</td><td>'+statusBadge(c.active)+'</td><td style="width:96px;text-align:center;white-space:nowrap"><span style="display:inline-flex;gap:8px"><button class="kebab" style="color:var(--primary)" title="Edit" onclick="openReg(\''+v+'\','+c.id+')">'+I.pencil+'</button><button class="kebab" style="color:var(--primary)" title="Delete" onclick="delReg(\''+v+'\','+c.id+')">'+I.trash+'</button></span></td></tr>'; }).join('');
-  el('settingsView').innerHTML='<div class="perm-toolbar"><button class="btn btn-outline perm-new" onclick="openReg(\''+v+'\')">'+I.plus+'<span class="perm-newlbl"> '+cfg.newLabel+'</span></button><div class="set-search"><span class="s-ico">'+I.search+'</span><input placeholder="Search" value="'+(regQ[v]||'')+'" oninput="regSearch(\''+v+'\',this.value)"></div><button class="kebab" title="More options" onclick="openKebab(this)">'+I.kebab+'</button></div><div class="tbl-bleed"><table class="tbl"><thead><tr><th>'+cfg.col+'</th><th style="width:120px">STATUS</th><th style="width:96px"></th></tr></thead><tbody>'+(rows||'<tr><td colspan="3" style="text-align:center;color:#8a90a6;padding:40px">No records found</td></tr>')+'</tbody></table></div>'+pag(list.length);
+  var drag=(v==='topics');
+  var rows=list.map(function(c){
+    var h=drag?'<td class="drag-cell"><span class="drag-handle" title="Drag to reorder">'+I.grip+'</span></td>':'';
+    var attr=drag?(' class="reg-row" draggable="true" data-id="'+c.id+'" ondragstart="dragTopicStart(event,'+c.id+')" ondragover="dragTopicOver(event,'+c.id+')" ondragleave="dragTopicLeave(event)" ondrop="dropTopic(event,'+c.id+')" ondragend="dragTopicEnd(event)"'):'';
+    return '<tr'+attr+'>'+h+'<td>'+c.name+'</td><td>'+statusBadge(c.active)+'</td><td style="width:96px;text-align:center;white-space:nowrap"><span style="display:inline-flex;gap:8px"><button class="kebab" style="color:var(--primary)" title="Edit" onclick="openReg(\''+v+'\','+c.id+')">'+I.pencil+'</button><button class="kebab" style="color:var(--primary)" title="Delete" onclick="delReg(\''+v+'\','+c.id+')">'+I.trash+'</button></span></td></tr>';
+  }).join('');
+  var saveBtn=drag?'<button class="btn btn-primary perm-save" onclick="saveTopicOrder()">'+I.save+'<span class="perm-newlbl"> Save</span></button>':'';
+  var headDrag=drag?'<th style="width:36px"></th>':'';
+  var ncol=drag?4:3;
+  el('settingsView').innerHTML='<div class="perm-toolbar"><button class="btn btn-outline perm-new" onclick="openReg(\''+v+'\')">'+I.plus+'<span class="perm-newlbl"> '+cfg.newLabel+'</span></button><div class="set-search"><span class="s-ico">'+I.search+'</span><input placeholder="Search" value="'+(regQ[v]||'')+'" oninput="regSearch(\''+v+'\',this.value)"></div>'+saveBtn+'<button class="kebab" title="More options" onclick="openKebab(this)">'+I.kebab+'</button></div><div class="tbl-bleed"><table class="tbl"><thead><tr>'+headDrag+'<th>'+cfg.col+'</th><th style="width:120px">STATUS</th><th style="width:96px"></th></tr></thead><tbody>'+(rows||'<tr><td colspan="'+ncol+'" style="text-align:center;color:#8a90a6;padding:40px">No records found</td></tr>')+'</tbody></table></div>'+pag(list.length);
 }
 function regSearch(v,q){ regQ[v]=q; renderReg(v); var i=el('settingsView').querySelector('.set-search input'); if(i){ i.focus(); i.setSelectionRange(i.value.length,i.value.length); } }
+/* ---- Topics: drag-and-drop reorder + save order ---- */
+var dragId=null, topicDirty=false;
+function dragTopicStart(ev,id){ dragId=id; try{ ev.dataTransfer.effectAllowed='move'; ev.dataTransfer.setData('text/plain',String(id)); }catch(_){} var tr=ev.target.closest('tr'); if(tr) tr.classList.add('dragging'); }
+function dragTopicOver(ev,id){ ev.preventDefault(); try{ ev.dataTransfer.dropEffect='move'; }catch(_){} var tr=ev.target.closest('tr'); if(tr && !tr.classList.contains('dragging')){ var vw=el('settingsView'); if(vw) vw.querySelectorAll('tr.reg-row.drag-over').forEach(function(x){ x.classList.remove('drag-over'); }); tr.classList.add('drag-over'); } }
+function dragTopicLeave(ev){ var tr=ev.target.closest('tr'); if(tr) tr.classList.remove('drag-over'); }
+function dropTopic(ev,id){ ev.preventDefault(); if(dragId==null||dragId===id){ dragTopicEnd(); return; } var from=topicData.findIndex(function(x){return x.id===dragId;}), to=topicData.findIndex(function(x){return x.id===id;}); if(from>=0 && to>=0){ var moved=topicData.splice(from,1)[0]; topicData.splice(to,0,moved); topicDirty=true; } dragId=null; renderReg('topics'); }
+function dragTopicEnd(){ dragId=null; var vw=el('settingsView'); if(vw) vw.querySelectorAll('tr.reg-row').forEach(function(x){ x.classList.remove('dragging','drag-over'); }); }
+function saveTopicOrder(){ try{ localStorage.setItem('obeya_topic_order', JSON.stringify(topicData.map(function(t){return t.id;}))); }catch(_){} topicDirty=false; toast('Changes saved successfully'); }
+function loadTopicOrder(){ try{ var raw=localStorage.getItem('obeya_topic_order'); if(!raw) return; var order=JSON.parse(raw)||[]; if(!order.length) return; topicData.sort(function(a,b){ var ia=order.indexOf(a.id); var ib=order.indexOf(b.id); if(ia<0) ia=1e9; if(ib<0) ib=1e9; return ia-ib; }); }catch(_){} }
+loadTopicOrder();
 var regEdit=null;
 function openReg(v,id){
   var cfg=REG[v], item=id?regData(v).find(function(x){return x.id===id;}):null;
