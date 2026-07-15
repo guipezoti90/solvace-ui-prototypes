@@ -155,13 +155,13 @@
   #barTip b{ font-weight:600; white-space:nowrap; }
   #barTip .bt-arrow{ position:absolute; left:50%; bottom:-5px; transform:translateX(-50%) rotate(45deg); width:10px; height:10px; background:#1c2434; }
   /* #91 — single datapoint editor (click a bar/ring segment in update mode) */
-  #dpEdit{ position:fixed; z-index:9650; background:#fff; border:1px solid #e2e5ec; border-radius:12px; box-shadow:0 18px 44px rgba(13,18,47,.24); padding:12px; width:200px; font-family:Inter,system-ui,Arial,sans-serif; }
+  #dpEdit{ position:fixed; z-index:9650; background:#fff; border:1px solid #e2e5ec; border-radius:12px; box-shadow:0 18px 44px rgba(13,18,47,.24); padding:12px; width:236px; font-family:Inter,system-ui,Arial,sans-serif; }
   #dpEdit .dpe-lbl{ font-size:12px; font-weight:600; color:#6b7280; margin-bottom:8px; }
   #dpEdit .dpe-in{ width:100%; border:1px solid #d0d5dd; border-radius:8px; padding:8px 10px; font-size:14px; color:#0d122f; outline:none; }
   #dpEdit .dpe-in:focus{ border-color:#001391; }
   #dpEdit .dpe-in::-webkit-outer-spin-button, #dpEdit .dpe-in::-webkit-inner-spin-button{ -webkit-appearance:none; margin:0; } #dpEdit .dpe-in{ -moz-appearance:textfield; }
-  #dpEdit .dpe-step{ display:flex; align-items:stretch; gap:6px; }
-  #dpEdit .dpe-step .dpe-in{ width:auto; flex:1; text-align:center; }
+  #dpEdit .dpe-step{ display:flex; align-items:stretch; gap:8px; }
+  #dpEdit .dpe-step .dpe-in{ flex:1 1 auto; width:auto; min-width:0; text-align:center; padding-left:6px; padding-right:6px; }
   #dpEdit .dpe-mn, #dpEdit .dpe-pl{ width:36px; flex:0 0 36px; border:1px solid #d0d5dd; border-radius:8px; background:#f5f6ff; color:#001391; font-size:18px; font-weight:700; line-height:1; cursor:pointer; display:flex; align-items:center; justify-content:center; }
   #dpEdit .dpe-mn:hover, #dpEdit .dpe-pl:hover{ background:#eef1ff; border-color:#c7ccf5; }
   #dpEdit .dpe-acts{ display:flex; justify-content:flex-end; gap:8px; margin-top:10px; }
