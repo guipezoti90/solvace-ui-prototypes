@@ -288,6 +288,11 @@
   .topbar-search input{ flex:1; min-width:0; border:0; outline:0; background:transparent; font-size:15px; color:#0d122f }
   .topbar-search input::placeholder{ color:#999ba7 }
   .topbar-search svg{ flex:0 0 auto; color:#999ba7 }
+  .topbar-right .top-search-btn{ display:none }
+  .top-search-m{ display:none; position:fixed; top:0; left:0; right:0; height:56px; background:#fff; border-bottom:1px solid var(--color-input); align-items:center; gap:10px; padding:0 12px; z-index:90 }
+  .top-search-m input{ flex:1; min-width:0; border:0; outline:0; background:transparent; font-size:15px; color:#0d122f }
+  .top-search-m > svg{ flex:0 0 auto; color:#999ba7 }
+  .top-search-m .kebab{ flex:0 0 auto; color:#717182 }
   .top-loc{ display:flex; align-items:center; gap:6px; height:40px; padding:0 12px; border:1px solid var(--color-input); border-radius:10px; background:#fff; color:#0d122f; font-size:14px; font-weight:500; cursor:pointer }
   .top-loc:hover{ background:#f6f7f9 }
   .top-loc .loc-chev{ color:#6b7280 }
@@ -321,8 +326,7 @@
   .sb-leg b{ color:#0D122F }
   .dot{ display:inline-block;width:8px;height:8px;border-radius:2px;margin-right:5px;vertical-align:1px }
   .chart2{ display:grid;grid-template-columns:1fr 1fr;gap:16px;margin-bottom:16px }
-  .hchart{ position:relative;display:flex;flex-direction:column;gap:12px;padding-top:4px;
-    background-image:repeating-linear-gradient(to right, #F0F0F0 0 1px, transparent 1px 25%);background-size:100% calc(100% - 18px);background-repeat:no-repeat }
+  .hchart{ position:relative;display:flex;flex-direction:column;gap:12px;padding-top:4px }
   .hrow{ display:flex;align-items:center;gap:10px;cursor:pointer }
   .hrow .hl{ width:110px;flex:0 0 110px;font-size:12px;color:#4D5166;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;text-align:right }
   .hbars{ flex:1;display:flex;flex-direction:column;gap:3px }
@@ -357,6 +361,8 @@
   .vcol{ flex:1; min-width:0; height:100%; display:flex; flex-direction:column; align-items:center; justify-content:flex-end; cursor:pointer }
   .vcol:hover .vbar{ background:#001072 }
   .vbar{ width:100%; max-width:26px; background:var(--color-primary); border-radius:4px 4px 0 0; transition:height .25s }
+  .vbar.vbar-fb{ background:#a8aede }
+  .vcol:hover .vbar.vbar-fb{ background:#9aa0d6 }
   .vval{ font-size:10px; font-weight:700; color:#4D5166; margin-bottom:3px }
   .vlbls{ display:flex; gap:8px; padding:0 6px; margin-left:38px; margin-top:6px }
   .vlbls span{ flex:1; text-align:center; font-size:10px; color:#999BA7; white-space:nowrap; overflow:hidden; text-overflow:ellipsis }
@@ -402,13 +408,13 @@
     /* nunca exibir o kebab de exportação (cadastro/busca/dashboard) */
     [onclick*="openExportMenu"], [onclick*="openChartMenu"]{ display:none !important }
 
-    /* todo modal em fullscreen */
-    .modal-article, .big-modal, .dialog, .menu-pop{
+    /* todo modal em fullscreen (exceto o dialog de confirmação/exclusão) */
+    .modal-article, .big-modal, .menu-pop{
       left:0 !important; top:0 !important; right:auto !important; bottom:auto !important;
       transform:none !important; width:100vw !important; max-width:100vw !important;
+      height:100vh !important; max-height:100vh !important;
       height:100dvh !important; max-height:100dvh !important; border-radius:0 !important;
     }
-    .dialog{ overflow-y:auto }
     .drawer{ width:100vw !important; max-width:100vw !important }
 
     /* top bar: localização vai para o menu do avatar + caber em 375px */
@@ -417,11 +423,15 @@
     .topbar-logo svg{ height:20px; width:auto }
     .topbar-right{ gap:10px }
     .top-icon{ width:36px; height:36px }
-    .top-kc{ padding:0 9px !important; gap:5px !important }
+    .top-kc{ width:36px !important; padding:0 !important; gap:0 !important }
+    .top-kc .top-kc-lbl{ display:none }
+    .topbar-right .top-search-btn{ display:inline-flex }
+    .top-search-m.open{ display:flex }
     .top-avatar{ cursor:pointer; width:32px; height:32px; font-size:11px }
 
     /* dashboard: indicadores em linha com rolagem lateral */
-    .kpi-grid{ display:flex !important; flex-wrap:nowrap; overflow-x:auto; gap:12px; -webkit-overflow-scrolling:touch; padding-bottom:4px }
+    .kpi-grid{ display:flex !important; flex-wrap:nowrap; overflow-x:auto; gap:12px; padding-bottom:4px; scrollbar-width:none }
+    .kpi-grid::-webkit-scrollbar{ display:none }
     .kpi-card{ flex:0 0 250px; min-height:132px; padding:18px 16px }
     /* dashboard header em uma linha; filtro só ícone */
     .dash-head{ flex-wrap:nowrap; gap:8px; overflow-x:auto }
@@ -441,8 +451,20 @@
     .hval{ width:22px; font-size:10px }
 
     /* notification: toggles empilhados na mesma coluna */
-    .notif-switches{ flex-direction:column !important; align-items:flex-start; gap:10px }
+    .notif-switches{ flex-direction:column !important; align-items:flex-start; gap:0 }
     .notif-switches > span{ margin-right:0 !important }
+    /* #151 — Notification Management vira lista de cards no mobile (sem rolagem horizontal) */
+    .notif-wrap{ overflow-x:visible !important; margin:0 !important }
+    table.notif-tbl.tbl-bleed{ width:100% !important }
+    .notif-tbl thead{ display:none }
+    .notif-tbl, .notif-tbl tbody, .notif-tbl tr, .notif-tbl td{ display:block; width:auto }
+    .notif-tbl tr{ background:#fff; border:1px solid var(--color-input); border-radius:12px; padding:14px; margin:0 0 12px }
+    .notif-tbl td{ padding:0 !important; border:0 !important }
+    .notif-tbl td:first-child{ font-weight:600; color:#1c1c1c; line-height:1.4; margin-bottom:6px }
+    .notif-tbl .notif-switches > span{ flex-direction:row-reverse; justify-content:space-between; width:100%; padding:11px 0; border-top:1px solid var(--color-input) }
+    .notif-tbl td:last-child:not(:empty){ margin-top:12px }
+    .notif-tbl td:last-child:not(:empty)::before{ content:'Parameter'; display:block; font-size:12px; color:#717182; margin-bottom:4px }
+    .notif-tbl td:last-child .input{ text-align:left }
   }
 
   /* ---- main / breadcrumb ---- */
@@ -453,6 +475,7 @@
   .breadcrumb{ display:flex; align-items:center; gap:6px; padding:14px 24px; font-size:13px; color:var(--color-muted-foreground) }
   .breadcrumb a{ text-decoration:underline; text-underline-offset:2px }
   .breadcrumb .cur{ color:#1c1c1c; font-weight:600 }
+  .breadcrumb .bc-back{ display:none; align-items:center; cursor:pointer; color:#1c1c1c; margin-right:2px }
   .app-main{ padding:8px 24px 48px }
 
   /* ---- inputs / form (Zard/shadcn) ---- */
@@ -483,6 +506,8 @@
   .icon-btn{ width:40px;height:40px;border-radius:8px;display:inline-flex;align-items:center;justify-content:center;background:#fff;border:1px solid var(--color-primary);color:var(--color-primary) }
   .kebab{ background:transparent;border:0;color:#444;padding:6px;border-radius:6px } .kebab:hover{ background:var(--color-muted) }
   .flt-btn{ border-radius:8px }   /* padrão do botão de filtro em todo o sistema */
+  .flt-lbl, .dash-flt-lbl{ display:inline-flex; align-items:center; gap:5px; white-space:nowrap }   /* chevron à frente da label, sem quebrar linha */
+  .dash-head .flt-btn{ flex:0 0 auto }
 
   /* ---- badges / tags / status ---- */
   .tag{ display:inline-flex;align-items:center;background:var(--color-tag-bg);color:var(--color-primary);font-size:13px;font-weight:600;padding:5px 12px;border-radius:6px;line-height:1 }
@@ -527,6 +552,10 @@
   .kc-tip{ position:relative;display:inline-flex;cursor:help;color:#717182 }
   .kc-tip::after{ content:attr(data-tip);position:absolute;bottom:calc(100% + 8px);left:50%;transform:translateX(-50%);background:#1c1c1c;color:#fff;font-size:12px;line-height:1.45;padding:8px 12px;border-radius:8px;white-space:normal;width:260px;text-align:left;opacity:0;pointer-events:none;transition:opacity .12s;z-index:60;box-shadow:0 8px 24px rgba(0,0,0,.25) }
   .kc-tip:hover::after{ opacity:1 }
+  /* tooltip de sistema para células/textos (mesmo estilo do .kc-tip, sem depender do title nativo) */
+  .celltip{ position:relative; cursor:help }
+  .celltip::after{ content:attr(data-tip);position:absolute;bottom:calc(100% + 6px);left:8px;background:#1c1c1c;color:#fff;font-size:12px;line-height:1.45;padding:8px 12px;border-radius:8px;white-space:normal;width:max-content;max-width:320px;text-align:left;opacity:0;pointer-events:none;transition:opacity .12s;z-index:70;box-shadow:0 8px 24px rgba(0,0,0,.25) }
+  .celltip:hover::after{ opacity:1 }
   /* chips de categoria do feedback */
   .fb-chip{ background:#e9eaee;color:#555;border:0;border-radius:8px;padding:7px 12px;font-size:13px;font-weight:600;cursor:pointer;transition:background .12s,color .12s }
   .fb-chip:hover{ background:#dddfe6 }
@@ -654,7 +683,12 @@
   .drawer-head{ display:flex;align-items:center;justify-content:space-between;padding:18px 20px;font-size:17px;font-weight:700;border-bottom:1px solid var(--color-input) }
   .drawer-body{ flex:1; overflow-y:auto; padding:20px; display:flex; flex-direction:column; gap:16px }
   .drawer-foot{ flex:0 0 auto; padding:16px 20px; border-top:1px solid var(--color-input); display:flex; justify-content:flex-end; gap:10px }
-  .km-item{ display:flex; align-items:center; gap:8px; width:100%; padding:8px 10px; border-radius:7px; border:0; background:transparent; font-size:14px; color:#1c1c1c; text-align:left } .km-item:hover{ background:var(--color-muted) }
+  .km-item{ display:flex; align-items:center; gap:8px; width:100%; padding:8px 10px; border-radius:7px; border:0; background:transparent; font-size:14px; color:#1c1c1c; text-align:left; cursor:pointer } .km-item:hover{ background:var(--color-muted) }
+  /* notificações (dropdown do sino) */
+  .km-notif{ display:flex; gap:10px; padding:10px 14px; cursor:pointer; align-items:flex-start } .km-notif:hover{ background:var(--color-muted) }
+  .km-notif .kn-dot{ width:8px; height:8px; border-radius:50%; background:transparent; margin-top:5px; flex:0 0 8px }
+  .km-notif.unread .kn-dot{ background:var(--color-primary) }
+  .km-notif.unread{ background:#f7f8ff }
 
   /* popover */
   .popover{ position:fixed; z-index:55; background:#fff; border:1px solid var(--color-input); border-radius:12px; box-shadow:0 10px 30px rgba(0,0,0,.18); display:none }
@@ -749,11 +783,19 @@
     .kc-filt-btn{ display:inline-flex !important }
     .kc-filters-wrap{ display:none !important }
     .kc-filters-wrap.open{ display:flex !important }
-    /* modais: botões de ação sempre fixos no rodapé; corpo preenche e rola */
-    .dialog{ overflow:hidden !important }
-    .dialog.open{ display:flex !important; flex-direction:column !important }
-    .dialog > *:not(.dialog-head):not(:last-child){ flex:1 1 auto; min-height:0; overflow-y:auto; max-height:none !important }
-    .dialog > *:last-child{ flex:0 0 auto; border-top:1px solid var(--color-input); background:#fff }
+    /* modal de confirmação/exclusão: dialog compacto centralizado (único que NÃO é fullscreen no mobile) */
+    .dialog{
+      left:50% !important; top:50% !important; right:auto !important; bottom:auto !important;
+      transform:translate(-50%,-50%) !important;
+      width:calc(100vw - 40px) !important; max-width:360px !important;
+      height:auto !important; max-height:calc(100dvh - 48px) !important;
+      border-radius:12px !important; overflow-y:auto !important;
+    }
+    /* toolbars de admin: botões de ação só ícone (sem label) no mobile */
+    .perm-toolbar{ flex-wrap:nowrap !important; gap:8px !important }
+    .perm-toolbar .search-box{ min-width:0 !important }
+    .perm-toolbar .btn{ width:40px !important; padding:0 !important; flex:0 0 auto !important }
+    .perm-toolbar .btn .t-lbl{ display:none !important }
     /* KC home (hero): KAI só ícone à direita da busca; tags em linha única com rolagem lateral */
     .kc-hero-search{ flex-wrap:nowrap !important }
     .kc-hero-search .search-box{ min-width:0 !important }
@@ -777,6 +819,21 @@
     /* filtro das telas de busca: só ícone no mobile */
     .flt-btn .flt-lbl{ display:none }
     .flt-btn{ width:40px !important; padding:0 !important; justify-content:center; flex:0 0 auto }
+    /* KC article no mobile: sem breadcrumb, sem sidebar/busca, cabeçalho reorganizado */
+    #public-breadcrumb.bc-mobile-hide{ display:none !important }
+    /* breadcrumb mobile: só a página atual + chevron de voltar à esquerda */
+    .breadcrumb .bc-back{ display:inline-flex !important }
+    .breadcrumb > a, .breadcrumb .bc-sep{ display:none !important }
+    .breadcrumb .cur{ font-size:15px }
+    .kc-article-side{ display:none !important }
+    .kc-art-head{ flex-direction:column; gap:12px }
+    .kc-art-meta{ flex-direction:column; align-items:flex-start; gap:8px }
+    .kc-art-aside{ align-items:flex-start !important; width:100% }
+    .kc-art-aside .btn{ width:100% }
+    /* dashboard tables no mobile: nº não quebra e cabeçalhos não sobrepõem */
+    .dash-tbl th{ white-space:nowrap }
+    .dash-tbl th:nth-child(1), .dash-tbl td:nth-child(1){ width:72px !important; white-space:nowrap }
+    .dash-tbl th:nth-child(2), .dash-tbl td:nth-child(2){ width:auto !important }
   }
 </style>
 </head>
@@ -861,15 +918,16 @@
         <input type="text" placeholder="Search">
       </div>
       <div class="topbar-right">
-        <button class="top-loc" title="Location"><svg width="18" height="18" viewBox="0 0 24 24" fill="currentColor"><path d="M12 2a7 7 0 0 0-7 7c0 5.25 7 13 7 13s7-7.75 7-13a7 7 0 0 0-7-7z"></path><circle cx="12" cy="9" r="2.6" fill="#fff"></circle></svg><span>Curitiba</span><svg class="loc-chev" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="m6 9 6 6 6-6"></path></svg></button>
-        <button class="top-icon" title="Notifications"><svg width="21" height="21" viewBox="0 0 24 24" fill="currentColor"><path d="M12 2a6 6 0 0 0-6 6c0 7-3 9-3 9h18s-3-2-3-9a6 6 0 0 0-6-6Z"></path><path d="M10.3 21a2 2 0 0 0 3.4 0Z"></path></svg><span class="top-badge">3</span></button>
+        <button class="top-icon top-search-btn" title="Search" onclick="toggleTopSearch()"><svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="11" cy="11" r="7"></circle><path d="m21 21-4-4"></path></svg></button>
+        <button class="top-loc" title="Location" onclick="openPlantMenu(this)"><svg width="18" height="18" viewBox="0 0 24 24" fill="currentColor"><path d="M12 2a7 7 0 0 0-7 7c0 5.25 7 13 7 13s7-7.75 7-13a7 7 0 0 0-7-7z"></path><circle cx="12" cy="9" r="2.6" fill="#fff"></circle></svg><span id="loc-label">Curitiba</span><svg class="loc-chev" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="m6 9 6 6 6-6"></path></svg></button>
+        <button class="top-icon" title="Notifications" onclick="openNotifMenu(this)"><svg width="21" height="21" viewBox="0 0 24 24" fill="currentColor"><path d="M12 2a6 6 0 0 0-6 6c0 7-3 9-3 9h18s-3-2-3-9a6 6 0 0 0-6-6Z"></path><path d="M10.3 21a2 2 0 0 0 3.4 0Z"></path></svg><span class="top-badge">3</span></button>
         <span class="top-avatar" onclick="openAvatarMenu(this)" style="cursor:pointer" title="Account">NU</span>
-        <button class="top-icon top-kc" onclick="goPublic(&#39;kc-home&#39;)" title="Knowledge Center · Help" style="width:auto;gap:7px;padding:0 12px;border-radius:9999px"><svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M2 3h6a4 4 0 0 1 4 4v14a3 3 0 0 0-3-3H2z"></path><path d="M22 3h-6a4 4 0 0 0-4 4v14a3 3 0 0 1 3-3h7z"></path></svg><span style="font-size:13px;font-weight:600">Help</span></button>
+        <button class="top-icon top-kc" onclick="goPublic(&#39;kc-home&#39;)" title="Knowledge Center · Help" style="width:auto;gap:7px;padding:0 12px;border-radius:9999px"><svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M2 3h6a4 4 0 0 1 4 4v14a3 3 0 0 0-3-3H2z"></path><path d="M22 3h-6a4 4 0 0 0-4 4v14a3 3 0 0 1 3-3h7z"></path></svg><span class="top-kc-lbl" style="font-size:13px;font-weight:600">Help</span></button>
       </div>
     </header>
 
     <div class="scroll-area" data-rv-scroll="" style="position: relative;">
-      <nav class="breadcrumb" id="admin-breadcrumb"><a onclick="goPublic(&#39;kc-home&#39;)">Home</a> &gt; <a onclick="goPublic(&#39;kc-home&#39;)">Knowledge Center</a> &gt; <span class="cur">Dashboard</span></nav>
+      <nav class="breadcrumb" id="admin-breadcrumb"><span class="bc-back" onclick="goPublic(&#39;kc-home&#39;)"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="m15 18-6-6 6-6"/></svg></span><a onclick="goPublic(&#39;kc-home&#39;)">Home</a><span class="bc-sep"> &gt; </span><a onclick="goPublic(&#39;kc-home&#39;)">Knowledge Center</a><span class="bc-sep"> &gt; </span><span class="cur">Dashboard</span></nav>
       <main class="app-main"><div id="admin-view">
    <div style="display:flex;align-items:center;margin-bottom:18px">
      <button class="icon-btn flt-btn" onclick="openFilter(&#39;dashboard&#39;)"><svg width="18" height="18" viewBox="0 0 24 24" fill="currentColor"><path d="M22 3H2l8 9.46V19l4 2v-8.54L22 3z"></path></svg></button>
@@ -1041,7 +1099,7 @@
        </table>
      </div>
      <div class="card card-pad" style="grid-column:1 / -1">
-       <div style="font-weight:700;margin-bottom:14px">Top view articles</div>
+       <div style="font-weight:700;margin-bottom:14px">Top 10 view articles</div>
        <div style="overflow-x:auto"><table class="tbl" style="table-layout:fixed;width:100%"><thead><tr>
          <th style="width:9%"><span class="th-sort">NUMBER <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="m6 9 6 6 6-6"></path></svg></span></th>
          <th style="width:28%"><span class="th-sort">ARTICLE <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="m6 9 6 6 6-6"></path></svg></span></th>
@@ -1153,16 +1211,16 @@
   <!-- Glass bottom dock — Figma node 1177, padrão glass do Obeya (mover + ocultar) — só no shell admin -->
   <div class="glass-dock" id="bottombar">
     <div class="gd-bar">
-      <button class="gd-btn gd-util gd-handle" onpointerdown="dockDragStart(event)" title="Mover barra" aria-label="Mover barra"><svg width="18" height="18" viewBox="0 0 24 24" fill="currentColor"><circle cx="9" cy="5" r="1.7"/><circle cx="15" cy="5" r="1.7"/><circle cx="9" cy="12" r="1.7"/><circle cx="15" cy="12" r="1.7"/><circle cx="9" cy="19" r="1.7"/><circle cx="15" cy="19" r="1.7"/></svg></button>
+      <button class="gd-btn gd-util gd-handle" onpointerdown="dockDragStart(event)" title="Move bar" aria-label="Move bar"><svg width="18" height="18" viewBox="0 0 24 24" fill="currentColor"><circle cx="9" cy="5" r="1.7"/><circle cx="15" cy="5" r="1.7"/><circle cx="9" cy="12" r="1.7"/><circle cx="15" cy="12" r="1.7"/><circle cx="9" cy="19" r="1.7"/><circle cx="15" cy="19" r="1.7"/></svg></button>
       <button class="gd-btn" onclick="openAppDrawer('Tasks')" aria-label="Tasks"><svg width="21" height="21" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"><path d="M16 4h2a2 2 0 0 1 2 2v14a2 2 0 0 1-2 2H6a2 2 0 0 1-2-2V6a2 2 0 0 1 2-2h2"/><rect x="8" y="2" width="8" height="4" rx="1"/><path d="m9 14 2 2 4-4"/></svg><span class="gd-badge">3</span><span class="gd-lbl">Tasks</span></button>
       <div class="gd-circles">
         <button class="gd-circle gd-circle-menu" data-label="Menu" onclick="openMenuModal()" aria-label="Menu"><svg width="36" height="36" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"><rect x="3.5" y="3.5" width="7" height="7" rx="1.3"/><rect x="13.5" y="3.5" width="7" height="7" rx="1.3"/><rect x="3.5" y="13.5" width="7" height="7" rx="1.3"/><rect x="13.5" y="13.5" width="7" height="7" rx="1.3"/></svg></button>
         <button class="gd-circle gd-circle-kai" data-label="KAI" onclick="openKaiPanel()" onmouseenter="kaiHoverAnim()" aria-label="KAI"><span class="gd-kai-ico" id="gd-kai-slot"></span></button>
       </div>
       <button class="gd-btn" onclick="openAppDrawer('Feed')" aria-label="Feed"><svg width="21" height="21" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"><path d="M21 15a2 2 0 0 1-2 2H7l-4 4V5a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2z"/><path d="M8 8h8M8 12h5"/></svg><span class="gd-badge">8</span><span class="gd-lbl">Feed</span></button>
-      <button class="gd-btn gd-util gd-collapse" onclick="toggleDock()" title="Ocultar barra" aria-label="Ocultar barra"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><path d="m6 9 6 6 6-6"/></svg></button>
+      <button class="gd-btn gd-util gd-collapse" onclick="toggleDock()" title="Hide bar" aria-label="Hide bar"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><path d="m6 9 6 6 6-6"/></svg></button>
     </div>
-    <button class="gd-nub" title="Mostrar barra" aria-label="Mostrar barra" onclick="toggleDock()"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round"><path d="m18 15-6-6-6 6"/></svg></button>
+    <button class="gd-nub" title="Show bar" aria-label="Show bar" onclick="toggleDock()"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round"><path d="m18 15-6-6-6 6"/></svg></button>
   </div>
 </div>
 
@@ -1282,6 +1340,7 @@
 
 <!-- Kebab context menu (acima do modal de registro) -->
 <div class="popover" id="kebab-menu" style="width:150px;padding:6px;z-index:85"></div>
+<div class="top-search-m" id="top-search-m"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="11" cy="11" r="7"></circle><path d="m21 21-4-4"></path></svg><input type="text" placeholder="Search" id="top-search-m-input" onkeydown="if(event.key==='Enter'){closeTopSearch();showToast('Searching…')}"><button class="kebab" onclick="closeTopSearch()" title="Close"><svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M18 6 6 18M6 6l12 12"></path></svg></button></div>
 
 <!-- Select dropdown (modal de registro + filtros) -->
 <div class="icon-dd" id="sel-dd" style="z-index:78"><div class="idd-list" id="sel-dd-list"></div></div>
@@ -1344,6 +1403,7 @@
 /* ---------- ÍCONES (Lucide-like) ---------- */
 const I = {
   trendUp:'<svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polyline points="22 7 13.5 15.5 8.5 10.5 2 17"/><polyline points="16 7 22 7 22 13"/></svg>',
+  trendDown:'<svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polyline points="22 17 13.5 8.5 8.5 13.5 2 7"/><polyline points="16 17 22 17 22 11"/></svg>',
   search:'<svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="11" cy="11" r="7"/><path d="m21 21-4-4"/></svg>',
   chevDown:'<svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="m6 9 6 6 6-6"/></svg>',
   chevDownSm:'<svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="m6 9 6 6 6-6"/></svg>',
@@ -1365,7 +1425,7 @@ const I = {
   plus:'<svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><path d="M12 5v14M5 12h14"/></svg>',
   save:'<svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M15.2 3a2 2 0 0 1 1.4.6l3.8 3.8a2 2 0 0 1 .6 1.4V19a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2z"/><path d="M17 21v-7a1 1 0 0 0-1-1H8a1 1 0 0 0-1 1v7"/><path d="M7 3v4a1 1 0 0 0 1 1h7"/></svg>',
   pencil:'<svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M21.174 6.812a1 1 0 0 0-3.986-3.987L3.842 16.174a2 2 0 0 0-.5.83l-1.321 4.352a.5.5 0 0 0 .623.622l4.353-1.32a2 2 0 0 0 .83-.497z"/></svg>',
-  info:'<svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="10"/><path d="M12 16v-4M12 8h.01"/></svg>',
+  info:'<svg width="16" height="16" viewBox="0 0 24 24" fill="currentColor" aria-label="Information"><circle cx="12" cy="12" r="10"/><rect x="11" y="10.5" width="2" height="6" rx="1" fill="#fff"/><circle cx="12" cy="7.4" r="1.3" fill="#fff"/></svg>',
   enter:'<svg width="17" height="17" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M15 3h4a2 2 0 0 1 2 2v14a2 2 0 0 1-2 2h-4"/><polyline points="10 17 15 12 10 7"/><line x1="15" x2="3" y1="12" y2="12"/></svg>',
   eyeOff:'<svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M10.7 5.08A10.4 10.4 0 0 1 12 5c6.5 0 10 7 10 7a17 17 0 0 1-2.3 3.24"/><path d="M6.6 6.6A16.8 16.8 0 0 0 2 12s3.5 7 10 7a10.3 10.3 0 0 0 4.4-1"/><path d="M9.9 9.9a3 3 0 0 0 4.2 4.2"/><path d="m2 2 20 20"/></svg>',
   checkC:'<svg width="17" height="17" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="9"/><path d="m9 12 2 2 4-4"/></svg>',
@@ -1838,11 +1898,12 @@ function closeAllModals(){
 const FILTER_FIELDS = {
   'articles-search':[['Category','multiselect'],['Subcategory','multiselect'],['Tags','multiselect'],['Originator','multiselect'],['Participants','multiselect'],['Version date','date']],
   'feedbacks-search':[['Article','text'],['Client','select'],['Site','select'],['Feedback category','multiselect'],['Date','date']],
-  'dashboard':[['Article','text'],['Client','select']],
+  'dashboard':[['Article','multiselect'],['Client','select'],['Site','select']],
 };
 const FFILTER_FIELDS = [['Client','select'],['Site','select'],['Date','date']];
 /* opções dos droplists de filtro (por coluna) */
 const FILTER_OPTS={
+  'Article':['How to set up the notification system','Customizing dashboards for every team','Getting started with Solvace','Managing user permissions','Troubleshooting common errors',"Release notes: what's new this quarter"],
   'Category':['System Settings','Getting Started','Data Management','Troubleshooting','Updates','Integrations'],
   'Subcategory':['Subcategory 1','Subcategory 2','Subcategory 3'],
   'Originator':['User name','Fernando Alex','Renato Basso','Evandro Silva'],
@@ -2098,17 +2159,52 @@ const ICO_XLS='<svg width="18" height="18" viewBox="0 0 24 24" fill="#4a4a4a"><p
 const ICO_PDF='<svg width="18" height="18" viewBox="0 0 24 24" fill="#4a4a4a"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8l-6-6z"/><path d="M12 10.5 15.2 17H8.8z" fill="#fff"/><circle cx="12" cy="15" r="1.1" fill="#4a4a4a"/></svg>';
 function openAvatarMenu(trg){
   var m=el('kebab-menu'); m.style.width='210px';
-  m.innerHTML = '<button class="km-item"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M12 2a7 7 0 0 0-7 7c0 5.25 7 13 7 13s7-7.75 7-13a7 7 0 0 0-7-7z"/><circle cx="12" cy="9" r="2.6"/></svg> Curitiba</button>';
+  m.innerHTML = '<button class="km-item" onclick="event.stopPropagation();openPlantMenu(this)"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M12 2a7 7 0 0 0-7 7c0 5.25 7 13 7 13s7-7.75 7-13a7 7 0 0 0-7-7z"/><circle cx="12" cy="9" r="2.6"/></svg> '+currentPlant+'</button>';
   var r=trg.getBoundingClientRect(); m.style.left=Math.max(8, r.right-210)+'px'; m.style.top=(r.bottom+6)+'px';
   m.classList.add('open'); setTimeout(function(){document.addEventListener('click',closeKebabOnce);},0);
 }
+function toggleTopSearch(){ var b=el('top-search-m'); if(!b) return; b.classList.add('open'); var i=el('top-search-m-input'); if(i){ i.value=''; setTimeout(function(){ try{i.focus();}catch(e){} },30); } }
+function closeTopSearch(){ var b=el('top-search-m'); if(b) b.classList.remove('open'); }
+var currentPlant='Curitiba';
+var PLANTS=[['Curitiba','Acme Foods'],['São Paulo','Acme Foods'],['Joinville','Nordic Steel'],['Monterrey','Nordic Steel'],['Detroit','Vertex Auto']];
+function openPlantMenu(trg){
+  var m=el('kebab-menu'); var r=trg.getBoundingClientRect(); m.style.width='240px';
+  var pin='<svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M12 2a7 7 0 0 0-7 7c0 5.25 7 13 7 13s7-7.75 7-13a7 7 0 0 0-7-7z"/><circle cx="12" cy="9" r="2.6"/></svg>';
+  m.innerHTML = PLANTS.map(function(p){ var on=currentPlant===p[0];
+    return '<button class="km-item" style="align-items:flex-start;'+(on?'color:var(--color-primary);font-weight:700':'')+'" onclick="setPlant(\''+p[0]+'\')">'+pin+'<span style="display:flex;flex-direction:column;line-height:1.25;text-align:left"><span>'+p[0]+(on?' ✓':'')+'</span><span style="font-size:11px;color:#8a8f9a;font-weight:400">'+p[1]+'</span></span></button>';
+  }).join('');
+  m.style.left=Math.max(8,Math.min(r.left, window.innerWidth-248))+'px'; m.style.top=(r.bottom+6)+'px';
+  m.classList.add('open'); setTimeout(function(){document.addEventListener('click',closeKebabOnce);},0);
+}
+function setPlant(p){ currentPlant=p; var l=el('loc-label'); if(l) l.textContent=p; el('kebab-menu').classList.remove('open'); showToast('Plant changed to '+p); }
+var NOTIFS=[
+  {t:'New article published in Safety & Compliance',s:'2m ago',unread:true},
+  {t:'New feedback received on ART-99',s:'1h ago',unread:true},
+  {t:'Your article is awaiting review',s:'3h ago',unread:true},
+  {t:'“Onboarding guide” reached 1,000 views',s:'Yesterday',unread:false},
+  {t:'Access permissions were updated',s:'2 days ago',unread:false}
+];
+function openNotifMenu(trg){
+  var m=el('kebab-menu'); var r=trg.getBoundingClientRect(); m.style.width='340px';
+  var body=NOTIFS.map(function(n){
+    return '<div class="km-notif'+(n.unread?' unread':'')+'"><span class="kn-dot"></span><div style="flex:1"><div style="font-size:13px;color:#1c1c1c;line-height:1.35">'+n.t+'</div><div style="font-size:11px;color:#8a8f9a;margin-top:2px">'+n.s+'</div></div></div>';
+  }).join('');
+  m.innerHTML = '<div style="margin:-6px;border-radius:10px;overflow:hidden" onclick="event.stopPropagation()">'
+    + '<div style="display:flex;align-items:center;justify-content:space-between;padding:12px 14px;border-bottom:1px solid var(--color-input)"><span style="font-weight:700;font-size:14px;color:#1c1c1c">Notifications</span><span style="font-size:12px;color:var(--color-primary);cursor:pointer" onclick="markAllNotifRead()">Mark all as read</span></div>'
+    + '<div style="max-height:340px;overflow-y:auto">'+body+'</div>'
+    + '<div style="padding:10px 14px;border-top:1px solid var(--color-input);text-align:center"><span style="font-size:13px;color:var(--color-primary);cursor:pointer" onclick="el(\'kebab-menu\').classList.remove(\'open\');showToast(\'Opening all notifications…\')">View all notifications</span></div>'
+    + '</div>';
+  m.style.left=Math.max(8,Math.min(r.right-340, window.innerWidth-348))+'px'; m.style.top=(r.bottom+8)+'px';
+  m.classList.add('open'); setTimeout(function(){document.addEventListener('click',closeKebabOnce);},0);
+}
+function markAllNotifRead(){ NOTIFS.forEach(function(n){ n.unread=false; }); var b=document.querySelector('.top-badge'); if(b) b.style.display='none'; var mm=document.querySelectorAll('#kebab-menu .km-notif.unread'); [].forEach.call(mm,function(e){ e.classList.remove('unread'); }); showToast('All notifications marked as read'); }
 function openExportMenu(trg){
   const m=el('kebab-menu');
   m.style.width='200px';
   m.innerHTML = `
-    <button class="km-item" onclick="el('kebab-menu').classList.remove('open');showToast('Exportando para XLS…')">${ICO_XLS} Export to XLS</button>
+    <button class="km-item" onclick="el('kebab-menu').classList.remove('open');showToast('Exporting to XLS…')">${ICO_XLS} Export to XLS</button>
     <div style="height:1px;background:var(--color-input);margin:4px 2px"></div>
-    <button class="km-item" onclick="el('kebab-menu').classList.remove('open');showToast('Exportando para PDF…')">${ICO_PDF} Export to PDF</button>`;
+    <button class="km-item" onclick="el('kebab-menu').classList.remove('open');showToast('Exporting to PDF…')">${ICO_PDF} Export to PDF</button>`;
   const r=trg.getBoundingClientRect();
   m.style.left=Math.max(8, r.right-200)+'px';
   m.style.top=(r.bottom+6)+'px';
@@ -2122,7 +2218,7 @@ function openChartMenu(trg){
   m.innerHTML = `
     <button class="km-item" onclick="el('kebab-menu').classList.remove('open');showToast('Embed code copied')"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" style="margin-right:6px"><path d="m16 18 6-6-6-6"/><path d="m8 6-6 6 6 6"/></svg> Embed chart</button>
     <div style="height:1px;background:var(--color-input);margin:4px 2px"></div>
-    <button class="km-item" onclick="el('kebab-menu').classList.remove('open');showToast('Exportando imagem…')">${ICO_XLS} Export image</button>`;
+    <button class="km-item" onclick="el('kebab-menu').classList.remove('open');showToast('Exporting image…')">${ICO_XLS} Export image</button>`;
   const r=trg.getBoundingClientRect();
   m.style.left=Math.max(8, r.right-210)+'px';
   m.style.top=(r.bottom+6)+'px';
@@ -2142,7 +2238,7 @@ function openKebabMenu(trg, onDelete){
   setTimeout(()=>document.addEventListener('click',closeKebabOnce),0);
 }
 function closeKebabOnce(e){ if(!e.target.closest('#kebab-menu')){ el('kebab-menu').classList.remove('open'); document.removeEventListener('click',closeKebabOnce);} }
-function articleDelete(){ el('kebab-menu').classList.remove('open'); showDialog({title:'Delete article?',desc:'This action cannot be undone.',actions:[{label:'Cancel'},{label:'Delete',primary:true,destructive:true,onClick:function(){closeArticleModal();showToast('Article deleted','error');}}]}); }
+function articleDelete(){ el('kebab-menu').classList.remove('open'); showDialog({title:'Are you sure you want to delete?',desc:'This action cannot be undone.',actions:[{label:'Cancel'},{label:'Delete',primary:true,destructive:true,onClick:function(){closeArticleModal();showToast('Article deleted','error');}}]}); }
 
 /* ---------- SIDEBAR ---------- */
 function toggleAcc(btn){
@@ -2209,7 +2305,7 @@ function switchView(key){
   currentView = key;
   const cfg = ADMIN_VIEWS[key];
   // breadcrumb
-  el('admin-breadcrumb').innerHTML = `<a onclick="goPublic('kc-home')">Home</a> &gt; <a onclick="goPublic('kc-home')">Knowledge Center</a> &gt; <span class="cur">${cfg.crumb}</span>`;
+  el('admin-breadcrumb').innerHTML = `<span class="bc-back" onclick="goPublic('kc-home')">${I.chevLeft}</span><a onclick="goPublic('kc-home')">Home</a><span class="bc-sep"> &gt; </span><a onclick="goPublic('kc-home')">Knowledge Center</a><span class="bc-sep"> &gt; </span><span class="cur">${cfg.crumb}</span>`;
   // sidebar active + accordion
   document.querySelectorAll('.side-sublink').forEach(a=>a.classList.toggle('active', a.dataset.view===key));
   document.querySelectorAll('#sidebar [data-acc]').forEach((acc,i)=>{
@@ -2228,7 +2324,7 @@ function tableToolbar(withFilter){
   return `<div style="display:flex;align-items:center;gap:10px;margin-bottom:18px">
     <div class="search-box" style="width:340px;max-width:60vw"><input class="input" placeholder="Search"><span class="s-ico">${I.search}</span></div>
     ${withFilter?`<button class="icon-btn flt-btn${fltApplied[currentView]?' flt-on':''}" title="Filter" onclick="openFilter(currentView)">${I.filter}</button>`:''}
-    <button class="kebab" style="margin-left:auto" title="Exportar" onclick="openExportMenu(this)">${I.kebab}</button>
+    <button class="kebab" style="margin-left:auto" title="More options" onclick="openExportMenu(this)">${I.kebab}</button>
   </div>`;
 }
 function pagination(total){
@@ -2263,7 +2359,7 @@ function searchToolbar(left,right){
     ${left||''}
     <div class="search-box" style="flex:1"><input class="input" style="padding-left:40px" placeholder="Search"><span class="s-ico" style="right:auto;left:12px;color:#717182">${I.search}</span></div>
     ${right||''}
-    <button class="btn btn-outline flt-btn${fltApplied[currentView]?' flt-on':''}" style="height:38px" onclick="openFilter(currentView)">${I.filter}<span class="flt-lbl"> Filters ${I.chevDownSm}</span></button>
+    <button class="btn btn-outline flt-btn${fltApplied[currentView]?' flt-on':''}" style="height:38px" onclick="openFilter(currentView)">${I.filter}<span class="flt-lbl">Filters</span></button>
     <button class="kebab" title="More options" onclick="openExportMenu(this)">${I.kebab}</button>
   </div>`;
 }
@@ -2274,7 +2370,7 @@ function renderArticlesSearch(){
     {ic:I.doc, c:'#001391', bg:'#F5F5FF', l:'Total', v:'131', on:"setArtTotFilter(null)", act:false, big:true},
     {ic:I.checkC, c:'#14AE5C', bg:'#DCF5E6', l:'Published', v:'98', on:"setArtTotFilter('published')", act:artTotFilter==='published'},
     {ic:I.pencil, c:'#A07D12', bg:'#FDF3D6', l:'Draft', v:'19', on:"setArtTotFilter('draft')", act:artTotFilter==='draft'},
-    {ic:I_ARCHIVE, c:'#EC221F', bg:'#FDE7E7', l:'Archived', v:'14', on:"setArtTotFilter('archived')", act:artTotFilter==='archived'}
+    {ic:I_ARCHIVE, c:'#6B7280', bg:'#F1F1F4', l:'Archived', v:'14', on:"setArtTotFilter('archived')", act:artTotFilter==='archived'}
   ]);
   const stAll=['published','published','draft','published','archived','published','draft','published','published','archived'];
   const stArr=stAll.filter(function(s){ return !artTotFilter || s===artTotFilter; });
@@ -2364,7 +2460,7 @@ function startRegEdit(view,label){ regEdit[view]={active:true,label:label}; swit
 function clearRegEdit(view){ regEdit[view]={active:false,label:''}; switchView(view); }
 function addReg(view){ regEdit[view]={active:false,label:''}; switchView(view); showToast('Record added successfully'); }
 function saveReg(view){ regEdit[view]={active:false,label:''}; switchView(view); showToast('Record saved successfully'); }
-function removeReg(view){ showDialog({title:'Delete record?',desc:'This action cannot be undone.',actions:[{label:'Cancel'},{label:'Delete',primary:true,destructive:true,onClick:function(){regEdit[view]={active:false,label:''};switchView(view);showToast('Record deleted','error');}}]}); }
+function removeReg(view){ showDialog({title:'Are you sure you want to delete?',desc:'This action cannot be undone.',actions:[{label:'Cancel'},{label:'Delete',primary:true,destructive:true,onClick:function(){regEdit[view]={active:false,label:''};switchView(view);showToast('Record deleted','error');}}]}); }
 
 function checkboxRow(label, checked){
   return `<button type="button" onclick="toggleCbx(this)" aria-checked="${checked?'true':'false'}" style="display:flex;align-items:center;gap:10px;background:transparent;border:0;padding:0;margin:18px 0 0;font-size:14px;color:#1c1c1c">
@@ -2450,7 +2546,7 @@ var REG_CFG = {
 function regToolbar(v){
   const cfg=REG_CFG[v];
   return `<div class="perm-toolbar">
-    <button class="btn btn-outline" onclick="openRegModal('${v}')">${I.plus} ${cfg.newLabel}</button>
+    <button class="btn btn-outline" onclick="openRegModal('${v}')">${I.plus}<span class="t-lbl">${cfg.newLabel}</span></button>
     <div class="search-box" style="flex:1"><input class="input" style="padding-left:40px" placeholder="Search" value="${regQuery[v]||''}" oninput="regSearch('${v}',this.value)"><span class="s-ico" style="right:auto;left:12px;color:#717182">${I.search}</span></div>
     <button class="kebab" title="More options" onclick="openExportMenu(this)">${I.kebab}</button>
   </div>`;
@@ -2556,7 +2652,7 @@ function regDelete(v,id){
 }
 function confirmDeleteReg(v,id){
   const cfg=REG_CFG[v];
-  showDialog({title:'Delete record?', desc:'This action cannot be undone.', actions:[
+  showDialog({title:'Are you sure you want to delete?', desc:'This action cannot be undone.', actions:[
     {label:'Cancel'},
     {label:'Delete', primary:true, destructive:true, onClick:function(){ regDelete(v,id); REG_RENDER[v](); showToast('Record deleted','error'); }}
   ]});
@@ -2665,9 +2761,9 @@ var permUsers = [
 var permQuery = '';
 function renderAccessPermissions(){
   const toolbar = `<div class="perm-toolbar">
-    <button class="btn btn-outline" onclick="openAddUser()">${I.plus} Add user</button>
+    <button class="btn btn-outline" onclick="openAddUser()">${I.plus}<span class="t-lbl">Add user</span></button>
     <div class="search-box" style="flex:1"><input class="input" style="padding-left:40px" placeholder="Search" value="${permQuery}" oninput="permSearch(this.value)"><span class="s-ico" style="right:auto;left:12px;color:#717182">${I.search}</span></div>
-    <button class="btn btn-primary" onclick="savePermissions()">${I.save} Save</button>
+    <button class="btn btn-primary" onclick="savePermissions()">${I.save}<span class="t-lbl">Save</span></button>
     <button class="kebab" title="More options" onclick="openExportMenu(this)">${I.kebab}</button>
   </div>`;
   const list = permUsers.filter(p=>!permQuery || (p.n+' '+p.e+' '+p.u).toLowerCase().includes(permQuery.toLowerCase()));
@@ -2706,7 +2802,7 @@ function togglePerm(id, key, btn){
 function savePermissions(){ showToast('Changes saved successfully'); }
 function confirmDeletePerm(id){
   const p = permUsers.find(x=>x.id===id); if(!p) return;
-  showDialog({title:'Delete user?', desc:`${p.n} will lose access to the Knowledge Center. This action cannot be undone.`, actions:[
+  showDialog({title:'Are you sure you want to delete?', desc:'This action cannot be undone.', actions:[
     {label:'Cancel'},
     {label:'Delete', primary:true, destructive:true, onClick:function(){
       permUsers = permUsers.filter(x=>x.id!==id);
@@ -2812,7 +2908,7 @@ function notifSwitch(id,key,label){
 function renderNotificationMgmt(){
   const toolbar = `<div class="perm-toolbar">
     <div class="search-box" style="flex:1"><input class="input" style="padding-left:40px" placeholder="Search" value="${notifQuery}" oninput="notifSearch(this.value)"><span class="s-ico" style="right:auto;left:12px;color:#717182">${I.search}</span></div>
-    <button class="btn btn-primary" onclick="saveNotifications()">${I.save} Save</button>
+    <button class="btn btn-primary" onclick="saveNotifications()">${I.save}<span class="t-lbl">Save</span></button>
     <button class="kebab" title="More options" onclick="openExportMenu(this)">${I.kebab}</button>
   </div>`;
   const list = notifRules.filter(function(r){ return !notifQuery || r.rule.toLowerCase().includes(notifQuery.toLowerCase()); });
@@ -2822,7 +2918,7 @@ function renderNotificationMgmt(){
       <td><div class="notif-switches" style="display:flex;align-items:center">${notifSwitch(r.id,'web','Web')}${notifSwitch(r.id,'mobile','Mobile')}${notifSwitch(r.id,'mail','Mail')}</div></td>
       <td style="text-align:center">${r.param===null?'':`<input class="input" style="width:75px;height:36px;padding:0 10px;text-align:left" value="${r.param}" oninput="setNotifParam(${r.id},this.value)">`}</td>
     </tr>`; }).join('');
-  const tbl = (pageState==='empty' || !notifRules.length) ? tableEmptyState('notification-mgmt') : `<div class="tbl-bleed" style="overflow-x:auto"><table class="tbl perm-tbl"><thead><tr>
+  const tbl = (pageState==='empty' || !notifRules.length) ? tableEmptyState('notification-mgmt') : `<div class="tbl-bleed notif-wrap" style="overflow-x:auto"><table class="tbl perm-tbl notif-tbl"><thead><tr>
       <th>RULE</th>
       <th style="width:355px">NOTIFICATION</th>
       <th style="width:134px;text-align:center">PARAMETER</th>
@@ -2869,7 +2965,7 @@ function barChart(data, alt, labels){
   const cols = vData.map((v,i)=>`
     <div class="vcol" onclick="openDrill('${alt?'feedbacks':'views'}','${vLabels[i]}')" title="${vLabels[i]}: ${v}">
       <span class="vval">${v}</span>
-      <div class="vbar" style="height:${Math.max(3, Math.round(v/max*100))}%"></div>
+      <div class="vbar${alt?' vbar-fb':''}" style="height:${Math.max(3, Math.round(v/max*100))}%"></div>
     </div>`).join('');
   return `<div class="vchart">
     <div class="vy">${ticks.map(t=>'<span>'+t+'</span>').join('')}</div>
@@ -2906,18 +3002,40 @@ function applyDualRange(key){
 function periodTab(p){ const on=dashPeriod===p; return `<span onclick="setDashPeriod('${p}')" style="cursor:pointer;color:${on?'var(--color-primary)':'#9aa0ac'};font-weight:${on?'600':'400'};border-bottom:${on?'2px solid var(--color-primary)':'2px solid transparent'};padding-bottom:8px">${p}</span>`; }
 function viewsTab(t){ const on=dashViewsTab===t; return `<span onclick="setDashViewsTab('${t}')" style="cursor:pointer;color:${on?'var(--color-primary)':'#9aa0ac'};font-weight:${on?'600':'400'};border-bottom:${on?'2px solid var(--color-primary)':'2px solid transparent'};padding-bottom:8px">${t}</span>`; }
 /* ---------- Dashboard (redesign visual) ---------- */
-const DASH_PERIOD_LBL = { Day:'On the last 14 days', Month:'On the last 12 months', Year:'On the last 5 years' };
+const DASH_PERIOD_LBL = { Day:'Last 14 days', Month:'Last 12 months', Year:'Last 5 years' };
 function openDashPeriodMenu(trg){
   const m=el('kebab-menu');
   m.style.width='210px';
   m.innerHTML = ['Day','Month','Year'].map(function(p){
     var on = dashPeriod===p;
     return '<button class="km-item" style="'+(on?'color:var(--color-primary);font-weight:700':'')+'" onclick="el(\'kebab-menu\').classList.remove(\'open\');setDashPeriod(\''+p+'\')">'+DASH_PERIOD_LBL[p]+(on?' ✓':'')+'</button>';
-  }).join('');
+  }).join('')
+  + '<div style="height:1px;background:var(--color-input);margin:6px 6px"></div>'
+  + '<button class="km-item" style="'+(dashPeriod==='custom'?'color:var(--color-primary);font-weight:700':'')+'" onclick="event.stopPropagation();openDashCustom()"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="3" y="4" width="18" height="18" rx="2"/><path d="M16 2v4M8 2v4M3 10h18"/></svg> Customize…'+(dashPeriod==='custom'?' ✓':'')+'</button>';
   const r=trg.getBoundingClientRect();
   m.style.left=r.left+'px'; m.style.top=(r.bottom+6)+'px';
   m.classList.add('open');
   setTimeout(()=>document.addEventListener('click',closeKebabOnce),0);
+}
+function openDashCustom(){
+  var m=el('kebab-menu'); m.style.width='260px';
+  m.innerHTML = '<div style="display:flex;flex-direction:column;gap:10px;padding:4px" onclick="event.stopPropagation()">'
+    + '<div style="font-weight:700;font-size:13px;color:#1c1c1c;padding:2px 2px 0">Custom period</div>'
+    + '<label style="font-size:12px;color:#555;display:flex;flex-direction:column;gap:4px">From<input type="date" id="dash-from" class="input" style="height:36px"></label>'
+    + '<label style="font-size:12px;color:#555;display:flex;flex-direction:column;gap:4px">To<input type="date" id="dash-to" class="input" style="height:36px"></label>'
+    + '<div style="display:flex;justify-content:flex-end;gap:8px;padding-top:2px"><button class="btn btn-outline btn-sm" onclick="el(\'kebab-menu\').classList.remove(\'open\')">Cancel</button><button class="btn btn-primary btn-sm" onclick="applyDashCustom()">Apply</button></div>'
+    + '</div>';
+  m.classList.add('open');
+}
+function applyDashCustom(){
+  var f=el('dash-from').value, t=el('dash-to').value;
+  if(!f||!t){ showToast('Select both dates','error'); return; }
+  function fmt(x){ var p=x.split('-'); return p[2]+'/'+p[1]+'/'+p[0]; }
+  DASH_PERIOD_LBL.custom = fmt(f)+' – '+fmt(t);
+  dashPeriod='custom'; dashWindow={};
+  el('kebab-menu').classList.remove('open');
+  renderDashboard();
+  showToast('Custom period applied');
 }
 let dashTopSearch='';
 function dashTopFilter(v){ dashTopSearch=(v||'').toLowerCase(); document.querySelectorAll('#dash-top-body tr').forEach(function(tr){ tr.style.display = tr.textContent.toLowerCase().indexOf(dashTopSearch)>=0 ? '' : 'none'; }); }
@@ -2939,7 +3057,7 @@ function kpiDonut(){
 }
 function kpiNegative(){
   return `<div class="kpi-card">
-    <div class="kpi-tile"><svg width="30" height="30" viewBox="0 0 24 24" fill="none" stroke="#fff" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="m21.73 18-8-14a2 2 0 0 0-3.48 0l-8 14A2 2 0 0 0 4 21h16a2 2 0 0 0 1.73-3Z"/><path d="M12 9v4"/><path d="M12 17h.01"/></svg></div>
+    <div class="kpi-tile"><svg width="30" height="30" viewBox="0 0 24 24" fill="none" stroke="#fff" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" style="transform:rotate(180deg)"><path d="M7 10v12M15 5.88 14 10h5.83a2 2 0 0 1 1.92 2.56l-2.33 8A2 2 0 0 1 17.5 22H4a2 2 0 0 1-2-2v-8a2 2 0 0 1 2-2h2.76a2 2 0 0 0 1.79-1.11L12 2a3.13 3.13 0 0 1 3 3.88Z"/></svg></div>
     <div style="display:flex;flex-direction:column;gap:4px">
       <span class="kpi-lbl" style="color:#B71C1C;display:inline-flex;align-items:center;gap:6px">Negative feedbacks <span class="kc-tip" data-tip="Number of negative feedbacks received in the selected period.">${I.info}</span></span>
       <span class="kpi-big" style="color:#B71C1C">14</span>
@@ -2948,12 +3066,18 @@ function kpiNegative(){
   </div>`;
 }
 /* indicador numérico (fundo azul, estilo dos totalizadores das telas de busca) */
-function kpiStat(iconSvg, tileBg, label, value, tooltip){
+function kpiStat(iconSvg, tileBg, label, value, tooltip, trend){
+  var trendHtml='';
+  if(typeof trend==='number'){
+    var up=trend>=0, col=up?'#14AE5C':'#EC221F', arrow=up?I.trendUp:I.trendDown, sign=up?'+':'';
+    trendHtml='<span class="kpi-trend" style="color:'+col+'">'+arrow+' '+sign+trend.toFixed(1)+'%</span>';
+  }
   return `<div class="kpi-card">
     <div class="kpi-tile" style="background:${tileBg}">${iconSvg}</div>
     <div style="display:flex;flex-direction:column;gap:4px">
       <span class="kpi-lbl" style="display:inline-flex;align-items:center;gap:6px">${label} <span class="kc-tip" data-tip="${tooltip}">${I.info}</span></span>
       <span class="kpi-big">${value}</span>
+      ${trendHtml}
       <span class="kpi-sub">vs previous period</span>
     </div>
   </div>`;
@@ -3011,35 +3135,33 @@ function renderDashboard(){
       <td style="overflow:hidden;text-overflow:ellipsis;white-space:nowrap">Lorem Ipsum is simply dummy text of the printing and typesetting industry…</td>
       <td class="cols-mobile-hidden">Category</td>
       <td class="cols-mobile-hidden">Subcategory</td>
-      <td><span style="display:inline-flex;gap:5px;align-items:center">${I.eye}000</span></td></tr>`).join('');
-  const fbRows=Array.from({length:10}).map(()=>`
-    <tr><td style="overflow:hidden;text-overflow:ellipsis;white-space:nowrap">Lorem Ipsum is simply dummy text of the printing and typesetting industry…</td><td><span class="row-link" style="cursor:pointer" onclick="openArticleModal('view','feedbacks')">ART-99</span></td><td style="text-align:left">00/00/0000</td></tr>`).join('');
+      <td class="cols-mobile-hidden"><span style="display:inline-flex;gap:5px;align-items:center">${I.eye}000</span></td></tr>`).join('');
+  const fbSamples=['Clear and concise — solved my problem in a couple of minutes.','This article is missing the part about configuring SSO for external users, which is exactly what I needed today.','The step-by-step screenshots made it really easy to follow. Thank you!','Some screenshots are outdated and no longer match the interface after the last platform update, so I got confused midway.','Great overview, though a short video walkthrough would help a lot for new users.','I followed every step and it still did not work — the export button described in section 3 does not exist anymore.','Exactly what I was looking for.','The sample data does not reflect a real production scenario; more realistic examples would make this much more useful.','Very helpful, well structured and easy to search.','Please add a troubleshooting section covering the most common permission errors when connecting the integration.'];
+  const fbRows=fbSamples.map(function(t){ return `
+    <tr><td><span class="row-link" style="cursor:pointer" onclick="openArticleModal('view','feedbacks')">ART-99</span></td><td class="celltip" data-tip="${t}"><span style="display:block;overflow:hidden;text-overflow:ellipsis;white-space:nowrap">${t}</span></td></tr>`; }).join('');
   el('admin-view').innerHTML = `
    <div class="dash-head">
      <button class="dash-sel" onclick="openDashPeriodMenu(this)">${DASH_PERIOD_LBL[dashPeriod]} ${I.chevDownSm}</button>
      <span style="margin-left:auto"></span>
      <button class="btn btn-primary" onclick="switchView('articles-search')">Show Articles</button>
-     <button class="btn btn-outline flt-btn${fltApplied['dashboard']?' flt-on':''}" style="height:38px" onclick="openFilter('dashboard')">${I.filter}<span class="dash-flt-lbl"> Filters ${I.chevDownSm}</span></button>
-     <button class="kebab" title="More options" onclick="openExportMenu(this)">${I.kebab}</button>
+     <button class="btn btn-outline flt-btn${fltApplied['dashboard']?' flt-on':''}" style="height:38px" onclick="openFilter('dashboard')">${I.filter}<span class="dash-flt-lbl">Filters</span></button>
    </div>
 
    <div class="kpi-grid">
      ${kpiDonut()}
-     ${kpiStat('<svg width="30" height="30" viewBox="0 0 24 24" fill="none" stroke="#fff" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M2 12s3.5-7 10-7 10 7 10 7-3.5 7-10 7-10-7-10-7Z"/><circle cx="12" cy="12" r="3"/></svg>', '#001391', 'Total views', P.views.reduce((a,b)=>a+b,0).toLocaleString('en-US'), 'Total article views in the selected period.')}
-     ${kpiStat('<svg width="30" height="30" viewBox="0 0 24 24" fill="none" stroke="#fff" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M21 15a2 2 0 0 1-2 2H7l-4 4V5a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2z"/></svg>', '#5A63C9', 'Total feedbacks', P.fb.reduce((a,b)=>a+b,0).toLocaleString('en-US'), 'Total feedbacks received in the selected period.')}
+     ${kpiStat('<svg width="30" height="30" viewBox="0 0 24 24" fill="none" stroke="#fff" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M2 12s3.5-7 10-7 10 7 10 7-3.5 7-10 7-10-7-10-7Z"/><circle cx="12" cy="12" r="3"/></svg>', '#001391', 'Total views', P.views.reduce((a,b)=>a+b,0).toLocaleString('pt-BR'), 'Total article views in the selected period.', 8.6)}
+     ${kpiStat('<svg width="30" height="30" viewBox="0 0 24 24" fill="none" stroke="#fff" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M21 15a2 2 0 0 1-2 2H7l-4 4V5a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2z"/></svg>', '#5A63C9', 'Total feedbacks', P.fb.reduce((a,b)=>a+b,0).toLocaleString('pt-BR'), 'Total feedbacks received in the selected period.', -2.3)}
      ${kpiNegative()}
    </div>
 
    <div class="chart2 dash-grid">
      <div class="card card-pad">
        <div class="card-head"><span class="ttl">Views</span>
-         <span class="sb-leg" style="margin-left:auto"><span><span class="dot" style="background:var(--color-primary)"></span>Views</span></span>
-         <button class="kebab" title="Chart options" style="margin-left:8px" onclick="openChartMenu(this)">${I.kebab}</button>
+         <button class="kebab" title="Chart options" style="margin-left:auto" onclick="openChartMenu(this)">${I.kebab}</button>
        </div>
        ${barChart(P.views,false,P.labels,P.range)}
        <div class="card-head" style="margin-top:26px"><span class="ttl">Feedbacks</span>
-         <span class="sb-leg" style="margin-left:auto"><span><span class="dot" style="background:var(--color-primary)"></span>Feedbacks</span></span>
-         <button class="kebab" title="Chart options" style="margin-left:8px" onclick="openChartMenu(this)">${I.kebab}</button>
+         <button class="kebab" title="Chart options" style="margin-left:auto" onclick="openChartMenu(this)">${I.kebab}</button>
        </div>
        ${barChart(P.fb,true,P.labels,P.range)}
      </div>
@@ -3062,19 +3184,19 @@ function renderDashboard(){
    <div class="dash-grid" style="display:grid;grid-template-columns:1fr;gap:16px">
      <div class="card card-pad">
        <div class="card-head">
-         <span class="ttl">Top view articles</span>
+         <span class="ttl">Top 10 view articles</span>
        </div>
-       <div style="overflow-x:auto"><table class="tbl" style="table-layout:fixed;width:100%"><thead><tr>
+       <div style="overflow-x:auto"><table class="tbl dash-tbl" style="table-layout:fixed;width:100%"><thead><tr>
          <th style="width:9%"><span class="th-sort">NUMBER ${I.chevDownSm}</span></th>
          <th style="width:55%"><span class="th-sort">ARTICLE ${I.chevDownSm}</span></th>
          <th class="cols-mobile-hidden" style="width:15%">CATEGORY</th>
          <th class="cols-mobile-hidden" style="width:15%">SUBCATEGORY</th>
-         <th style="width:6%">VIEWS</th>
+         <th class="cols-mobile-hidden" style="width:6%">VIEWS</th>
        </tr></thead><tbody id="dash-top-body">${topRows}</tbody></table></div>
      </div>
      <div class="card card-pad">
        <div class="card-head"><span class="ttl">Last 30 days feedbacks</span></div>
-       <table class="tbl" style="table-layout:fixed;width:100%"><thead><tr><th style="width:64%"><span class="th-sort">FEEDBACK ${I.chevDownSm}</span></th><th style="width:18%"><span class="th-sort">SOURCE ${I.chevDownSm}</span></th><th style="width:18%;text-align:left">DATE</th></tr></thead>
+       <table class="tbl dash-tbl" style="table-layout:fixed;width:100%"><thead><tr><th style="width:132px"><span class="th-sort">ARTICLE ${I.chevDownSm}</span></th><th style="width:auto"><span class="th-sort">FEEDBACK ${I.chevDownSm}</span></th></tr></thead>
          <tbody>${fbRows}</tbody></table>
        ${pagination(131)}
      </div>
@@ -3087,10 +3209,10 @@ function openDrill(kind, label){
   let head, rows;
   if(isViews){
     head = `<tr><th><span class="th-sort">NUMBER ${I.chevDownSm}</span></th><th><span class="th-sort">ARTICLE ${I.chevDownSm}</span></th><th style="text-align:right">VIEWS</th></tr>`;
-    rows = Array.from({length:16}).map(()=>`<tr><td><span class="row-link" style="cursor:pointer" onclick="openArticleModal('view')">ART-99</span></td><td>Lorem Ipsum is simp.</td><td><span style="display:inline-flex;gap:5px;align-items:center">${I.eye}000</span></td></tr>`).join('');
+    rows = Array.from({length:16}).map(()=>`<tr><td><span class="row-link" style="cursor:pointer" onclick="openArticleModal('view')">ART-99</span></td><td class="celltip" data-tip="Lorem Ipsum is simply dummy text of the printing and typesetting industry."><span style="display:block;max-width:320px;overflow:hidden;text-overflow:ellipsis;white-space:nowrap">Lorem Ipsum is simply dummy text of the printing and typesetting industry.</span></td><td><span style="display:inline-flex;gap:5px;align-items:center">${I.eye}000</span></td></tr>`).join('');
   } else {
     head = `<tr><th><span class="th-sort">FEEDBACK ${I.chevDownSm}</span></th><th><span class="th-sort">SOURCE ${I.chevDownSm}</span></th><th>DATE</th></tr>`;
-    rows = Array.from({length:16}).map(()=>`<tr><td>Lorem Ipsum is si…</td><td><span class="row-link" style="cursor:pointer" onclick="openArticleModal('view','feedbacks')">ART-99</span></td><td>00/00/0000</td></tr>`).join('');
+    rows = Array.from({length:16}).map(()=>`<tr><td>Lorem Ipsum is si…</td><td class="celltip" data-tip="Lorem Ipsum is simply dummy text of the printing and typesetting industry."><span class="row-link" style="cursor:pointer" onclick="openArticleModal('view','feedbacks')">ART-99</span></td><td>00/00/0000</td></tr>`).join('');
   }
   el('drill-body').innerHTML = `<table class="tbl" style="width:100%"><thead style="position:sticky;top:0;z-index:1">${head}</thead><tbody>${rows}</tbody></table>`;
   el('overlay').classList.add('open'); el('drill-drawer').classList.add('open');
@@ -3106,9 +3228,9 @@ function switchPublic(view){
   el('public-shell').classList.remove('hidden-shell'); el('shell').classList.add('hidden-shell'); el('fab').style.display='none';
   const crumbs={'kc-home':'Knowledge Center','kc-results':'Knowledge Center','kc-article':'How to set up the notification system'};
   var bc=el('public-breadcrumb');
-  if(view==='kc-home'){ bc.style.display='none'; bc.innerHTML=''; }
-  else if(view==='kc-article'){ bc.style.display=''; bc.innerHTML=`<a onclick="switchPublic('kc-home')">Knowledge Center</a> &gt; <a onclick="switchPublic('kc-results')">Articles</a> &gt; <span class="cur">${kcArticleTitle}</span>`; }
-  else { bc.style.display=''; bc.innerHTML=`<a onclick="switchPublic('kc-home')">Knowledge Center</a> &gt; <span class="cur">Articles</span>`; }
+  if(view==='kc-home'){ bc.style.display='none'; bc.innerHTML=''; bc.classList.remove('bc-mobile-hide'); }
+  else if(view==='kc-article'){ bc.style.display=''; bc.classList.add('bc-mobile-hide'); bc.innerHTML=`<span class="bc-back" onclick="switchPublic('kc-results')">${I.chevLeft}</span><a onclick="switchPublic('kc-home')">Knowledge Center</a><span class="bc-sep"> &gt; </span><a onclick="switchPublic('kc-results')">Articles</a><span class="bc-sep"> &gt; </span><span class="cur">${kcArticleTitle}</span>`; }
+  else { bc.style.display=''; bc.classList.remove('bc-mobile-hide'); bc.innerHTML=`<span class="bc-back" onclick="switchPublic('kc-home')">${I.chevLeft}</span><a onclick="switchPublic('kc-home')">Knowledge Center</a><span class="bc-sep"> &gt; </span><span class="cur">Articles</span>`; }
   beginLoad();
   el('public-view').parentElement.scrollTop=0;
   rvSyncContext();
@@ -3367,18 +3489,18 @@ function renderKcArticle(){
    <div style="max-width:1240px;margin:0 auto">
    <a onclick="switchPublic('kc-results')" class="kc-back">${I.back} Back</a>
    <div style="display:grid;grid-template-columns:300px 1fr;gap:28px" class="grid-resp-2">
-     ${kcSidePanels(false)}
+     <div class="kc-article-side">${kcSidePanels(false)}</div>
      <div class="card" style="padding:26px">
-       <div style="display:flex;align-items:flex-start;justify-content:space-between;gap:16px;flex-wrap:wrap">
-         <div>
+       <div class="kc-art-head" style="display:flex;align-items:flex-start;justify-content:space-between;gap:16px;flex-wrap:wrap">
+         <div style="min-width:0">
            <h1 style="color:var(--color-primary);font-size:22px;font-weight:700;margin:0 0 10px">${kcArticleTitle}</h1>
-           <div style="display:flex;align-items:center;gap:10px;flex-wrap:wrap;font-size:13px;color:#666">
+           <div class="kc-art-meta" style="display:flex;align-items:center;gap:10px;flex-wrap:wrap;font-size:13px;color:#666">
              <span style="display:inline-flex;align-items:center;gap:6px;line-height:1">${I.cal}<span>12/03/2024</span></span>
-             ${tagList(['Configuration','Notifications','System'],3)}
+             <span class="kc-art-tags" style="display:inline-flex;align-items:center;gap:6px;flex-wrap:wrap">${tagList(['Configuration','Notifications','System'],3)}</span>
            </div>
            <div style="display:flex;gap:14px;color:#777;font-size:13px;margin-top:10px"><span style="display:inline-flex;gap:4px;align-items:center">${I.like}12</span><span style="display:inline-flex;gap:4px;align-items:center">${I.eye}56</span></div>
          </div>
-         <div style="display:flex;flex-direction:column;align-items:flex-end;gap:10px">
+         <div class="kc-art-aside" style="display:flex;flex-direction:column;align-items:flex-end;gap:10px">
            <span style="display:inline-flex;align-items:center;gap:4px;color:#666;font-size:13px">${I.clock}Read time: 20 minutes</span>
            <button class="btn btn-outline btn-sm" onclick="summarizeArticle()">${I.kai} Summarize for me</button>
          </div>
@@ -3744,7 +3866,7 @@ function closeArticleModal(){ el('article-modal').classList.remove('open'); mayb
 
 /* ----- status do registro: draft (Draft) | published | archived ----- */
 function artStatusLabel(s){ return {draft:'Draft', published:'Published', archived:'Archived'}[s] || s; }
-function artStatusBadge(s){ var c={draft:{b:'#FDF3D6',f:'#A07D12'},published:{b:'#DCF5E6',f:'#14AE5C'},archived:{b:'#FDE7E7',f:'#EC221F'}}[s] || {b:'#FDF3D6',f:'#A07D12'}; return '<span class="art-status" style="display:inline-flex;align-items:center;background:'+c.b+';color:'+c.f+';border:1px solid '+c.f+';border-radius:9999px;padding:1px 9px;font-size:12px;font-weight:600;white-space:nowrap">'+artStatusLabel(s)+'</span>'; }
+function artStatusBadge(s){ var c={draft:{b:'#FDF3D6',f:'#A07D12'},published:{b:'#DCF5E6',f:'#14AE5C'},archived:{b:'#F1F1F4',f:'#6B7280'}}[s] || {b:'#FDF3D6',f:'#A07D12'}; return '<span class="art-status" style="display:inline-flex;align-items:center;background:'+c.b+';color:'+c.f+';border:1px solid '+c.f+';border-radius:9999px;padding:1px 9px;font-size:12px;font-weight:600;white-space:nowrap">'+artStatusLabel(s)+'</span>'; }
 var I_ARCHIVE='<svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="3" y="4" width="18" height="4" rx="1"/><path d="M5 8v11a1 1 0 0 0 1 1h12a1 1 0 0 0 1-1V8"/><path d="M10 12h4"/></svg>';
 function openArtKebab(trg){
   var m=el('kebab-menu'); m.style.width='180px'; var items=[];
