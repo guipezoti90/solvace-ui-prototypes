@@ -326,7 +326,7 @@
   .sb-leg b{ color:#0D122F }
   .dot{ display:inline-block;width:8px;height:8px;border-radius:2px;margin-right:5px;vertical-align:1px }
   .chart2{ display:grid;grid-template-columns:1fr 1fr;gap:16px;margin-bottom:16px }
-  .hchart{ position:relative;display:flex;flex-direction:column;gap:12px;padding-top:4px;max-height:360px;overflow-y:auto;overflow-x:hidden }
+  .hchart{ position:relative;display:flex;flex-direction:column;gap:12px;padding-top:4px;flex:1 1 auto;min-height:260px;overflow-y:auto;overflow-x:hidden }
   .hrow{ display:flex;align-items:center;gap:10px;cursor:pointer }
   .hrow .hl{ width:110px;flex:0 0 110px;font-size:12px;color:#4D5166;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;text-align:right }
   .hbars{ flex:1;display:flex;flex-direction:column;gap:3px }
@@ -461,7 +461,8 @@
     .notif-tbl tr{ background:#fff; border:1px solid var(--color-input); border-radius:12px; padding:14px; margin:0 0 12px }
     .notif-tbl td{ padding:0 !important; border:0 !important }
     .notif-tbl td:first-child{ font-weight:600; color:#1c1c1c; line-height:1.4; margin-bottom:6px }
-    .notif-tbl .notif-switches > span{ flex-direction:row-reverse; justify-content:space-between; width:100%; padding:11px 0; border-top:1px solid var(--color-input) }
+    .notif-tbl .notif-switches{ flex-direction:row !important; flex-wrap:wrap; gap:12px 18px }
+    .notif-tbl .notif-switches > span{ width:auto; padding:0; border-top:0; margin-right:0 !important }
     .notif-tbl td:last-child:not(:empty){ margin-top:12px }
     .notif-tbl td:last-child:not(:empty)::before{ content:'Parameter'; display:block; font-size:12px; color:#717182; margin-bottom:4px }
     .notif-tbl td:last-child .input{ text-align:left }
@@ -657,7 +658,7 @@
   /* standardized settings field width */
   .field-std{ width:100%; max-width:420px }
   /* date range picker */
-  .cal-pop{ position:fixed; z-index:80; width:290px; background:#fff; border:1px solid var(--color-input); border-radius:12px; box-shadow:0 12px 30px rgba(0,0,0,.18); display:none; padding:14px }
+  .cal-pop{ position:fixed; z-index:80; width:max-content; max-width:94vw; background:#fff; border:1px solid var(--color-input); border-radius:12px; box-shadow:0 12px 30px rgba(0,0,0,.18); display:none; padding:16px }
   .cal-pop.open{ display:block; animation:slideUp .12s }
   .cal-head{ display:flex; align-items:center; justify-content:space-between; margin-bottom:10px; font-weight:700; font-size:14px }
   .cal-nav{ width:28px;height:28px;border-radius:7px;border:0;background:transparent;color:var(--color-primary);display:inline-flex;align-items:center;justify-content:center;cursor:pointer }
@@ -670,6 +671,14 @@
   .cal-day.in{ background:rgba(0,19,145,.12); border-radius:0 }
   .cal-day.empty{ cursor:default; background:transparent }
   .cal-hint{ font-size:11px; color:#9aa0ac; margin-top:8px; text-align:center }
+  /* date range picker de 2 meses */
+  .cal-2{ position:relative; display:flex; gap:20px }
+  .cal-month{ width:238px }
+  .cal-mhead{ text-align:center; font-weight:700; font-size:14px; margin-bottom:10px; color:#0D122F }
+  .cal-nav-abs{ position:absolute; top:-2px } .cal-nav-l{ left:0 } .cal-nav-r{ right:0 }
+  .cal-day.in{ background:rgba(0,19,145,.10) }
+  .cal-foot{ display:flex; justify-content:flex-end; gap:8px; margin-top:14px; padding-top:12px; border-top:1px solid var(--color-input) }
+  @media (max-width:640px){ .cal-2{ flex-direction:column; gap:14px } .cal-month{ width:100% } .cal-nav-r{ display:none } .hchart{ flex:none; max-height:60vh } }
 
   /* centered dialog */
   .dialog{ position:fixed; z-index:60; background:#fff; border-radius:12px; box-shadow:0 12px 40px rgba(0,0,0,.25); display:none; flex-direction:column }
@@ -684,6 +693,11 @@
   .drawer-head{ display:flex;align-items:center;justify-content:space-between;padding:18px 20px;font-size:17px;font-weight:700;border-bottom:1px solid var(--color-input) }
   .drawer-body{ flex:1; overflow-y:auto; padding:20px; display:flex; flex-direction:column; gap:16px }
   .drawer-foot{ flex:0 0 auto; padding:16px 20px; border-top:1px solid var(--color-input); display:flex; justify-content:flex-end; gap:10px }
+  /* filtro seccionado: drawer cinza claro + blocos brancos por seção */
+  #filter-drawer-body{ background:#F4F5F7; gap:12px }
+  .flt-sec{ background:#fff; border:1px solid var(--color-input); border-radius:12px; padding:16px }
+  .flt-sec-title{ font-size:11px; font-weight:700; text-transform:uppercase; letter-spacing:.05em; color:#717182; margin-bottom:14px }
+  .flt-sec .flt-fld{ margin-bottom:14px } .flt-sec .flt-fld:last-child{ margin-bottom:0 }
   .km-item{ display:flex; align-items:center; gap:8px; width:100%; padding:8px 10px; border-radius:7px; border:0; background:transparent; font-size:14px; color:#1c1c1c; text-align:left; cursor:pointer } .km-item:hover{ background:var(--color-muted) }
   /* notificações (dropdown do sino) */
   .km-notif{ display:flex; gap:10px; padding:10px 14px; cursor:pointer; align-items:flex-start } .km-notif:hover{ background:var(--color-muted) }
@@ -1105,7 +1119,7 @@
        </table>
      </div>
      <div class="card card-pad" style="grid-column:1 / -1">
-       <div style="font-weight:700;margin-bottom:14px">Top 10 view articles</div>
+       <div style="font-weight:700;margin-bottom:14px">Top 10 viewed articles</div>
        <div style="overflow-x:auto"><table class="tbl" style="table-layout:fixed;width:100%"><thead><tr>
          <th style="width:9%"><span class="th-sort">NUMBER <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="m6 9 6 6 6-6"></path></svg></span></th>
          <th style="width:28%"><span class="th-sort">ARTICLE <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="m6 9 6 6 6-6"></path></svg></span></th>
@@ -1903,13 +1917,13 @@ function closeAllModals(){
 /* ---------- FILTERS (drawer = colunas da tabela) ---------- */
 const FILTER_FIELDS = {
   'articles-search':[['Category','multiselect'],['Subcategory','multiselect'],['Tags','multiselect'],['Originator','multiselect'],['Participants','multiselect'],['Version date','date']],
-  'feedbacks-search':[['Article','text'],['Client','multiselect'],['Site','multiselect'],['Feedback category','multiselect'],['Date','date']],
-  'dashboard':[['Article','multiselect'],['Client','multiselect'],['Site','multiselect']],
+  'feedbacks-search':[['Article','text'],['Client','select'],['Site','multiselect'],['Feedback category','multiselect'],['Date','date']],
+  'dashboard':[['Article','multiselect'],['Client','select'],['Site','multiselect']],
 };
 const FFILTER_FIELDS = [['Client','select'],['Site','select'],['Date','date']];
 /* opções dos droplists de filtro (por coluna) */
 const FILTER_OPTS={
-  'Article':['How to set up the notification system','Customizing dashboards for every team','Getting started with Solvace','Managing user permissions','Troubleshooting common errors',"Release notes: what's new this quarter"],
+  'Article':['ART-99 · How to set up the notification system','ART-100 · Customizing dashboards for every team','ART-101 · Getting started with Solvace','ART-102 · Managing user permissions','ART-108 · Troubleshooting common errors',"ART-115 · Release notes: what's new this quarter"],
   'Category':['System Settings','Getting Started','Data Management','Troubleshooting','Updates','Integrations'],
   'Subcategory':['Subcategory 1','Subcategory 2','Subcategory 3'],
   'Originator':['User name','Fernando Alex','Renato Basso','Evandro Silva'],
@@ -2054,45 +2068,56 @@ function refreshFilterDeps(){
 
 /* ---- date range picker ---- */
 const CAL_MONTHS=['January','February','March','April','May','June','July','August','September','October','November','December'];
-let dateTrgEl=null, calM=(new Date()).getMonth(), calY=(new Date()).getFullYear(), calStart=null, calEnd=null;
+let dateTrgEl=null, calM=(new Date()).getMonth(), calY=(new Date()).getFullYear(), calStart=null, calEnd=null, calMode='field';
 function fmtDate(d){ return ('0'+d.getDate()).slice(-2)+'/'+('0'+(d.getMonth()+1)).slice(-2)+'/'+d.getFullYear(); }
 function openDateDD(trg){
   if(trg.classList.contains('disabled-fld')) return;
-  dateTrgEl=trg; calStart=null; calEnd=null;
+  calMode='field'; dateTrgEl=trg; calStart=null; calEnd=null;
   const dd=el('date-dd'); const r=trg.getBoundingClientRect();
-  dd.style.left=Math.min(r.left, window.innerWidth-310)+'px';
-  dd.style.top=Math.min(r.bottom+6, window.innerHeight-360)+'px';
+  dd.style.transform='';
+  dd.style.left=Math.max(8, Math.min(r.left, window.innerWidth-560))+'px';
+  dd.style.top=Math.min(r.bottom+6, window.innerHeight-380)+'px';
   renderCal(); dd.classList.add('open');
+  setTimeout(function(){ document.addEventListener('click', closeCalOnce); },0);
 }
+function closeCalOnce(e){ if(!e.target.closest('#date-dd')){ el('date-dd').classList.remove('open'); document.removeEventListener('click', closeCalOnce); } }
 function calNav(d){ calM+=d; if(calM<0){calM=11;calY--;} if(calM>11){calM=0;calY++;} renderCal(); }
-function renderCal(){
-  const first=new Date(calY,calM,1), startDow=first.getDay(), days=new Date(calY,calM+1,0).getDate();
-  const same=(a,b)=>a&&b&&a.getTime()===b.getTime();
-  let cells='';
-  ['S','M','T','W','T','F','S'].forEach(d=>cells+=`<div class="dow">${d}</div>`);
-  for(let i=0;i<startDow;i++) cells+=`<div class="cal-day empty"></div>`;
-  for(let d=1;d<=days;d++){
-    const cur=new Date(calY,calM,d);
-    let cls='cal-day';
+function calMonthHtml(m,y){
+  var first=new Date(y,m,1), startDow=(first.getDay()+6)%7, days=new Date(y,m+1,0).getDate();
+  var same=function(a,b){return a&&b&&a.getTime()===b.getTime();};
+  var cells='';
+  ['MON','TUE','WED','THU','FRI','SAT','SUN'].forEach(function(d){ cells+='<div class="dow">'+d+'</div>'; });
+  for(var i=0;i<startDow;i++) cells+='<div class="cal-day empty"></div>';
+  for(var d=1;d<=days;d++){
+    var cur=new Date(y,m,d), cls='cal-day';
     if(same(cur,calStart)||same(cur,calEnd)) cls+=' sel';
     else if(calStart&&calEnd&&cur>calStart&&cur<calEnd) cls+=' in';
-    cells+=`<div class="${cls}" onclick="calPick(${d})">${d}</div>`;
+    cells+='<div class="'+cls+'" onclick="calPick('+d+','+m+','+y+')">'+d+'</div>';
   }
-  el('date-dd').innerHTML=`
-    <div class="cal-head">
-      <button class="cal-nav" onclick="calNav(-1)">${I.chevLeft}</button>
-      <span>${CAL_MONTHS[calM]} ${calY}</span>
-      <button class="cal-nav" onclick="calNav(1)">${I.chevRight}</button>
-    </div>
-    <div class="cal-grid">${cells}</div>
-    <div class="cal-hint">${calStart&&!calEnd?'Select the end date of the range':'Click to select start and end'}</div>`;
+  return '<div class="cal-month"><div class="cal-mhead">'+CAL_MONTHS[m]+' '+y+'</div><div class="cal-grid">'+cells+'</div></div>';
 }
-function calPick(d){
-  const cur=new Date(calY,calM,d);
+function renderCal(){
+  var m2=calM+1, y2=calY; if(m2>11){ m2=0; y2++; }
+  el('date-dd').innerHTML = '<div onclick="event.stopPropagation()">'
+    + '<div class="cal-2">'
+    + '<button class="cal-nav cal-nav-abs cal-nav-l" onclick="calNav(-1)">'+I.chevLeft+'</button>'
+    + calMonthHtml(calM,calY) + calMonthHtml(m2,y2)
+    + '<button class="cal-nav cal-nav-abs cal-nav-r" onclick="calNav(1)">'+I.chevRight+'</button>'
+    + '</div>'
+    + '<div class="cal-foot"><button class="btn btn-outline btn-sm" onclick="el(\'date-dd\').classList.remove(\'open\')">Cancel</button><button class="btn btn-primary btn-sm" onclick="applyCal()">Apply</button></div>'
+    + '</div>';
+}
+function calPick(d,m,y){
+  var cur=new Date(y,m,d);
   if(!calStart || (calStart&&calEnd)){ calStart=cur; calEnd=null; }
   else { if(cur<calStart){ calEnd=calStart; calStart=cur; } else if(cur.getTime()===calStart.getTime()){ calEnd=cur; } else calEnd=cur; }
-  renderCal(); updateDateTrg();
-  if(calStart&&calEnd) setTimeout(()=>el('date-dd').classList.remove('open'),180);
+  renderCal(); if(calMode==='field') updateDateTrg();
+}
+function applyCal(){
+  if(!calStart || !calEnd){ showToast('Select a date range','error'); return; }
+  el('date-dd').classList.remove('open');
+  if(calMode==='dash'){ DASH_PERIOD_LBL.custom = fmtDate(calStart)+' – '+fmtDate(calEnd); dashPeriod='custom'; dashWindow={}; renderDashboard(); showToast('Custom period applied'); }
+  else { updateDateTrg(); refreshFilterDeps(); }
 }
 function updateDateTrg(){
   if(!dateTrgEl) return;
@@ -2107,13 +2132,30 @@ function filterField(label,type,disabled){
   else if(type==='multiselect') ctrl=`<button class="select-trigger${dis}" data-fld="${label}" data-sel onclick="openFilterDD(this,'${label}',true)"><span class="flt-val"><span class="flt-ph">Select</span></span>${I.chevDown}</button>`;
   else if(type==='date') ctrl=`<button class="input${dis}" data-fld="${label}" data-date onclick="openDateDD(this)" style="display:flex;align-items:center;justify-content:space-between;color:#9aa0ac;width:100%;cursor:pointer"><span class="date-val">dd/mm/yyyy</span>${I.cal}</button>`;
   else ctrl=`<input class="input" data-fld="${label}" placeholder="Type here">`;
-  return `<div><label class="lbl-field">${label}</label>${ctrl}</div>`;
+  return `<div class="flt-fld"><label class="lbl-field">${label}</label>${ctrl}</div>`;
 }
+const FILTER_SECTIONS = [
+  ['Article',        ['Article']],
+  ['Classification', ['Category','Subcategory','Tags','Feedback category']],
+  ['People',         ['Originator','Participants']],
+  ['Location',       ['Client','Site']],
+  ['Period',         ['Version date','Date']],
+];
 function openFilter(view){
   fltSel={};
   const fields=FILTER_FIELDS[view]||[], names=fields.map(f=>f[0]);
   const depActive=lbl=> (lbl==='Site' && names.indexOf('Client')>=0) || (lbl==='Originator' && names.indexOf('Client')>=0 && names.indexOf('Site')>=0);
-  el('filter-drawer-body').innerHTML = fields.map(f=>filterField(f[0],f[1], depActive(f[0]))).join('');
+  var byLabel={}; fields.forEach(function(f){ byLabel[f[0]]=f; });
+  var used={}, html='';
+  FILTER_SECTIONS.forEach(function(sec){
+    var inSec=sec[1].filter(function(l){ return byLabel[l]; });
+    if(!inSec.length) return;
+    inSec.forEach(function(l){ used[l]=1; });
+    html += '<div class="flt-sec"><div class="flt-sec-title">'+sec[0]+'</div>'+inSec.map(function(l){ return filterField(byLabel[l][0], byLabel[l][1], depActive(l)); }).join('')+'</div>';
+  });
+  var rest=fields.filter(function(f){ return !used[f[0]]; });
+  if(rest.length) html += '<div class="flt-sec"><div class="flt-sec-title">More filters</div>'+rest.map(function(f){ return filterField(f[0],f[1],depActive(f[0])); }).join('')+'</div>';
+  el('filter-drawer-body').innerHTML = html;
   el('overlay').classList.add('open'); el('filter-drawer').classList.add('open');
 }
 function closeFilter(){ el('filter-drawer').classList.remove('open'); maybeCloseOverlay(); }
@@ -2969,18 +3011,23 @@ let dashViewsTab='Client';   // Client | Site
 let dashWindow={};           // janela de período por gráfico: {views:[lo,hi], fb:[lo,hi]}
 const PERIOD = {
   Day:   { labels:['01','02','03','04','05','06','07','08','09','10','11','12','13','14'], views:[60,82,45,120,98,150,72,88,134,90,160,110,95,140], fb:[40,55,30,80,66,100,48,60,90,62,108,75,64,95], range:['01/06','14/06'] },
-  Month: { labels:MONTHS, views:DATA_VIEWS, fb:[180,120,40,130,160,30,140,170,165,130,128,160], range:['2019','2023'] },
+  Month: { labels:['Aug','Sep','Oct','Nov','Dec','Jan','Feb','Mar','Apr','May','Jun','Jul'], years:['25','25','25','25','25','26','26','26','26','26','26','26'], views:DATA_VIEWS, fb:[180,120,40,130,160,30,140,170,165,130,128,160], range:['Aug 2025','Jul 2026'] },
   Year:  { labels:['2019','2020','2021','2022','2023'], views:[820,1040,960,1230,1480], fb:[700,910,840,1100,1290], range:['2019','2023'] },
 };
 function setDashPeriod(p){ dashPeriod=p; dashWindow={}; renderDashboard(); }   // reset janela ao trocar período
 function setDashViewsTab(t){ dashViewsTab=t; renderDashboard(); }
-function barChart(data, alt, labels){
+function barChart(data, alt, labels, years){
   const key = alt ? 'fb' : 'views';
   const n = data.length;
   const win = dashWindow[key] || [0, n-1];
   const lo = Math.max(0, Math.min(win[0], n-1));
   const hi = Math.max(lo, Math.min(win[1], n-1));
-  const vData = data.slice(lo, hi+1), vLabels = labels.slice(lo, hi+1);
+  const vData = data.slice(lo, hi+1);
+  const vLabels = vData.map(function(_,i){
+    const idx = lo+i; let lab = labels[idx];
+    if (years && (idx===lo || labels[idx]==='Jan')) lab = labels[idx] + ' ' + years[idx];  /* 1ª barra visível + toda virada de ano (Jan) marcam o ano */
+    return lab;
+  });
   const raw = Math.max(...vData, 1);
   const max = Math.ceil(raw/4)*4;                       /* teto arredondado p/ 4 ticks */
   const ticks = [max, max*0.75, max*0.5, max*0.25, 0].map(t=>Math.round(t));
@@ -2994,7 +3041,6 @@ function barChart(data, alt, labels){
     <div class="vplot"><div class="vbars">${cols}</div></div>
   </div>
   <div class="vlbls">${vLabels.map(l=>'<span>'+l+'</span>').join('')}</div>
-  <div style="display:flex;justify-content:space-between;font-size:11px;color:#999BA7;margin:6px 0 0 38px"><span>${labels[lo]}</span><span>${labels[hi]}</span></div>
   ${dualRange(key, n, lo, hi)}`;
 }
 /* slider de dois controles para selecionar o período exibido */
@@ -3040,14 +3086,11 @@ function openDashPeriodMenu(trg){
   setTimeout(()=>document.addEventListener('click',closeKebabOnce),0);
 }
 function openDashCustom(){
-  var m=el('kebab-menu'); m.style.width='260px';
-  m.innerHTML = '<div style="display:flex;flex-direction:column;gap:10px;padding:4px" onclick="event.stopPropagation()">'
-    + '<div style="font-weight:700;font-size:13px;color:#1c1c1c;padding:2px 2px 0">Custom period</div>'
-    + '<label style="font-size:12px;color:#555;display:flex;flex-direction:column;gap:4px">From<input type="date" id="dash-from" class="input" style="height:36px"></label>'
-    + '<label style="font-size:12px;color:#555;display:flex;flex-direction:column;gap:4px">To<input type="date" id="dash-to" class="input" style="height:36px"></label>'
-    + '<div style="display:flex;justify-content:flex-end;gap:8px;padding-top:2px"><button class="btn btn-outline btn-sm" onclick="el(\'kebab-menu\').classList.remove(\'open\')">Cancel</button><button class="btn btn-primary btn-sm" onclick="applyDashCustom()">Apply</button></div>'
-    + '</div>';
-  m.classList.add('open');
+  el('kebab-menu').classList.remove('open');
+  calMode='dash'; calStart=null; calEnd=null;
+  var dd=el('date-dd'); dd.style.left='50%'; dd.style.top='96px'; dd.style.transform='translateX(-50%)';
+  renderCal(); dd.classList.add('open');
+  setTimeout(function(){ document.addEventListener('click', closeCalOnce); },0);
 }
 function applyDashCustom(){
   var f=el('dash-from').value, t=el('dash-to').value;
@@ -3066,13 +3109,13 @@ function kpiDonut(){
   const pct=91, C=2*Math.PI*46, on=C*pct/100;
   return `<div class="kpi-card">
     <svg width="112" height="112" viewBox="0 0 112 112" style="flex:0 0 112px">
-      <circle cx="56" cy="56" r="46" fill="none" stroke="#DCF5E6" stroke-width="13"/>
-      <circle cx="56" cy="56" r="46" fill="none" stroke="#14AE5C" stroke-width="13" stroke-linecap="round" stroke-dasharray="${on.toFixed(1)} ${C.toFixed(1)}" transform="rotate(-90 56 56)"/>
+      <circle cx="56" cy="56" r="46" fill="none" stroke="#E4E8F7" stroke-width="13"/>
+      <circle cx="56" cy="56" r="46" fill="none" stroke="#001391" stroke-width="13" stroke-linecap="round" stroke-dasharray="${on.toFixed(1)} ${C.toFixed(1)}" transform="rotate(-90 56 56)"/>
       <text x="56" y="63" text-anchor="middle" font-size="24" font-weight="800" fill="#0D122F">${pct}%</text>
     </svg>
     <div style="display:flex;flex-direction:column;gap:6px">
       <span class="kpi-lbl" style="display:inline-flex;align-items:center;gap:6px">Read completion <span class="kc-tip" data-tip="% of readers who finished the article, out of those who opened it, in the selected period.">${I.info}</span></span>
-      <span style="display:inline-flex;align-items:center;gap:6px;flex-wrap:wrap;font-size:12.5px;color:#4D5166"><span class="kpi-trend" style="color:#14AE5C">${I.trendUp} +1.5%</span><span>vs previous period</span></span>
+      <span style="display:inline-flex;align-items:center;gap:6px;flex-wrap:wrap;font-size:12.5px;color:#4D5166"><span class="kpi-trend" style="color:#001391">${I.trendUp} +1.5%</span><span>vs previous period</span></span>
     </div>
   </div>`;
 }
@@ -3080,9 +3123,9 @@ function kpiNegative(){
   return `<div class="kpi-card">
     <div class="kpi-tile" style="background:#FDE7E7;color:#EC221F;border:1px solid #EC221F"><svg width="30" height="30" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" style="transform:rotate(180deg)"><path d="M7 10v12M15 5.88 14 10h5.83a2 2 0 0 1 1.92 2.56l-2.33 8A2 2 0 0 1 17.5 22H4a2 2 0 0 1-2-2v-8a2 2 0 0 1 2-2h2.76a2 2 0 0 0 1.79-1.11L12 2a3.13 3.13 0 0 1 3 3.88Z"/></svg></div>
     <div style="display:flex;flex-direction:column;gap:4px">
-      <span class="kpi-lbl" style="color:#B71C1C;display:inline-flex;align-items:center;gap:6px">Negative feedbacks <span class="kc-tip" data-tip="Number of negative feedbacks received in the selected period.">${I.info}</span></span>
-      <span class="kpi-big" style="color:#B71C1C">14</span>
-      <span class="kpi-sub" style="color:#B71C1C">1 more vs previous period</span>
+      <span class="kpi-lbl" style="display:inline-flex;align-items:center;gap:6px">Negative feedbacks <span class="kc-tip" data-tip="Number of negative feedbacks received in the selected period.">${I.info}</span></span>
+      <span class="kpi-big">14</span>
+      <span style="display:inline-flex;align-items:center;gap:6px;flex-wrap:wrap;font-size:12.5px;color:#4D5166"><span class="kpi-trend" style="color:#EC221F">${I.trendDown} +1</span><span>vs previous period</span></span>
     </div>
   </div>`;
 }
@@ -3168,8 +3211,8 @@ function renderDashboard(){
       <td class="cols-mobile-hidden">Subcategory</td>
       <td><span style="display:inline-flex;gap:5px;align-items:center">${I.eye}000</span></td></tr>`).join('');
   const fbSamples=['Clear and concise — solved my problem in a couple of minutes.','This article is missing the part about configuring SSO for external users, which is exactly what I needed today.','The step-by-step screenshots made it really easy to follow. Thank you!','Some screenshots are outdated and no longer match the interface after the last platform update, so I got confused midway.','Great overview, though a short video walkthrough would help a lot for new users.','I followed every step and it still did not work — the export button described in section 3 does not exist anymore.','Exactly what I was looking for.','The sample data does not reflect a real production scenario; more realistic examples would make this much more useful.','Very helpful, well structured and easy to search.','Please add a troubleshooting section covering the most common permission errors when connecting the integration.'];
-  const fbRows=fbSamples.map(function(t){ return `
-    <tr><td><span class="row-link" style="cursor:pointer" onclick="openArticleModal('view','feedbacks')">ART-99</span></td><td class="celltip" data-tip="${t}"><span style="display:block;overflow:hidden;text-overflow:ellipsis;white-space:nowrap">${t}</span></td></tr>`; }).join('');
+  const fbRows=fbSamples.map(function(t,i){ var dt=('0'+(28-(i%28))).slice(-2)+'/07/2026'; return `
+    <tr><td><span class="row-link" style="cursor:pointer" onclick="openArticleModal('view','feedbacks')">ART-99</span></td><td class="celltip" data-tip="${t}"><span style="display:block;overflow:hidden;text-overflow:ellipsis;white-space:nowrap">${t}</span></td><td style="white-space:nowrap;color:#4D5166">${dt}</td></tr>`; }).join('');
   el('admin-view').innerHTML = `
    <div class="dash-head">
      <button class="dash-sel" onclick="openDashPeriodMenu(this)">${DASH_PERIOD_LBL[dashPeriod]} ${I.chevDownSm}</button>
@@ -3187,16 +3230,17 @@ function renderDashboard(){
 
    <div class="chart2 dash-grid">
      <div class="card card-pad">
+       <div class="dash-chart-tabs" style="display:flex;justify-content:center;gap:24px;border-bottom:1px solid var(--color-input);padding-bottom:10px;margin-bottom:12px;font-size:14px">${periodTab('Day')}${periodTab('Month')}${periodTab('Year')}</div>
        <div class="card-head"><span class="ttl">Views</span>
          <button class="kebab" title="Chart options" style="margin-left:auto" onclick="openChartMenu(this)">${I.kebab}</button>
        </div>
-       ${barChart(P.views,false,P.labels,P.range)}
+       ${barChart(P.views,false,P.labels,P.years)}
        <div class="card-head" style="margin-top:26px"><span class="ttl">Feedbacks</span>
          <button class="kebab" title="Chart options" style="margin-left:auto" onclick="openChartMenu(this)">${I.kebab}</button>
        </div>
-       ${barChart(P.fb,true,P.labels,P.range)}
+       ${barChart(P.fb,true,P.labels,P.years)}
      </div>
-     <div class="card card-pad">
+     <div class="card card-pad" style="display:flex;flex-direction:column">
        <div class="card-head"><span class="ttl">Views & feedbacks by ${dashViewsTab.toLowerCase()}</span>
          <span class="sb-leg" style="margin-left:auto">
            <span><span class="dot" style="background:var(--color-primary)"></span>Views</span>
@@ -3215,7 +3259,7 @@ function renderDashboard(){
    <div class="dash-grid" style="display:grid;grid-template-columns:1fr;gap:16px">
      <div class="card card-pad">
        <div class="card-head">
-         <span class="ttl">Top 10 view articles</span>
+         <span class="ttl">Top 10 viewed articles</span>
        </div>
        <div style="overflow-x:auto"><table class="tbl dash-tbl" style="table-layout:fixed;width:100%"><thead><tr>
          <th style="width:9%"><span class="th-sort">NUMBER ${I.chevDownSm}</span></th>
@@ -3227,7 +3271,7 @@ function renderDashboard(){
      </div>
      <div class="card card-pad">
        <div class="card-head"><span class="ttl">Last 30 days feedbacks</span></div>
-       <table class="tbl dash-tbl" style="table-layout:fixed;width:100%"><thead><tr><th style="width:132px"><span class="th-sort">ARTICLE ${I.chevDownSm}</span></th><th style="width:auto"><span class="th-sort">FEEDBACK ${I.chevDownSm}</span></th></tr></thead>
+       <table class="tbl dash-tbl" style="table-layout:fixed;width:100%"><thead><tr><th style="width:120px"><span class="th-sort">ARTICLE ${I.chevDownSm}</span></th><th style="width:auto"><span class="th-sort">FEEDBACK ${I.chevDownSm}</span></th><th style="width:104px"><span class="th-sort">DATE ${I.chevDownSm}</span></th></tr></thead>
          <tbody>${fbRows}</tbody></table>
        ${pagination(131)}
      </div>
@@ -3239,8 +3283,8 @@ function openDrill(kind, label){
   el('drill-title').textContent = (isViews?'Views':'Feedbacks') + ' - ' + label;
   let head, rows;
   if(isViews){
-    head = `<tr><th style="width:110px"><span class="th-sort">NUMBER ${I.chevDownSm}</span></th><th style="text-align:right"><span class="th-sort">VIEWS ${I.chevDownSm}</span></th></tr>`;
-    rows = Array.from({length:16}).map(()=>`<tr><td><span class="row-link" style="cursor:pointer" onclick="openArticleModal('view')">ART-99</span></td><td style="text-align:right"><span style="display:inline-flex;gap:5px;align-items:center;justify-content:flex-end">${I.eye}000</span></td></tr>`).join('');
+    head = `<tr><th style="width:110px"><span class="th-sort">NUMBER ${I.chevDownSm}</span></th><th><span class="th-sort">ARTICLE ${I.chevDownSm}</span></th></tr>`;
+    rows = Array.from({length:16}).map(()=>`<tr><td><span class="row-link" style="cursor:pointer" onclick="openArticleModal('view')">ART-99</span></td><td class="celltip celltip-r" data-tip="Lorem Ipsum is simply dummy text of the printing and typesetting industry."><span style="display:block;overflow:hidden;text-overflow:ellipsis;white-space:nowrap">Lorem Ipsum is simply dummy text of the printing and typesetting industry.</span></td></tr>`).join('');
   } else {
     head = `<tr><th style="width:110px"><span class="th-sort">NUMBER ${I.chevDownSm}</span></th><th><span class="th-sort">FEEDBACK ${I.chevDownSm}</span></th></tr>`;
     rows = Array.from({length:16}).map(()=>`<tr><td><span class="row-link" style="cursor:pointer" onclick="openArticleModal('view','feedbacks')">ART-99</span></td><td class="celltip celltip-r" data-tip="Lorem Ipsum is simply dummy text of the printing and typesetting industry."><span style="display:block;overflow:hidden;text-overflow:ellipsis;white-space:nowrap">Lorem Ipsum is simply dummy text of the printing and typesetting industry.</span></td></tr>`).join('');
