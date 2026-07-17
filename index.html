@@ -311,7 +311,7 @@
   .kpi-grid{ display:grid;grid-template-columns:repeat(4,1fr);gap:16px;margin-bottom:16px }
   .kpi-card{ background:#eef1fb;border:1px solid #dfe4f7;border-radius:14px;padding:20px 22px;display:flex;align-items:center;gap:18px;min-height:150px }
   .kpi-card.red{ background:#FDE7E7;border-color:#f6c6c6 }
-  .kpi-tile{ width:64px;height:64px;border-radius:14px;background:#EC221F;color:#fff;display:flex;align-items:center;justify-content:center;flex:0 0 64px }
+  .kpi-tile{ width:64px;height:64px;border-radius:14px;display:flex;align-items:center;justify-content:center;flex:0 0 64px;border:1px solid transparent }
   .kpi-big{ font-size:30px;font-weight:800;color:#0D122F;line-height:1.1 }
   .kpi-card.red .kpi-big{ color:#B71C1C }
   .kpi-lbl{ font-size:13px;color:#4D5166;font-weight:600 }
@@ -3078,7 +3078,7 @@ function kpiDonut(){
 }
 function kpiNegative(){
   return `<div class="kpi-card">
-    <div class="kpi-tile"><svg width="30" height="30" viewBox="0 0 24 24" fill="none" stroke="#fff" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" style="transform:rotate(180deg)"><path d="M7 10v12M15 5.88 14 10h5.83a2 2 0 0 1 1.92 2.56l-2.33 8A2 2 0 0 1 17.5 22H4a2 2 0 0 1-2-2v-8a2 2 0 0 1 2-2h2.76a2 2 0 0 0 1.79-1.11L12 2a3.13 3.13 0 0 1 3 3.88Z"/></svg></div>
+    <div class="kpi-tile" style="background:#FDE7E7;color:#EC221F;border:1px solid #EC221F"><svg width="30" height="30" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" style="transform:rotate(180deg)"><path d="M7 10v12M15 5.88 14 10h5.83a2 2 0 0 1 1.92 2.56l-2.33 8A2 2 0 0 1 17.5 22H4a2 2 0 0 1-2-2v-8a2 2 0 0 1 2-2h2.76a2 2 0 0 0 1.79-1.11L12 2a3.13 3.13 0 0 1 3 3.88Z"/></svg></div>
     <div style="display:flex;flex-direction:column;gap:4px">
       <span class="kpi-lbl" style="color:#B71C1C;display:inline-flex;align-items:center;gap:6px">Negative feedbacks <span class="kc-tip" data-tip="Number of negative feedbacks received in the selected period.">${I.info}</span></span>
       <span class="kpi-big" style="color:#B71C1C">14</span>
@@ -3087,14 +3087,14 @@ function kpiNegative(){
   </div>`;
 }
 /* indicador numérico (fundo azul, estilo dos totalizadores das telas de busca) */
-function kpiStat(iconSvg, tileBg, label, value, tooltip, trend){
+function kpiStat(iconSvg, color, tint, label, value, tooltip, trend){
   var trendHtml='';
   if(typeof trend==='number'){
     var up=trend>=0, col=up?'#14AE5C':'#EC221F', arrow=up?I.trendUp:I.trendDown, sign=up?'+':'';
     trendHtml='<span class="kpi-trend" style="color:'+col+'">'+arrow+' '+sign+trend.toFixed(1)+'%</span>';
   }
   return `<div class="kpi-card">
-    <div class="kpi-tile" style="background:${tileBg}">${iconSvg}</div>
+    <div class="kpi-tile" style="background:${tint};color:${color};border:1px solid ${color}">${iconSvg}</div>
     <div style="display:flex;flex-direction:column;gap:4px">
       <span class="kpi-lbl" style="display:inline-flex;align-items:center;gap:6px">${label} <span class="kc-tip" data-tip="${tooltip}">${I.info}</span></span>
       <span class="kpi-big">${value}</span>
@@ -3180,8 +3180,8 @@ function renderDashboard(){
 
    <div class="kpi-grid">
      ${kpiDonut()}
-     ${kpiStat('<svg width="30" height="30" viewBox="0 0 24 24" fill="none" stroke="#fff" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M2 12s3.5-7 10-7 10 7 10 7-3.5 7-10 7-10-7-10-7Z"/><circle cx="12" cy="12" r="3"/></svg>', '#001391', 'Total views', P.views.reduce((a,b)=>a+b,0).toLocaleString('pt-BR'), 'Total article views in the selected period.', 8.6)}
-     ${kpiStat('<svg width="30" height="30" viewBox="0 0 24 24" fill="none" stroke="#fff" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M21 15a2 2 0 0 1-2 2H7l-4 4V5a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2z"/></svg>', '#5A63C9', 'Total feedbacks', P.fb.reduce((a,b)=>a+b,0).toLocaleString('pt-BR'), 'Total feedbacks received in the selected period.', -2.3)}
+     ${kpiStat('<svg width="30" height="30" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M2 12s3.5-7 10-7 10 7 10 7-3.5 7-10 7-10-7-10-7Z"/><circle cx="12" cy="12" r="3"/></svg>', '#001391', '#F5F5FF', 'Total views', P.views.reduce((a,b)=>a+b,0).toLocaleString('pt-BR'), 'Total article views in the selected period.', 8.6)}
+     ${kpiStat('<svg width="30" height="30" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M21 15a2 2 0 0 1-2 2H7l-4 4V5a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2z"/></svg>', '#5A63C9', '#ECEEFB', 'Total feedbacks', P.fb.reduce((a,b)=>a+b,0).toLocaleString('pt-BR'), 'Total feedbacks received in the selected period.', -2.3)}
      ${kpiNegative()}
    </div>
 
