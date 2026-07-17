@@ -315,7 +315,7 @@
   .kpi-big{ font-size:30px;font-weight:800;color:#0D122F;line-height:1.1 }
   .kpi-card.red .kpi-big{ color:#B71C1C }
   .kpi-lbl{ font-size:13px;color:#4D5166;font-weight:600 }
-  .kpi-trend{ display:inline-flex;align-items:center;gap:5px;font-size:12px;font-weight:700 }
+  .kpi-trend{ display:inline-flex;align-items:center;gap:5px;font-size:14px;font-weight:700 }
   .kpi-sub{ font-size:11px;color:#999BA7 }
   .sb-wrap{ flex:1;display:flex;flex-direction:column;gap:8px;min-width:0 }
   .sb-cols{ display:flex;align-items:flex-end;gap:10px;height:72px }
@@ -326,11 +326,11 @@
   .sb-leg b{ color:#0D122F }
   .dot{ display:inline-block;width:8px;height:8px;border-radius:2px;margin-right:5px;vertical-align:1px }
   .chart2{ display:grid;grid-template-columns:1fr 1fr;gap:16px;margin-bottom:16px }
-  .hchart{ position:relative;display:flex;flex-direction:column;gap:12px;padding-top:4px }
+  .hchart{ position:relative;display:flex;flex-direction:column;gap:12px;padding-top:4px;max-height:360px;overflow-y:auto;overflow-x:hidden }
   .hrow{ display:flex;align-items:center;gap:10px;cursor:pointer }
   .hrow .hl{ width:110px;flex:0 0 110px;font-size:12px;color:#4D5166;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;text-align:right }
   .hbars{ flex:1;display:flex;flex-direction:column;gap:3px }
-  .hbar{ height:10px;border-radius:0 4px 4px 0;position:relative;min-width:4px;transition:width .3s }
+  .hbar{ height:10px;border-radius:0 6px 6px 0;position:relative;min-width:4px;transition:width .3s }
   .hval{ font-size:11px;font-weight:700;color:#0D122F;width:26px }
   .hrow .hl.hl-2{ display:flex;flex-direction:column;align-items:flex-end;gap:1px;white-space:normal;line-height:1.2 }
   .hrow .hl.hl-2 .hl-main{ max-width:100%;overflow:hidden;text-overflow:ellipsis;white-space:nowrap }
@@ -360,7 +360,7 @@
   .vbars{ display:flex; align-items:flex-end; gap:8px; height:100%; padding:0 6px }
   .vcol{ flex:1; min-width:0; height:100%; display:flex; flex-direction:column; align-items:center; justify-content:flex-end; cursor:pointer }
   .vcol:hover .vbar{ background:#001072 }
-  .vbar{ width:100%; max-width:26px; background:var(--color-primary); border-radius:4px 4px 0 0; transition:height .25s }
+  .vbar{ width:100%; max-width:26px; background:var(--color-primary); border-radius:6px 6px 0 0; transition:height .25s }
   .vbar.vbar-fb{ background:#a8aede }
   .vcol:hover .vbar.vbar-fb{ background:#9aa0d6 }
   .vval{ font-size:10px; font-weight:700; color:#4D5166; margin-bottom:3px }
@@ -513,7 +513,7 @@
   .tag{ display:inline-flex;align-items:center;background:var(--color-tag-bg);color:var(--color-primary);font-size:13px;font-weight:600;padding:5px 12px;border-radius:6px;line-height:1 }
   .status{ display:inline-flex;align-items:center;justify-content:center;font-size:12px;font-weight:600;padding:4px 15px;border-radius:9999px;min-width:74px;border:1px solid transparent }
   .status-active{ background:#DCF5E6; color:#14AE5C; border-color:#14AE5C }
-  .status-inactive{ background:#FDE7E7; color:#EC221F; border-color:#EC221F }
+  .status-inactive{ background:#F1F1F4; color:#6B7280; border-color:#6B7280 }
 
   /* ---- switch ---- */
   .switch{ width:44px;height:24px;border-radius:9999px;background:#e4e7ea;position:relative;border:0;flex:0 0 44px;transition:background .15s;cursor:pointer }
@@ -554,8 +554,9 @@
   .kc-tip:hover::after{ opacity:1 }
   /* tooltip de sistema para células/textos (mesmo estilo do .kc-tip, sem depender do title nativo) */
   .celltip{ position:relative; cursor:help }
-  .celltip::after{ content:attr(data-tip);position:absolute;bottom:calc(100% + 6px);left:8px;background:#1c1c1c;color:#fff;font-size:12px;line-height:1.45;padding:8px 12px;border-radius:8px;white-space:normal;width:max-content;max-width:320px;text-align:left;opacity:0;pointer-events:none;transition:opacity .12s;z-index:70;box-shadow:0 8px 24px rgba(0,0,0,.25) }
+  .celltip::after{ content:attr(data-tip);position:absolute;bottom:calc(100% + 6px);left:8px;background:#1c1c1c;color:#fff;font-size:12px;line-height:1.45;padding:8px 12px;border-radius:8px;white-space:normal;width:max-content;max-width:260px;text-align:left;opacity:0;pointer-events:none;transition:opacity .12s;z-index:70;box-shadow:0 8px 24px rgba(0,0,0,.25) }
   .celltip:hover::after{ opacity:1 }
+  .celltip-r::after{ left:auto; right:8px }   /* tooltip ancorado à direita (coluna à direita não corta) */
   /* chips de categoria do feedback */
   .fb-chip{ background:#e9eaee;color:#555;border:0;border-radius:8px;padding:7px 12px;font-size:13px;font-weight:600;cursor:pointer;transition:background .12s,color .12s }
   .fb-chip:hover{ background:#dddfe6 }
@@ -689,6 +690,11 @@
   .km-notif .kn-dot{ width:8px; height:8px; border-radius:50%; background:transparent; margin-top:5px; flex:0 0 8px }
   .km-notif.unread .kn-dot{ background:var(--color-primary) }
   .km-notif.unread{ background:#f7f8ff }
+  /* abas do dropdown de notificações (#161) */
+  .ntabs{ display:flex; border-bottom:1px solid var(--color-input) }
+  .ntab{ flex:1; display:inline-flex; align-items:center; justify-content:center; gap:5px; padding:10px 4px; border:0; background:transparent; font-size:12px; font-weight:600; color:#717182; cursor:pointer; border-bottom:2px solid transparent; white-space:nowrap }
+  .ntab.active{ color:var(--color-primary); border-bottom-color:var(--color-primary) }
+  .ntab-badge{ min-width:16px; height:16px; padding:0 5px; border-radius:9999px; background:#E22A2E; color:#fff; font-size:10px; font-weight:700; display:inline-flex; align-items:center; justify-content:center }
 
   /* popover */
   .popover{ position:fixed; z-index:55; background:#fff; border:1px solid var(--color-input); border-radius:12px; box-shadow:0 10px 30px rgba(0,0,0,.18); display:none }
@@ -725,7 +731,7 @@
   /* ---- bar chart ---- */
   .bar-wrap{ display:flex; align-items:flex-end; gap:10px; height:210px; padding-top:28px }
   .bar-col{ flex:1; display:flex; flex-direction:column; align-items:center; justify-content:flex-end; gap:6px }
-  .bar{ width:60%; max-width:26px; border-radius:4px 4px 0 0; position:relative }
+  .bar{ width:60%; max-width:26px; border-radius:6px 6px 0 0; position:relative }
   .bar .val{ position:absolute; top:-17px; left:50%; transform:translateX(-50%); font-size:11px; color:#33373f; white-space:nowrap }
   .chart-legend{ display:flex; align-items:center; gap:8px; font-weight:600; font-size:14px; margin-bottom:4px }
   /* dual-range (seleção de período) */
@@ -801,8 +807,7 @@
     .kc-hero-search .search-box{ min-width:0 !important }
     .kc-hero-search .btn{ flex:0 0 auto; width:44px; padding:0; justify-content:center }
     .kc-hero-search .kai-lbl{ display:none }
-    .kc-hero-tags{ flex-wrap:nowrap !important; overflow-x:auto; justify-content:flex-start !important; padding-bottom:6px; -webkit-overflow-scrolling:touch }
-    .kc-hero-tags .tag{ flex:0 0 auto }
+    .kc-hero-tags{ flex-wrap:wrap !important }   /* #153: sem rolagem lateral; usa o +N more do tagFilter */
     /* rodapé do artigo: só no mobile usa reação+share em ícones juntos à direita */
     .kc-help-full{ display:none !important }
     .kc-help-compact{ display:inline-flex !important }
@@ -827,13 +832,14 @@
     .breadcrumb .cur{ font-size:15px }
     .kc-article-side{ display:none !important }
     .kc-art-head{ flex-direction:column; gap:12px }
-    .kc-art-meta{ flex-direction:column; align-items:flex-start; gap:8px }
+    .kc-art-meta{ flex-direction:row !important; flex-wrap:wrap; align-items:center; justify-content:flex-start !important; gap:8px 12px; text-align:left }
     .kc-art-aside{ align-items:flex-start !important; width:100% }
     .kc-art-aside .btn{ width:100% }
     /* dashboard tables no mobile: nº não quebra e cabeçalhos não sobrepõem */
     .dash-tbl th{ white-space:nowrap }
     .dash-tbl th:nth-child(1), .dash-tbl td:nth-child(1){ width:72px !important; white-space:nowrap }
     .dash-tbl th:nth-child(2), .dash-tbl td:nth-child(2){ width:auto !important }
+    .dash-tbl th:nth-child(5), .dash-tbl td:nth-child(5){ width:62px !important; text-align:right; white-space:nowrap }   /* #184: VIEWS visível no mobile */
   }
 </style>
 </head>
@@ -920,7 +926,7 @@
       <div class="topbar-right">
         <button class="top-icon top-search-btn" title="Search" onclick="toggleTopSearch()"><svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="11" cy="11" r="7"></circle><path d="m21 21-4-4"></path></svg></button>
         <button class="top-loc" title="Location" onclick="openPlantMenu(this)"><svg width="18" height="18" viewBox="0 0 24 24" fill="currentColor"><path d="M12 2a7 7 0 0 0-7 7c0 5.25 7 13 7 13s7-7.75 7-13a7 7 0 0 0-7-7z"></path><circle cx="12" cy="9" r="2.6" fill="#fff"></circle></svg><span id="loc-label">Curitiba</span><svg class="loc-chev" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="m6 9 6 6 6-6"></path></svg></button>
-        <button class="top-icon" title="Notifications" onclick="openNotifMenu(this)"><svg width="21" height="21" viewBox="0 0 24 24" fill="currentColor"><path d="M12 2a6 6 0 0 0-6 6c0 7-3 9-3 9h18s-3-2-3-9a6 6 0 0 0-6-6Z"></path><path d="M10.3 21a2 2 0 0 0 3.4 0Z"></path></svg><span class="top-badge">3</span></button>
+        <button class="top-icon" title="Notifications" onclick="openNotifMenu(this)"><svg width="21" height="21" viewBox="0 0 24 24" fill="currentColor"><path d="M12 2a6 6 0 0 0-6 6c0 7-3 9-3 9h18s-3-2-3-9a6 6 0 0 0-6-6Z"></path><path d="M10.3 21a2 2 0 0 0 3.4 0Z"></path></svg><span class="top-badge">4</span></button>
         <span class="top-avatar" onclick="openAvatarMenu(this)" style="cursor:pointer" title="Account">NU</span>
         <button class="top-icon top-kc" onclick="goPublic(&#39;kc-home&#39;)" title="Knowledge Center · Help" style="width:auto;gap:7px;padding:0 12px;border-radius:9999px"><svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M2 3h6a4 4 0 0 1 4 4v14a3 3 0 0 0-3-3H2z"></path><path d="M22 3h-6a4 4 0 0 0-4 4v14a3 3 0 0 1 3-3h7z"></path></svg><span class="top-kc-lbl" style="font-size:13px;font-weight:600">Help</span></button>
       </div>
@@ -1897,8 +1903,8 @@ function closeAllModals(){
 /* ---------- FILTERS (drawer = colunas da tabela) ---------- */
 const FILTER_FIELDS = {
   'articles-search':[['Category','multiselect'],['Subcategory','multiselect'],['Tags','multiselect'],['Originator','multiselect'],['Participants','multiselect'],['Version date','date']],
-  'feedbacks-search':[['Article','text'],['Client','select'],['Site','select'],['Feedback category','multiselect'],['Date','date']],
-  'dashboard':[['Article','multiselect'],['Client','select'],['Site','select']],
+  'feedbacks-search':[['Article','text'],['Client','multiselect'],['Site','multiselect'],['Feedback category','multiselect'],['Date','date']],
+  'dashboard':[['Article','multiselect'],['Client','multiselect'],['Site','multiselect']],
 };
 const FFILTER_FIELDS = [['Client','select'],['Site','select'],['Date','date']];
 /* opções dos droplists de filtro (por coluna) */
@@ -2031,6 +2037,7 @@ function pickFilterMulti(o){
     var subT=document.querySelector('[data-fld="Subcategory"] .flt-val'); if(subT) subT.innerHTML=fltValInner('Subcategory','Select');
   }
   if(fltTrgEl){ const v=fltTrgEl.querySelector('.flt-val'); if(v) v.innerHTML=fltValInner(fltLabel, fltTrgEl.dataset.ph); }
+  refreshFilterDeps();
   scheduleChipFit();
   if(ppl) renderFltUserList(); else renderFilterDD();
 }
@@ -2038,7 +2045,7 @@ function refreshFilterDeps(){
   ['ffilter-body','filter-drawer-body'].forEach(function(id){
     const body=el(id); if(!body||!body.children.length) return;
     function fld(lbl){ return body.querySelector('[data-fld="'+lbl+'"]'); }
-    function hasVal(lbl){ const t=fld(lbl); if(!t) return false; const v=t.querySelector('.flt-val'); return !!(v && v.textContent.trim()); }
+    function hasVal(lbl){ const t=fld(lbl); if(!t) return false; const v=t.querySelector('.flt-val'); return !!(v && !v.querySelector('.flt-ph') && v.textContent.trim()); }
     function setEn(lbl,en){ const t=fld(lbl); if(t) t.classList.toggle('disabled-fld', !en); }
     if(fld('Site') && fld('Client')) setEn('Site', hasVal('Client'));                                  // Site depende de Client
     if(fld('Originator') && fld('Client') && fld('Site')) setEn('Originator', hasVal('Client') && hasVal('Site')); // Originator depende de Client+Site
@@ -2170,34 +2177,49 @@ var PLANTS=[['Curitiba','Acme Foods'],['São Paulo','Acme Foods'],['Joinville','
 function openPlantMenu(trg){
   var m=el('kebab-menu'); var r=trg.getBoundingClientRect(); m.style.width='240px';
   var pin='<svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M12 2a7 7 0 0 0-7 7c0 5.25 7 13 7 13s7-7.75 7-13a7 7 0 0 0-7-7z"/><circle cx="12" cy="9" r="2.6"/></svg>';
-  m.innerHTML = PLANTS.map(function(p){ var on=currentPlant===p[0];
-    return '<button class="km-item" style="align-items:flex-start;'+(on?'color:var(--color-primary);font-weight:700':'')+'" onclick="setPlant(\''+p[0]+'\')">'+pin+'<span style="display:flex;flex-direction:column;line-height:1.25;text-align:left"><span>'+p[0]+(on?' ✓':'')+'</span><span style="font-size:11px;color:#8a8f9a;font-weight:400">'+p[1]+'</span></span></button>';
+  var house='<svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M3 10.5 12 3l9 7.5"/><path d="M5 9.5V21h14V9.5"/></svg>';
+  var HOME_PLANT='Curitiba';
+  m.innerHTML = PLANTS.map(function(p){ var on=currentPlant===p[0]; var ic=(p[0]===HOME_PLANT)?house:pin;
+    return '<button class="km-item" style="'+(on?'color:var(--color-primary);font-weight:700':'')+'" onclick="setPlant(\''+p[0]+'\')">'+ic+'<span>'+p[0]+(on?' ✓':'')+'</span></button>';
   }).join('');
   m.style.left=Math.max(8,Math.min(r.left, window.innerWidth-248))+'px'; m.style.top=(r.bottom+6)+'px';
   m.classList.add('open'); setTimeout(function(){document.addEventListener('click',closeKebabOnce);},0);
 }
 function setPlant(p){ currentPlant=p; var l=el('loc-label'); if(l) l.textContent=p; el('kebab-menu').classList.remove('open'); showToast('Plant changed to '+p); }
 var NOTIFS=[
-  {t:'New article published in Safety & Compliance',s:'2m ago',unread:true},
-  {t:'New feedback received on ART-99',s:'1h ago',unread:true},
-  {t:'Your article is awaiting review',s:'3h ago',unread:true},
-  {t:'“Onboarding guide” reached 1,000 views',s:'Yesterday',unread:false},
-  {t:'Access permissions were updated',s:'2 days ago',unread:false}
+  {g:'newsletter', t:'Weekly digest — 8 new articles this week', s:'2m ago', unread:true},
+  {g:'newsletter', t:'“Onboarding guide” reached 1,000 views', s:'Yesterday', unread:false},
+  {g:'newsletter', t:'Monthly Knowledge Center highlights', s:'3 days ago', unread:false},
+  {g:'system', t:'Your article is awaiting review', s:'1h ago', unread:true},
+  {g:'system', t:'Access permissions were updated', s:'3h ago', unread:true},
+  {g:'system', t:'Scheduled maintenance this weekend', s:'2 days ago', unread:false},
+  {g:'communications', t:'New feedback received on ART-99', s:'30m ago', unread:true},
+  {g:'communications', t:'Renato mentioned you in a comment', s:'5h ago', unread:false}
 ];
-function openNotifMenu(trg){
-  var m=el('kebab-menu'); var r=trg.getBoundingClientRect(); m.style.width='340px';
-  var body=NOTIFS.map(function(n){
-    return '<div class="km-notif'+(n.unread?' unread':'')+'"><span class="kn-dot"></span><div style="flex:1"><div style="font-size:13px;color:#1c1c1c;line-height:1.35">'+n.t+'</div><div style="font-size:11px;color:#8a8f9a;margin-top:2px">'+n.s+'</div></div></div>';
+var NOTIF_TABS=[['newsletter','Newsletter'],['system','System'],['communications','Communications']];
+var notifTab='newsletter';
+function notifMenuInner(){
+  var tabs=NOTIF_TABS.map(function(tb){ var g=tb[0]; var un=NOTIFS.filter(function(n){return n.g===g&&n.unread;}).length; var act=notifTab===g;
+    return '<button class="ntab'+(act?' active':'')+'" onclick="event.stopPropagation();switchNotifTab(\''+g+'\')">'+tb[1]+(un?'<span class="ntab-badge">'+un+'</span>':'')+'</button>';
   }).join('');
-  m.innerHTML = '<div style="margin:-6px;border-radius:10px;overflow:hidden" onclick="event.stopPropagation()">'
+  var items=NOTIFS.filter(function(n){return n.g===notifTab;});
+  var body=items.length ? items.map(function(n){ return '<div class="km-notif'+(n.unread?' unread':'')+'"><span class="kn-dot"></span><div style="flex:1"><div style="font-size:13px;color:#1c1c1c;line-height:1.35">'+n.t+'</div><div style="font-size:11px;color:#8a8f9a;margin-top:2px">'+n.s+'</div></div></div>'; }).join('')
+    : '<div style="padding:26px 14px;text-align:center;color:#9aa0ac;font-size:13px">No notifications here</div>';
+  return '<div style="margin:-6px;border-radius:10px;overflow:hidden" onclick="event.stopPropagation()">'
     + '<div style="display:flex;align-items:center;justify-content:space-between;padding:12px 14px;border-bottom:1px solid var(--color-input)"><span style="font-weight:700;font-size:14px;color:#1c1c1c">Notifications</span><span style="font-size:12px;color:var(--color-primary);cursor:pointer" onclick="markAllNotifRead()">Mark all as read</span></div>'
-    + '<div style="max-height:340px;overflow-y:auto">'+body+'</div>'
+    + '<div class="ntabs">'+tabs+'</div>'
+    + '<div style="max-height:320px;overflow-y:auto">'+body+'</div>'
     + '<div style="padding:10px 14px;border-top:1px solid var(--color-input);text-align:center"><span style="font-size:13px;color:var(--color-primary);cursor:pointer" onclick="el(\'kebab-menu\').classList.remove(\'open\');showToast(\'Opening all notifications…\')">View all notifications</span></div>'
     + '</div>';
+}
+function openNotifMenu(trg){
+  var m=el('kebab-menu'); var r=trg.getBoundingClientRect(); m.style.width='340px';
+  m.innerHTML = notifMenuInner();
   m.style.left=Math.max(8,Math.min(r.right-340, window.innerWidth-348))+'px'; m.style.top=(r.bottom+8)+'px';
   m.classList.add('open'); setTimeout(function(){document.addEventListener('click',closeKebabOnce);},0);
 }
-function markAllNotifRead(){ NOTIFS.forEach(function(n){ n.unread=false; }); var b=document.querySelector('.top-badge'); if(b) b.style.display='none'; var mm=document.querySelectorAll('#kebab-menu .km-notif.unread'); [].forEach.call(mm,function(e){ e.classList.remove('unread'); }); showToast('All notifications marked as read'); }
+function switchNotifTab(g){ notifTab=g; el('kebab-menu').innerHTML = notifMenuInner(); }
+function markAllNotifRead(){ NOTIFS.forEach(function(n){ n.unread=false; }); var b=document.querySelector('.top-badge'); if(b) b.style.display='none'; el('kebab-menu').innerHTML = notifMenuInner(); showToast('All notifications marked as read'); }
 function openExportMenu(trg){
   const m=el('kebab-menu');
   m.style.width='200px';
@@ -2963,9 +2985,9 @@ function barChart(data, alt, labels){
   const max = Math.ceil(raw/4)*4;                       /* teto arredondado p/ 4 ticks */
   const ticks = [max, max*0.75, max*0.5, max*0.25, 0].map(t=>Math.round(t));
   const cols = vData.map((v,i)=>`
-    <div class="vcol" onclick="openDrill('${alt?'feedbacks':'views'}','${vLabels[i]}')" title="${vLabels[i]}: ${v}">
+    <div class="vcol" onclick="openDrill('${alt?'feedbacks':'views'}','${vLabels[i]}')">
       <span class="vval">${v}</span>
-      <div class="vbar${alt?' vbar-fb':''}" style="height:${Math.max(3, Math.round(v/max*100))}%"></div>
+      <div class="vbar celltip${alt?' vbar-fb':''}" data-tip="${vLabels[i]}: ${v}" style="height:${Math.max(3, Math.round(v/max*100))}%"></div>
     </div>`).join('');
   return `<div class="vchart">
     <div class="vy">${ticks.map(t=>'<span>'+t+'</span>').join('')}</div>
@@ -3050,8 +3072,7 @@ function kpiDonut(){
     </svg>
     <div style="display:flex;flex-direction:column;gap:6px">
       <span class="kpi-lbl" style="display:inline-flex;align-items:center;gap:6px">Read completion <span class="kc-tip" data-tip="% of readers who finished the article, out of those who opened it, in the selected period.">${I.info}</span></span>
-      <span class="kpi-trend" style="color:#14AE5C">${I.trendUp} +1.5%</span>
-      <span class="kpi-sub">vs previous period</span>
+      <span style="display:inline-flex;align-items:center;gap:6px;flex-wrap:wrap;font-size:12.5px;color:#4D5166"><span class="kpi-trend" style="color:#14AE5C">${I.trendUp} +1.5%</span><span>vs previous period</span></span>
     </div>
   </div>`;
 }
@@ -3077,8 +3098,7 @@ function kpiStat(iconSvg, tileBg, label, value, tooltip, trend){
     <div style="display:flex;flex-direction:column;gap:4px">
       <span class="kpi-lbl" style="display:inline-flex;align-items:center;gap:6px">${label} <span class="kc-tip" data-tip="${tooltip}">${I.info}</span></span>
       <span class="kpi-big">${value}</span>
-      ${trendHtml}
-      <span class="kpi-sub">vs previous period</span>
+      <span style="display:inline-flex;align-items:center;gap:6px;flex-wrap:wrap;font-size:12.5px;color:#4D5166">${trendHtml}<span>vs previous period</span></span>
     </div>
   </div>`;
 }
@@ -3108,25 +3128,36 @@ function kpiFeedbacks(P){
     </div>
   </div>`;
 }
+var dashBarsAll=[], dashBarsShown=0;
+function clientBarsRow(r, isSite){
+  var max=10, drill=(isSite?(r.name+' · '+r.client):r.name).replace(/'/g,'');
+  var label = isSite
+    ? '<span class="hl hl-2"><span class="hl-main">'+r.name+'</span><span class="hl-sub">'+r.client+'</span></span>'
+    : '<span class="hl">'+r.name+'</span>';
+  return '<div class="hrow celltip" data-tip="Open details">'
+    + label
+    +'<div class="hbars">'
+    +'<div style="display:flex;align-items:center;gap:8px;cursor:pointer" onclick="openDrill(\'views\',\''+drill+'\')"><div class="hbar" style="width:'+(r.v/max*100)+'%;background:var(--color-primary)"></div><span class="hval">'+r.v*2+'</span></div>'
+    +'<div style="display:flex;align-items:center;gap:8px;cursor:pointer" onclick="openDrill(\'feedbacks\',\''+drill+'\')"><div class="hbar" style="width:'+(r.fb/max*100)+'%;background:#a8aede"></div><span class="hval" style="color:#4D5166">'+r.fb*2+'</span></div>'
+    +'</div></div>';
+}
+function clientBarsBatch(n){
+  var isSite=dashViewsTab==='Site', end=Math.min(dashBarsShown+n, dashBarsAll.length), html='';
+  for(var i=dashBarsShown;i<end;i++){ html+=clientBarsRow(dashBarsAll[i], isSite); }
+  dashBarsShown=end; return html;
+}
 function clientBars(){
-  const isSite = dashViewsTab==='Site';
-  const data=[9,8,7,6,5,4,4,3], fb=[7,6,5,5,4,3,2,2], max=10;
-  /* site = cidade da planta; mostra o cliente p/ desambiguar sites de mesmo nome */
-  const clients=['Acme Foods','Beta Corp','Acme Foods','Delta Ind.','Beta Corp','Omega SA','Delta Ind.','Acme Foods'];
-  const rows = data.map(function(v,i){
-    var name = isSite ? ('Site name '+(i+1)) : ('Client name '+(i+1));
-    var label = isSite
-      ? '<span class="hl hl-2"><span class="hl-main">'+name+'</span><span class="hl-sub">'+clients[i]+'</span></span>'
-      : '<span class="hl">'+name+'</span>';
-    var drill = isSite ? (name+' · '+clients[i]) : name;
-    return '<div class="hrow" title="Open details">'
-      + label
-      +'<div class="hbars">'
-      +'<div style="display:flex;align-items:center;gap:8px;cursor:pointer" onclick="openDrill(\'views\',\''+drill+'\')"><div class="hbar" style="width:'+(v/max*100)+'%;background:var(--color-primary)"></div><span class="hval">'+v*2+'</span></div>'
-      +'<div style="display:flex;align-items:center;gap:8px;cursor:pointer" onclick="openDrill(\'feedbacks\',\''+drill+'\')"><div class="hbar" style="width:'+(fb[i]/max*100)+'%;background:#a8aede"></div><span class="hval" style="color:#4D5166">'+fb[i]*2+'</span></div>'
-      +'</div></div>';
-  }).join('');
-  return rows;
+  var isSite = dashViewsTab==='Site';
+  var total = isSite ? 1000 : 200;                 /* muitos registros → rolagem + carregamento dinâmico (#178/#179) */
+  var pool=['Acme Foods','Beta Corp','Delta Ind.','Omega SA','Nordic Steel','Vertex Auto'];
+  dashBarsAll=[];
+  for(var i=0;i<total;i++){ var v=((i*37+13)%10)+1, fb=Math.max(1, v-1-((i*11)%3)); dashBarsAll.push({ name:(isSite?'Site name ':'Client name ')+(i+1), client:pool[i%pool.length], v:v, fb:fb }); }
+  dashBarsShown=0;
+  return clientBarsBatch(24);
+}
+function onClientBarsScroll(){
+  var sc=document.getElementById('cbScroll'); if(!sc) return;
+  if(sc.scrollTop+sc.clientHeight >= sc.scrollHeight-48 && dashBarsShown<dashBarsAll.length){ sc.insertAdjacentHTML('beforeend', clientBarsBatch(24)); }
 }
 function renderDashboard(){
   const P = PERIOD[dashPeriod];
@@ -3135,7 +3166,7 @@ function renderDashboard(){
       <td style="overflow:hidden;text-overflow:ellipsis;white-space:nowrap">Lorem Ipsum is simply dummy text of the printing and typesetting industry…</td>
       <td class="cols-mobile-hidden">Category</td>
       <td class="cols-mobile-hidden">Subcategory</td>
-      <td class="cols-mobile-hidden"><span style="display:inline-flex;gap:5px;align-items:center">${I.eye}000</span></td></tr>`).join('');
+      <td><span style="display:inline-flex;gap:5px;align-items:center">${I.eye}000</span></td></tr>`).join('');
   const fbSamples=['Clear and concise — solved my problem in a couple of minutes.','This article is missing the part about configuring SSO for external users, which is exactly what I needed today.','The step-by-step screenshots made it really easy to follow. Thank you!','Some screenshots are outdated and no longer match the interface after the last platform update, so I got confused midway.','Great overview, though a short video walkthrough would help a lot for new users.','I followed every step and it still did not work — the export button described in section 3 does not exist anymore.','Exactly what I was looking for.','The sample data does not reflect a real production scenario; more realistic examples would make this much more useful.','Very helpful, well structured and easy to search.','Please add a troubleshooting section covering the most common permission errors when connecting the integration.'];
   const fbRows=fbSamples.map(function(t){ return `
     <tr><td><span class="row-link" style="cursor:pointer" onclick="openArticleModal('view','feedbacks')">ART-99</span></td><td class="celltip" data-tip="${t}"><span style="display:block;overflow:hidden;text-overflow:ellipsis;white-space:nowrap">${t}</span></td></tr>`; }).join('');
@@ -3176,7 +3207,7 @@ function renderDashboard(){
        <div style="display:flex;justify-content:center;gap:24px;border-bottom:1px solid var(--color-input);padding-bottom:10px;margin-bottom:16px;font-size:14px">
          ${viewsTab('Client')}${viewsTab('Site')}
        </div>
-       <div class="hchart">${clientBars()}</div>
+       <div class="hchart" id="cbScroll" onscroll="onClientBarsScroll()">${clientBars()}</div>
        <div style="margin-top:12px;font-size:12px;color:#4D5166;text-align:right">Total: <b style="color:#0D122F">95</b> views · <b style="color:#0D122F">83</b> feedbacks</div>
      </div>
    </div>
@@ -3191,7 +3222,7 @@ function renderDashboard(){
          <th style="width:55%"><span class="th-sort">ARTICLE ${I.chevDownSm}</span></th>
          <th class="cols-mobile-hidden" style="width:15%">CATEGORY</th>
          <th class="cols-mobile-hidden" style="width:15%">SUBCATEGORY</th>
-         <th class="cols-mobile-hidden" style="width:6%">VIEWS</th>
+         <th style="width:6%">VIEWS</th>
        </tr></thead><tbody id="dash-top-body">${topRows}</tbody></table></div>
      </div>
      <div class="card card-pad">
@@ -3208,13 +3239,14 @@ function openDrill(kind, label){
   el('drill-title').textContent = (isViews?'Views':'Feedbacks') + ' - ' + label;
   let head, rows;
   if(isViews){
-    head = `<tr><th><span class="th-sort">NUMBER ${I.chevDownSm}</span></th><th><span class="th-sort">ARTICLE ${I.chevDownSm}</span></th><th style="text-align:right">VIEWS</th></tr>`;
-    rows = Array.from({length:16}).map(()=>`<tr><td><span class="row-link" style="cursor:pointer" onclick="openArticleModal('view')">ART-99</span></td><td class="celltip" data-tip="Lorem Ipsum is simply dummy text of the printing and typesetting industry."><span style="display:block;max-width:320px;overflow:hidden;text-overflow:ellipsis;white-space:nowrap">Lorem Ipsum is simply dummy text of the printing and typesetting industry.</span></td><td><span style="display:inline-flex;gap:5px;align-items:center">${I.eye}000</span></td></tr>`).join('');
+    head = `<tr><th style="width:110px"><span class="th-sort">NUMBER ${I.chevDownSm}</span></th><th style="text-align:right"><span class="th-sort">VIEWS ${I.chevDownSm}</span></th></tr>`;
+    rows = Array.from({length:16}).map(()=>`<tr><td><span class="row-link" style="cursor:pointer" onclick="openArticleModal('view')">ART-99</span></td><td style="text-align:right"><span style="display:inline-flex;gap:5px;align-items:center;justify-content:flex-end">${I.eye}000</span></td></tr>`).join('');
   } else {
-    head = `<tr><th><span class="th-sort">FEEDBACK ${I.chevDownSm}</span></th><th><span class="th-sort">SOURCE ${I.chevDownSm}</span></th><th>DATE</th></tr>`;
-    rows = Array.from({length:16}).map(()=>`<tr><td>Lorem Ipsum is si…</td><td class="celltip" data-tip="Lorem Ipsum is simply dummy text of the printing and typesetting industry."><span class="row-link" style="cursor:pointer" onclick="openArticleModal('view','feedbacks')">ART-99</span></td><td>00/00/0000</td></tr>`).join('');
+    head = `<tr><th style="width:110px"><span class="th-sort">NUMBER ${I.chevDownSm}</span></th><th><span class="th-sort">FEEDBACK ${I.chevDownSm}</span></th></tr>`;
+    rows = Array.from({length:16}).map(()=>`<tr><td><span class="row-link" style="cursor:pointer" onclick="openArticleModal('view','feedbacks')">ART-99</span></td><td class="celltip celltip-r" data-tip="Lorem Ipsum is simply dummy text of the printing and typesetting industry."><span style="display:block;overflow:hidden;text-overflow:ellipsis;white-space:nowrap">Lorem Ipsum is simply dummy text of the printing and typesetting industry.</span></td></tr>`).join('');
   }
-  el('drill-body').innerHTML = `<table class="tbl" style="width:100%"><thead style="position:sticky;top:0;z-index:1">${head}</thead><tbody>${rows}</tbody></table>`;
+  el('drill-body').innerHTML = `<table class="tbl" style="width:100%;table-layout:fixed"><thead style="position:sticky;top:0;z-index:1">${head}</thead><tbody>${rows}</tbody></table>`;
+  el('drill-body').style.overflowX='hidden';
   el('overlay').classList.add('open'); el('drill-drawer').classList.add('open');
 }
 function closeDrill(){ el('drill-drawer').classList.remove('open'); maybeCloseOverlay(); }
@@ -3808,7 +3840,7 @@ function articleTabBody(){
       <td class="cols-mobile-hidden">Client name</td><td class="cols-mobile-hidden">Site name</td><td>00/00/0000</td></tr>`).join('');
     return `<div style="display:flex;align-items:center;gap:10px;margin:18px 0">
         <div class="search-box" style="width:280px"><input class="input" placeholder="Search"><span class="s-ico">${I.search}</span></div>
-        <button class="icon-btn flt-btn${ffApplied?' flt-on':''}" id="ff-btn" onclick="openFFilter()">${I.filter}</button>
+        <button class="icon-btn flt-btn${fltApplied['feedbacks-search']?' flt-on':''}" onclick="openFilter('feedbacks-search')">${I.filter}</button>
         <span style="margin-left:auto">${feedbackLangSelector()}</span></div>
       <div style="overflow-x:auto"><table class="tbl"><thead><tr><th><span class="th-sort">FEEDBACK ${I.chevDownSm}</span></th><th class="cols-mobile-hidden">CLIENT</th><th class="cols-mobile-hidden">SITE</th><th>DATE</th></tr></thead><tbody>${rows}</tbody></table></div>${pagination(48)}`;
   }
