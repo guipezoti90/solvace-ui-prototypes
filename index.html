@@ -2222,10 +2222,27 @@ function clearFilterFields(bodyId){ var body=el(bodyId); if(!body) return;
 /* menu Exportar (3 pontinhos das telas de busca) */
 const ICO_XLS='<svg width="18" height="18" viewBox="0 0 24 24" fill="#4a4a4a"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8l-6-6z"/><rect x="8" y="12" width="8" height="1.7" rx=".8" fill="#fff"/><rect x="8" y="15.4" width="8" height="1.7" rx=".8" fill="#fff"/></svg>';
 const ICO_PDF='<svg width="18" height="18" viewBox="0 0 24 24" fill="#4a4a4a"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8l-6-6z"/><path d="M12 10.5 15.2 17H8.8z" fill="#fff"/><circle cx="12" cy="15" r="1.1" fill="#4a4a4a"/></svg>';
+function avatarAction(name){ el('kebab-menu').classList.remove('open'); }   /* opções sem função por ora (placeholder) */
 function openAvatarMenu(trg){
-  var m=el('kebab-menu'); m.style.width='210px';
-  m.innerHTML = '<button class="km-item" onclick="event.stopPropagation();openPlantMenu(this)"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M12 2a7 7 0 0 0-7 7c0 5.25 7 13 7 13s7-7.75 7-13a7 7 0 0 0-7-7z"/><circle cx="12" cy="9" r="2.6"/></svg> '+currentPlant+'</button>';
-  var r=trg.getBoundingClientRect(); m.style.left=Math.max(8, r.right-210)+'px'; m.style.top=(r.bottom+6)+'px';
+  var m=el('kebab-menu'); m.style.width='248px';
+  var pin='<svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M12 2a7 7 0 0 0-7 7c0 5.25 7 13 7 13s7-7.75 7-13a7 7 0 0 0-7-7z"/><circle cx="12" cy="9" r="2.6"/></svg>';
+  var gear='<svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="3"/><path d="M19.4 15a1.65 1.65 0 0 0 .33 1.82l.06.06a2 2 0 0 1-2.83 2.83l-.06-.06a1.65 1.65 0 0 0-1.82-.33 1.65 1.65 0 0 0-1 1.51V21a2 2 0 0 1-4 0v-.09A1.65 1.65 0 0 0 9 19.4a1.65 1.65 0 0 0-1.82.33l-.06.06a2 2 0 0 1-2.83-2.83l.06-.06a1.65 1.65 0 0 0 .33-1.82 1.65 1.65 0 0 0-1.51-1H3a2 2 0 0 1 0-4h.09A1.65 1.65 0 0 0 4.6 9a1.65 1.65 0 0 0-.33-1.82l-.06-.06a2 2 0 0 1 2.83-2.83l.06.06a1.65 1.65 0 0 0 1.82.33H9a1.65 1.65 0 0 0 1-1.51V3a2 2 0 0 1 4 0v.09a1.65 1.65 0 0 0 1 1.51 1.65 1.65 0 0 0 1.82-.33l.06-.06a2 2 0 0 1 2.83 2.83l-.06.06a1.65 1.65 0 0 0-.33 1.82V9a1.65 1.65 0 0 0 1.51 1H21a2 2 0 0 1 0 4h-.09a1.65 1.65 0 0 0-1.51 1z"/></svg>';
+  var bell='<svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M18 8A6 6 0 0 0 6 8c0 7-3 9-3 9h18s-3-2-3-9"/><path d="M13.73 21a2 2 0 0 1-3.46 0"/></svg>';
+  var lock='<svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="3" y="11" width="18" height="11" rx="2"/><path d="M7 11V7a5 5 0 0 1 10 0v4"/></svg>';
+  var users='<svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M16 21v-2a4 4 0 0 0-4-4H6a4 4 0 0 0-4 4v2"/><circle cx="9" cy="7" r="4"/><path d="M22 21v-2a4 4 0 0 0-3-3.87"/><path d="M16 3.13a4 4 0 0 1 0 7.75"/></svg>';
+  var exit='<svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M9 21H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h4"/><path d="M16 17l5-5-5-5"/><path d="M21 12H9"/></svg>';
+  var sep='<div style="height:1px;background:var(--color-input);margin:4px 8px"></div>';
+  var html='';
+  if(window.innerWidth<=640) html += '<button class="km-item" onclick="event.stopPropagation();openPlantMenu(this)">'+pin+'<span>'+currentPlant+'</span></button>'+sep;
+  html += '<button class="km-item" onclick="avatarAction(\'Settings\')">'+gear+'<span>Settings</span></button>'
+        + '<button class="km-item" onclick="avatarAction(\'Notification management\')">'+bell+'<span>Notification management</span></button>'
+        + '<button class="km-item" onclick="avatarAction(\'Change password\')">'+lock+'<span>Change password</span></button>'
+        + '<button class="km-item" onclick="avatarAction(\'Switch user\')">'+users+'<span>Switch user</span></button>'
+        + sep
+        + '<button class="km-item" onclick="avatarAction(\'Logout\')">'+exit+'<span>Logout</span></button>'
+        + '<div style="padding:8px 14px 6px;text-align:center;font-size:11px;color:#9aa0ac">Version 3-273-10</div>';
+  m.innerHTML = html;
+  var r=trg.getBoundingClientRect(); m.style.left=Math.max(8, r.right-248)+'px'; m.style.top=(r.bottom+6)+'px';
   m.classList.add('open'); setTimeout(function(){document.addEventListener('click',closeKebabOnce);},0);
 }
 function toggleTopSearch(){ var b=el('top-search-m'); if(!b) return; b.classList.add('open'); var i=el('top-search-m-input'); if(i){ i.value=''; setTimeout(function(){ try{i.focus();}catch(e){} },30); } }
@@ -2263,31 +2280,50 @@ function notifAvatar(name){
   var h=0; for(var i=0;i<name.length;i++) h=(h*31+name.charCodeAt(i))>>>0;
   return '<div class="kn-av" style="background:'+NOTIF_AV_COLORS[h%NOTIF_AV_COLORS.length]+'">'+ini.toUpperCase()+'</div>';
 }
+function notifItemHtml(n){
+  return '<div class="km-notif'+(n.unread?' unread':'')+'">'
+    + notifAvatar(n.who)
+    + '<div class="kn-body"><div class="kn-top"><span class="kn-mod">'+n.mod+'</span><span class="kn-time">'+n.s+'</span></div>'
+    + '<div class="kn-msg"><b>'+n.who+'</b> '+n.t+'</div></div>'
+    + (n.unread?'<span class="kn-dot"></span>':'')
+    + '</div>';
+}
+function notifPool(group){                                    /* curados + gerados → volume p/ rolagem com lazy load (#203) */
+  var curated=NOTIFS.filter(function(n){return n.g===group;});
+  var authors=['Renato Alves','Julie Zulemi','Marina Souza','Steve Loren','Ana Prado','Lucas Meyer','Sofia Rocha','Bruno Dias'];
+  var mods=['Knowledge Center','Digital Obeya','Action Plans','Access','Platform'];
+  var acts=['wrote a new comment.','left new feedback on ART-99.','mentioned you in a comment.','updated the article.','shared a document with you.'];
+  var times=['1h ago','4h ago','Yesterday','2 days ago','4 days ago','1 week ago','2 weeks ago','3 weeks ago','1 month ago','2 months ago','3 months ago'];
+  var gen=[];
+  for(var i=0;i<28;i++) gen.push({g:group, mod:mods[i%mods.length], who:authors[i%authors.length], t:acts[i%acts.length], s:times[i%times.length], unread:false});
+  return curated.concat(gen);
+}
+var notifShown=0, notifPoolCache=[];
+function notifBatch(n){
+  var end=Math.min(notifShown+n, notifPoolCache.length), html='';
+  for(var i=notifShown;i<end;i++) html+=notifItemHtml(notifPoolCache[i]);
+  notifShown=end; return html;
+}
+function onNotifScroll(){
+  var sc=document.getElementById('notifScroll'); if(!sc) return;
+  if(sc.scrollTop+sc.clientHeight >= sc.scrollHeight-40 && notifShown<notifPoolCache.length) sc.insertAdjacentHTML('beforeend', notifBatch(10));
+}
 function notifMenuInner(){
   var tabs=NOTIF_TABS.map(function(tb){ var g=tb[0]; var un=NOTIFS.filter(function(n){return n.g===g&&n.unread;}).length; var act=notifTab===g;
     return '<button class="ntab'+(act?' active':'')+'" onclick="event.stopPropagation();switchNotifTab(\''+g+'\')">'+tb[1]+(un?'<span class="ntab-badge">'+un+'</span>':'')+'</button>';
   }).join('');
-  var items=NOTIFS.filter(function(n){return n.g===notifTab;});
-  var body=items.length ? items.map(function(n){
-      return '<div class="km-notif'+(n.unread?' unread':'')+'">'
-        + notifAvatar(n.who)
-        + '<div class="kn-body"><div class="kn-top"><span class="kn-mod">'+n.mod+'</span><span class="kn-time">'+n.s+'</span></div>'
-        + '<div class="kn-msg"><b>'+n.who+'</b> '+n.t+'</div></div>'
-        + (n.unread?'<span class="kn-dot"></span>':'')
-        + '</div>';
-    }).join('')
-    : '<div style="padding:26px 14px;text-align:center;color:#9aa0ac;font-size:13px">No notifications here</div>';
+  notifPoolCache=notifPool(notifTab); notifShown=0;
+  var body = notifPoolCache.length ? notifBatch(12) : '<div style="padding:26px 14px;text-align:center;color:#9aa0ac;font-size:13px">No notifications here</div>';
   return '<div style="margin:-6px;border-radius:10px;overflow:hidden" onclick="event.stopPropagation()">'
     + '<div style="display:flex;align-items:center;justify-content:space-between;padding:12px 14px;border-bottom:1px solid var(--color-input)"><span style="font-weight:700;font-size:14px;color:#1c1c1c">Notifications</span><span style="font-size:12px;color:var(--color-primary);cursor:pointer" onclick="markAllNotifRead()">Mark all as read</span></div>'
     + '<div class="ntabs">'+tabs+'</div>'
-    + '<div style="max-height:320px;overflow-y:auto">'+body+'</div>'
-    + '<div style="padding:10px 14px;border-top:1px solid var(--color-input);text-align:center"><span style="font-size:13px;color:var(--color-primary);cursor:pointer" onclick="el(\'kebab-menu\').classList.remove(\'open\');showToast(\'Opening all notifications…\')">View all notifications</span></div>'
+    + '<div id="notifScroll" style="max-height:440px;overflow-y:auto" onscroll="onNotifScroll()">'+body+'</div>'
     + '</div>';
 }
 function openNotifMenu(trg){
-  var m=el('kebab-menu'); var r=trg.getBoundingClientRect(); m.style.width='340px';
+  var m=el('kebab-menu'); var r=trg.getBoundingClientRect(); m.style.width='380px';
   m.innerHTML = notifMenuInner();
-  m.style.left=Math.max(8,Math.min(r.right-340, window.innerWidth-348))+'px'; m.style.top=(r.bottom+8)+'px';
+  m.style.left=Math.max(8,Math.min(r.right-380, window.innerWidth-388))+'px'; m.style.top=(r.bottom+8)+'px';
   m.classList.add('open'); setTimeout(function(){document.addEventListener('click',closeKebabOnce);},0);
 }
 function switchNotifTab(g){ notifTab=g; el('kebab-menu').innerHTML = notifMenuInner(); }
