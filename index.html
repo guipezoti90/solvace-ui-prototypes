@@ -326,7 +326,7 @@
   .sb-leg b{ color:#0D122F }
   .dot{ display:inline-block;width:8px;height:8px;border-radius:2px;margin-right:5px;vertical-align:1px }
   .chart2{ display:grid;grid-template-columns:1fr 1fr;gap:16px;margin-bottom:16px }
-  .hchart{ position:relative;display:flex;flex-direction:column;gap:12px;padding-top:4px;flex:1 1 auto;min-height:260px;overflow-y:auto;overflow-x:hidden }
+  .hchart{ position:relative;display:flex;flex-direction:column;gap:12px;padding-top:4px;flex:1 1 0;min-height:0;overflow-y:auto;overflow-x:hidden }
   .hrow{ display:flex;align-items:center;gap:10px;cursor:pointer }
   .hrow .hl{ width:110px;flex:0 0 110px;font-size:12px;color:#4D5166;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;text-align:right }
   .hbars{ flex:1;display:flex;flex-direction:column;gap:3px }
@@ -3240,7 +3240,7 @@ function renderDashboard(){
        </div>
        ${barChart(P.fb,true,P.labels,P.years)}
      </div>
-     <div class="card card-pad" style="display:flex;flex-direction:column">
+     <div class="card card-pad" style="display:flex;flex-direction:column;min-height:0">
        <div class="card-head"><span class="ttl">Views & feedbacks by ${dashViewsTab.toLowerCase()}</span>
          <span class="sb-leg" style="margin-left:auto">
            <span><span class="dot" style="background:var(--color-primary)"></span>Views</span>
@@ -3276,7 +3276,20 @@ function renderDashboard(){
        ${pagination(131)}
      </div>
    </div>`;
+  (window.requestAnimationFrame||setTimeout)(syncByClientHeight);
 }
+/* by-client: card fica do tamanho do card da esquerda e rola internamente (evita esticar a esquerda e sobrar espaço branco) */
+function syncByClientHeight(){
+  var grid=document.querySelector('#admin-view .chart2');
+  if(!grid) return;
+  var left=grid.children[0], right=grid.children[1], sc=document.getElementById('cbScroll');
+  if(!left||!right||!sc) return;
+  if(window.innerWidth<=1100){ right.style.height=''; return; }   /* empilhado (mobile/tablet): não sincroniza */
+  right.style.height='0px';                 /* zera o by-client para medir a altura natural da esquerda */
+  var h=left.offsetHeight;                   /* leitura força reflow com o by-client zerado */
+  right.style.height=h+'px';                 /* by-client = altura da esquerda; a lista (.hchart) rola dentro */
+}
+window.addEventListener('resize', function(){ (window.requestAnimationFrame||setTimeout)(syncByClientHeight); });
 /* Drilldown sempre como drawer à direita (altura total + scroll interno) */
 function openDrill(kind, label){
   const isViews = kind==='views';
