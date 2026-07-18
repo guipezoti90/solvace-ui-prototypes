@@ -700,10 +700,15 @@
   .flt-sec .flt-fld{ margin-bottom:14px } .flt-sec .flt-fld:last-child{ margin-bottom:0 }
   .km-item{ display:flex; align-items:center; gap:8px; width:100%; padding:8px 10px; border-radius:7px; border:0; background:transparent; font-size:14px; color:#1c1c1c; text-align:left; cursor:pointer } .km-item:hover{ background:var(--color-muted) }
   /* notificações (dropdown do sino) */
-  .km-notif{ display:flex; gap:10px; padding:10px 14px; cursor:pointer; align-items:flex-start } .km-notif:hover{ background:var(--color-muted) }
-  .km-notif .kn-dot{ width:8px; height:8px; border-radius:50%; background:transparent; margin-top:5px; flex:0 0 8px }
-  .km-notif.unread .kn-dot{ background:var(--color-primary) }
-  .km-notif.unread{ background:#f7f8ff }
+  .km-notif{ display:flex; gap:11px; padding:12px 14px; cursor:pointer; align-items:flex-start; border-bottom:1px solid #F0F1F4; transition:background .12s } .km-notif:hover{ background:#F7F8FB } .km-notif:last-child{ border-bottom:0 }
+  .km-notif.unread{ background:#F7F8FF } .km-notif.unread:hover{ background:#EEF0FF }
+  .kn-av{ flex:0 0 34px; width:34px; height:34px; border-radius:9999px; display:flex; align-items:center; justify-content:center; color:#fff; font-size:12px; font-weight:700; overflow:hidden }
+  .kn-body{ flex:1; min-width:0 }
+  .kn-top{ display:flex; align-items:center; gap:8px; margin-bottom:4px }
+  .kn-mod{ font-size:10px; font-weight:700; letter-spacing:.05em; text-transform:uppercase; color:#5A607A; background:#EEF0F5; padding:2px 8px; border-radius:6px; white-space:nowrap; overflow:hidden; text-overflow:ellipsis }
+  .kn-time{ margin-left:auto; font-size:11.5px; color:#9aa0ac; white-space:nowrap; flex:0 0 auto }
+  .kn-msg{ font-size:13px; color:#3a3f4b; line-height:1.4 } .kn-msg b{ color:#1c1c1c; font-weight:600 }
+  .kn-dot{ flex:0 0 8px; width:8px; height:8px; border-radius:50%; background:var(--color-primary); margin:6px 0 0 6px }
   /* abas do dropdown de notificações (#161) */
   .ntabs{ display:flex; border-bottom:1px solid var(--color-input) }
   .ntab{ flex:1; display:inline-flex; align-items:center; justify-content:center; gap:5px; padding:10px 4px; border:0; background:transparent; font-size:12px; font-weight:600; color:#717182; cursor:pointer; border-bottom:2px solid transparent; white-space:nowrap }
@@ -1917,7 +1922,7 @@ function closeAllModals(){
 /* ---------- FILTERS (drawer = colunas da tabela) ---------- */
 const FILTER_FIELDS = {
   'articles-search':[['Category','multiselect'],['Subcategory','multiselect'],['Tags','multiselect'],['Originator','multiselect'],['Participants','multiselect'],['Version date','date']],
-  'feedbacks-search':[['Article','text'],['Client','select'],['Site','multiselect'],['Feedback category','multiselect'],['Date','date']],
+  'feedbacks-search':[['Article','multiselect'],['Client','select'],['Site','multiselect'],['Feedback category','multiselect'],['Date','date']],
   'dashboard':[['Article','multiselect'],['Client','select'],['Site','multiselect']],
 };
 const FFILTER_FIELDS = [['Client','select'],['Site','select'],['Date','date']];
@@ -1984,7 +1989,7 @@ window.addEventListener('resize', function(){ scheduleChipFit(); if(el('menu-mod
 function removeFltChip(label,o){
   const arr=fltSel[label]||[]; const i=arr.indexOf(o); if(i>=0) arr.splice(i,1);
   document.querySelectorAll('[data-fld="'+label+'"] .flt-val').forEach(function(v){ var t=v.closest('[data-fld]'); v.innerHTML=fltValInner(label,(t&&t.dataset.ph)||'Select'); });
-  scheduleChipFit();
+  scheduleChipFit(); refreshFilterDeps();
   if(el('sel-dd').classList.contains('open') && fltLabel===label){ if(el('flt-user-list')) renderFltUserList(); else renderFilterDD(); }
 }
 function userSearchBox(id,handler){
@@ -2030,17 +2035,16 @@ function renderFilterDD(){
     const sel=fltSel[fltLabel]||[];
     list.innerHTML = opts.map(o=>`<div class="idd-item" onclick="pickFilterMulti('${o.replace(/'/g,"\\'")}')"><span class="cbx" aria-checked="${sel.indexOf(o)>=0?'true':'false'}">${I.check}</span>${ppl?fltAvatar(o):''}<span style="flex:1">${o}</span></div>`).join('');
   } else {
-    list.innerHTML = opts.map(o=>`<div class="idd-item" onclick="pickFilterOpt('${o.replace(/'/g,"\\'")}')">${ppl?fltAvatar(o):''}<span style="flex:1">${o}</span></div>`).join('');
+    const sel=fltSel[fltLabel]||[];
+    list.innerHTML = opts.map(o=>`<div class="idd-item" onclick="pickFilterOpt('${o.replace(/'/g,"\\'")}')">${ppl?fltAvatar(o):''}<span style="flex:1">${o}</span>${sel.indexOf(o)>=0?'<span style="color:var(--color-primary);display:inline-flex">'+I.check+'</span>':''}</div>`).join('');
   }
 }
 function pickFilterOpt(o){
-  if(fltTrgEl){ const v=fltTrgEl.querySelector('.flt-val');
-    if(v){
-      if(v.textContent.trim()===o){ v.innerHTML='<span class="flt-ph">'+(fltTrgEl.dataset.ph||fltLabel)+'</span>'; }  /* clicar no item já selecionado desseleciona */
-      else v.innerHTML=`<span style="color:#1c1c1c">${o}</span>`;
-    }
-  }
-  el('sel-dd').classList.remove('open'); refreshFilterDeps();
+  const arr=fltSel[fltLabel]||(fltSel[fltLabel]=[]);
+  if(arr.length===1 && arr[0]===o) fltSel[fltLabel]=[];   /* clicar no já selecionado desseleciona */
+  else fltSel[fltLabel]=[o];                              /* seleção única: substitui o valor anterior */
+  if(fltTrgEl){ const v=fltTrgEl.querySelector('.flt-val'); if(v) v.innerHTML=fltValInner(fltLabel, fltTrgEl.dataset.ph); }  /* vira tag com X, igual ao multi */
+  el('sel-dd').classList.remove('open'); refreshFilterDeps(); scheduleChipFit();
 }
 function pickFilterMulti(o){
   const arr=fltSel[fltLabel]||(fltSel[fltLabel]=[]); const i=arr.indexOf(o); if(i>=0) arr.splice(i,1); else arr.push(o);
@@ -2229,23 +2233,37 @@ function openPlantMenu(trg){
 }
 function setPlant(p){ currentPlant=p; var l=el('loc-label'); if(l) l.textContent=p; el('kebab-menu').classList.remove('open'); showToast('Plant changed to '+p); }
 var NOTIFS=[
-  {g:'newsletter', t:'Weekly digest — 8 new articles this week', s:'2m ago', unread:true},
-  {g:'newsletter', t:'“Onboarding guide” reached 1,000 views', s:'Yesterday', unread:false},
-  {g:'newsletter', t:'Monthly Knowledge Center highlights', s:'3 days ago', unread:false},
-  {g:'system', t:'Your article is awaiting review', s:'1h ago', unread:true},
-  {g:'system', t:'Access permissions were updated', s:'3h ago', unread:true},
-  {g:'system', t:'Scheduled maintenance this weekend', s:'2 days ago', unread:false},
-  {g:'communications', t:'New feedback received on ART-99', s:'30m ago', unread:true},
-  {g:'communications', t:'Renato mentioned you in a comment', s:'5h ago', unread:false}
+  {g:'newsletter', mod:'Knowledge Center', who:'Solvace', t:'— weekly digest: 8 new articles this week', s:'2m ago', unread:true},
+  {g:'newsletter', mod:'Knowledge Center', who:'Solvace', t:'— “Onboarding guide” reached 1,000 views', s:'Yesterday', unread:false},
+  {g:'newsletter', mod:'Knowledge Center', who:'Solvace', t:'— monthly Knowledge Center highlights', s:'3 days ago', unread:false},
+  {g:'system', mod:'Knowledge Center', who:'System', t:'— your article is awaiting review', s:'1h ago', unread:true},
+  {g:'system', mod:'Access', who:'System', t:'— access permissions were updated', s:'3h ago', unread:true},
+  {g:'system', mod:'Platform', who:'System', t:'— scheduled maintenance this weekend', s:'2 days ago', unread:false},
+  {g:'communications', mod:'Knowledge Center', who:'Renato Alves', t:'left new feedback on ART-99.', s:'30m ago', unread:true},
+  {g:'communications', mod:'Digital Obeya', who:'Julie Zulemi', t:'mentioned you in a comment.', s:'5h ago', unread:false}
 ];
 var NOTIF_TABS=[['newsletter','Newsletter'],['system','System'],['communications','Communications']];
 var notifTab='newsletter';
+var NOTIF_AV_COLORS=['#7C3AED','#0EA5E9','#059669','#D97706','#DB2777','#4F46E5','#0D9488','#DC2626','#2b2f42'];
+function notifAvatar(name){
+  name=name||'?'; var p=name.trim().split(/\s+/);
+  var ini=((p[0]&&p[0][0])||'')+(p.length>1?(p[p.length-1][0]||''):'');
+  var h=0; for(var i=0;i<name.length;i++) h=(h*31+name.charCodeAt(i))>>>0;
+  return '<div class="kn-av" style="background:'+NOTIF_AV_COLORS[h%NOTIF_AV_COLORS.length]+'">'+ini.toUpperCase()+'</div>';
+}
 function notifMenuInner(){
   var tabs=NOTIF_TABS.map(function(tb){ var g=tb[0]; var un=NOTIFS.filter(function(n){return n.g===g&&n.unread;}).length; var act=notifTab===g;
     return '<button class="ntab'+(act?' active':'')+'" onclick="event.stopPropagation();switchNotifTab(\''+g+'\')">'+tb[1]+(un?'<span class="ntab-badge">'+un+'</span>':'')+'</button>';
   }).join('');
   var items=NOTIFS.filter(function(n){return n.g===notifTab;});
-  var body=items.length ? items.map(function(n){ return '<div class="km-notif'+(n.unread?' unread':'')+'"><span class="kn-dot"></span><div style="flex:1"><div style="font-size:13px;color:#1c1c1c;line-height:1.35">'+n.t+'</div><div style="font-size:11px;color:#8a8f9a;margin-top:2px">'+n.s+'</div></div></div>'; }).join('')
+  var body=items.length ? items.map(function(n){
+      return '<div class="km-notif'+(n.unread?' unread':'')+'">'
+        + notifAvatar(n.who)
+        + '<div class="kn-body"><div class="kn-top"><span class="kn-mod">'+n.mod+'</span><span class="kn-time">'+n.s+'</span></div>'
+        + '<div class="kn-msg"><b>'+n.who+'</b> '+n.t+'</div></div>'
+        + (n.unread?'<span class="kn-dot"></span>':'')
+        + '</div>';
+    }).join('')
     : '<div style="padding:26px 14px;text-align:center;color:#9aa0ac;font-size:13px">No notifications here</div>';
   return '<div style="margin:-6px;border-radius:10px;overflow:hidden" onclick="event.stopPropagation()">'
     + '<div style="display:flex;align-items:center;justify-content:space-between;padding:12px 14px;border-bottom:1px solid var(--color-input)"><span style="font-weight:700;font-size:14px;color:#1c1c1c">Notifications</span><span style="font-size:12px;color:var(--color-primary);cursor:pointer" onclick="markAllNotifRead()">Mark all as read</span></div>'
@@ -2470,7 +2488,16 @@ function renderArticlesSearch(){
 
 /* ----- Feedbacks search ----- */
 /* seletor de idioma p/ tradução automática dos feedbacks (mock) */
-function feedbackLangSelector(){ return `<select class="input" style="width:auto;min-width:120px;height:38px;padding:0 10px;flex:none" title="Translate feedbacks" onchange="if(this.value)showToast('Feedbacks translated to '+this.value)"><option value="">Language</option><option>English</option><option>Português</option><option>Español</option><option>Français</option><option>Deutsch</option><option>Italiano</option></select>`; }
+var fbLang='';
+var FB_LANGS=['English','Português','Español','Français','Deutsch','Italiano'];
+function feedbackLangSelector(){ return `<button class="select-trigger" style="width:auto;min-width:160px;height:38px;flex:none" title="Translate feedbacks" onclick="openLangMenu(this)"><span class="flt-val">${fbLang?`<span style="color:#1c1c1c">${fbLang}</span>`:'<span class="flt-ph">Language</span>'}</span>${I.chevDown}</button>`; }
+function openLangMenu(trg){
+  var m=el('kebab-menu'); m.style.width=Math.max(trg.offsetWidth,160)+'px';
+  m.innerHTML = FB_LANGS.map(function(l){ var on=fbLang===l; return '<button class="km-item" style="'+(on?'color:var(--color-primary);font-weight:700':'')+'" onclick="pickFbLang(\''+l+'\')">'+l+(on?' '+I.check:'')+'</button>'; }).join('');
+  var r=trg.getBoundingClientRect(); m.style.left=Math.max(8,Math.min(r.left, window.innerWidth-m.offsetWidth-8))+'px'; m.style.top=(r.bottom+6)+'px';
+  m.classList.add('open'); setTimeout(function(){document.addEventListener('click',closeKebabOnce);},0);
+}
+function pickFbLang(l){ fbLang=(fbLang===l?'':l); el('kebab-menu').classList.remove('open'); if(fbLang) showToast('Feedbacks translated to '+fbLang); renderFeedbacksSearch(); }
 var fbTotFilter = null;
 function setFbTotFilter(key){ fbTotFilter = (fbTotFilter===key||!key) ? null : key; renderFeedbacksSearch(); }
 function renderFeedbacksSearch(){
