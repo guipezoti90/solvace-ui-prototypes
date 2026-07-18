@@ -461,8 +461,8 @@
     .notif-tbl tr{ background:#fff; border:1px solid var(--color-input); border-radius:12px; padding:14px; margin:0 0 12px }
     .notif-tbl td{ padding:0 !important; border:0 !important }
     .notif-tbl td:first-child{ font-weight:600; color:#1c1c1c; line-height:1.4; margin-bottom:6px }
-    .notif-tbl .notif-switches{ flex-direction:row !important; flex-wrap:wrap; gap:12px 18px }
-    .notif-tbl .notif-switches > span{ width:auto; padding:0; border-top:0; margin-right:0 !important }
+    .notif-tbl .notif-switches{ display:flex !important; flex-direction:row !important; flex-wrap:nowrap !important; gap:4px; justify-content:space-between }
+    .notif-tbl .notif-switches > span{ flex:1 1 0 !important; justify-content:center; width:auto; padding:0; border-top:0; margin-right:0 !important; gap:6px !important }
     .notif-tbl td:last-child:not(:empty){ margin-top:12px }
     .notif-tbl td:last-child:not(:empty)::before{ content:'Parameter'; display:block; font-size:12px; color:#717182; margin-bottom:4px }
     .notif-tbl td:last-child .input{ text-align:left }
@@ -3049,14 +3049,16 @@ let dashPeriod='Month';      // Day | Month | Year
 let dashViewsTab='Client';   // Client | Site
 let dashWindow={};           // janela de período por gráfico: {views:[lo,hi], fb:[lo,hi]}
 const PERIOD = {
-  Day:   { labels:['01','02','03','04','05','06','07','08','09','10','11','12','13','14'], views:[60,82,45,120,98,150,72,88,134,90,160,110,95,140], fb:[40,55,30,80,66,100,48,60,90,62,108,75,64,95], range:['01/06','14/06'] },
+  Day:   { labels:['01','02','03','04','05','06','07','08','09','10','11','12','13','14'], tipDates:['01/06/2026','02/06/2026','03/06/2026','04/06/2026','05/06/2026','06/06/2026','07/06/2026','08/06/2026','09/06/2026','10/06/2026','11/06/2026','12/06/2026','13/06/2026','14/06/2026'], views:[60,82,45,120,98,150,72,88,134,90,160,110,95,140], fb:[40,55,30,80,66,100,48,60,90,62,108,75,64,95], range:['01/06','14/06'] },
   Month: { labels:['Aug','Sep','Oct','Nov','Dec','Jan','Feb','Mar','Apr','May','Jun','Jul'], years:['25','25','25','25','25','26','26','26','26','26','26','26'], views:DATA_VIEWS, fb:[180,120,40,130,160,30,140,170,165,130,128,160], range:['Aug 2025','Jul 2026'] },
   Year:  { labels:['2019','2020','2021','2022','2023'], views:[820,1040,960,1230,1480], fb:[700,910,840,1100,1290], range:['2019','2023'] },
 };
-function setDashPeriod(p){ dashPeriod=p; dashWindow={}; renderDashboard(); }   // reset janela ao trocar período
+function setDashPeriod(p){ dashPeriod=p; dashWindow={}; renderDashboard(); }   // reset janela ao trocar período (topo → board inteiro)
+let chartPeriod='Month';   // período do gráfico Views/Feedbacks — independente do restante do board
+function setChartPeriod(p){ chartPeriod=p; dashWindow={}; var c=el('chartsCard'); if(c){ c.innerHTML=chartsCardInner(); (window.requestAnimationFrame||setTimeout)(syncByClientHeight); } else renderDashboard(); }  // abas do gráfico re-renderizam só o card de gráficos
 function setDashViewsTab(t){ dashViewsTab=t; var c=el('byClientCard'); if(c){ c.innerHTML=byClientCardInner(); (window.requestAnimationFrame||setTimeout)(syncByClientHeight); } else renderDashboard(); }  /* troca de aba re-renderiza só o card by-client (não afeta os totalizadores) */
 function fmtN(n){ return Number(n).toLocaleString('pt-BR'); }   /* separador de milhar com ponto, em todo o sistema */
-function barChart(data, alt, labels, years){
+function barChart(data, alt, labels, years, tipDates){
   const key = alt ? 'fb' : 'views';
   const n = data.length;
   const win = dashWindow[key] || [0, n-1];
@@ -3068,7 +3070,7 @@ function barChart(data, alt, labels, years){
     const idx = lo+i; let lab = labels[idx];
     if (years && (idx===lo || labels[idx]==='Jan')) lab = labels[idx] + ' ' + years[idx];  /* 1ª barra visível + toda virada de ano (Jan) marcam o ano */
     vLabels.push(lab);
-    tips.push(years ? labels[idx] + ' 20' + years[idx] : labels[idx]);   /* tooltip/drill sempre com a data completa (ano) */
+    tips.push(tipDates ? tipDates[idx] : (years ? labels[idx] + ' 20' + years[idx] : labels[idx]));   /* tooltip/drill: dia = data completa; mês = mês+ano */
   });
   const raw = Math.max(...vData, 1);
   const max = Math.ceil(raw/4)*4;                       /* teto arredondado p/ 4 ticks */
@@ -3109,7 +3111,7 @@ function applyDualRange(key){
   dashWindow[key]=[Math.min(a,b), Math.max(a,b)];
   renderDashboard();
 }
-function periodTab(p){ const on=dashPeriod===p; return `<span onclick="setDashPeriod('${p}')" style="cursor:pointer;color:${on?'var(--color-primary)':'#9aa0ac'};font-weight:${on?'600':'400'};border-bottom:${on?'2px solid var(--color-primary)':'2px solid transparent'};padding-bottom:8px">${p}</span>`; }
+function periodTab(p){ const on=chartPeriod===p; return `<span onclick="setChartPeriod('${p}')" style="cursor:pointer;color:${on?'var(--color-primary)':'#9aa0ac'};font-weight:${on?'600':'400'};border-bottom:${on?'2px solid var(--color-primary)':'2px solid transparent'};padding-bottom:8px">${p}</span>`; }
 function viewsTab(t){ const on=dashViewsTab===t; return `<span onclick="setDashViewsTab('${t}')" style="cursor:pointer;color:${on?'var(--color-primary)':'#9aa0ac'};font-weight:${on?'600':'400'};border-bottom:${on?'2px solid var(--color-primary)':'2px solid transparent'};padding-bottom:8px">${t}</span>`; }
 /* ---------- Dashboard (redesign visual) ---------- */
 const DASH_PERIOD_LBL = { Day:'Last 14 days', Month:'Last 12 months', Year:'Last 5 years' };
@@ -3244,8 +3246,20 @@ function onClientBarsScroll(){
   var sc=document.getElementById('cbScroll'); if(!sc) return;
   if(sc.scrollTop+sc.clientHeight >= sc.scrollHeight-48 && dashBarsShown<dashBarsAll.length){ sc.insertAdjacentHTML('beforeend', clientBarsBatch(24)); }
 }
+function chartsCardInner(){
+  var P = PERIOD[chartPeriod] || PERIOD.Month;
+  return `<div class="dash-chart-tabs" style="display:flex;justify-content:center;gap:24px;border-bottom:1px solid var(--color-input);padding-bottom:10px;margin-bottom:12px;font-size:14px">${periodTab('Day')}${periodTab('Month')}${periodTab('Year')}</div>
+       <div class="card-head"><span class="ttl">Views</span>
+         <button class="kebab" title="Chart options" style="margin-left:auto" onclick="openChartMenu(this)">${I.kebab}</button>
+       </div>
+       ${barChart(P.views,false,P.labels,P.years,P.tipDates)}
+       <div class="card-head" style="margin-top:26px"><span class="ttl">Feedbacks</span>
+         <button class="kebab" title="Chart options" style="margin-left:auto" onclick="openChartMenu(this)">${I.kebab}</button>
+       </div>
+       ${barChart(P.fb,true,P.labels,P.years,P.tipDates)}`;
+}
 function byClientCardInner(){
-  return `<div class="card-head"><span class="ttl">Views & feedbacks by ${dashViewsTab.toLowerCase()}</span>
+  return `<div class="card-head"><span class="ttl">Views & feedbacks by client</span>
          <span class="sb-leg" style="margin-left:auto">
            <span><span class="dot" style="background:var(--color-primary)"></span>Views</span>
            <span><span class="dot" style="background:#a8aede"></span>Feedbacks</span>
@@ -3284,17 +3298,7 @@ function renderDashboard(){
    </div>
 
    <div class="chart2 dash-grid">
-     <div class="card card-pad">
-       <div class="dash-chart-tabs" style="display:flex;justify-content:center;gap:24px;border-bottom:1px solid var(--color-input);padding-bottom:10px;margin-bottom:12px;font-size:14px">${periodTab('Day')}${periodTab('Month')}${periodTab('Year')}</div>
-       <div class="card-head"><span class="ttl">Views</span>
-         <button class="kebab" title="Chart options" style="margin-left:auto" onclick="openChartMenu(this)">${I.kebab}</button>
-       </div>
-       ${barChart(P.views,false,P.labels,P.years)}
-       <div class="card-head" style="margin-top:26px"><span class="ttl">Feedbacks</span>
-         <button class="kebab" title="Chart options" style="margin-left:auto" onclick="openChartMenu(this)">${I.kebab}</button>
-       </div>
-       ${barChart(P.fb,true,P.labels,P.years)}
-     </div>
+     <div class="card card-pad" id="chartsCard">${chartsCardInner()}</div>
      <div class="card card-pad" id="byClientCard" style="display:flex;flex-direction:column;min-height:0">${byClientCardInner()}</div>
    </div>
 
@@ -3727,7 +3731,7 @@ const SEL_OPTS={
   category:    {multi:false, opts:['System Settings','Getting Started','Data Management','Troubleshooting','Updates','Integrations']},
   subcategory: {multi:false, opts:['Subcategory 1','Subcategory 2','Subcategory 3']},
   tags:        {multi:true,  opts:TAGS},
-  related:     {multi:true,  opts:['How to set up the notification system','Managing user permissions','Troubleshooting login & access','Data import best practices','Setting up integrations','Configuring notification rules','Understanding roles & permissions','Exporting reports','Bulk importing articles','Managing tags & categories']},
+  related:     {multi:true,  opts:['ART-99 · How to set up the notification system','ART-102 · Managing user permissions','ART-105 · Troubleshooting login & access','ART-110 · Data import best practices','ART-114 · Setting up integrations','ART-118 · Configuring notification rules','ART-121 · Understanding roles & permissions','ART-126 · Exporting reports','ART-130 · Bulk importing articles','ART-134 · Managing tags & categories']},
 };
 function selChip(key,o){
   const rm=`<span onclick="event.stopPropagation();removeSelChip('${key}','${o}')" style="cursor:pointer;display:inline-flex">${I.x}</span>`;
