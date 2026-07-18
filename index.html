@@ -696,7 +696,7 @@
   /* filtro seccionado: drawer cinza claro + blocos brancos por seção */
   #filter-drawer-body{ background:#F4F5F7; gap:12px }
   .flt-sec{ background:#fff; border:1px solid var(--color-input); border-radius:12px; padding:16px }
-  .flt-sec-title{ font-size:11px; font-weight:700; text-transform:uppercase; letter-spacing:.05em; color:#717182; margin-bottom:14px }
+  .flt-sec-title{ font-size:14px; font-weight:700; color:#0D122F; margin-bottom:14px }
   .flt-sec .flt-fld{ margin-bottom:14px } .flt-sec .flt-fld:last-child{ margin-bottom:0 }
   .km-item{ display:flex; align-items:center; gap:8px; width:100%; padding:8px 10px; border-radius:7px; border:0; background:transparent; font-size:14px; color:#1c1c1c; text-align:left; cursor:pointer } .km-item:hover{ background:var(--color-muted) }
   /* notificações (dropdown do sino) */
@@ -2117,10 +2117,22 @@ function calPick(d,m,y){
   else { if(cur<calStart){ calEnd=calStart; calStart=cur; } else if(cur.getTime()===calStart.getTime()){ calEnd=cur; } else calEnd=cur; }
   renderCal(); if(calMode==='field') updateDateTrg();
 }
+function buildCustomPeriod(start,end){
+  var msDay=86400000, days=Math.max(1, Math.round((end-start)/msDay)+1);
+  var n=Math.max(2, Math.min(days, 14)), step=days/n;
+  var labels=[], views=[], fb=[];
+  for(var i=0;i<n;i++){
+    var d=new Date(start.getTime()+Math.round(i*step)*msDay);
+    labels.push(('0'+d.getDate()).slice(-2)+'/'+('0'+(d.getMonth()+1)).slice(-2));
+    var seed=(d.getDate()*7 + (d.getMonth()+1)*13 + d.getFullYear())%100;
+    views.push(40+seed*3); fb.push(20+(seed%40)*2);
+  }
+  return { labels:labels, views:views, fb:fb, range:[fmtDate(start), fmtDate(end)] };   /* dados próprios do range → o dashboard todo reflete o período customizado */
+}
 function applyCal(){
   if(!calStart || !calEnd){ showToast('Select a date range','error'); return; }
   el('date-dd').classList.remove('open');
-  if(calMode==='dash'){ DASH_PERIOD_LBL.custom = fmtDate(calStart)+' – '+fmtDate(calEnd); dashPeriod='custom'; dashWindow={}; renderDashboard(); showToast('Custom period applied'); }
+  if(calMode==='dash'){ PERIOD.custom = buildCustomPeriod(calStart, calEnd); DASH_PERIOD_LBL.custom = fmtDate(calStart)+' – '+fmtDate(calEnd); dashPeriod='custom'; dashWindow={}; renderDashboard(); showToast('Custom period applied'); }
   else { updateDateTrg(); refreshFilterDeps(); }
 }
 function updateDateTrg(){
@@ -2234,7 +2246,7 @@ function openPlantMenu(trg){
 function setPlant(p){ currentPlant=p; var l=el('loc-label'); if(l) l.textContent=p; el('kebab-menu').classList.remove('open'); showToast('Plant changed to '+p); }
 var NOTIFS=[
   {g:'newsletter', mod:'Knowledge Center', who:'Solvace', t:'— weekly digest: 8 new articles this week', s:'2m ago', unread:true},
-  {g:'newsletter', mod:'Knowledge Center', who:'Solvace', t:'— “Onboarding guide” reached 1,000 views', s:'Yesterday', unread:false},
+  {g:'newsletter', mod:'Knowledge Center', who:'Solvace', t:'— “Onboarding guide” reached 1.000 views', s:'Yesterday', unread:false},
   {g:'newsletter', mod:'Knowledge Center', who:'Solvace', t:'— monthly Knowledge Center highlights', s:'3 days ago', unread:false},
   {g:'system', mod:'Knowledge Center', who:'System', t:'— your article is awaiting review', s:'1h ago', unread:true},
   {g:'system', mod:'Access', who:'System', t:'— access permissions were updated', s:'3h ago', unread:true},
@@ -3042,7 +3054,8 @@ const PERIOD = {
   Year:  { labels:['2019','2020','2021','2022','2023'], views:[820,1040,960,1230,1480], fb:[700,910,840,1100,1290], range:['2019','2023'] },
 };
 function setDashPeriod(p){ dashPeriod=p; dashWindow={}; renderDashboard(); }   // reset janela ao trocar período
-function setDashViewsTab(t){ dashViewsTab=t; renderDashboard(); }
+function setDashViewsTab(t){ dashViewsTab=t; var c=el('byClientCard'); if(c){ c.innerHTML=byClientCardInner(); (window.requestAnimationFrame||setTimeout)(syncByClientHeight); } else renderDashboard(); }  /* troca de aba re-renderiza só o card by-client (não afeta os totalizadores) */
+function fmtN(n){ return Number(n).toLocaleString('pt-BR'); }   /* separador de milhar com ponto, em todo o sistema */
 function barChart(data, alt, labels, years){
   const key = alt ? 'fb' : 'views';
   const n = data.length;
@@ -3050,18 +3063,20 @@ function barChart(data, alt, labels, years){
   const lo = Math.max(0, Math.min(win[0], n-1));
   const hi = Math.max(lo, Math.min(win[1], n-1));
   const vData = data.slice(lo, hi+1);
-  const vLabels = vData.map(function(_,i){
+  const vLabels = [], tips = [];
+  vData.forEach(function(_,i){
     const idx = lo+i; let lab = labels[idx];
     if (years && (idx===lo || labels[idx]==='Jan')) lab = labels[idx] + ' ' + years[idx];  /* 1ª barra visível + toda virada de ano (Jan) marcam o ano */
-    return lab;
+    vLabels.push(lab);
+    tips.push(years ? labels[idx] + ' 20' + years[idx] : labels[idx]);   /* tooltip/drill sempre com a data completa (ano) */
   });
   const raw = Math.max(...vData, 1);
   const max = Math.ceil(raw/4)*4;                       /* teto arredondado p/ 4 ticks */
   const ticks = [max, max*0.75, max*0.5, max*0.25, 0].map(t=>Math.round(t));
   const cols = vData.map((v,i)=>`
-    <div class="vcol" onclick="openDrill('${alt?'feedbacks':'views'}','${vLabels[i]}')">
-      <span class="vval">${v}</span>
-      <div class="vbar celltip${alt?' vbar-fb':''}" data-tip="${vLabels[i]}: ${v}" style="height:${Math.max(3, Math.round(v/max*100))}%"></div>
+    <div class="vcol" onclick="openDrill('${alt?'feedbacks':'views'}','${tips[i]}')">
+      <span class="vval">${fmtN(v)}</span>
+      <div class="vbar celltip${alt?' vbar-fb':''}" data-tip="${tips[i]}: ${fmtN(v)}" style="height:${Math.max(3, Math.round(v/max*100))}%"></div>
     </div>`).join('');
   return `<div class="vchart">
     <div class="vy">${ticks.map(t=>'<span>'+t+'</span>').join('')}</div>
@@ -3142,7 +3157,7 @@ function kpiDonut(){
     </svg>
     <div style="display:flex;flex-direction:column;gap:6px">
       <span class="kpi-lbl" style="display:inline-flex;align-items:center;gap:6px">Read completion <span class="kc-tip" data-tip="% of readers who finished the article, out of those who opened it, in the selected period.">${I.info}</span></span>
-      <span style="display:inline-flex;align-items:center;gap:6px;flex-wrap:wrap;font-size:12.5px;color:#4D5166"><span class="kpi-trend" style="color:#001391">${I.trendUp} +1.5%</span><span>vs previous period</span></span>
+      <span style="display:inline-flex;align-items:center;gap:6px;flex-wrap:wrap;font-size:12.5px;color:#4D5166"><span class="kpi-trend" style="color:#14AE5C">${I.trendUp} +1.5%</span><span>vs previous period</span></span>
     </div>
   </div>`;
 }
@@ -3229,8 +3244,21 @@ function onClientBarsScroll(){
   var sc=document.getElementById('cbScroll'); if(!sc) return;
   if(sc.scrollTop+sc.clientHeight >= sc.scrollHeight-48 && dashBarsShown<dashBarsAll.length){ sc.insertAdjacentHTML('beforeend', clientBarsBatch(24)); }
 }
+function byClientCardInner(){
+  return `<div class="card-head"><span class="ttl">Views & feedbacks by ${dashViewsTab.toLowerCase()}</span>
+         <span class="sb-leg" style="margin-left:auto">
+           <span><span class="dot" style="background:var(--color-primary)"></span>Views</span>
+           <span><span class="dot" style="background:#a8aede"></span>Feedbacks</span>
+         </span>
+         <button class="kebab" title="Chart options" style="margin-left:8px" onclick="openChartMenu(this)">${I.kebab}</button>
+       </div>
+       <div style="display:flex;justify-content:center;gap:24px;border-bottom:1px solid var(--color-input);padding-bottom:10px;margin-bottom:16px;font-size:14px">
+         ${viewsTab('Client')}${viewsTab('Site')}
+       </div>
+       <div class="hchart" id="cbScroll" onscroll="onClientBarsScroll()">${clientBars()}</div>`;
+}
 function renderDashboard(){
-  const P = PERIOD[dashPeriod];
+  const P = PERIOD[dashPeriod] || PERIOD.Month;   /* período 'custom' reaproveita a base mensal p/ não quebrar o render */
   const topRows=Array.from({length:10}).map(()=>`
     <tr><td><span class="row-link" style="cursor:pointer" onclick="openArticleModal('view')">ART-99</span></td>
       <td style="overflow:hidden;text-overflow:ellipsis;white-space:nowrap">Lorem Ipsum is simply dummy text of the printing and typesetting industry…</td>
@@ -3250,8 +3278,8 @@ function renderDashboard(){
 
    <div class="kpi-grid">
      ${kpiDonut()}
-     ${kpiStat('<svg width="30" height="30" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M2 12s3.5-7 10-7 10 7 10 7-3.5 7-10 7-10-7-10-7Z"/><circle cx="12" cy="12" r="3"/></svg>', '#001391', '#F5F5FF', 'Total views', P.views.reduce((a,b)=>a+b,0).toLocaleString('pt-BR'), 'Total article views in the selected period.', 8.6)}
-     ${kpiStat('<svg width="30" height="30" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M21 15a2 2 0 0 1-2 2H7l-4 4V5a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2z"/></svg>', '#5A63C9', '#ECEEFB', 'Total feedbacks', P.fb.reduce((a,b)=>a+b,0).toLocaleString('pt-BR'), 'Total feedbacks received in the selected period.', -2.3)}
+     ${kpiStat('<svg width="30" height="30" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M2 12s3.5-7 10-7 10 7 10 7-3.5 7-10 7-10-7-10-7Z"/><circle cx="12" cy="12" r="3"/></svg>', '#001391', '#E4E9FB', 'Total views', P.views.reduce((a,b)=>a+b,0).toLocaleString('pt-BR'), 'Total article views in the selected period.', 8.6)}
+     ${kpiStat('<svg width="30" height="30" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M21 15a2 2 0 0 1-2 2H7l-4 4V5a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2z"/></svg>', '#5A63C9', '#E7E9F8', 'Total feedbacks', P.fb.reduce((a,b)=>a+b,0).toLocaleString('pt-BR'), 'Total feedbacks received in the selected period.', -2.3)}
      ${kpiNegative()}
    </div>
 
@@ -3267,20 +3295,7 @@ function renderDashboard(){
        </div>
        ${barChart(P.fb,true,P.labels,P.years)}
      </div>
-     <div class="card card-pad" style="display:flex;flex-direction:column;min-height:0">
-       <div class="card-head"><span class="ttl">Views & feedbacks by ${dashViewsTab.toLowerCase()}</span>
-         <span class="sb-leg" style="margin-left:auto">
-           <span><span class="dot" style="background:var(--color-primary)"></span>Views</span>
-           <span><span class="dot" style="background:#a8aede"></span>Feedbacks</span>
-         </span>
-         <button class="kebab" title="Chart options" style="margin-left:8px" onclick="openChartMenu(this)">${I.kebab}</button>
-       </div>
-       <div style="display:flex;justify-content:center;gap:24px;border-bottom:1px solid var(--color-input);padding-bottom:10px;margin-bottom:16px;font-size:14px">
-         ${viewsTab('Client')}${viewsTab('Site')}
-       </div>
-       <div class="hchart" id="cbScroll" onscroll="onClientBarsScroll()">${clientBars()}</div>
-       <div style="margin-top:12px;font-size:12px;color:#4D5166;text-align:right">Total: <b style="color:#0D122F">95</b> views · <b style="color:#0D122F">83</b> feedbacks</div>
-     </div>
+     <div class="card card-pad" id="byClientCard" style="display:flex;flex-direction:column;min-height:0">${byClientCardInner()}</div>
    </div>
 
    <div class="dash-grid" style="display:grid;grid-template-columns:1fr;gap:16px">
@@ -3323,8 +3338,8 @@ function openDrill(kind, label){
   el('drill-title').textContent = (isViews?'Views':'Feedbacks') + ' - ' + label;
   let head, rows;
   if(isViews){
-    head = `<tr><th style="width:110px"><span class="th-sort">NUMBER ${I.chevDownSm}</span></th><th><span class="th-sort">ARTICLE ${I.chevDownSm}</span></th></tr>`;
-    rows = Array.from({length:16}).map(()=>`<tr><td><span class="row-link" style="cursor:pointer" onclick="openArticleModal('view')">ART-99</span></td><td class="celltip celltip-r" data-tip="Lorem Ipsum is simply dummy text of the printing and typesetting industry."><span style="display:block;overflow:hidden;text-overflow:ellipsis;white-space:nowrap">Lorem Ipsum is simply dummy text of the printing and typesetting industry.</span></td></tr>`).join('');
+    head = `<tr><th style="width:84px"><span class="th-sort">NUMBER ${I.chevDownSm}</span></th><th><span class="th-sort">ARTICLE ${I.chevDownSm}</span></th><th style="width:74px"><span class="th-sort">VIEWS ${I.chevDownSm}</span></th></tr>`;
+    rows = Array.from({length:16}).map((_,i)=>`<tr><td><span class="row-link" style="cursor:pointer" onclick="openArticleModal('view')">ART-99</span></td><td class="celltip celltip-r" data-tip="Lorem Ipsum is simply dummy text of the printing and typesetting industry."><span style="display:block;overflow:hidden;text-overflow:ellipsis;white-space:nowrap">Lorem Ipsum is simply dummy text of the printing and typesetting industry.</span></td><td style="white-space:nowrap">${fmtN(520-i*28)}</td></tr>`).join('');
   } else {
     head = `<tr><th style="width:110px"><span class="th-sort">NUMBER ${I.chevDownSm}</span></th><th><span class="th-sort">FEEDBACK ${I.chevDownSm}</span></th></tr>`;
     rows = Array.from({length:16}).map(()=>`<tr><td><span class="row-link" style="cursor:pointer" onclick="openArticleModal('view','feedbacks')">ART-99</span></td><td class="celltip celltip-r" data-tip="Lorem Ipsum is simply dummy text of the printing and typesetting industry."><span style="display:block;overflow:hidden;text-overflow:ellipsis;white-space:nowrap">Lorem Ipsum is simply dummy text of the printing and typesetting industry.</span></td></tr>`).join('');
