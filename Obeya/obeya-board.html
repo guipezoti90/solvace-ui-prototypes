@@ -117,6 +117,10 @@
   #app[data-state="update"] .wcard.up-editable{ border:2px solid #4d63d0; background:#f4f6ff; box-shadow:0 0 0 3px rgba(0,19,145,.12), 0 10px 24px rgba(0,19,145,.12); }
   #app[data-state="update"] .wcard.up-editable .wcard-title::before{ content:none; }
   #app[data-state="update"] .wcard.up-editable:hover{ border-color:#001391; }
+  .up-acts{ display:none; align-items:center; gap:6px; }
+  .up-act-btn{ width:30px; height:30px; display:inline-flex; align-items:center; justify-content:center; border:1px solid #d6dae8; border-radius:8px; background:#fff; color:#0d122f; cursor:pointer; } .up-act-btn:hover{ background:#f4f6ff; border-color:#c7ccf5; } .up-act-btn svg{ width:16px; height:16px; }
+  #app[data-state="update"] .wcard.up-editable .up-acts{ display:inline-flex; }
+  #app[data-state="update"] .wcard.up-editable:has(.up-acts) .expand{ display:none; }
   .wcard.selected{ outline:2px solid #001391; outline-offset:2px; box-shadow:0 10px 34px rgba(0,19,145,.20); }
   /* alignment guides (shown while dragging a widget) */
   .guide{ position:absolute; background:#ec221f; z-index:200; display:none; pointer-events:none; }
@@ -1251,7 +1255,10 @@
   .ed-check{ display:flex; align-items:center; gap:9px; font-size:14px; color:#0d122f; cursor:pointer; margin:6px 0 4px; }
   .ed-check input{ width:17px; height:17px; accent-color:#001391; cursor:pointer; }
   .ed-dep{ margin:0 0 8px; }
-  .ed-dep.disabled{ opacity:.45; } .ed-dep.disabled input{ pointer-events:none; }
+  .ed-dep.disabled{ opacity:.45; } .ed-dep.disabled input, .ed-dep.disabled select, .ed-dep.disabled button{ pointer-events:none; }
+  .ed-seg{ display:inline-flex; border:1px solid #eeeff1; border-radius:8px; overflow:hidden; }
+  .ed-seg .seg-btn{ border:0; background:#fff; padding:7px 16px; font-size:13px; font-weight:600; color:#4d5166; cursor:pointer; font-family:inherit; }
+  .ed-seg .seg-btn.active{ background:#001391; color:#fff; }
   .ed-tr span{ font-size:14px; color:#0d122f; }
   .ed-footer{ display:flex; align-items:center; justify-content:flex-end; gap:10px; padding:14px 22px; border-top:1px solid #eeeff1; }
   .swatch{ width:16px; height:16px; border-radius:4px; background:#0a0a0b; display:inline-block; }
@@ -1597,6 +1604,7 @@
       <button class="tab" data-tab>Maintenance</button>
       <button class="tab" data-tab>Logistics</button>
       <button class="tab" data-tab>Packaging</button>
+      <button class="tab" data-tab>widget numero</button>
       <button class="tab" data-tab>OEE</button>
       <button class="tab" data-tab>Kaizen</button>
       <button class="tab" data-tab>5S</button>
@@ -1802,6 +1810,10 @@
         </section>
       </div>
      </div><!-- /board-page b0 -->
+
+     <div class="board-page" data-bp="b7">
+      <section class="wcard no-ind up-editable" data-wi="0" style="left:160px;top:140px;width:280px;height:300px;z-index:1"><div class="wcard-head"><div><div class="wcard-title" title="Units Today">Units Today</div><div class="wcard-sub">vs target 3.000</div></div><span class="expand" title="Open full view"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polyline points="15 3 21 3 21 9"/><polyline points="9 21 3 21 3 15"/><line x1="21" x2="14" y1="3" y2="10"/><line x1="3" x2="10" y1="21" y2="14"/></svg></span><span class="up-acts"><button class="up-act-btn" title="Download da base"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/><polyline points="7 10 12 15 17 10"/><line x1="12" x2="12" y1="15" y2="3"/></svg></button><button class="up-act-btn" title="Upload"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/><polyline points="17 8 12 3 7 8"/><line x1="12" x2="12" y1="3" y2="15"/></svg></button><button class="up-act-btn" title="Zoom (batch update)" onclick="event.stopPropagation();if(typeof openBatch==='function')openBatch();"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polyline points="15 3 21 3 21 9"/><polyline points="9 21 3 21 3 15"/><line x1="21" x2="14" y1="3" y2="10"/><line x1="3" x2="10" y1="21" y2="14"/></svg></button></span></div><div class="num2 pos" data-dtip data-v="3,420" data-t="3000"><span class="num2-val font-display">3,420</span></div><div class="w-foot"><span class="w-foot-l"><span class="w-apalert" data-goap="1" title="Delayed action plan — click to open"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="m21.73 18-8-14a2 2 0 0 0-3.48 0l-8 14A2 2 0 0 0 4 21h16a2 2 0 0 0 1.73-3Z"/><path d="M12 9v4"/><path d="M12 17h.01"/></svg></span><span class="w-meta" data-ftab="plan" title="4 action plans"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect width="8" height="4" x="8" y="2" rx="1"/><path d="M16 4h2a2 2 0 0 1 2 2v14a2 2 0 0 1-2 2H6a2 2 0 0 1-2-2V6a2 2 0 0 1 2-2h2"/></svg>4</span><span class="w-meta" data-ftab="feed" title="2 comments in feed"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M21 15a2 2 0 0 1-2 2H7l-4 4V5a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2z"/></svg>2</span></span><span class="w-av" title="Nick Usk" style="background:#ffd8a8;color:#9a4a00">NU</span></div></section>
+     </div><!-- /board-page widget numero (b7) -->
 
     </div><!-- /canvas -->
    </div><!-- /viewport (scroll) -->
@@ -2218,6 +2230,22 @@
           <label class="ed-label">Name</label>
           <input class="ed-input" id="boardName" value="Dashboard">
           <div style="margin-top:14px"><label class="ed-label">Background color</label><div class="ed-select" style="max-width:240px"><span class="swatch" style="background:#f9f9fa;border:1px solid #eeeff1"></span> <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="m6 9 6 6 6-6"/></svg></div></div>
+          <div class="ed-sec" id="boardTplSec">Template</div>
+          <label class="ed-check" id="boardTplChkRow"><input type="checkbox" id="boardUseTpl"><span>Use a template</span></label>
+          <div class="ed-dep disabled" id="boardTplWrap">
+            <label class="ed-label">Source</label>
+            <div class="ed-seg" id="boardTplSrc"><button type="button" class="seg-btn active" data-src="local">Local</button><button type="button" class="seg-btn" data-src="upload">Upload</button></div>
+            <div id="boardTplLocal" style="margin-top:10px">
+              <label class="ed-label">Room</label>
+              <select class="ed-input" id="boardTplRoom"></select>
+              <label class="ed-label" style="margin-top:10px">Board</label>
+              <select class="ed-input" id="boardTplBoard"></select>
+            </div>
+            <div id="boardTplUpload" style="margin-top:10px;display:none">
+              <label class="ed-label">File</label>
+              <input class="ed-input" type="file" id="boardTplFile" accept=".json,.html">
+            </div>
+          </div>
           <div class="ed-sec">Behavior</div>
           <label class="ed-check"><input type="checkbox" id="boardAutoUpd"><span>Auto-update</span></label>
           <div class="ed-dep disabled" id="boardAutoUpdWrap"><label class="ed-label">Auto-update interval (s)</label><input class="ed-input" type="number" min="0" placeholder="Type here" disabled></div>
@@ -2226,7 +2254,7 @@
         <div class="ed-footer">
           <div style="position:relative">
             <button class="room-dots" id="boardKebab" style="width:36px;height:36px;display:none"><svg viewBox="0 0 24 24" width="20" height="20" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="5" r="1"/><circle cx="12" cy="12" r="1"/><circle cx="12" cy="19" r="1"/></svg></button>
-            <div class="menu" id="boardDelMenu" style="left:0;bottom:44px;min-width:170px"><div class="mi" id="boardDelete" style="color:#ec221f"><svg viewBox="0 0 24 24" fill="none" stroke="#ec221f" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M3 6h18"/><path d="M19 6v14a2 2 0 0 1-2 2H7a2 2 0 0 1-2-2V6m3 0V4a2 2 0 0 1 2-2h4a2 2 0 0 1 2 2v2"/></svg>Delete board</div></div>
+            <div class="menu" id="boardDelMenu" style="left:0;bottom:44px;min-width:170px"><div class="mi" id="boardExport"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/><polyline points="7 10 12 15 17 10"/><line x1="12" x2="12" y1="15" y2="3"/></svg>Export board</div><div class="mi" id="boardDelete" style="color:#ec221f"><svg viewBox="0 0 24 24" fill="none" stroke="#ec221f" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M3 6h18"/><path d="M19 6v14a2 2 0 0 1-2 2H7a2 2 0 0 1-2-2V6m3 0V4a2 2 0 0 1 2-2h4a2 2 0 0 1 2 2v2"/></svg>Delete board</div></div>
           </div>
           <div style="display:flex;gap:10px">
             <button class="zbtn zbtn-outline" id="boardCancel">Cancel</button>
@@ -3737,6 +3765,7 @@
     editToolbar.style.display='none'; hideEditMenus();
     editModal.classList.add('open');
     pvSetupDrawer(selectedWidget);
+    edApplyType(selectedWidget);   // widget de número: General específico (Decimal places…) igual ao arquivo
     // reset to the General tab
     var et=document.querySelectorAll('#edTabs .ed-tab');
     for(var i=0;i<et.length;i++) et[i].classList.toggle('active', et[i].getAttribute('data-tab')==='general');
@@ -3775,6 +3804,22 @@
     var sws=document.querySelectorAll('.edit-drawer .zswitch');
     for(var n=0;n<sws.length;n++){ sws[n].addEventListener('click', function(){ this.classList.toggle('on'); }); }
   })();
+  // ===== General do config específico p/ widget de número (idêntico ao number-widget.html) =====
+  var _edGenGeneral=null;
+  var _edNumGeneral='<div class="ed-grid4"><div><label class="ed-label">Show Title</label><button class="zswitch on" type="button"></button></div><div><label class="ed-label">Title</label><input class="ed-input" id="cfgTitle" value="Units Today"></div><div><label class="ed-label">Size</label><div class="ed-inbox"><span class="ed-chipcell">Small <span class="cx"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round"><path d="M18 6 6 18M6 6l12 12"/></svg></span></span></div></div><div><label class="ed-label">Color</label><div class="ed-select"><span class="swatch" style="background:#0a0a0b"></span><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="m6 9 6 6 6-6"/></svg></div></div></div><label class="ed-label" style="margin-top:14px">Decimal places</label><div class="ed-chips" data-single><button class="ed-chip active">None</button><button class="ed-chip">One</button><button class="ed-chip">Two</button><button class="ed-chip">Three</button></div><div class="ed-grid2" style="margin-top:16px"><div class="ed-tr" style="margin:0"><button class="zswitch" type="button"></button><span>Show Target</span></div><div class="ed-tr" style="margin:0"><button class="zswitch on" type="button"></button><span>Apply Conditional Formatting</span></div></div><div class="ed-grid4" style="margin-top:14px"><div><label class="ed-label">Below Goal</label><div class="ed-select sm"><span class="swatch" style="background:#14ae5c"></span><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="m6 9 6 6 6-6"/></svg></div></div><div><label class="ed-label">On Target</label><div class="ed-select sm"><span class="swatch" style="background:#e8b931"></span><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="m6 9 6 6 6-6"/></svg></div></div><div><label class="ed-label">Above Goal</label><div class="ed-select sm"><span class="swatch" style="background:#ec221f"></span><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="m6 9 6 6 6-6"/></svg></div></div><div><label class="ed-label">Andon</label><input class="ed-input"></div></div>';
+  function rewireDrawer(){
+    var groups=document.querySelectorAll('.edit-drawer .ed-chips');
+    for(var g=0;g<groups.length;g++){ (function(group){ var chips=group.querySelectorAll('.ed-chip'); for(var k=0;k<chips.length;k++){ chips[k].onclick=function(){ for(var m=0;m<chips.length;m++) chips[m].classList.remove('active'); this.classList.add('active'); }; } })(groups[g]); }
+    var sws=document.querySelectorAll('.edit-drawer .zswitch'); for(var n=0;n<sws.length;n++){ sws[n].onclick=function(){ this.classList.toggle('on'); }; }
+  }
+  function edApplyType(card){
+    var gp=document.querySelector('#edBody .ed-panel[data-panel="general"]'); if(!gp) return;
+    if(_edGenGeneral===null) _edGenGeneral=gp.innerHTML;
+    var isNum=!!(card && card.querySelector && card.querySelector('.num2'));
+    gp.innerHTML = isNum ? _edNumGeneral : _edGenGeneral;
+    if(isNum){ var t=card.querySelector('.wcard-title'), ti=gp.querySelector('#cfgTitle'); if(t&&ti) ti.value=t.textContent.trim(); }
+    rewireDrawer();
+  }
   // ===== Pivot edit drawer: mostra a config do modelo (design do board) só p/ o widget de Pivot =====
   function pvSetupDrawer(card){
     var isPivot=!!(card && card.querySelector && card.querySelector('.wpivot-w'));
@@ -3993,8 +4038,7 @@
   })();
   document.addEventListener('click', function(e){
     if(!inUpdate()) return;
-    var nv=e.target.closest && e.target.closest('.up-editable .num2-val');
-    if(nv){ if(!nv.isContentEditable){ nv.contentEditable='true'; nv.classList.add('editing'); nv.focus(); try{ var rr=document.createRange(); rr.selectNodeContents(nv); var ss=window.getSelection(); ss.removeAllRanges(); ss.addRange(rr); }catch(_){} } e.stopPropagation(); return; }
+    /* número: edição do datapoint via popover stepper #dpEdit (handler abaixo), não inline */
     var lg=e.target.closest && e.target.closest('.up-editable .semaf span');
     if(lg){ var sibs=lg.parentNode.children, si; for(si=0;si<sibs.length;si++){ var col=(sibs[si].className.match(/-([ryg])/)||[])[1]||'g'; sibs[si].className=(sibs[si]===lg?'on-':'off-')+col; } e.stopPropagation(); return; }
     var cell=e.target.closest && e.target.closest('.up-editable .wpres-grid .cell');
@@ -4188,14 +4232,14 @@
     document.body.appendChild(ed);
     var curEl=null;
     function placeDp(){ if(!curEl) return; var r=curEl.getBoundingClientRect(); ed.style.left=Math.min(window.innerWidth-210, Math.max(8, r.left+r.width/2-100))+'px'; var top=r.top-ed.offsetHeight-10; ed.style.top=(top>8?top:r.bottom+10)+'px'; }
-    function openDp(el){ curEl=el; document.getElementById('dpeLbl').textContent=el.getAttribute('data-d')||'Datapoint'; var inp=document.getElementById('dpeIn'); inp.value=el.getAttribute('data-v')||''; ed.style.display='block'; barTip.style.display='none'; placeDp(); inp.focus(); inp.select(); }
+    function openDp(el){ curEl=el; document.getElementById('dpeLbl').textContent=el.getAttribute('data-d')||'Datapoint'; var inp=document.getElementById('dpeIn'); inp.value=(el.getAttribute('data-v')||'').toString().replace(/[^0-9.\-]/g,''); ed.style.display='block'; barTip.style.display='none'; placeDp(); inp.focus(); inp.select(); }
     window.__repositionDp=function(){ if(ed.style.display==='block' && curEl) placeDp(); };
     window.addEventListener('scroll', function(){ if(ed.style.display==='block' && curEl) placeDp(); }, true);
     window.addEventListener('resize', function(){ if(ed.style.display==='block' && curEl) placeDp(); });
     (function(){ function step(d){ var inp=document.getElementById('dpeIn'); var v=parseFloat(inp.value)||0; v=Math.max(0, Math.round((v+d)*100)/100); inp.value=v; } var mn=document.getElementById('dpeMinus'), pl=document.getElementById('dpePlus'); if(mn) mn.addEventListener('click', function(e){ e.stopPropagation(); step(-1); }); if(pl) pl.addEventListener('click', function(e){ e.stopPropagation(); step(1); }); })();
     function closeDp(){ ed.style.display='none'; curEl=null; }
     document.getElementById('dpeCancel').addEventListener('click', closeDp);
-    document.getElementById('dpeSave').addEventListener('click', function(){ if(curEl){ var nv=document.getElementById('dpeIn').value; var ov=parseFloat(curEl.getAttribute('data-v'))||0; curEl.setAttribute('data-v', nv); if(curEl.classList.contains('bar')||curEl.classList.contains('mb')){ var hs=curEl.style.height||''; var num=parseFloat(hs)||0; var unit=(hs.indexOf('%')>=0)?'%':'px'; var nh=(ov>0)? num*(parseFloat(nv)/ov) : num; nh=(unit==='%')?Math.max(1,Math.min(100,nh)):Math.max(2,Math.min(150,nh)); curEl.style.height=nh+unit; } else if(curEl.classList.contains('cd')){ var tg=parseFloat(curEl.getAttribute('data-t'))||80; var pc=Math.round((parseFloat(nv)||0)/tg*100); curEl.setAttribute('data-p', pc); curEl.classList.remove('r','g','y'); curEl.classList.add(pc>=100?'g':(pc>=85?'y':'r')); } } closeDp(); });
+    document.getElementById('dpeSave').addEventListener('click', function(){ if(curEl){ var nv=document.getElementById('dpeIn').value; var ov=parseFloat(curEl.getAttribute('data-v'))||0; curEl.setAttribute('data-v', nv); if(curEl.classList.contains('bar')||curEl.classList.contains('mb')){ var hs=curEl.style.height||''; var num=parseFloat(hs)||0; var unit=(hs.indexOf('%')>=0)?'%':'px'; var nh=(ov>0)? num*(parseFloat(nv)/ov) : num; nh=(unit==='%')?Math.max(1,Math.min(100,nh)):Math.max(2,Math.min(150,nh)); curEl.style.height=nh+unit; } else if(curEl.classList.contains('cd')){ var tg=parseFloat(curEl.getAttribute('data-t'))||80; var pc=Math.round((parseFloat(nv)||0)/tg*100); curEl.setAttribute('data-p', pc); curEl.classList.remove('r','g','y'); curEl.classList.add(pc>=100?'g':(pc>=85?'y':'r')); } else if(curEl.classList.contains('num2')){ var vv=parseFloat(nv)||0; var t2=parseFloat(curEl.getAttribute('data-t')); if(isNaN(t2)) t2=vv; curEl.classList.remove('pos','neg','on'); curEl.classList.add(vv>t2?'pos':(vv<t2?'neg':'on')); var vEl=curEl.querySelector('.num2-val'); if(vEl) vEl.textContent=Number(vv).toLocaleString('en-US'); } } closeDp(); });
     ed.addEventListener('mousedown', function(e){ e.stopPropagation(); });
     document.addEventListener('click', function(e){
       if(app.getAttribute('data-state')!=='update'){ return; }
@@ -4207,6 +4251,7 @@
       if(mb){ e.stopPropagation(); openDp(mb); return; }
       if(s){ e.stopPropagation(); openDp(s); return; }
       if(cd){ e.stopPropagation(); openDp(cd); return; }
+      var n2=e.target.closest && e.target.closest('.up-editable .num2'); if(n2){ e.stopPropagation(); openDp(n2); return; }
       if(!(e.target.closest && e.target.closest('#dpEdit'))) closeDp();
     });
   })();
@@ -4529,15 +4574,27 @@
     document.getElementById('boardName').value = nm;
     var bk=document.getElementById('boardKebab'); if(bk) bk.style.display=(mode==='edit')?'inline-flex':'none';
     var dm0=document.getElementById('boardDelMenu'); if(dm0) dm0.style.display='none';
+    if(window.boardTplReset) window.boardTplReset(mode!=='edit');
     closeMenus();
     boardModal.classList.add('open');
   }
+  (function(){
+    var TPL_ROOMS={'Packaging Line — Performance':['Dashboard','Safety','Quality','Delivery'],'Detroit — DDS Line 1':['Daily','OEE'],'Quality Gate — Assembly':['Gate review','Trends'],'Bearing Line #1 — SQDCM':['SQDCM','Downtime']};
+    var chk=document.getElementById('boardUseTpl'), wrap=document.getElementById('boardTplWrap'), seg=document.getElementById('boardTplSrc'), localBox=document.getElementById('boardTplLocal'), upBox=document.getElementById('boardTplUpload'), roomSel=document.getElementById('boardTplRoom'), boardSel=document.getElementById('boardTplBoard');
+    function fillBoards(){ if(!boardSel||!roomSel) return; var bs=TPL_ROOMS[roomSel.value]||[]; boardSel.innerHTML=bs.map(function(b){return '<option>'+b+'</option>';}).join(''); }
+    function fillRooms(){ if(!roomSel) return; roomSel.innerHTML=Object.keys(TPL_ROOMS).map(function(r){return '<option>'+r+'</option>';}).join(''); fillBoards(); }
+    if(roomSel) roomSel.addEventListener('change', fillBoards);
+    if(chk&&wrap) chk.addEventListener('change', function(){ wrap.classList.toggle('disabled', !chk.checked); });
+    if(seg) seg.addEventListener('click', function(e){ var b=e.target.closest('.seg-btn'); if(!b) return; [].forEach.call(seg.querySelectorAll('.seg-btn'),function(x){x.classList.remove('active');}); b.classList.add('active'); var up=b.getAttribute('data-src')==='upload'; if(localBox) localBox.style.display=up?'none':''; if(upBox) upBox.style.display=up?'':'none'; });
+    window.boardTplReset=function(isNew){ var sec=document.getElementById('boardTplSec'), row=document.getElementById('boardTplChkRow'); if(sec) sec.style.display=isNew?'':'none'; if(row) row.style.display=isNew?'':'none'; if(wrap) wrap.style.display=isNew?'':'none'; if(chk) chk.checked=false; if(wrap) wrap.classList.add('disabled'); if(seg){ var sb=seg.querySelectorAll('.seg-btn'); for(var i=0;i<sb.length;i++) sb[i].classList.toggle('active',i===0); } if(localBox) localBox.style.display=''; if(upBox) upBox.style.display='none'; fillRooms(); };
+    var bx=document.getElementById('boardExport'); if(bx) bx.addEventListener('click', function(e){ e.stopPropagation(); var dm=document.getElementById('boardDelMenu'); if(dm) dm.style.display='none'; var nm=(document.getElementById('boardName')&&document.getElementById('boardName').value)||'board'; try{ var blob=new Blob([JSON.stringify({board:nm,exportedAt:new Date().toISOString()},null,2)],{type:'application/json'}); var a=document.createElement('a'); a.href=URL.createObjectURL(blob); a.download=nm.replace(/[^\w\-]+/g,'_')+'.json'; document.body.appendChild(a); a.click(); setTimeout(function(){ URL.revokeObjectURL(a.href); a.remove(); },120); }catch(_){} closeBoardModal(); });
+  })();
   var PENCIL_SVG='<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M12 20h9"/><path d="M16.5 3.5a2.12 2.12 0 0 1 3 3L7 19l-4 1 1-4Z"/></svg>';
   function buildTab(tab, label){
     tab.innerHTML = '<span class="tab-label">'+label+'</span><span class="tab-edit" title="Edit board">'+PENCIL_SVG+'</span>';
     tab.querySelector('.tab-edit').addEventListener('click', function(e){ e.stopPropagation(); openBoardModal('edit', tab); });
   }
-  function showBoard(bp){ var ps=document.querySelectorAll('.board-page'); for(var i=0;i<ps.length;i++) ps[i].classList.toggle('active', ps[i].getAttribute('data-bp')===bp); if(typeof deselectWidget==='function') deselectWidget(); }
+  function showBoard(bp){ var ps=document.querySelectorAll('.board-page'); for(var i=0;i<ps.length;i++) ps[i].classList.toggle('active', ps[i].getAttribute('data-bp')===bp); if(typeof deselectWidget==='function') deselectWidget(); if(window.rvRender) window.rvRender(); }
   var bpCounter=0;
   (function(){
     var t=document.querySelectorAll('#tabs .tab');
@@ -4726,7 +4783,7 @@
     if(kbF) kbF.addEventListener('click', function(e){ e.stopPropagation(); var ex=document.getElementById('kbFilterPop'); if(ex){ ex.remove(); kbF.classList.remove('on'); return; } kbF.classList.add('on'); var seen={}; document.querySelectorAll('#kbBody .kb-card .apav-sm').forEach(function(a){ var k=(a.getAttribute('title')||a.textContent||'').trim(); if(k && !seen[k]) seen[k]=a.getAttribute('style')||''; }); var pop=document.createElement('div'); pop.id='kbFilterPop'; pop.className='kb-filter-pop'; var html='<div class="kbf-h">Responsible</div>'; Object.keys(seen).forEach(function(k){ html+='<label class="kbf-item"><input type="checkbox" checked data-person="'+k+'"><span class="apav-sm" style="'+seen[k]+'">'+k+'</span><span class="kbf-name">'+k+'</span></label>'; }); html+='<div class="kbf-foot"><button class="kbf-clear" type="button">Clear filters</button></div>'; pop.innerHTML=html; var r=kbF.getBoundingClientRect(); pop.style.top=(r.bottom+6)+'px'; pop.style.left=Math.max(8,Math.round(r.right-244))+'px'; document.body.appendChild(pop); pop.addEventListener('click', function(ev){ ev.stopPropagation(); if(ev.target.closest('.kbf-clear')){ pop.querySelectorAll('input').forEach(function(c){c.checked=true;}); applyKbFilter(); } }); pop.addEventListener('change', applyKbFilter); });
     document.addEventListener('click', function(e){ var pop=document.getElementById('kbFilterPop'); if(pop && !(e.target.closest && (e.target.closest('#kbFilterPop')||e.target.closest('#kbFilter')))){ pop.remove(); var k2=document.getElementById('kbFilter'); if(k2) k2.classList.remove('on'); } }); })();
   // expand icon (outside edit mode) -> open full view (action plan -> kanban)
-  canvas.addEventListener('click', function(e){ var ex=e.target.closest('.expand'); if(!ex) return; if(app.getAttribute('data-state')==='edit') return; var c=ex.closest('.wcard'); if(!c) return; var wi=c.getAttribute('data-wi'); var typ=(wi!=null&&typeof FULL!=='undefined'&&FULL[wi])?FULL[wi].type:''; if(typ==='checklist'){ openChkAnalytics(c); return; } openFullView(c); });
+  canvas.addEventListener('click', function(e){ var ex=e.target.closest('.expand'); if(!ex) return; if(app.getAttribute('data-state')==='edit') return; var c=ex.closest('.wcard'); if(!c) return; if(app.getAttribute('data-state')==='update' && c.querySelector('.num2')){ if(typeof openBatch==='function'){ openBatch(); } return; }   /* update mode: zoom do widget de número abre o Batch update (vários períodos) */ var wi=c.getAttribute('data-wi'); var typ=(wi!=null&&typeof FULL!=='undefined'&&FULL[wi])?FULL[wi].type:''; if(typ==='checklist'){ openChkAnalytics(c); return; } openFullView(c); });
   // #218 — Checklist zoom opens an analytics modal (grouped by area, % bars) like the real product
   function chkBar(g,r,na){ var gray=Math.max(0,100-g-r); var s='<div class="chk-bar">'; if(g>0) s+='<span class="chk-seg chk-g" style="width:'+g+'%">'+(g>=8?g+'%':'')+'</span>'; if(r>0) s+='<span class="chk-seg chk-r" style="width:'+r+'%">'+(r>=8?r+'%':'')+'</span>'; if(gray>0) s+='<span class="chk-seg chk-na" style="width:'+gray+'%">'+gray+'%</span>'; return s+'</div>'; }
   function openChkAnalytics(card){ var d=document.getElementById('chkAnalytics'); if(!d){ d=document.createElement('div'); d.id='chkAnalytics'; d.className='pvx-modal'; d.innerHTML='<div class="pvx-back" data-chk-close></div><div class="chk-card"><div class="chk-head"><div class="pvx-t"></div><button class="pvx-close" data-chk-close><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M18 6 6 18M6 6l12 12"/></svg></button></div><div class="chk-tb"><span class="chk-srch"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><circle cx="11" cy="11" r="7"/><path d="m21 21-4.3-4.3"/></svg><input placeholder="Type here"></span><button class="chk-tb-btn" title="Filters"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M22 3H2l8 9.46V19l4 2v-8.54L22 3z"/></svg></button><button class="chk-tb-btn" style="margin-left:auto" title="View"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><line x1="8" y1="6" x2="21" y2="6"/><line x1="8" y1="12" x2="21" y2="12"/><line x1="8" y1="18" x2="21" y2="18"/><line x1="3" y1="6" x2="3.01" y2="6"/><line x1="3" y1="12" x2="3.01" y2="12"/><line x1="3" y1="18" x2="3.01" y2="18"/></svg></button></div><div class="chk-body"></div></div>'; document.body.appendChild(d); d.addEventListener('click', function(ev){ if(ev.target.closest('[data-chk-close]')) d.classList.remove('open'); var gh=ev.target.closest('.chk-gh'); if(gh){ gh.parentNode.classList.toggle('collapsed'); } }); document.addEventListener('keydown', function(ev){ if(ev.key==='Escape') d.classList.remove('open'); }); }
@@ -4895,14 +4952,17 @@
 
   function vis(e){ if(!e||e.closest('#rv-bar,#rv-panel,#rv-pop')) return false; if(!e.getClientRects().length) return false; var cs=getComputedStyle(e); return cs.display!=='none'&&cs.visibility!=='hidden'&&parseFloat(cs.opacity||'1')>0; }
   function activeModal(){ var ns=document.querySelectorAll(MODAL_SEL),out=null; for(var i=0;i<ns.length;i++){ if(vis(ns[i])) out=ns[i]; } return out; }
-  function viewKey(){ var m=activeModal(); if(m) return 'modal:'+(m.id||m.getAttribute('data-rv-view')||'dialog'); var ap=document.getElementById('app'); return (ap && ap.getAttribute('data-state')==='edit') ? 'doc:edit' : 'doc'; }
+  function activeBp(){ var t=document.querySelector('#tabs .tab.active'); return (t&&t.getAttribute('data-bp'))||'b0'; }
+  function rvNorm(v){ v=v||'doc'; if(v==='doc') return 'doc@b0'; if(v==='doc:edit') return 'doc:edit@b0'; return v; }   // legado (sem aba) => b0
+  function viewKey(){ var m=activeModal(); if(m) return 'modal:'+(m.id||m.getAttribute('data-rv-view')||'dialog'); var ap=document.getElementById('app'); var base=(ap && ap.getAttribute('data-state')==='edit') ? 'doc:edit' : 'doc'; return base+'@'+activeBp(); }   // pinos escopados por aba do board
+  window.rvRender=function(){ try{ render(); }catch(_){} };
   function docScroller(){ var k=document.querySelector('[data-rv-scroll]'); if(k) return k; var mn=document.querySelector('main'); if(mn) return mn; return document.scrollingElement||document.documentElement; }
   function innerScroller(root){ var best=null,area=0,els=root.querySelectorAll('*'); for(var i=0;i<els.length;i++){var e=els[i];if(e.closest('#rv-bar,#rv-panel,#rv-pop'))continue;var cs=getComputedStyle(e),oy=cs.overflowY;if((oy==='auto'||oy==='scroll')&&e.scrollHeight>e.clientHeight+4&&e.getClientRects().length){var a=e.clientWidth*e.clientHeight;if(a>area){area=a;best=e;}}} return best||root; }
   function getAnchor(view){ if(view.indexOf('modal:')===0){ var m=activeModal(); return m?innerScroller(m):docScroller(); } return docScroller(); }
   function isDoc(a){ return a===document.scrollingElement||a===document.documentElement||a===document.body; }
   function scW(a){ return isDoc(a)?document.documentElement.scrollWidth:(a.scrollWidth||a.clientWidth||1); }
   function scH(a){ return isDoc(a)?document.documentElement.scrollHeight:(a.scrollHeight||a.clientHeight||1); }
-  function rvIsBoard(v){ return v==='doc'||v==='doc:edit'; }
+  function rvIsBoard(v){ return String(v).indexOf('doc')===0; }
   function rvPinPos(c,W,H){ if(rvIsBoard(c.view||'doc') && window.rvBoard){ var s=window.rvBoard.toScreen(c.xPct,c.yPct), hr=(layer.parentNode||document.body).getBoundingClientRect(); return {l:s.x-hr.left, t:s.y-hr.top}; } return {l:c.xPct*W, t:c.yPct*H}; }
   function rvSync(){ var v=viewKey(); if(!rvIsBoard(v)||!window.rvBoard) return; var pins=layer.querySelectorAll('.rv-pin'),i,j; for(i=0;i<pins.length;i++){ var n=pins[i].dataset.n,c=null; for(j=0;j<comments.length;j++){ if(String(comments[j].n)===String(n)){c=comments[j];break;} } if(!c)continue; var p=rvPinPos(c,0,0); pins[i].style.left=p.l+'px'; pins[i].style.top=p.t+'px'; } }
   window.rvSync=rvSync;
@@ -4937,7 +4997,7 @@
     layer.style.height='0px';
     var W=scW(anchor), H=scH(anchor);
     layer.style.width=docMode?(W+'px'):'100%'; layer.style.height=H+'px'; layer.innerHTML='';
-    var shown=comments.filter(function(c){return (c.view||'doc')===view;});
+    var shown=comments.filter(function(c){return rvNorm(c.view)===rvNorm(view);});
     shown.forEach(function(c){var pin=document.createElement('div');pin.className='rv-pin'+(c.resolved?' resolved':'');pin.textContent=c.n;pin.dataset.n=c.n;
       var pp=rvPinPos(c,W,H);pin.style.left=pp.l+'px';pin.style.top=pp.t+'px';pin.title=(c.author||'?')+': '+c.text;
       rvBindPinDrag(pin,c);layer.appendChild(pin);});
@@ -4946,7 +5006,7 @@
     all.forEach(function(c){var it=document.createElement('div');it.className='rv-item'+(c.resolved?' resolved':'');
       var cv2=c.view||'doc'; var vw=(cv2.indexOf('modal:')===0)?('Modal · '+cv2.slice(6)):(cv2==='doc:edit'?'Edit':'Board');
       it.innerHTML='<div class="h"><span class="b">'+c.n+'</span> '+esc(c.author||'—')+' <span class="rv-vw">'+esc(vw)+'</span>'+((c.replies&&c.replies.length)?'<span class="rv-rc">↩ '+c.replies.length+'</span>':'')+(c.resolved?'<span class="rv-tag">Resolvido</span>':'')+'<button class="rv-del" title="Excluir comentário"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M3 6h18"/><path d="M19 6v14a2 2 0 0 1-2 2H7a2 2 0 0 1-2-2V6m3 0V4a2 2 0 0 1 2-2h4a2 2 0 0 1 2 2v2"/></svg></button></div><div class="t">'+esc(c.text)+'</div><div class="when">'+new Date(c.ts).toLocaleString('en-US')+'</div>';
-      it.addEventListener('click',function(){ var cv=c.view||'doc'; function focus(){ var vk=viewKey(); if(rvIsBoard(vk) && window.rvBoardCenter){ window.rvBoardCenter(c.xPct,c.yPct); } else { var a=getAnchor(vk); try{(a.scrollTo?a:window).scrollTo({top:c.yPct*scH(a)-160,behavior:'smooth'});}catch(e){} } var pin=layer.querySelector('.rv-pin[data-n="'+c.n+'"]'); openPop(c,pin); } if(cv===viewKey()){ focus(); return; } panel.classList.remove('open'); goToView(cv, focus); });var del=it.querySelector('.rv-del'); if(del) del.addEventListener('click',function(ev){ev.stopPropagation(); rm(c);});list.appendChild(it);});
+      it.addEventListener('click',function(){ var cv=c.view||'doc'; function focus(){ var vk=viewKey(); if(rvIsBoard(vk) && window.rvBoardCenter){ window.rvBoardCenter(c.xPct,c.yPct); } else { var a=getAnchor(vk); try{(a.scrollTo?a:window).scrollTo({top:c.yPct*scH(a)-160,behavior:'smooth'});}catch(e){} } var pin=layer.querySelector('.rv-pin[data-n="'+c.n+'"]'); openPop(c,pin); } if(rvNorm(cv)===rvNorm(viewKey())){ focus(); return; } panel.classList.remove('open'); goToView(cv, focus); });var del=it.querySelector('.rv-del'); if(del) del.addEventListener('click',function(ev){ev.stopPropagation(); rm(c);});list.appendChild(it);});
     countEl.textContent=all.length;
     if(RVMO){ try{ RVMO.observe(document.body,{childList:true,subtree:true,attributes:true,attributeFilter:['class','style','data-state']}); }catch(e){} }
   }
@@ -4965,7 +5025,7 @@
   }
   function rm(c){comments=comments.filter(function(x){return String(x.n)!==String(c.n)});save();render();}
   function rvSetEdit(on){ var b=document.querySelector('#stateSwitch [data-set="'+(on?'edit':'standard')+'"]'); if(b) b.click(); }
-  function goToView(tv, cb){ if(tv.indexOf('modal:')===0){ var m=document.getElementById(tv.slice(6)); if(m) m.classList.add('open'); } else { var am=activeModal(); if(am) am.classList.remove('open'); rvSetEdit(tv==='doc:edit'); } setTimeout(function(){ render(); if(cb) cb(); }, 400); }
+  function goToView(tv, cb){ if(tv.indexOf('modal:')===0){ var m=document.getElementById(tv.slice(6)); if(m) m.classList.add('open'); } else { var am=activeModal(); if(am) am.classList.remove('open'); var bpm=/@(\w+)/.exec(tv); var bp=bpm?bpm[1]:'b0'; var tab=document.querySelector('#tabs .tab[data-bp="'+bp+'"]'); if(tab) tab.click(); rvSetEdit(String(tv).indexOf('doc:edit')===0); } setTimeout(function(){ render(); if(cb) cb(); }, 400); }
   function rvInteractive(el){var n=el;while(n&&n.nodeType===1&&n!==document.body){if(n.matches&&n.matches('a,button,input,select,textarea,label,[role="button"],[tabindex],[contenteditable],[onclick],.tab,.chev,.pencil,.expand,.zb,.zbtn,.zswitch,.ed-tab,.ed-close,.room-dots,.room-switch,.rf-item,.mi,.p-item,.wresize,.rcode,.fv-item,.facts button,.align-bar button,.wdefect-bar .ic,.fsend'))return true;var cs=getComputedStyle(n);if(cs&&cs.cursor==='pointer')return true;n=n.parentElement;}return false;}
   document.addEventListener('click',function(ev){if(!commentMode)return;if(ev.target.closest('#rv-bar,#rv-toggle,#rv-panel,#rv-pop,.rv-pin'))return;if(rvInteractive(ev.target))return;
     var view=viewKey(), anchor=getAnchor(view), docMode=isDoc(anchor), rect=anchor.getBoundingClientRect?anchor.getBoundingClientRect():{left:0,top:0};
