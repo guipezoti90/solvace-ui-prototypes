@@ -252,7 +252,9 @@
   .fbatch .batch-table td.bt-fill{ background:#eef1ff; box-shadow:inset 0 0 0 1px #c7ccf5; }
   .fill-handle{ position:absolute; right:-3px; bottom:-3px; width:8px; height:8px; background:#001391; border:1px solid #fff; cursor:crosshair; z-index:5; }
   #batchModal .em-stage{ position:absolute; inset:0; display:block; max-width:none; gap:0; }
-  #batchModal .em-widget.fv-mode{ position:absolute; top:0; bottom:0; left:0; right:572px; padding:48px; gap:16px; justify-content:center; }
+  #batchModal .em-widget.fv-mode{ position:absolute; top:0; bottom:0; left:0; right:572px; padding:48px; gap:24px; justify-content:center; }
+  /* Zoom do update: menu flutuante encostado no widget (~24px) */
+  #batchModal .fv-stage{ flex:0 0 auto; }
   #batchModal .edit-drawer{ position:absolute; top:24px; bottom:24px; right:32px; width:520px; max-width:none; flex:none; }
 
   /* ---- number status background (verde/amarelo/vermelho vs target) ---- */
@@ -471,7 +473,7 @@
 <div class="edit-modal" id="editModal">
   <div class="em-stage">
     <div class="em-widget" id="emWidget">
-      <section class="wcard" style="width:100%;max-width:520px;height:70vh;max-height:640px;">
+      <section class="wcard" style="width:680px;max-width:100%;height:520px;max-height:100%;">
         <div class="wcard-head"><div><div class="wcard-title" id="cfgPrevTitle">Units Today</div><div class="wcard-sub" id="cfgPrevSub">vs target 3.000</div></div></div>
         <div class="num2"><span class="num2-val font-display">3,420</span></div>
         <div class="w-foot"><span class="w-foot-l"><span class="w-andon">!</span></span><span class="w-av" style="background:#ffd8a8;color:#9a4a00">NU</span></div>
@@ -779,7 +781,7 @@ function numState(v){ if(v>NUM_TARGET) return 'pos'; if(v<NUM_TARGET) return 'ne
 function applyNumStates(){ document.querySelectorAll('.num2').forEach(function(n){ var val=n.querySelector('.num2-val'); if(!val) return; var v=Number((val.textContent||'').replace(/[^0-9.-]/g,''))||0; n.classList.remove('pos','neg','on'); n.classList.add(numState(v)); }); }
 applyNumStates();
 /* close on backdrop / Esc */
-['fullModal','editModal','batchModal'].forEach(function(id){ document.getElementById(id).addEventListener('click', function(e){ if(e.target===this) this.classList.remove('open'); }); });
+['fullModal','editModal','batchModal'].forEach(function(id){ document.getElementById(id).addEventListener('click', function(e){ if(e.target.closest && (e.target.closest('.wcard')||e.target.closest('.edit-drawer')||e.target.closest('.fv-wtools'))) return; this.classList.remove('open'); }); });
 document.getElementById('dpEdit').addEventListener('mousedown', function(e){ e.stopPropagation(); });
 document.addEventListener('mousedown', function(e){ var ed=document.getElementById('dpEdit'); if(!ed.classList.contains('open')) return; if(e.target.closest && (e.target.closest('#dpEdit')||e.target.id==='valUpdate')) return; closeDpe(); });
 document.addEventListener('keydown', function(e){ if(e.key==='Escape'){ closeFull(); closeEdit(); closeDpe(); closeBatch(); } });
