@@ -557,6 +557,7 @@
   .celltip{ position:relative; cursor:help }
   .celltip::after{ content:attr(data-tip);position:absolute;bottom:calc(100% + 6px);left:8px;background:#1c1c1c;color:#fff;font-size:12px;line-height:1.45;padding:8px 12px;border-radius:8px;white-space:normal;width:max-content;max-width:260px;text-align:left;opacity:0;pointer-events:none;transition:opacity .12s;z-index:300;box-shadow:0 8px 24px rgba(0,0,0,.25) }
   .vcol:hover{ z-index:301 }   /* barra em hover (+ tooltip) sempre à frente das barras vizinhas (#207) */
+  .hrow.celltip::after{ bottom:auto; top:calc(100% + 4px) }   /* by-client: tooltip abaixo da linha p/ a 1ª linha não cortar no topo do scroll (#207) */
   .celltip:hover::after{ opacity:1 }
   .celltip-r::after{ left:auto; right:8px }   /* tooltip ancorado à direita (coluna à direita não corta) */
   /* chips de categoria do feedback */
