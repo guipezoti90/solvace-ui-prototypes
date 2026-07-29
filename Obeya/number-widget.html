@@ -203,6 +203,18 @@
   .cpal-pop{ position:fixed; z-index:9860; background:#fff; border:1px solid #e6e6ea; border-radius:10px; box-shadow:0 16px 40px rgba(13,18,47,.18); padding:8px; display:grid; grid-template-columns:repeat(7,20px); gap:6px; }
   .cpal-pop .cpal-sw{ width:20px; height:20px; border-radius:5px; cursor:pointer; border:1px solid rgba(0,0,0,.12); }
   .cpal-pop .cpal-sw:hover{ transform:scale(1.12); }
+  .cpal-foot{ grid-column:1/-1; display:flex; align-items:center; gap:8px; margin-top:6px; padding-top:8px; border-top:1px solid #eef0f4; }
+  .cpal-foot input[type=color]{ width:30px; height:30px; border:1px solid #e6e6ea; border-radius:6px; background:#fff; padding:2px; cursor:pointer; }
+  .cpal-foot input[type=text]{ flex:1; height:30px; border:1px solid #eeeff1; border-radius:7px; padding:0 8px; font-size:12px; box-sizing:border-box; text-transform:uppercase; outline:none; }
+  .ds-select{ position:relative; }
+  .ds-trg{ width:100%; height:38px; border:1px solid #eeeff1; border-radius:8px; display:flex; align-items:center; justify-content:space-between; gap:8px; padding:0 12px; font-size:14px; color:#0d122f; cursor:pointer; background:#fff; text-align:left; font-family:inherit; }
+  .ds-trg:hover{ border-color:#c7ccf5; }
+  .ds-trg .ds-lab{ overflow:hidden; text-overflow:ellipsis; white-space:nowrap; }
+  .ds-trg .ds-chev{ width:16px; height:16px; color:#4d5166; flex:0 0 auto; }
+  .ds-pop{ position:fixed; z-index:9860; background:#fff; border:1px solid #e6e6ea; border-radius:10px; box-shadow:0 16px 40px rgba(13,18,47,.18); padding:6px; max-height:280px; overflow:auto; }
+  .ds-pop .ds-opt{ padding:8px 10px; border-radius:7px; cursor:pointer; font-size:14px; color:#0d122f; white-space:nowrap; }
+  .ds-pop .ds-opt:hover{ background:#f4f6ff; }
+  .ds-pop .ds-opt.on{ color:#001391; font-weight:600; background:#f0f2ff; }
   .ed-addrow{ width:26px; height:26px; border-radius:50%; border:none; background:#001391; color:#fff; display:inline-flex; align-items:center; justify-content:center; cursor:pointer; margin-bottom:10px; } .ed-addrow svg{ width:15px; height:15px; }
   .ed-tbl-wrap{ overflow-x:auto; margin-top:2px; }
   .ed-tbl{ width:100%; border-collapse:collapse; font-size:13px; }
@@ -698,9 +710,9 @@
       </div>
       <div class="ed-body">
         <div class="fbatch">
-          <div class="fbatch-h">Edit <b>Units Today</b> values in bulk</div>
+          <div class="fbatch-h">Edit <b>Units Today</b> value</div>
           <div class="fbatch-modes"><div class="batch-modes" role="group" aria-label="Update mode"><button type="button" class="bm active" onclick="bMode(this,'result')">Result</button><button type="button" class="bm" onclick="bMode(this,'objective')">Objective</button></div><div class="fbatch-tpl"><button type="button" class="zbtn zbtn-outline fb-tpl-btn" title="Download template"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/><polyline points="7 10 12 15 17 10"/><line x1="12" x2="12" y1="15" y2="3"/></svg></button><button type="button" class="zbtn zbtn-outline fb-tpl-btn" title="Upload template"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/><polyline points="17 8 12 3 7 8"/><line x1="12" x2="12" y1="3" y2="15"/></svg></button></div></div>
-          <div class="batch-wrap fbatch-wrap"><table class="wtable batch-table"><thead><tr><th>DATE</th><th><span class="bt-th"><span id="bLbl">RESULT</span><span class="bt-kebab" title="Column options"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="5" r="1.4"/><circle cx="12" cy="12" r="1.4"/><circle cx="12" cy="19" r="1.4"/></svg></span></span></th></tr></thead><tbody id="bRows"></tbody></table></div>
+          <div class="fb-single"><label class="ed-label" id="bLbl">Result</label><input class="ed-input fb-single-in" id="bVal" value="3,420"></div>
         </div>
       </div>
       <div class="ed-foot"><button class="zbtn zbtn-outline" onclick="closeBatch()">Cancel</button><button class="zbtn zbtn-default" onclick="closeBatch()">Apply</button></div>
@@ -738,10 +750,9 @@ document.querySelectorAll('.pgtab').forEach(function(tab){
 
 /* batch update (modo Update ampliado) */
 var B_DATES=['15/06/2026','16/06/2026','17/06/2026','18/06/2026','19/06/2026','20/06/2026','21/06/2026','22/06/2026','23/06/2026','24/06/2026','25/06/2026','26/06/2026','27/06/2026','28/06/2026'];
-var B_RES=[1,8,6,4,2,9,7,5,3,1,8,6,4,2], B_OBJ=[8,8,8,8,8,8,8,8,8,8,8,8,8,8];
-function bRows(mode){ var a=(mode==='result')?B_RES:B_OBJ; return B_DATES.map(function(d,i){ return '<tr><td class="bt-date">'+d+'</td><td contenteditable="true">'+a[i]+'</td></tr>'; }).join(''); }
-function bMode(btn,mode){ Array.prototype.forEach.call(btn.parentNode.querySelectorAll('.bm'), function(b){ b.classList.toggle('active', b===btn); }); document.getElementById('bLbl').textContent=mode.toUpperCase(); document.getElementById('bRows').innerHTML=bRows(mode); }
-function openBatch(){ document.getElementById('bRows').innerHTML=bRows('result'); document.getElementById('bLbl').textContent='RESULT'; var bms=document.querySelectorAll('#batchModal .bm'); Array.prototype.forEach.call(bms, function(b,i){ b.classList.toggle('active', i===0); }); document.getElementById('batchModal').classList.add('open'); }
+var B_SINGLE={result:'3,420', objective:'3.000'}, bCur='result';
+function bMode(btn,mode){ Array.prototype.forEach.call(btn.parentNode.querySelectorAll('.bm'), function(b){ b.classList.toggle('active', b===btn); }); var inp=document.getElementById('bVal'); if(inp){ B_SINGLE[bCur]=inp.value; inp.value=B_SINGLE[mode]||''; } bCur=mode; document.getElementById('bLbl').textContent=(mode==='result')?'Result':'Objective'; }
+function openBatch(){ bCur='result'; var inp=document.getElementById('bVal'); if(inp) inp.value=B_SINGLE.result; document.getElementById('bLbl').textContent='Result'; var bms=document.querySelectorAll('#batchModal .bm'); Array.prototype.forEach.call(bms, function(b,i){ b.classList.toggle('active', i===0); }); document.getElementById('batchModal').classList.add('open'); }
 function closeBatch(){ document.getElementById('batchModal').classList.remove('open'); }
 /* Excel-like fill: arrastar a alça da célula para copiar para baixo */
 (function(){
@@ -815,16 +826,35 @@ document.addEventListener('keydown', function(e){ if(e.key==='Escape'){ closeFul
   document.addEventListener('mouseover', function(e){ var el=e.target.closest && e.target.closest(TIPSEL); if(!el) return; var t=lbl(el); if(!t) return; if(el.hasAttribute('title')){ el.setAttribute('data-systip', t); el.removeAttribute('title'); } barTip.innerHTML='<div class="bt-row"><span class="bt-l" style="color:#fff;font-weight:600">'+t+'</span></div><div class="bt-arrow"></div>'; barTip.style.display='block'; var r=el.getBoundingClientRect(); barTip.style.left=(r.left+r.width/2)+'px'; barTip.style.top=r.top+'px'; });
   document.addEventListener('mouseout', function(e){ var el=e.target.closest && e.target.closest(TIPSEL); if(el) barTip.style.display='none'; });
 })();
-/* config: color selects (swatch) abrem uma paleta do sistema */
+/* config: color selects (swatch) abrem uma paleta do DS com seletor RGB */
 (function(){
   var PAL=['#001391','#0a0a0b','#4d5166','#9aa0ac','#dfe3ea','#f2f3f5','#ffffff','#14ae5c','#8bc34a','#e8b931','#f5a524','#ec221f','#d41d1a','#0e7aa8'];
   var pop=null, sw=null;
   function close(){ if(pop){ pop.remove(); pop=null; sw=null; } }
+  function curHex(){ var b=(sw&&sw.style.background||'').trim(); if(/^#([0-9a-f]{6})$/i.test(b)) return b; var m=/rgba?\((\d+),\s*(\d+),\s*(\d+)/i.exec(b); if(m){ return '#'+[1,2,3].map(function(i){return ('0'+(+m[i]).toString(16)).slice(-2);}).join(''); } return '#001391'; }
+  function apply(c){ if(sw) sw.style.background=c; }
   document.addEventListener('click', function(e){
-    if(pop && e.target.closest && e.target.closest('.cpal-pop')){ var c=e.target.closest('.cpal-sw'); if(c && sw){ sw.style.background=c.getAttribute('data-c'); close(); } return; }
-    var sel=e.target.closest && e.target.closest('#editDrawer .ed-select'); if(sel && sel.querySelector('.swatch')){ e.stopPropagation(); var s=sel.querySelector('.swatch'); if(sw===s){ close(); return; } close(); sw=s; pop=document.createElement('div'); pop.className='cpal-pop'; pop.innerHTML=PAL.map(function(c){ return '<span class="cpal-sw" data-c="'+c+'" title="'+c+'" style="background:'+c+'"></span>'; }).join(''); (sel.closest('.edit-drawer')||document.body).appendChild(pop); var r=sel.getBoundingClientRect(); pop.style.left=Math.max(8,Math.min(r.left, window.innerWidth-pop.offsetWidth-8))+'px'; pop.style.top=(r.bottom+6)+'px'; return; }
+    if(pop && e.target.closest && e.target.closest('.cpal-pop')){ var c=e.target.closest('.cpal-sw'); if(c && sw){ apply(c.getAttribute('data-c')); close(); } return; }
+    var sel=e.target.closest && e.target.closest('#editDrawer .ed-select'); if(sel && sel.querySelector('.swatch')){ e.stopPropagation(); var s=sel.querySelector('.swatch'); if(sw===s){ close(); return; } close(); sw=s;
+      pop=document.createElement('div'); pop.className='cpal-pop';
+      pop.innerHTML=PAL.map(function(c){ return '<span class="cpal-sw" data-c="'+c+'" title="'+c+'" style="background:'+c+'"></span>'; }).join('')+'<div class="cpal-foot"><input type="color" class="cpal-rgb" title="Pick RGB color"><input type="text" class="cpal-hex" maxlength="7" placeholder="#RRGGBB"></div>';
+      (sel.closest('.edit-drawer')||document.body).appendChild(pop);
+      var hx=curHex(), ci=pop.querySelector('.cpal-rgb'), tx=pop.querySelector('.cpal-hex'); ci.value=hx; tx.value=hx.toUpperCase();
+      ci.addEventListener('input', function(){ apply(ci.value); tx.value=ci.value.toUpperCase(); });
+      tx.addEventListener('input', function(){ var v=tx.value.trim(); if(/^#([0-9a-f]{6}|[0-9a-f]{3})$/i.test(v)){ apply(v); ci.value=(v.length===4)?('#'+v[1]+v[1]+v[2]+v[2]+v[3]+v[3]):v; } });
+      var r=sel.getBoundingClientRect(); pop.style.left=Math.max(8,Math.min(r.left, window.innerWidth-210))+'px'; pop.style.top=(r.bottom+6)+'px'; return; }
     close();
   });
+})();
+/* config: <select> nativo do SO -> dropdown do DS */
+(function(){
+  var pop=null;
+  function closeP(){ if(pop){ pop.remove(); pop=null; } }
+  function openP(sel,trg){ closeP(); pop=document.createElement('div'); pop.className='ds-pop'; var h='',i; for(i=0;i<sel.options.length;i++){ var o=sel.options[i]; h+='<div class="ds-opt'+(i===sel.selectedIndex?' on':'')+'" data-i="'+i+'">'+o.textContent+'</div>'; } pop.innerHTML=h; (sel.closest('.edit-drawer')||document.body).appendChild(pop); var r=trg.getBoundingClientRect(); pop.style.left=r.left+'px'; pop.style.top=(r.bottom+4)+'px'; pop.style.minWidth=r.width+'px'; pop.__sel=sel; pop.__trg=trg; }
+  function build(sel){ if(sel.__ds) return; sel.__ds=true; sel.style.display='none'; var wrap=document.createElement('div'); wrap.className='ds-select'; var trg=document.createElement('button'); trg.type='button'; trg.className='ds-trg'; trg.innerHTML='<span class="ds-lab"></span><svg class="ds-chev" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="m6 9 6 6 6-6"/></svg>'; wrap.appendChild(trg); sel.parentNode.insertBefore(wrap, sel.nextSibling); var lab=trg.querySelector('.ds-lab'); function sync(){ var o=sel.options[sel.selectedIndex]; lab.textContent=o?o.textContent:''; } sync(); sel.addEventListener('change', sync); trg.addEventListener('click', function(e){ e.preventDefault(); e.stopPropagation(); if(pop&&pop.__trg===trg){ closeP(); return; } openP(sel,trg); }); }
+  function scan(){ [].forEach.call(document.querySelectorAll('select.ed-native'), build); }
+  document.addEventListener('click', function(e){ if(!pop) return; var op=e.target.closest && e.target.closest('.ds-pop .ds-opt'); if(op){ var sel=pop.__sel; sel.selectedIndex=+op.getAttribute('data-i'); try{ sel.dispatchEvent(new Event('change',{bubbles:true})); }catch(_){ } closeP(); return; } if(!(e.target.closest && (e.target.closest('.ds-pop')||e.target.closest('.ds-trg')))) closeP(); });
+  scan(); try{ new MutationObserver(function(){ clearTimeout(window.__dsmo); window.__dsmo=setTimeout(scan,150); }).observe(document.body,{childList:true,subtree:true}); }catch(_){}
 })();
 </script>
 </body>
