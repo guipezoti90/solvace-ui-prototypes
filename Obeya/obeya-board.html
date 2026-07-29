@@ -158,6 +158,28 @@
   #barTip .bt-dot{ width:8px; height:8px; border-radius:50%; flex:0 0 auto; }
   #barTip b{ font-weight:600; white-space:nowrap; }
   #barTip .bt-arrow{ position:absolute; left:50%; bottom:-5px; transform:translateX(-50%) rotate(45deg); width:10px; height:10px; background:#1c2434; }
+  /* system confirm dialog (replaces native confirm) */
+  #sysConfirm{ position:fixed; inset:0; background:rgba(13,18,47,.34); display:none; align-items:center; justify-content:center; z-index:9900; }
+  #sysConfirm.open{ display:flex; }
+  #sysConfirm .sc-card{ background:#fff; border-radius:14px; box-shadow:0 24px 60px rgba(0,0,0,.28); padding:22px; width:360px; max-width:90%; font-family:Inter,system-ui,Arial,sans-serif; }
+  #sysConfirm .sc-title{ font-size:15px; font-weight:600; color:#0d122f; margin-bottom:6px; }
+  #sysConfirm .sc-msg{ font-size:13px; color:#4d5166; line-height:1.45; margin-bottom:18px; }
+  #sysConfirm .sc-acts{ display:flex; justify-content:flex-end; gap:10px; }
+  #sysConfirm .zbtn-danger{ background:#ec221f; color:#fff; border:1px solid #ec221f; }
+  #sysConfirm .zbtn-danger:hover{ background:#d41d1a; }
+  /* room-modal select dropdown (Type / Owners / Members / Guests) */
+  .rsel-pop{ position:fixed; z-index:9850; background:#fff; border:1px solid #e6e6ea; border-radius:10px; box-shadow:0 16px 40px rgba(13,18,47,.18); padding:6px; max-height:280px; overflow:auto; font-family:Inter,system-ui,Arial,sans-serif; }
+  .rsel-pop .rsel-search{ padding:4px 4px 6px; }
+  .rsel-pop .rsel-search input{ width:100%; height:32px; border:1px solid #eeeff1; border-radius:7px; padding:0 10px; font-size:13px; box-sizing:border-box; outline:none; }
+  .rsel-pop .rsel-search input:focus{ border-color:#c7ccf5; box-shadow:0 0 0 3px rgba(0,19,145,.10); }
+  .rsel-pop .rsel-list{ display:flex; flex-direction:column; gap:2px; padding:2px; }
+  .rsel-pop .rsel-it{ display:flex; align-items:center; gap:8px; padding:6px 8px; border-radius:7px; cursor:pointer; font-size:13px; color:#0d122f; }
+  .rsel-pop .rsel-it:hover{ background:#f4f6ff; }
+  .rsel-pop .rsel-it input{ accent-color:#001391; }
+  .rsel-pop .rsel-it .uav{ width:22px; height:22px; }
+  .rsel-pop .rsel-opt{ padding:8px 10px; border-radius:7px; cursor:pointer; font-size:14px; color:#0d122f; }
+  .rsel-pop .rsel-opt:hover{ background:#f4f6ff; }
+  .rsel-pop .rsel-opt.active{ color:#001391; font-weight:600; }
   /* #91 — single datapoint editor (click a bar/ring segment in update mode) */
   #dpEdit{ position:fixed; z-index:9650; background:#fff; border:1px solid #e2e5ec; border-radius:12px; box-shadow:0 18px 44px rgba(13,18,47,.24); padding:12px; width:236px; font-family:Inter,system-ui,Arial,sans-serif; }
   #dpEdit .dpe-lbl{ font-size:12px; font-weight:600; color:#6b7280; margin-bottom:8px; }
@@ -2942,7 +2964,21 @@
     placeAlignBar();
   }
   (function(){ var ab=alignBar.querySelectorAll('button'); function bind(btn){ btn.addEventListener('mousedown', function(e){ e.stopPropagation(); }); btn.addEventListener('click', function(e){ e.stopPropagation(); alignGroup(btn.getAttribute('data-al')); }); } for(var i=0;i<ab.length;i++) bind(ab[i]); })();
-  boardArea.addEventListener('mousedown', function(e){ var d=e.target.closest && e.target.closest('.wcont-del'); if(d){ e.stopPropagation(); var box=d.closest('.wcontainer'); if(box && confirm('Remove this container? The widgets inside will stay on the board.')) box.parentNode.removeChild(box); } }, true);
+  var _sysDlg=null;
+  function sysConfirm(msg, onOk, opts){ opts=opts||{};
+    if(!_sysDlg){ _sysDlg=document.createElement('div'); _sysDlg.id='sysConfirm';
+      _sysDlg.innerHTML='<div class="sc-card"><div class="sc-title"></div><div class="sc-msg"></div><div class="sc-acts"><button class="zbtn zbtn-outline" data-sc="cancel">Cancel</button><button class="zbtn zbtn-danger" data-sc="ok">Remove</button></div></div>';
+      document.body.appendChild(_sysDlg);
+      function scClose(){ _sysDlg.classList.remove('open'); _sysDlg.__ok=null; }
+      _sysDlg.addEventListener('mousedown', function(e){ if(e.target===_sysDlg) scClose(); });
+      _sysDlg.addEventListener('click', function(e){ var b=e.target.closest('[data-sc]'); if(!b) return; if(b.getAttribute('data-sc')==='ok' && _sysDlg.__ok) _sysDlg.__ok(); scClose(); });
+    }
+    _sysDlg.querySelector('.sc-title').textContent=opts.title||'Confirm';
+    _sysDlg.querySelector('.sc-msg').textContent=msg;
+    _sysDlg.querySelector('[data-sc="ok"]').textContent=opts.okText||'Remove';
+    _sysDlg.__ok=onOk; _sysDlg.classList.add('open');
+  }
+  boardArea.addEventListener('mousedown', function(e){ var d=e.target.closest && e.target.closest('.wcont-del'); if(d){ e.stopPropagation(); e.preventDefault(); var box=d.closest('.wcontainer'); if(box) sysConfirm('Remove this container? The widgets inside will stay on the board.', function(){ if(box.parentNode) box.parentNode.removeChild(box); }, {title:'Remove container'}); } }, true);
   // ---- container: rgb color picker, layers (front/back), dblclick rename, proportional resize ----
   function contMembers(box){ var mem=(box._members||[]).filter(function(m){return m.isConnected;}); if(mem.length) return mem; mem=[]; var cr=box.getBoundingClientRect(), pg=box.closest('.board-page'); if(pg){ var cs=pg.querySelectorAll('.wcard'); for(var i=0;i<cs.length;i++){ var r=cs[i].getBoundingClientRect(), cx=r.left+r.width/2, cy=r.top+r.height/2; if(cx>=cr.left&&cx<=cr.right&&cy>=cr.top&&cy<=cr.bottom) mem.push(cs[i]); } } box._members=mem; return mem; }
   var _ccBox=null;
@@ -4099,6 +4135,12 @@
     document.addEventListener('mouseover', function(e){ var av=e.target.closest && e.target.closest(AVSEL); if(!av) return; var nm=av.getAttribute('title')||av.getAttribute('data-uname'); if(!nm) return; if(av.hasAttribute('title')){ av.setAttribute('data-uname', nm); av.removeAttribute('title'); } barTip.innerHTML='<div class="bt-row"><span class="bt-l" style="color:#fff;font-weight:600">'+nm+'</span></div><div class="bt-arrow"></div>'; barTip.style.display='block'; var r=av.getBoundingClientRect(); barTip.style.left=(r.left+r.width/2)+'px'; barTip.style.top=r.top+'px'; });
     document.addEventListener('mouseout', function(e){ var av=e.target.closest && e.target.closest(AVSEL); if(av) barTip.style.display='none'; });
   })();
+  // System tooltip for control buttons/icons — replaces the native browser title (styled like the rest of the system)
+  (function(){ var TIPSEL='a[title],button[title],.zbtn[title],.up-act-btn[title],.expand[title],.wcard-title[title],[role="button"][title],[data-systip]';
+    function lbl(el){ return el.getAttribute('data-systip')||el.getAttribute('title')||''; }
+    document.addEventListener('mouseover', function(e){ var el=e.target.closest && e.target.closest(TIPSEL); if(!el) return; var t=lbl(el); if(!t) return; if(el.hasAttribute('title')){ el.setAttribute('data-systip', t); el.removeAttribute('title'); } barTip.innerHTML='<div class="bt-row"><span class="bt-l" style="color:#fff;font-weight:600">'+t+'</span></div><div class="bt-arrow"></div>'; barTip.style.display='block'; barTip.style.minWidth='0'; var r=el.getBoundingClientRect(); barTip.style.left=(r.left+r.width/2)+'px'; barTip.style.top=r.top+'px'; });
+    document.addEventListener('mouseout', function(e){ var el=e.target.closest && e.target.closest(TIPSEL); if(el){ barTip.style.display='none'; barTip.style.minWidth=''; } });
+  })();
   // #213 — click-to-sort (A→Z / Z→A) on every widget table header
   (function(){
     function cellText(tr,i){ var td=tr.children[i]; return td?(td.textContent||'').trim():''; }
@@ -4443,6 +4485,21 @@
     'Table': pv('<rect x="16" y="22" width="118" height="18" fill="#f3f3f3"/><rect x="16" y="22" width="118" height="76" rx="6" fill="none" stroke="#eeeff1"/>'+
       '<line x1="16" y1="40" x2="134" y2="40" stroke="#eeeff1"/><line x1="16" y1="59" x2="134" y2="59" stroke="#eeeff1"/><line x1="16" y1="78" x2="134" y2="78" stroke="#eeeff1"/>'+
       '<line x1="56" y1="22" x2="56" y2="98" stroke="#eeeff1"/><line x1="95" y1="22" x2="95" y2="98" stroke="#eeeff1"/>'),
+    'Trend': pv('<rect x="16" y="14" width="42" height="6" rx="3" fill="#0d122f"/><polyline points="20,84 46,60 72,70 98,44 124,54 132,40" fill="none" stroke="#001391" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"/><circle cx="20" cy="84" r="3.2" fill="#001391"/><circle cx="46" cy="60" r="3.2" fill="#001391"/><circle cx="72" cy="70" r="3.2" fill="#001391"/><circle cx="98" cy="44" r="3.2" fill="#001391"/><circle cx="124" cy="54" r="3.2" fill="#001391"/>'),
+    'Gauge': pv('<g transform="translate(75,82)"><path d="M-42 0 A42 42 0 0 1 42 0" fill="none" stroke="#eef0f4" stroke-width="12" stroke-linecap="round"/><path d="M-42 0 A42 42 0 0 1 25 -33.7" fill="none" stroke="#14ae5c" stroke-width="12" stroke-linecap="round"/><line x1="0" y1="0" x2="20" y2="-30" stroke="#0d122f" stroke-width="3" stroke-linecap="round"/><circle r="4.5" fill="#0d122f"/></g>'),
+    'Radial': pv('<g transform="translate(75,56)"><circle r="30" fill="none" stroke="#eef0f4" stroke-width="12"/><circle r="30" fill="none" stroke="#14ae5c" stroke-width="12" stroke-dasharray="118 71" transform="rotate(-90)"/><circle r="30" fill="none" stroke="#ec221f" stroke-width="12" stroke-dasharray="26 163" stroke-dashoffset="-118" transform="rotate(-90)"/></g>'),
+    'Pyramid': pv('<polygon points="75,24 91,48 59,48" fill="#001391"/><rect x="52" y="50" width="46" height="13" rx="2" fill="#3550c9"/><rect x="42" y="65" width="66" height="13" rx="2" fill="#6f83db"/><rect x="32" y="80" width="86" height="13" rx="2" fill="#aab4ec"/>'),
+    'Time': pv('<circle cx="52" cy="50" r="15" fill="#d7e9ff"/><text x="52" y="55" text-anchor="middle" font-family="Inter,sans-serif" font-size="12" font-weight="700" fill="#001391">JF</text><circle cx="92" cy="50" r="15" fill="#ffe3c2"/><text x="92" y="55" text-anchor="middle" font-family="Inter,sans-serif" font-size="12" font-weight="700" fill="#9a4a00">MR</text><circle cx="72" cy="80" r="15" fill="#dcf5e6"/><text x="72" y="85" text-anchor="middle" font-family="Inter,sans-serif" font-size="12" font-weight="700" fill="#2d6a4f">AS</text>'),
+    'Defect Tag': pv('<path d="M18 42 H56 L72 60 L56 78 H18 Z" fill="#fdeceb" stroke="#ec221f" stroke-width="2" stroke-linejoin="round"/><circle cx="32" cy="60" r="4" fill="#ec221f"/><rect x="86" y="50" width="46" height="7" rx="3" fill="#eaecf0"/><rect x="86" y="64" width="32" height="6" rx="3" fill="#f2f3f6"/>'),
+    'RCA': pv('<circle cx="28" cy="60" r="10" fill="#001391"/><path d="M38 60 H72" stroke="#c3c7d9" stroke-width="2"/><path d="M72 60 L100 42 M72 60 L100 78" stroke="#c3c7d9" stroke-width="2"/><circle cx="106" cy="42" r="8" fill="#14ae5c"/><circle cx="106" cy="78" r="8" fill="#e8b931"/>'),
+    'Checklist': pv('<rect x="16" y="32" width="13" height="13" rx="3" fill="#14ae5c"/><path d="M19 38l2.4 2.4 4.6-5.2" stroke="#fff" stroke-width="2" fill="none" stroke-linecap="round" stroke-linejoin="round"/><rect x="38" y="35" width="94" height="7" rx="3" fill="#eaecf0"/><rect x="16" y="55" width="13" height="13" rx="3" fill="#14ae5c"/><path d="M19 61l2.4 2.4 4.6-5.2" stroke="#fff" stroke-width="2" fill="none" stroke-linecap="round" stroke-linejoin="round"/><rect x="38" y="58" width="94" height="7" rx="3" fill="#eaecf0"/><rect x="16" y="78" width="13" height="13" rx="3" fill="none" stroke="#c3c7d9" stroke-width="2"/><rect x="38" y="81" width="94" height="7" rx="3" fill="#f2f3f6"/>'),
+    'Checks': pv('<circle cx="24" cy="40" r="9" fill="#14ae5c"/><path d="M20 40l3 3 5-6" stroke="#fff" stroke-width="2" fill="none" stroke-linecap="round" stroke-linejoin="round"/><rect x="40" y="36" width="92" height="7" rx="3" fill="#eaecf0"/><circle cx="24" cy="66" r="9" fill="#e8b931"/><rect x="40" y="62" width="92" height="7" rx="3" fill="#eaecf0"/><circle cx="24" cy="92" r="9" fill="#ec221f"/><rect x="40" y="88" width="92" height="7" rx="3" fill="#f2f3f6"/>'),
+    'Feed': pv('<circle cx="26" cy="34" r="8" fill="#dfe3ea"/><rect x="40" y="27" width="54" height="6" rx="3" fill="#0d122f" opacity="0.35"/><rect x="40" y="38" width="92" height="5" rx="2" fill="#eaecf0"/><circle cx="26" cy="66" r="8" fill="#dfe3ea"/><rect x="40" y="59" width="46" height="6" rx="3" fill="#0d122f" opacity="0.35"/><rect x="40" y="70" width="92" height="5" rx="2" fill="#eaecf0"/><rect x="40" y="80" width="70" height="5" rx="2" fill="#f2f3f6"/>'),
+    'Image': pv('<rect x="28" y="28" width="94" height="64" rx="8" fill="#f0f2fa" stroke="#c3c7d9" stroke-width="2"/><circle cx="50" cy="48" r="7" fill="#e8b931"/><path d="M34 88 L60 60 L78 78 L98 58 L116 88 Z" fill="#aab4ec"/>'),
+    'HTML': pv('<rect x="26" y="30" width="98" height="60" rx="8" fill="#0d122f"/><text x="75" y="67" text-anchor="middle" font-family="ui-monospace,monospace" font-size="22" font-weight="700" fill="#7ee0a8">&lt;/&gt;</text>'),
+    'Whiteboard': pv('<rect x="22" y="28" width="106" height="64" rx="8" fill="#ffffff" stroke="#c3c7d9" stroke-width="2"/><path d="M34 66 C46 44 58 82 70 60 S92 44 104 62" fill="none" stroke="#001391" stroke-width="2.5" stroke-linecap="round"/><circle cx="110" cy="42" r="5" fill="#ec221f"/>'),
+    'Survey': pv('<rect x="16" y="26" width="72" height="6" rx="3" fill="#0d122f" opacity="0.4"/><circle cx="22" cy="52" r="5" fill="#001391"/><rect x="34" y="49" width="80" height="6" rx="3" fill="#eaecf0"/><circle cx="22" cy="72" r="5" fill="none" stroke="#c3c7d9" stroke-width="2"/><rect x="34" y="69" width="80" height="6" rx="3" fill="#f2f3f6"/><circle cx="22" cy="92" r="5" fill="none" stroke="#c3c7d9" stroke-width="2"/><rect x="34" y="89" width="80" height="6" rx="3" fill="#f2f3f6"/>'),
+    'Documents': pv('<rect x="42" y="24" width="52" height="72" rx="6" fill="#fff" stroke="#c3c7d9" stroke-width="2"/><path d="M80 24 v14 h14" fill="none" stroke="#c3c7d9" stroke-width="2"/><rect x="50" y="50" width="36" height="5" rx="2" fill="#eaecf0"/><rect x="50" y="62" width="36" height="5" rx="2" fill="#eaecf0"/><rect x="50" y="74" width="24" height="5" rx="2" fill="#f2f3f6"/>'),
     'View all': pv('<rect x="20" y="22" width="52" height="38" rx="8" fill="#e7f8ee"/><rect x="78" y="22" width="52" height="38" rx="8" fill="#f5f5ff"/><rect x="20" y="64" width="52" height="38" rx="8" fill="#fff5d1"/><rect x="78" y="64" width="52" height="38" rx="8" fill="#fdeceb"/>')
   };
   WPREV._default=pv('<rect x="52" y="44" width="46" height="32" rx="6" fill="none" stroke="#c3c7d9" stroke-width="2"/><circle cx="65" cy="56" r="4" fill="#c3c7d9"/><path d="M58 76l12-12 13 13" stroke="#c3c7d9" stroke-width="2" fill="none" stroke-linecap="round" stroke-linejoin="round"/>');
@@ -4457,6 +4514,23 @@
     'Status':'A status widget with quick-toggle states to flag a routine as met, within standards or missed.',
     'Table':'A table widget to display structured rows and columns of board data.',
     'Pivot table':'Cross-tabulate values by two dimensions (rows × columns) with automatic row, column and grand totals.',
+    'Trend':'A trend widget that plots a value/answer series over time as a line with datapoints and comments.',
+    'Gauge':'A gauge widget showing a single value against its target on a semicircular dial with conditional color.',
+    'Radial':'A radial widget that maps a period of daily statuses around a ring (met, warning or missed).',
+    'Pyramid':'A pyramid widget that ranks values as stacked levels, from the largest base to the top.',
+    'Pie':'A pie / donut widget that breaks a total down into proportional slices by category.',
+    'Spider':'A spider (radar) widget comparing several dimensions on a single multi-axis chart.',
+    'Time':'A team widget listing the people responsible for the routine, with their avatars and roles.',
+    'Defect Tag':'A defect-tag widget listing quality tags with their status, area and responsible.',
+    'RCA':'A root-cause-analysis widget linking a problem to its causes and countermeasures.',
+    'Checklist':'A checklist widget with items to mark as done for the routine or standard.',
+    'Checks':'A checks widget with quick pass, attention or fail states for routine verifications.',
+    'Feed':'A feed widget with the latest team posts, replies and updates.',
+    'Image':'An image widget to pin a picture, photo or reference visual on the board.',
+    'HTML':'An HTML widget to embed custom markup or an external snippet on the board.',
+    'Whiteboard':'A whiteboard widget for free-form notes, sketches and quick annotations.',
+    'Survey':'A survey widget to collect quick answers with single or multiple choice options.',
+    'Documents':'A documents widget linking files and attachments relevant to the board.',
     'View all':'Browse the full catalog of widgets available to add to your board.'
   };
   var previewLabel='';
@@ -4617,6 +4691,27 @@
   var rc=['roomClose','roomCancel','roomSave'];
   for(var ri=0;ri<rc.length;ri++){ (function(id){ var el=document.getElementById(id); if(el) el.addEventListener('click', closeRoomModal); })(rc[ri]); }
   roomModal.addEventListener('mousedown', function(e){ if(e.target===roomModal) closeRoomModal(); });
+  // #326 — dropdowns reais nos selects do modal de sala (Type = single; Owners/Members/Guests = multiselect com busca)
+  (function(){
+    var POOL=[{i:'SA',n:'Solvace Administrator',c:'#d7e9ff',t:'#001391'},{i:'JF',n:'Jardel Florentino',c:'#d7e9ff',t:'#001391'},{i:'MR',n:'Marina Rocha',c:'#ffe3c2',t:'#9a4a00'},{i:'AS',n:'Ana Souza',c:'#dcf5e6',t:'#2d6a4f'},{i:'CP',n:'Carlos Pinto',c:'#f3e3ff',t:'#6b21a8'},{i:'LT',n:'Lucia Teixeira',c:'#ffe0e0',t:'#b42318'},{i:'RN',n:'Rafael Nunes',c:'#e0f0ff',t:'#0b5aa2'}];
+    var TYPES=['Basic','Advanced'];
+    var pop=null, anchor=null;
+    function close(){ if(pop){ pop.remove(); pop=null; anchor=null; } }
+    function byInit(i){ for(var k=0;k<POOL.length;k++) if(POOL[k].i===i) return POOL[k]; return {i:i,n:i,c:'#e6e6ea',t:'#4d5166'}; }
+    function initSel(sel){ if(!sel.hasAttribute('data-sel')){ var avs=[].map.call(sel.querySelectorAll('.uav'),function(a){return a.textContent.trim();}); sel.setAttribute('data-sel', avs.join(',')); } }
+    function renderUsel(sel){ var arr=(sel.getAttribute('data-sel')||'').split(',').filter(Boolean); var l=sel.querySelector('.usel-l'); if(!l) return; if(!arr.length){ l.innerHTML='<span class="usel-txt" style="color:#8a90a6">Select…</span>'; return; } var avs=arr.slice(0,3).map(function(i){var p=byInit(i);return '<span class="uav" style="background:'+p.c+';color:'+p.t+'">'+p.i+'</span>';}).join(''); var first=byInit(arr[0]).n, extra=arr.length>1?(', +'+(arr.length-1)):''; l.innerHTML='<span class="usel-avs">'+avs+'</span><span class="usel-txt">'+first+extra+'</span>'; }
+    function openFor(sel){ close(); anchor=sel; pop=document.createElement('div'); pop.className='rsel-pop'; var isUsel=sel.classList.contains('usel'); var html='';
+      if(isUsel){ initSel(sel); var cur=(sel.getAttribute('data-sel')||'').split(',').filter(Boolean); html+='<div class="rsel-search"><input placeholder="Search people…"></div><div class="rsel-list">'; POOL.forEach(function(p){ var on=cur.indexOf(p.i)>=0; html+='<label class="rsel-it" data-i="'+p.i+'" data-n="'+p.n.toLowerCase()+'"><input type="checkbox" '+(on?'checked':'')+'><span class="uav" style="background:'+p.c+';color:'+p.t+'">'+p.i+'</span><span>'+p.n+'</span></label>'; }); html+='</div>'; }
+      else { var txt=(sel.textContent||'').trim(); html+='<div class="rsel-list">'; TYPES.forEach(function(t){ html+='<div class="rsel-opt'+(txt.indexOf(t)===0?' active':'')+'" data-t="'+t+'">'+t+'</div>'; }); html+='</div>'; }
+      pop.innerHTML=html; document.body.appendChild(pop); var r=sel.getBoundingClientRect(); pop.style.left=r.left+'px'; pop.style.top=(r.bottom+6)+'px'; pop.style.minWidth=r.width+'px';
+      var si=pop.querySelector('.rsel-search input'); if(si){ si.focus(); si.addEventListener('input', function(){ var q=this.value.toLowerCase(); [].forEach.call(pop.querySelectorAll('.rsel-it'), function(it){ it.style.display=(!q||it.getAttribute('data-n').indexOf(q)>=0)?'':'none'; }); }); }
+    }
+    document.addEventListener('click', function(e){
+      if(pop && e.target.closest && e.target.closest('.rsel-pop')){ var opt=e.target.closest('.rsel-opt'); if(opt && anchor){ anchor.childNodes[0].nodeValue=opt.getAttribute('data-t')+' '; close(); return; } var it=e.target.closest('.rsel-it'); if(it && anchor){ var cb=it.querySelector('input'); if(e.target.tagName!=='INPUT') cb.checked=!cb.checked; var chosen=[].filter.call(pop.querySelectorAll('.rsel-it input'), function(x){return x.checked;}).map(function(x){return x.closest('.rsel-it').getAttribute('data-i');}); anchor.setAttribute('data-sel', chosen.join(',')); renderUsel(anchor); } return; }
+      var sel=e.target.closest && e.target.closest('#roomDrawer .ed-select'); if(sel){ e.stopPropagation(); if(anchor===sel) close(); else openFor(sel); return; }
+      close();
+    });
+  })();
 
   // board drawer (edit existing / create new)
   document.getElementById('btnNew').addEventListener('click', function(){ openBoardModal('new'); });
@@ -4740,7 +4835,8 @@
     var noDrawer = !isBatch && /^presence$/.test(typ);
     if(fullDrawer) fullDrawer.style.display = noDrawer ? 'none' : '';
     fullModal.classList.toggle('fv-solo', !!noDrawer);
-    var _dl=fullModal.querySelector('.fvw-download'); if(_dl) _dl.style.display = noDrawer ? 'none' : '';
+    var _dl=fullModal.querySelector('.fvw-download'); if(_dl) _dl.style.display = (noDrawer || isBatch) ? 'none' : '';
+    var _wt=fullModal.querySelector('.fv-wtools'); if(_wt) _wt.style.display = isBatch ? 'none' : '';   // #333 — no update não há tools sobre o widget (Links só no modo reunião)
     var clone=card.cloneNode(true); clone.classList.remove('selected','dragging','sm'); clone.removeAttribute('style');
     clone.style.position='static';
     var rs=clone.querySelector('.wresize'); if(rs && rs.parentNode) rs.parentNode.removeChild(rs);

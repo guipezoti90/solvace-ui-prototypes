@@ -107,6 +107,10 @@
   .em-widget.fv-mode{ flex-direction:column; gap:12px; }
   .fv-wtools{ display:flex; gap:6px; align-items:center; flex:0 0 auto; background:rgba(198,201,255,0.95); -webkit-backdrop-filter:blur(20px) saturate(1.8); backdrop-filter:blur(20px) saturate(1.8); border:1px solid rgba(0,19,145,0.34); border-radius:10px; padding:6px; box-shadow:0 14px 36px rgba(0,19,145,.20); }
   .fv-wtools .zbtn{ background:transparent; border-color:transparent; color:#001391; } .fv-wtools .zbtn:hover{ background:rgba(255,255,255,0.55); }
+  #barTip{ position:fixed; z-index:9600; background:#1c2434; color:#fff; border-radius:8px; padding:8px 10px; font-size:11px; line-height:1.35; box-shadow:0 8px 22px rgba(0,0,0,.28); pointer-events:none; transform:translate(-50%,-100%); margin-top:-10px; font-family:Inter,system-ui,Arial,sans-serif; }
+  #barTip .bt-row{ display:flex; align-items:center; justify-content:space-between; gap:16px; padding:1px 0; }
+  #barTip .bt-l{ display:inline-flex; align-items:center; gap:6px; color:#cdd3e0; white-space:nowrap; }
+  #barTip .bt-arrow{ position:absolute; left:50%; bottom:-5px; transform:translateX(-50%) rotate(45deg); width:10px; height:10px; background:#1c2434; }
   .fv-stage{ flex:1; min-height:0; width:100%; display:flex; align-items:center; justify-content:center; }
 
   .edit-drawer{ position:relative; flex:0 0 530px; width:530px; max-width:46%; align-self:stretch; background:#fff; border:1px solid #eeeff1; border-radius:14px; box-shadow:0 24px 60px rgba(0,0,0,.22); display:flex; flex-direction:column; overflow:hidden; }
@@ -676,10 +680,6 @@
 <div class="edit-modal" id="batchModal">
   <div class="em-stage">
     <div class="em-widget fv-mode">
-      <div class="fv-wtools">
-        <button class="zbtn zbtn-outline" title="Download da base"><svg viewBox="0 0 24 24" width="16" height="16" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/><polyline points="7 10 12 15 17 10"/><line x1="12" x2="12" y1="15" y2="3"/></svg> Download</button>
-        <button class="zbtn zbtn-outline"><svg viewBox="0 0 24 24" width="16" height="16" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M10 13a5 5 0 0 0 7.54.54l3-3a5 5 0 0 0-7.07-7.07l-1.72 1.71"/><path d="M14 11a5 5 0 0 0-7.54-.54l-3 3a5 5 0 0 0 7.07 7.07l1.71-1.71"/></svg> Links <svg viewBox="0 0 24 24" width="14" height="14" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="m6 9 6 6 6-6"/></svg></button>
-      </div>
       <div class="fv-stage">
         <section class="wcard" style="width:680px;max-width:100%;height:520px;max-height:100%;">
           <div class="wcard-head"><div><div class="wcard-title">Units Today</div><div class="wcard-sub">vs target 3.000</div></div></div>
@@ -804,6 +804,13 @@ document.addEventListener('keydown', function(e){ if(e.key==='Escape'){ closeFul
   function emptyLinkRow(){ var tr=document.createElement('tr'); tr.innerHTML='<td><input class="ed-cell"></td><td><input class="ed-cell"></td><td><input class="ed-cell"></td><td><input class="ed-cell"></td><td><button class="ed-trash" title="Remove">'+TRASH+'</button></td>'; return tr; }
   if(linkAdd&&linkRows) linkAdd.addEventListener('click', function(){ linkRows.appendChild(emptyLinkRow()); });
   if(linkRows) linkRows.addEventListener('click', function(e){ var t=e.target.closest('.ed-trash'); if(t){ var tr=t.closest('tr'); if(tr&&tr.parentNode) tr.parentNode.removeChild(tr); return; } var cx=e.target.closest('.cx'); if(cx){ var td=cx.closest('td'); if(td) td.innerHTML='<input class="ed-cell">'; } });
+})();
+/* System tooltip for control buttons/icons — replaces the native browser title */
+(function(){ var barTip=document.createElement('div'); barTip.id='barTip'; barTip.style.display='none'; document.body.appendChild(barTip);
+  var TIPSEL='a[title],button[title],.zbtn[title],.up-act-btn[title],.expand[title],.wcard-title[title],[role="button"][title],[data-systip]';
+  function lbl(el){ return el.getAttribute('data-systip')||el.getAttribute('title')||''; }
+  document.addEventListener('mouseover', function(e){ var el=e.target.closest && e.target.closest(TIPSEL); if(!el) return; var t=lbl(el); if(!t) return; if(el.hasAttribute('title')){ el.setAttribute('data-systip', t); el.removeAttribute('title'); } barTip.innerHTML='<div class="bt-row"><span class="bt-l" style="color:#fff;font-weight:600">'+t+'</span></div><div class="bt-arrow"></div>'; barTip.style.display='block'; var r=el.getBoundingClientRect(); barTip.style.left=(r.left+r.width/2)+'px'; barTip.style.top=r.top+'px'; });
+  document.addEventListener('mouseout', function(e){ var el=e.target.closest && e.target.closest(TIPSEL); if(el) barTip.style.display='none'; });
 })();
 </script>
 </body>
