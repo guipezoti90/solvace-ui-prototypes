@@ -2035,7 +2035,7 @@
           <label class="ed-label" style="margin-top:6px">Topic</label>
           <div class="ed-inbox"><span class="ed-chipcell">Others <span class="cx"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round"><path d="M18 6 6 18M6 6l12 12"/></svg></span></span></div>
           <label class="ed-label" style="margin-top:14px">Owner</label>
-          <input class="ed-input">
+          <div class="ed-select usel"><span class="usel-l"><span class="usel-txt" style="color:#8a90a6">Select owner…</span></span><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="m6 9 6 6 6-6"/></svg></div>
           <div class="ed-divider"></div>
           <div class="ed-grid2">
             <div class="ed-tr" style="margin:0"><button class="zswitch" type="button"></button><span>Show Caption</span></div>
@@ -4733,7 +4733,7 @@
     }
     document.addEventListener('click', function(e){
       if(pop && e.target.closest && e.target.closest('.rsel-pop')){ var opt=e.target.closest('.rsel-opt'); if(opt && anchor){ anchor.childNodes[0].nodeValue=opt.getAttribute('data-t')+' '; close(); return; } var it=e.target.closest('.rsel-it'); if(it && anchor){ var cb=it.querySelector('input'); if(e.target.tagName!=='INPUT') cb.checked=!cb.checked; var id=it.getAttribute('data-i'); var arr=(anchor.getAttribute('data-sel')||'').split(',').filter(Boolean); var ix=arr.indexOf(id); if(cb.checked&&ix<0) arr.push(id); if(!cb.checked&&ix>=0) arr.splice(ix,1); anchor.setAttribute('data-sel', arr.join(',')); renderUsel(anchor); } return; }
-      var sel=e.target.closest && e.target.closest('#roomDrawer .ed-select'); if(sel){ e.stopPropagation(); if(anchor===sel) close(); else openFor(sel); return; }
+      var sel=e.target.closest && e.target.closest('#roomDrawer .ed-select, #editDrawer .ed-select.usel'); if(sel){ e.stopPropagation(); if(anchor===sel) close(); else openFor(sel); return; }
       close();
     });
   })();

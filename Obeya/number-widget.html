@@ -215,6 +215,17 @@
   .ds-pop .ds-opt{ padding:8px 10px; border-radius:7px; cursor:pointer; font-size:14px; color:#0d122f; white-space:nowrap; }
   .ds-pop .ds-opt:hover{ background:#f4f6ff; }
   .ds-pop .ds-opt.on{ color:#001391; font-weight:600; background:#f0f2ff; }
+  .usel .usel-l{ display:flex; align-items:center; gap:8px; min-width:0; }
+  .usel-avs{ display:inline-flex; }
+  .uav{ width:24px; height:24px; border-radius:99px; font-size:10px; font-weight:600; display:inline-flex; align-items:center; justify-content:center; border:2px solid #fff; box-shadow:0 0 0 1px #eeeff1; }
+  .usel-avs .uav{ margin-left:-7px; } .usel-avs .uav:first-child{ margin-left:0; }
+  .usel-txt{ font-size:13px; color:#0d122f; white-space:nowrap; overflow:hidden; text-overflow:ellipsis; }
+  .rsel-pop{ position:fixed; z-index:9850; background:#fff; border:1px solid #e6e6ea; border-radius:10px; box-shadow:0 16px 40px rgba(13,18,47,.18); padding:6px; max-height:280px; overflow:auto; }
+  .rsel-pop .rsel-search{ padding:4px 4px 6px; } .rsel-pop .rsel-search input{ width:100%; height:32px; border:1px solid #eeeff1; border-radius:7px; padding:0 10px; font-size:13px; box-sizing:border-box; outline:none; }
+  .rsel-pop .rsel-list{ display:flex; flex-direction:column; gap:2px; padding:2px; }
+  .rsel-pop .rsel-it{ display:flex; align-items:center; gap:8px; padding:6px 8px; border-radius:7px; cursor:pointer; font-size:13px; color:#0d122f; }
+  .rsel-pop .rsel-it:hover{ background:#f4f6ff; } .rsel-pop .rsel-it input{ accent-color:#001391; } .rsel-pop .rsel-it .uav{ width:22px; height:22px; }
+  .rsel-pop .rsel-hint{ padding:10px 8px; font-size:12px; color:#8a90a6; } .rsel-pop .rsel-empty{ padding:8px; font-size:13px; color:#8a90a6; }
   .ed-addrow{ width:26px; height:26px; border-radius:50%; border:none; background:#001391; color:#fff; display:inline-flex; align-items:center; justify-content:center; cursor:pointer; margin-bottom:10px; } .ed-addrow svg{ width:15px; height:15px; }
   .ed-tbl-wrap{ overflow-x:auto; margin-top:2px; }
   .ed-tbl{ width:100%; border-collapse:collapse; font-size:13px; }
@@ -570,7 +581,7 @@
           <label class="ed-label" style="margin-top:6px">Topic</label>
           <div class="ed-inbox"><span class="ed-chipcell">Others <span class="cx"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round"><path d="M18 6 6 18M6 6l12 12"/></svg></span></span></div>
           <label class="ed-label" style="margin-top:14px">Owner</label>
-          <input class="ed-input">
+          <div class="ed-select usel"><span class="usel-l"><span class="usel-txt" style="color:#8a90a6">Select owner…</span></span><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="m6 9 6 6 6-6"/></svg></div>
           <div class="ed-divider"></div>
           <div class="ed-grid2">
             <div class="ed-tr" style="margin:0"><button class="zswitch" type="button" onclick="tSw(this)"></button><span>Show Caption</span></div>
@@ -855,6 +866,16 @@ document.addEventListener('keydown', function(e){ if(e.key==='Escape'){ closeFul
   function scan(){ [].forEach.call(document.querySelectorAll('select.ed-native'), build); }
   document.addEventListener('click', function(e){ if(!pop) return; var op=e.target.closest && e.target.closest('.ds-pop .ds-opt'); if(op){ var sel=pop.__sel; sel.selectedIndex=+op.getAttribute('data-i'); try{ sel.dispatchEvent(new Event('change',{bubbles:true})); }catch(_){ } closeP(); return; } if(!(e.target.closest && (e.target.closest('.ds-pop')||e.target.closest('.ds-trg')))) closeP(); });
   scan(); try{ new MutationObserver(function(){ clearTimeout(window.__dsmo); window.__dsmo=setTimeout(scan,150); }).observe(document.body,{childList:true,subtree:true}); }catch(_){}
+})();
+/* config: campo Owner = droplist de usuários (busca 3+ letras + avatares) */
+(function(){
+  var POOL=[{i:'SA',n:'Solvace Administrator',c:'#d7e9ff',t:'#001391'},{i:'JF',n:'Jardel Florentino',c:'#d7e9ff',t:'#001391'},{i:'MR',n:'Marina Rocha',c:'#ffe3c2',t:'#9a4a00'},{i:'AS',n:'Ana Souza',c:'#dcf5e6',t:'#2d6a4f'},{i:'CP',n:'Carlos Pinto',c:'#f3e3ff',t:'#6b21a8'},{i:'LT',n:'Lucia Teixeira',c:'#ffe0e0',t:'#b42318'},{i:'RN',n:'Rafael Nunes',c:'#e0f0ff',t:'#0b5aa2'}];
+  var pop=null, anchor=null;
+  function close(){ if(pop){pop.remove();pop=null;anchor=null;} }
+  function byInit(i){ for(var k=0;k<POOL.length;k++) if(POOL[k].i===i) return POOL[k]; return {i:i,n:i,c:'#e6e6ea',t:'#4d5166'}; }
+  function renderUsel(sel){ var arr=(sel.getAttribute('data-sel')||'').split(',').filter(Boolean); var l=sel.querySelector('.usel-l'); if(!l) return; if(!arr.length){ l.innerHTML='<span class="usel-txt" style="color:#8a90a6">Select owner…</span>'; return; } var avs=arr.slice(0,3).map(function(i){var p=byInit(i);return '<span class="uav" style="background:'+p.c+';color:'+p.t+'">'+p.i+'</span>';}).join(''); var first=byInit(arr[0]).n, extra=arr.length>1?(', +'+(arr.length-1)):''; l.innerHTML='<span class="usel-avs">'+avs+'</span><span class="usel-txt">'+first+extra+'</span>'; }
+  function openFor(sel){ close(); anchor=sel; pop=document.createElement('div'); pop.className='rsel-pop'; pop.innerHTML='<div class="rsel-search"><input placeholder="Type 3+ letters…"></div><div class="rsel-hint">Type at least 3 letters to search users</div><div class="rsel-list" style="display:none"></div>'; document.body.appendChild(pop); var r=sel.getBoundingClientRect(); pop.style.left=r.left+'px'; pop.style.top=(r.bottom+6)+'px'; pop.style.minWidth=r.width+'px'; var si=pop.querySelector('.rsel-search input'), lst=pop.querySelector('.rsel-list'), hint=pop.querySelector('.rsel-hint'); function rl(q){ var cur=(sel.getAttribute('data-sel')||'').split(',').filter(Boolean); var ms=POOL.filter(function(p){return p.n.toLowerCase().indexOf(q)>=0;}); lst.innerHTML=ms.length?ms.map(function(p){var on=cur.indexOf(p.i)>=0; return '<label class="rsel-it" data-i="'+p.i+'"><input type="checkbox" '+(on?'checked':'')+'><span class="uav" style="background:'+p.c+';color:'+p.t+'">'+p.i+'</span><span>'+p.n+'</span></label>';}).join(''):'<div class="rsel-empty">No users found</div>'; } si.focus(); si.addEventListener('input', function(){ var q=this.value.toLowerCase().trim(); if(q.length<3){ lst.style.display='none'; hint.style.display=''; return; } hint.style.display='none'; lst.style.display=''; rl(q); }); }
+  document.addEventListener('click', function(e){ if(pop && e.target.closest && e.target.closest('.rsel-pop')){ var it=e.target.closest('.rsel-it'); if(it && anchor){ var cb=it.querySelector('input'); if(e.target.tagName!=='INPUT') cb.checked=!cb.checked; var id=it.getAttribute('data-i'); var arr=(anchor.getAttribute('data-sel')||'').split(',').filter(Boolean); var ix=arr.indexOf(id); if(cb.checked&&ix<0) arr.push(id); if(!cb.checked&&ix>=0) arr.splice(ix,1); anchor.setAttribute('data-sel', arr.join(',')); renderUsel(anchor); } return; } var sel=e.target.closest && e.target.closest('#editDrawer .ed-select.usel'); if(sel){ e.stopPropagation(); if(anchor===sel) close(); else openFor(sel); return; } close(); });
 })();
 </script>
 </body>
