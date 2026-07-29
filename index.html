@@ -298,7 +298,7 @@
   .top-loc .loc-chev{ color:#6b7280 }
   .top-icon{ position:relative; width:40px; height:40px; display:flex; align-items:center; justify-content:center; border-radius:10px; background:transparent; border:0; color:#0d122f; cursor:pointer }
   .top-icon:hover{ background:#f4f4f6 }
-  .top-badge{ position:absolute; top:1px; right:1px; min-width:18px; height:18px; padding:0 5px; border-radius:9999px; background:#E22A2E; color:#fff; font-size:11px; font-weight:700; display:flex; align-items:center; justify-content:center; line-height:1; border:2px solid #fff }
+  .top-badge{ position:absolute; top:4px; right:3px; min-width:18px; height:18px; padding:0 5px; border-radius:9999px; background:#E22A2E; color:#fff; font-size:11px; font-weight:700; display:flex; align-items:center; justify-content:center; line-height:1; border:2px solid #fff }
   .top-kc{ border:1px solid var(--color-input) }
   .top-kc:hover{ background:#f4f4f6; border-color:var(--color-primary); color:var(--color-primary) }
 
@@ -2027,16 +2027,24 @@ function renderFilterDD(){
     list.innerHTML=html||'<div class="idd-head">Select a category first</div>';
     return;
   }
+  if(fltLabel==='Tags'){                                          // tags agrupadas por categoria de tag (#215)
+    const selT=fltSel['Tags']||[]; let html='';
+    Object.keys(TAGSET).forEach(function(c){ var ts=TAGSET[c]||[]; if(!ts.length) return;
+      html+='<div class="idd-head">'+c+'</div>'+ts.map(function(t){ return '<div class="idd-item idd-sub" onclick="pickFilterMulti(\''+t.replace(/'/g,"\\'")+'\')"><span class="cbx" aria-checked="'+(selT.indexOf(t)>=0?'true':'false')+'">'+I.check+'</span><span style="flex:1">'+t+'</span></div>'; }).join('');
+    });
+    list.innerHTML=html;
+    return;
+  }
   const opts = fltLabel==='Tag categories'
     ? tagCatData.filter(function(c){ return c.active; }).map(function(c){ return c.name; })   /* quebra real vinda do cadastro de Tag categories */
     : (FILTER_OPTS[fltLabel]||['Option 1','Option 2','Option 3']);
   const ppl=PEOPLE_FLT.indexOf(fltLabel)>=0;
   if(fltMulti){
     const sel=fltSel[fltLabel]||[];
-    list.innerHTML = opts.map(o=>`<div class="idd-item" onclick="pickFilterMulti('${o.replace(/'/g,"\\'")}')"><span class="cbx" aria-checked="${sel.indexOf(o)>=0?'true':'false'}">${I.check}</span>${ppl?fltAvatar(o):''}<span style="flex:1">${o}</span></div>`).join('');
+    list.innerHTML = opts.map(o=>`<div class="idd-item" onclick="pickFilterMulti('${o.replace(/'/g,"\\'")}')"><span class="cbx" aria-checked="${sel.indexOf(o)>=0?'true':'false'}">${I.check}</span>${ppl?fltAvatar(o):''}<span style="flex:1;min-width:0;white-space:nowrap;overflow:hidden;text-overflow:ellipsis" title="${o}">${o}</span></div>`).join('');
   } else {
     const sel=fltSel[fltLabel]||[];
-    list.innerHTML = opts.map(o=>`<div class="idd-item" onclick="pickFilterOpt('${o.replace(/'/g,"\\'")}')">${ppl?fltAvatar(o):''}<span style="flex:1">${o}</span>${sel.indexOf(o)>=0?'<span style="color:var(--color-primary);display:inline-flex">'+I.check+'</span>':''}</div>`).join('');
+    list.innerHTML = opts.map(o=>`<div class="idd-item" onclick="pickFilterOpt('${o.replace(/'/g,"\\'")}')">${ppl?fltAvatar(o):''}<span style="flex:1;min-width:0;white-space:nowrap;overflow:hidden;text-overflow:ellipsis" title="${o}">${o}</span>${sel.indexOf(o)>=0?'<span style="color:var(--color-primary);display:inline-flex">'+I.check+'</span>':''}</div>`).join('');
   }
 }
 function pickFilterOpt(o){
@@ -2131,7 +2139,7 @@ function buildCustomPeriod(start,end){
 }
 function applyCal(){
   if(!calStart || !calEnd){ showToast('Select a date range','error'); return; }
-  el('date-dd').classList.remove('open');
+  el('date-dd').classList.remove('open'); document.removeEventListener('click', closeCalOnce);   /* evita listener preso (#120) */
   if(calMode==='dash'){ PERIOD.custom = buildCustomPeriod(calStart, calEnd); DASH_PERIOD_LBL.custom = fmtDate(calStart)+' – '+fmtDate(calEnd); dashPeriod='custom'; dashWindow={}; renderDashboard(); showToast('Custom period applied'); }
   else { updateDateTrg(); refreshFilterDeps(); }
 }
@@ -2151,7 +2159,7 @@ function filterField(label,type,disabled){
   return `<div class="flt-fld"><label class="lbl-field">${label}</label>${ctrl}</div>`;
 }
 const FILTER_SECTIONS = [
-  ['Article',        ['Article']],
+  ['Register',       ['Article']],
   ['Classification', ['Category','Subcategory','Tags','Feedback category']],
   ['People',         ['Originator','Participants']],
   ['Location',       ['Client','Site']],
@@ -3109,7 +3117,7 @@ function barChart(data, alt, labels, years, tipDates){
     tips.push(tipDates ? tipDates[idx] : (years ? labels[idx] + ' 20' + years[idx] : labels[idx]));   /* tooltip/drill: dia = data completa; mês = mês+ano */
   });
   const raw = Math.max(...vData, 1);
-  const max = Math.ceil(raw/4)*4;                       /* teto arredondado p/ 4 ticks */
+  const max = Math.max(4, Math.ceil(raw*1.12/4)*4);     /* teto com folga p/ o tooltip da barra mais alta não cortar (#207) */
   const ticks = [max, max*0.75, max*0.5, max*0.25, 0].map(t=>Math.round(t));
   const cols = vData.map((v,i)=>`
     <div class="vcol" onclick="openDrill('${alt?'feedbacks':'views'}','${tips[i]}')">
@@ -3167,6 +3175,7 @@ function openDashPeriodMenu(trg){
 }
 function openDashCustom(){
   el('kebab-menu').classList.remove('open');
+  document.removeEventListener('click', closeCalOnce); document.removeEventListener('click', closeKebabOnce);   /* limpa listeners presos antes de reabrir (#120) */
   calMode='dash'; calStart=null; calEnd=null;
   var dd=el('date-dd'); dd.style.left='50%'; dd.style.top='96px'; dd.style.transform='translateX(-50%)';
   renderCal(); dd.classList.add('open');
@@ -3379,7 +3388,7 @@ function openDrill(kind, label){
   let head, rows;
   if(isViews){
     head = `<tr><th style="width:84px"><span class="th-sort">NUMBER ${I.chevDownSm}</span></th><th><span class="th-sort">ARTICLE ${I.chevDownSm}</span></th><th style="width:74px"><span class="th-sort">VIEWS ${I.chevDownSm}</span></th></tr>`;
-    rows = Array.from({length:16}).map((_,i)=>`<tr><td><span class="row-link" style="cursor:pointer" onclick="openArticleModal('view')">ART-99</span></td><td class="celltip celltip-r" data-tip="Lorem Ipsum is simply dummy text of the printing and typesetting industry."><span style="display:block;overflow:hidden;text-overflow:ellipsis;white-space:nowrap">Lorem Ipsum is simply dummy text of the printing and typesetting industry.</span></td><td style="white-space:nowrap">${fmtN(520-i*28)}</td></tr>`).join('');
+    rows = Array.from({length:16}).map((_,i)=>`<tr><td><span class="row-link" style="cursor:pointer" onclick="openArticleModal('view')">ART-99</span></td><td class="celltip celltip-r" data-tip="Lorem Ipsum is simply dummy text of the printing and typesetting industry."><span style="display:block;overflow:hidden;text-overflow:ellipsis;white-space:nowrap">Lorem Ipsum is simply dummy text of the printing and typesetting industry.</span></td><td style="white-space:nowrap"><span style="display:inline-flex;align-items:center;gap:5px">${I.eye}${fmtN(520-i*28)}</span></td></tr>`).join('');
   } else {
     head = `<tr><th style="width:110px"><span class="th-sort">NUMBER ${I.chevDownSm}</span></th><th><span class="th-sort">FEEDBACK ${I.chevDownSm}</span></th></tr>`;
     rows = Array.from({length:16}).map(()=>`<tr><td><span class="row-link" style="cursor:pointer" onclick="openArticleModal('view','feedbacks')">ART-99</span></td><td class="celltip celltip-r" data-tip="Lorem Ipsum is simply dummy text of the printing and typesetting industry."><span style="display:block;overflow:hidden;text-overflow:ellipsis;white-space:nowrap">Lorem Ipsum is simply dummy text of the printing and typesetting industry.</span></td></tr>`).join('');
