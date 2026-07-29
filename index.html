@@ -358,7 +358,7 @@
     background-position:0 0,0 25%,0 50%,0 75%,0 100%;
     background-repeat:no-repeat }
   .vbars{ display:flex; align-items:flex-end; gap:8px; height:100%; padding:0 6px }
-  .vcol{ flex:1; min-width:0; height:100%; display:flex; flex-direction:column; align-items:center; justify-content:flex-end; cursor:pointer }
+  .vcol{ flex:1; min-width:0; height:100%; display:flex; flex-direction:column; align-items:center; justify-content:flex-end; cursor:pointer; position:relative }
   .vcol:hover .vbar{ background:#001072 }
   .vbar{ width:100%; max-width:26px; background:var(--color-primary); border-radius:6px 6px 0 0; transition:height .25s }
   .vbar.vbar-fb{ background:#a8aede }
@@ -555,7 +555,8 @@
   .kc-tip:hover::after{ opacity:1 }
   /* tooltip de sistema para células/textos (mesmo estilo do .kc-tip, sem depender do title nativo) */
   .celltip{ position:relative; cursor:help }
-  .celltip::after{ content:attr(data-tip);position:absolute;bottom:calc(100% + 6px);left:8px;background:#1c1c1c;color:#fff;font-size:12px;line-height:1.45;padding:8px 12px;border-radius:8px;white-space:normal;width:max-content;max-width:260px;text-align:left;opacity:0;pointer-events:none;transition:opacity .12s;z-index:70;box-shadow:0 8px 24px rgba(0,0,0,.25) }
+  .celltip::after{ content:attr(data-tip);position:absolute;bottom:calc(100% + 6px);left:8px;background:#1c1c1c;color:#fff;font-size:12px;line-height:1.45;padding:8px 12px;border-radius:8px;white-space:normal;width:max-content;max-width:260px;text-align:left;opacity:0;pointer-events:none;transition:opacity .12s;z-index:300;box-shadow:0 8px 24px rgba(0,0,0,.25) }
+  .vcol:hover{ z-index:301 }   /* barra em hover (+ tooltip) sempre à frente das barras vizinhas (#207) */
   .celltip:hover::after{ opacity:1 }
   .celltip-r::after{ left:auto; right:8px }   /* tooltip ancorado à direita (coluna à direita não corta) */
   /* chips de categoria do feedback */
@@ -610,7 +611,7 @@
   .tbl thead th[data-sort]::after{ margin-left:6px; font-size:10px; color:var(--color-primary); font-weight:700 }
   .tbl thead th[data-sort="asc"]::after{ content:"▲" }
   .tbl thead th[data-sort="desc"]::after{ content:"▼" }
-  .row-link{ color:var(--color-primary); font-weight:600 }
+  .row-link{ color:var(--color-primary); font-weight:600; white-space:nowrap }   /* nº do registro sempre em uma linha (#206) */
   /* subcategory accordion header — band on full row width */
   table.tbl tbody tr.grp-row td{ background:#eef1fb; font-weight:600; color:#1c1c1c }
   table.tbl tbody tr.grp-row:hover td{ background:#e6ebfb }
