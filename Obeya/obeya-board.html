@@ -5126,7 +5126,7 @@
   function scW(a){ return isDoc(a)?document.documentElement.scrollWidth:(a.scrollWidth||a.clientWidth||1); }
   function scH(a){ return isDoc(a)?document.documentElement.scrollHeight:(a.scrollHeight||a.clientHeight||1); }
   function rvIsBoard(v){ return String(v).indexOf('doc')===0; }
-  function rvPinPos(c,W,H){ if(rvIsBoard(c.view||'doc') && window.rvBoard){ var s=window.rvBoard.toScreen(c.xPct,c.yPct), hr=(layer.parentNode||document.body).getBoundingClientRect(); return {l:s.x-hr.left, t:s.y-hr.top}; } return {l:c.xPct*W, t:c.yPct*H}; }
+  function rvPinPos(c,W,H){ var v=c.view||'doc'; if(rvIsBoard(v) && window.rvBoard){ var s=window.rvBoard.toScreen(c.xPct,c.yPct), hr=(layer.parentNode||document.body).getBoundingClientRect(); return {l:s.x-hr.left, t:s.y-hr.top}; } if(String(v).indexOf('modal:')===0){ return {l:c.xPct*window.innerWidth, t:c.yPct*window.innerHeight}; } return {l:c.xPct*W, t:c.yPct*H}; }
   function rvSync(){ var v=viewKey(); if(!rvIsBoard(v)||!window.rvBoard) return; var pins=layer.querySelectorAll('.rv-pin'),i,j; for(i=0;i<pins.length;i++){ var n=pins[i].dataset.n,c=null; for(j=0;j<comments.length;j++){ if(String(comments[j].n)===String(n)){c=comments[j];break;} } if(!c)continue; var p=rvPinPos(c,0,0); pins[i].style.left=p.l+'px'; pins[i].style.top=p.t+'px'; } }
   window.rvSync=rvSync;
 
@@ -5146,6 +5146,7 @@
         pin.classList.remove('rv-dragging');
         var cur=findC(c.n)||c, v=viewKey();
         if(rvIsBoard(v) && window.rvBoard && window.rvBoard.toFrac){ var f=window.rvBoard.toFrac(e.clientX,e.clientY); cur.xPct=f.x; cur.yPct=f.y; }
+        else if(v.indexOf('modal:')===0){ cur.xPct=e.clientX/(window.innerWidth||1); cur.yPct=e.clientY/(window.innerHeight||1); }
         else { var anchor=getAnchor(v), rect=anchor.getBoundingClientRect?anchor.getBoundingClientRect():{left:0,top:0}, docM=isDoc(anchor), x,y; if(docM){ x=e.pageX; y=e.pageY; } else { x=e.clientX-(rect.left||0)+(anchor.scrollLeft||0); y=e.clientY-(rect.top||0)+(anchor.scrollTop||0); } cur.xPct=x/(scW(anchor)||1); cur.yPct=y/(scH(anchor)||1); }
         save(); render();
       }
@@ -5154,12 +5155,20 @@
   }
   function render(){
     if(RVMO){RVMO.disconnect();}
-    var view=viewKey(), anchor=getAnchor(view), docMode=isDoc(anchor), host=docMode?document.body:anchor;
-    if(layer.parentNode!==host) host.appendChild(layer);
-    if(!docMode && getComputedStyle(anchor).position==='static') anchor.style.position='relative';
-    layer.style.height='0px';
-    var W=scW(anchor), H=scH(anchor);
-    layer.style.width=docMode?(W+'px'):'100%'; layer.style.height=H+'px'; layer.innerHTML='';
+    var view=viewKey(), modalV=(view.indexOf('modal:')===0), anchor, docMode, host, W, H;
+    if(modalV){
+      host=document.body; if(layer.parentNode!==host) host.appendChild(layer);
+      W=window.innerWidth; H=window.innerHeight;
+      layer.style.position='fixed'; layer.style.top='0'; layer.style.left='0'; layer.style.width=W+'px'; layer.style.height=H+'px'; layer.innerHTML='';
+    } else {
+      anchor=getAnchor(view); docMode=isDoc(anchor); host=docMode?document.body:anchor;
+      if(layer.parentNode!==host) host.appendChild(layer);
+      layer.style.position='absolute'; layer.style.top='0'; layer.style.left='0';
+      if(!docMode && getComputedStyle(anchor).position==='static') anchor.style.position='relative';
+      layer.style.height='0px';
+      W=scW(anchor); H=scH(anchor);
+      layer.style.width=docMode?(W+'px'):'100%'; layer.style.height=H+'px'; layer.innerHTML='';
+    }
     var shown=comments.filter(function(c){return rvNorm(c.view)===rvNorm(view);});
     shown.forEach(function(c){var pin=document.createElement('div');pin.className='rv-pin'+(c.resolved?' resolved':'');pin.textContent=c.n;pin.dataset.n=c.n;
       var pp=rvPinPos(c,W,H);pin.style.left=pp.l+'px';pin.style.top=pp.t+'px';pin.title=(c.author||'?')+': '+c.text;
@@ -5192,10 +5201,11 @@
   function goToView(tv, cb){ var bpm=/@(\w+)$/.exec(tv); var bp=bpm?bpm[1]:'b0'; var tab=document.querySelector('#tabs .tab[data-bp="'+bp+'"]'); if(tv.indexOf('modal:')===0){ if(tab) tab.click(); var mid=tv.slice(6).replace(/@\w+$/,''); var m=document.getElementById(mid); if(m) m.classList.add('open'); } else { var am=activeModal(); if(am) am.classList.remove('open'); if(tab) tab.click(); rvSetEdit(String(tv).indexOf('doc:edit')===0); } setTimeout(function(){ render(); if(cb) cb(); }, 400); }
   function rvInteractive(el){var n=el;while(n&&n.nodeType===1&&n!==document.body){if(n.matches&&n.matches('a,button,input,select,textarea,label,[role="button"],[tabindex],[contenteditable],[onclick],.tab,.chev,.pencil,.expand,.zb,.zbtn,.zswitch,.ed-tab,.ed-close,.room-dots,.room-switch,.rf-item,.mi,.p-item,.wresize,.rcode,.fv-item,.facts button,.align-bar button,.wdefect-bar .ic,.fsend'))return true;var cs=getComputedStyle(n);if(cs&&cs.cursor==='pointer')return true;n=n.parentElement;}return false;}
   document.addEventListener('click',function(ev){if(!commentMode)return;if(ev.target.closest('#rv-bar,#rv-toggle,#rv-panel,#rv-pop,.rv-pin'))return;if(rvInteractive(ev.target))return;
-    var view=viewKey(), anchor=getAnchor(view), docMode=isDoc(anchor), rect=anchor.getBoundingClientRect?anchor.getBoundingClientRect():{left:0,top:0};
+    var view=viewKey(), modalV=(view.indexOf('modal:')===0);
     var c;
     if(rvIsBoard(view) && window.rvBoard){ var f=window.rvBoard.toFrac(ev.clientX,ev.clientY); c={n:++seq,view:view,xPct:f.x,yPct:f.y,author:nameInput.value||'Anonymous',text:'',ts:Date.now(),resolved:false}; }
-    else { var x,y; if(docMode){ x=ev.pageX; y=ev.pageY; } else { x=ev.clientX-(rect.left||0)+(anchor.scrollLeft||0); y=ev.clientY-(rect.top||0)+(anchor.scrollTop||0); } c={n:++seq,view:view,xPct:x/(scW(anchor)||1),yPct:y/(scH(anchor)||1),author:nameInput.value||'Anonymous',text:'',ts:Date.now(),resolved:false}; }
+    else if(modalV){ c={n:++seq,view:view,xPct:ev.clientX/(window.innerWidth||1),yPct:ev.clientY/(window.innerHeight||1),author:nameInput.value||'Anonymous',text:'',ts:Date.now(),resolved:false}; }
+    else { var anchor=getAnchor(view), docMode=isDoc(anchor), rect=anchor.getBoundingClientRect?anchor.getBoundingClientRect():{left:0,top:0}, x,y; if(docMode){ x=ev.pageX; y=ev.pageY; } else { x=ev.clientX-(rect.left||0)+(anchor.scrollLeft||0); y=ev.clientY-(rect.top||0)+(anchor.scrollTop||0); } c={n:++seq,view:view,xPct:x/(scW(anchor)||1),yPct:y/(scH(anchor)||1),author:nameInput.value||'Anonymous',text:'',ts:Date.now(),resolved:false}; }
     comments.push(c);render();var pins=layer.querySelectorAll('.rv-pin');openPop(c,pins[pins.length-1]);});   // keep blank pin LOCAL only; cloud-write happens on first text Save (avoids blank-pin flood + orphan race)
   modeBtn.onclick=function(){commentMode=!commentMode;document.body.classList.toggle('rv-commenting',commentMode);modeBtn.classList.toggle('on',commentMode);modeBtn.textContent=commentMode?'✋ Exit comment mode':'💬 Enable comment mode';};
   document.getElementById('rv-listbtn').onclick=function(){panel.classList.toggle('open')};
