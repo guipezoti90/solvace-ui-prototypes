@@ -482,8 +482,8 @@
     .tbl-notif tr{ display:block; background:#fff !important; border:1px solid #eceef2; border-radius:12px; padding:14px 16px; margin-bottom:12px; box-shadow:0 1px 2px rgba(16,24,40,.04) }
     .tbl-notif td{ display:block; border:0 !important; padding:0 }
     .tbl-notif td:first-child{ font-weight:600; color:var(--text); margin-bottom:12px }
-    .notif-sws{ display:flex; justify-content:space-between; gap:8px }
-    .notif-sw{ flex:1 1 0; display:flex; flex-direction:column; align-items:center; gap:6px; margin:0 !important; font-size:12px; white-space:nowrap }
+    .notif-sws{ display:flex; flex-wrap:nowrap; justify-content:space-between; gap:6px }
+    .notif-sw{ flex:1 1 0; justify-content:center; gap:6px !important; margin:0 !important; padding:0; width:auto; font-size:13px; white-space:nowrap }
     /* access permissions: hide USER column */
     .tbl-acc .acc-user, .tbl-acc .acc-email{ display:none }
     /* access @375px: NAME flexes, drop spacer col, fix ADMIN + delete so nothing is cut */
@@ -1316,8 +1316,9 @@ function toggleSw(b){ b.setAttribute('aria-checked', String(b.getAttribute('aria
 /* ===== Notification Management ===== */
 function renderNotif(){
   var q=notifQ.toLowerCase(), list=notifRules.filter(function(r){ return r.rule.toLowerCase().indexOf(q)>=0; });
+  var NOTIF_INFO='<svg width="16" height="16" viewBox="0 0 24 24" fill="currentColor"><circle cx="12" cy="12" r="10"/><rect x="11" y="10.5" width="2" height="6" rx="1" fill="#fff"/><circle cx="12" cy="7.4" r="1.3" fill="#fff"/></svg>';
   function sw(r,k,l){ return '<span class="notif-sw"><button class="switch" aria-checked="'+r[k]+'" onclick="toggleNotif('+r.id+',\''+k+'\',this)"><span class="thumb"></span></button>'+l+'</span>'; }
-  var rows=list.map(function(r){ return '<tr><td><span style="display:inline-flex;align-items:center;gap:8px">'+r.rule+'<span class="kc-tip" data-tip="'+r.tip+'">'+I.info+'</span></span></td><td style="white-space:nowrap"><span class="notif-sws">'+sw(r,'web','Web')+sw(r,'mobile','Mobile')+sw(r,'mail','Mail')+'</span></td><td style="text-align:center">'+(r.param===null?'':'<input class="param-in" value="'+r.param+'" oninput="setParam('+r.id+',this.value)">')+'</td></tr>'; }).join('');
+  var rows=list.map(function(r){ return '<tr><td><span style="display:inline-flex;align-items:center;gap:8px">'+r.rule+'<span class="kc-tip" style="color:#b0b4bd" data-tip="'+r.tip+'">'+NOTIF_INFO+'</span></span></td><td style="white-space:nowrap"><span class="notif-sws">'+sw(r,'web','Web')+sw(r,'mobile','Mobile')+sw(r,'mail','Mail')+'</span></td><td style="text-align:center">'+(r.param===null?'':'<input class="param-in" value="'+r.param+'" oninput="setParam('+r.id+',this.value)">')+'</td></tr>'; }).join('');
   el('settingsView').innerHTML='<div class="perm-toolbar"><div class="set-search"><span class="s-ico">'+I.search+'</span><input placeholder="Search" value="'+notifQ+'" oninput="notifSearch(this.value)"></div><button class="btn btn-primary" onclick="toast(\'Changes saved successfully\')">'+I.save+' Save</button><button class="kebab" title="More options" onclick="openKebab(this)">'+I.kebab+'</button></div><div class="tbl-open"><table class="tbl tbl-notif"><thead><tr><th>RULE</th><th style="width:355px">NOTIFICATION</th><th style="width:134px;text-align:center">PARAMETER</th></tr></thead><tbody>'+rows+'</tbody></table></div>';
 }
 function notifSearch(q){ notifQ=q; renderNotif(); var i=el('settingsView').querySelector('.set-search input'); if(i){ i.focus(); i.setSelectionRange(i.value.length,i.value.length); } }
