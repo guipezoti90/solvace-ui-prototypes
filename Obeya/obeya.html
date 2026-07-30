@@ -476,8 +476,14 @@
     .tbl-rooms th:nth-child(5), .tbl-rooms td:nth-child(5),
     .tbl-rooms th:nth-child(6), .tbl-rooms td:nth-child(6){ display:none }
     .tbl-rooms td.room-title{ white-space:normal; display:-webkit-box; -webkit-line-clamp:2; -webkit-box-orient:vertical; overflow:hidden; max-width:0 }
-    /* notification management: stacked toggles, left-aligned, single column */
-    .notif-sws{ display:flex; flex-direction:column; align-items:flex-start; gap:8px }
+    /* notification management (skill): table -> cards; 3 toggles in one row; parameter below */
+    .tbl-notif thead{ display:none }
+    .tbl-notif, .tbl-notif tbody{ display:block }
+    .tbl-notif tr{ display:block; background:#fff !important; border:1px solid #eceef2; border-radius:12px; padding:14px 16px; margin-bottom:12px; box-shadow:0 1px 2px rgba(16,24,40,.04) }
+    .tbl-notif td{ display:block; border:0 !important; padding:0 }
+    .tbl-notif td:first-child{ font-weight:600; color:var(--text); margin-bottom:12px }
+    .notif-sws{ display:flex; justify-content:space-between; gap:8px }
+    .notif-sw{ flex:1 1 0; display:flex; flex-direction:column; align-items:center; gap:6px; margin:0 !important; font-size:12px; white-space:nowrap }
     /* access permissions: hide USER column */
     .tbl-acc .acc-user, .tbl-acc .acc-email{ display:none }
     /* access @375px: NAME flexes, drop spacer col, fix ADMIN + delete so nothing is cut */
@@ -489,9 +495,9 @@
     /* settings toolbars: New user/type/topic + Save become icon-only */
     .perm-newlbl{ display:none }
     .perm-toolbar .btn{ padding:0 12px }
-    /* notification management: hide PARAMETER, NOTIFICATION becomes 2nd/last column */
-    .tbl-notif th:nth-child(3), .tbl-notif td:nth-child(3){ display:none }
-    .tbl-notif th:nth-child(2){ width:46% !important }
+    /* notification management (skill): parameter drops below with a label (not hidden) */
+    .tbl-notif td:nth-child(3):not(:empty){ margin-top:12px; padding-top:12px; border-top:1px solid #f0f1f4 !important; text-align:left !important }
+    .tbl-notif td:nth-child(3):not(:empty)::before{ content:"Parameter"; display:block; font-size:11px; font-weight:600; color:#8a90a6; text-transform:uppercase; letter-spacing:.3px; margin-bottom:6px }
   }
 </style>
 </head>
