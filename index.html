@@ -710,6 +710,8 @@
   .kn-mod{ font-size:10px; font-weight:700; letter-spacing:.05em; text-transform:uppercase; color:#5A607A; background:#EEF0F5; padding:2px 8px; border-radius:6px; white-space:nowrap; overflow:hidden; text-overflow:ellipsis }
   .kn-time{ margin-left:auto; font-size:11.5px; color:#9aa0ac; white-space:nowrap; flex:0 0 auto }
   .kn-msg{ font-size:13px; color:#3a3f4b; line-height:1.4 } .kn-msg b{ color:#1c1c1c; font-weight:600 }
+  .kn-title{ font-size:13.5px; font-weight:700; color:var(--color-primary); margin-bottom:2px }   /* título dos comunicados (#213) */
+  .kn-clamp{ display:-webkit-box; -webkit-line-clamp:3; -webkit-box-orient:vertical; overflow:hidden }   /* corta o corpo em 3 linhas */
   .kn-dot{ flex:0 0 8px; width:8px; height:8px; border-radius:50%; background:var(--color-primary); margin:6px 0 0 6px }
   /* abas do dropdown de notificações (#161) */
   .ntabs{ display:flex; border-bottom:1px solid var(--color-input) }
@@ -2271,43 +2273,63 @@ function openPlantMenu(trg){
   m.classList.add('open'); setTimeout(function(){document.addEventListener('click',closeKebabOnce);},0);
 }
 function setPlant(p){ currentPlant=p; var l=el('loc-label'); if(l) l.textContent=p; el('kebab-menu').classList.remove('open'); showToast('Plant changed to '+p); }
+/* 3 abas, cada uma com sua própria lógica (igual à produção MyWorkSpace):
+   - Notifications (g:'system'): tag de módulo + avatar + "X wrote a new comment" (uma linha)
+   - Communications (g:'communications'): tag + título em negrito + corpo (comunicado)
+   - Newsletter (g:'newsletter'): símbolo Solvace + saudação + corpo (release notes), sem tag  */
 var NOTIFS=[
-  {g:'newsletter', mod:'Knowledge Center', who:'Solvace', t:'— weekly digest: 8 new articles this week', s:'2m ago', unread:true},
-  {g:'newsletter', mod:'Knowledge Center', who:'Solvace', t:'— “Onboarding guide” reached 1.000 views', s:'Yesterday', unread:false},
-  {g:'newsletter', mod:'Knowledge Center', who:'Solvace', t:'— monthly Knowledge Center highlights', s:'3 days ago', unread:false},
-  {g:'system', mod:'Knowledge Center', who:'System', t:'— your article is awaiting review', s:'1h ago', unread:true},
-  {g:'system', mod:'Access', who:'System', t:'— access permissions were updated', s:'3h ago', unread:true},
-  {g:'system', mod:'Platform', who:'System', t:'— scheduled maintenance this weekend', s:'2 days ago', unread:false},
-  {g:'communications', mod:'Knowledge Center', who:'Renato Alves', t:'left new feedback on ART-99.', s:'30m ago', unread:true},
-  {g:'communications', mod:'Digital Obeya', who:'Julie Zulemi', t:'mentioned you in a comment.', s:'5h ago', unread:false}
+  {g:'system', mod:'Digital Obeya', who:'Microsoft Teams', t:'wrote a new comment.', s:'3 months', unread:true},
+  {g:'system', mod:'Digital Obeya', who:'Steve Loren', t:'wrote a new comment.', s:'3 months', unread:false},
+  {g:'system', mod:'Action Plans', who:'System', t:'— Inclusion of Action Plan. Monitor shift 3 quality performance.', s:'4 months', unread:false},
+  {g:'communications', mod:'Communication', who:'', title:'Quality week 2025', body:'Save the date! We are happy to inform that the safety week is planned in our site from Dec 1st to Dec 5th. The detailed agenda for the event will be sent soon.', s:'420 days', unread:false},
+  {g:'communications', mod:'Communication', who:'', title:'A Quick Reminder', body:"Dear Team, Safety is everyone's responsibility! Here are a few key practices to keep in mind: wear proper PPE and always use the required personal protective equipment.", s:'617 days', unread:true},
+  {g:'communications', mod:'Communication', who:'Renato Alves', title:'Safety week 2025', body:'Save the date! We are happy to inform that the safety week is planned in our site from Dec 1st to Dec 5th.', s:'621 days', unread:true},
+  {g:'newsletter', who:'Solvace', title:'Hello Solvace users,', body:'This release introduces smarter and more flexible updates across the platform. In Digital Obeya you can now customize widgets faster.', s:'183 days', unread:true},
+  {g:'newsletter', who:'Solvace', title:'Hello Solvace users,', body:'This release delivers important upgrades across the platform. In Digital Obeya your boards load faster and export cleaner.', s:'308 days', unread:false},
+  {g:'newsletter', who:'Solvace', title:'Hello Solvace users,', body:'This release brings important improvements across the platform, with a redesigned notification center.', s:'336 days', unread:false}
 ];
-var NOTIF_TABS=[['newsletter','Newsletter'],['system','System'],['communications','Communications']];
-var notifTab='newsletter';
+var NOTIF_TABS=[['system','Notifications'],['communications','Communications'],['newsletter','Newsletter']];
+var notifTab='system';
 var NOTIF_AV_COLORS=['#7C3AED','#0EA5E9','#059669','#D97706','#DB2777','#4F46E5','#0D9488','#DC2626','#2b2f42'];
 function notifAvatar(name){
   name=name||'?';
   if(name==='Solvace' || name==='System') return '<div class="kn-av" style="background:#EEF0FB"><svg width="20" height="15" viewBox="0 0 37 27" fill="none"><path d="M36.9508 2.75074C36.9508 1.23783 35.7248 0 34.2264 0H17.9153C16.4169 0 15.1909 1.23783 15.1909 2.75074V8.94915C15.1909 10.4621 13.965 11.6999 12.4666 11.6999H2.72434C1.22595 11.6999 0 12.9377 0 14.4506V24.2493C0 25.7622 1.22595 27 2.72434 27H19.0355C20.5339 27 21.7598 25.7622 21.7598 24.2493V18.0507C21.7598 16.5378 22.9858 15.2999 24.4842 15.2999H34.2264C35.7248 15.2999 36.9508 14.0621 36.9508 12.5492V2.75074Z" fill="#001391"/></svg></div>';   /* #212: sistema usa o símbolo Solvace (sem texto) */
+  if(name==='?') return '<div class="kn-av" style="background:#d4d6dd"></div>';   /* comunicado sem pessoa: avatar neutro */
   var p=name.trim().split(/\s+/);
   var ini=((p[0]&&p[0][0])||'')+(p.length>1?(p[p.length-1][0]||''):'');
   var h=0; for(var i=0;i<name.length;i++) h=(h*31+name.charCodeAt(i))>>>0;
   return '<div class="kn-av" style="background:'+NOTIF_AV_COLORS[h%NOTIF_AV_COLORS.length]+'">'+ini.toUpperCase()+'</div>';
 }
-function notifItemHtml(n){
-  return '<div class="km-notif'+(n.unread?' unread':'')+'">'
-    + notifAvatar(n.who)
-    + '<div class="kn-body"><div class="kn-top"><span class="kn-mod">'+n.mod+'</span><span class="kn-time">'+n.s+'</span></div>'
-    + '<div class="kn-msg"><b>'+n.who+'</b> '+n.t+'</div></div>'
-    + (n.unread?'<span class="kn-dot"></span>':'')
-    + '</div>';
+function notifItemHtml(n){                                    /* render por aba: cada uma tem sua lógica (#213) */
+  var un=n.unread?' unread':'', dot=n.unread?'<span class="kn-dot"></span>':'';
+  if(n.g==='newsletter'){                                     /* release notes da Solvace: símbolo Solvace + saudação + corpo, sem tag */
+    return '<div class="km-notif'+un+'">'+notifAvatar('Solvace')
+      +'<div class="kn-body"><div class="kn-top"><span class="kn-time" style="margin-left:auto">'+n.s+'</span></div>'
+      +'<div class="kn-msg kn-clamp"><b>'+n.title+'</b> '+n.body+'</div></div>'+dot+'</div>';
+  }
+  if(n.g==='communications'){                                 /* comunicado: tag + título em negrito + corpo */
+    return '<div class="km-notif'+un+'">'+notifAvatar(n.who)
+      +'<div class="kn-body"><div class="kn-top"><span class="kn-mod">'+n.mod+'</span><span class="kn-time">'+n.s+'</span></div>'
+      +'<div class="kn-title">'+n.title+'</div><div class="kn-msg kn-clamp">'+n.body+'</div></div>'+dot+'</div>';
+  }
+  return '<div class="km-notif'+un+'">'+notifAvatar(n.who)     /* Notifications: tag + avatar + uma linha */
+    +'<div class="kn-body"><div class="kn-top"><span class="kn-mod">'+n.mod+'</span><span class="kn-time">'+n.s+'</span></div>'
+    +'<div class="kn-msg"><b>'+n.who+'</b> '+n.t+'</div></div>'+dot+'</div>';
 }
-function notifPool(group){                                    /* curados + gerados → volume p/ rolagem com lazy load (#203) */
+function notifPool(group){                                    /* curados + gerados por aba → volume p/ lazy load, cada aba com seu formato */
   var curated=NOTIFS.filter(function(n){return n.g===group;});
-  var authors=['Renato Alves','Julie Zulemi','Marina Souza','Steve Loren','Ana Prado','Lucas Meyer','Sofia Rocha','Bruno Dias'];
-  var mods=['Knowledge Center','Digital Obeya','Action Plans','Access','Platform'];
-  var acts=['wrote a new comment.','left new feedback on ART-99.','mentioned you in a comment.','updated the article.','shared a document with you.'];
-  var times=['1h ago','4h ago','Yesterday','2 days ago','4 days ago','1 week ago','2 weeks ago','3 weeks ago','1 month ago','2 months ago','3 months ago'];
+  var times=['3 months','4 months','5 months','183 days','308 days','420 days','617 days','1 year ago'];
   var gen=[];
-  for(var i=0;i<28;i++) gen.push({g:group, mod:mods[i%mods.length], who:authors[i%authors.length], t:acts[i%acts.length], s:times[i%times.length], unread:false});
+  if(group==='newsletter'){
+    for(var i=0;i<18;i++) gen.push({g:'newsletter', who:'Solvace', title:'Hello Solvace users,', body:'This release brings improvements across the platform and the modules you use every day.', s:times[i%times.length], unread:false});
+  } else if(group==='communications'){
+    var ct=['Quality week 2025','A Quick Reminder','Safety week 2025','Maintenance notice','Team announcement'];
+    for(var i=0;i<18;i++) gen.push({g:'communications', mod:'Communication', who:(i%2?'Renato Alves':''), title:ct[i%ct.length], body:'Save the date! We are happy to inform that the event is planned in our site. The detailed agenda will be sent soon.', s:times[i%times.length], unread:false});
+  } else {
+    var authors=['Microsoft Teams','Steve Loren','Raphaël Guillaumet','Julie Zulemi','Marina Souza','Ana Prado'];
+    var mods=['Digital Obeya','Action Plans','Knowledge Center','Access'];
+    for(var i=0;i<24;i++) gen.push({g:group, mod:mods[i%mods.length], who:authors[i%authors.length], t:'wrote a new comment.', s:times[i%times.length], unread:false});
+  }
   return curated.concat(gen);
 }
 var notifShown=0, notifPoolCache=[];
