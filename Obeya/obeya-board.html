@@ -5038,7 +5038,7 @@
   #rv-layer .rv-pin.rv-dragging{cursor:grabbing;opacity:.85}
   #rv-layer.pins-hidden .rv-pin{display:none!important}
   /* esconder pinos de comentário quando um modal de configuração está aberto (evita rolagem lateral e pinos por cima do modal) */
-  body:has(#editModal.open) #rv-layer, body:has(#roomModal.open) #rv-layer{ display:none!important; }
+  /* modal comment layer stays visible; render() scopes pins to the active modal */
   body.rv-commenting{cursor:crosshair}
   #rv-pop{position:fixed;z-index:9500;width:260px;max-height:72vh;overflow:auto;background:#fff;border:1px solid #e2e8f0;border-radius:12px;box-shadow:0 12px 30px rgba(2,6,23,.25);padding:12px;display:none;font-family:-apple-system,BlinkMacSystemFont,"Segoe UI",Roboto,Arial,sans-serif}
   #rv-pop .rv-x{position:absolute;top:6px;right:6px;width:22px;height:22px;padding:0;border-radius:6px;background:none;color:#94a3b8;font-size:17px;line-height:1;display:inline-flex;align-items:center;justify-content:center;flex:none}
@@ -5121,7 +5121,7 @@
   window.rvRender=function(){ try{ render(); }catch(_){} };
   function docScroller(){ var k=document.querySelector('[data-rv-scroll]'); if(k) return k; var mn=document.querySelector('main'); if(mn) return mn; return document.scrollingElement||document.documentElement; }
   function innerScroller(root){ var best=null,area=0,els=root.querySelectorAll('*'); for(var i=0;i<els.length;i++){var e=els[i];if(e.closest('#rv-bar,#rv-panel,#rv-pop'))continue;var cs=getComputedStyle(e),oy=cs.overflowY;if((oy==='auto'||oy==='scroll')&&e.scrollHeight>e.clientHeight+4&&e.getClientRects().length){var a=e.clientWidth*e.clientHeight;if(a>area){area=a;best=e;}}} return best||root; }
-  function getAnchor(view){ if(view.indexOf('modal:')===0){ var m=activeModal(); return m?innerScroller(m):docScroller(); } return docScroller(); }
+  function getAnchor(view){ if(view.indexOf('modal:')===0){ var m=activeModal(); return m||docScroller(); } return docScroller(); }   // ancora no container do modal (widget preview + drawer) p/ o pin cair onde clicou
   function isDoc(a){ return a===document.scrollingElement||a===document.documentElement||a===document.body; }
   function scW(a){ return isDoc(a)?document.documentElement.scrollWidth:(a.scrollWidth||a.clientWidth||1); }
   function scH(a){ return isDoc(a)?document.documentElement.scrollHeight:(a.scrollHeight||a.clientHeight||1); }
