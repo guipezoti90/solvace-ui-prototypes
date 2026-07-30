@@ -2285,7 +2285,9 @@ var NOTIF_TABS=[['newsletter','Newsletter'],['system','System'],['communications
 var notifTab='newsletter';
 var NOTIF_AV_COLORS=['#7C3AED','#0EA5E9','#059669','#D97706','#DB2777','#4F46E5','#0D9488','#DC2626','#2b2f42'];
 function notifAvatar(name){
-  name=name||'?'; var p=name.trim().split(/\s+/);
+  name=name||'?';
+  if(name==='Solvace' || name==='System') return '<div class="kn-av" style="background:#EEF0FB"><svg width="20" height="15" viewBox="0 0 37 27" fill="none"><path d="M36.9508 2.75074C36.9508 1.23783 35.7248 0 34.2264 0H17.9153C16.4169 0 15.1909 1.23783 15.1909 2.75074V8.94915C15.1909 10.4621 13.965 11.6999 12.4666 11.6999H2.72434C1.22595 11.6999 0 12.9377 0 14.4506V24.2493C0 25.7622 1.22595 27 2.72434 27H19.0355C20.5339 27 21.7598 25.7622 21.7598 24.2493V18.0507C21.7598 16.5378 22.9858 15.2999 24.4842 15.2999H34.2264C35.7248 15.2999 36.9508 14.0621 36.9508 12.5492V2.75074Z" fill="#001391"/></svg></div>';   /* #212: sistema usa o símbolo Solvace (sem texto) */
+  var p=name.trim().split(/\s+/);
   var ini=((p[0]&&p[0][0])||'')+(p.length>1?(p[p.length-1][0]||''):'');
   var h=0; for(var i=0;i<name.length;i++) h=(h*31+name.charCodeAt(i))>>>0;
   return '<div class="kn-av" style="background:'+NOTIF_AV_COLORS[h%NOTIF_AV_COLORS.length]+'">'+ini.toUpperCase()+'</div>';
@@ -3124,7 +3126,7 @@ function barChart(data, alt, labels, years, tipDates){
   const cols = vData.map((v,i)=>`
     <div class="vcol" onclick="openDrill('${alt?'feedbacks':'views'}','${tips[i]}')">
       <span class="vval">${fmtN(v)}</span>
-      <div class="vbar celltip${alt?' vbar-fb':''}" data-tip="${tips[i]}: ${fmtN(v)}" style="height:${Math.max(3, Math.round(v/max*100))}%"></div>
+      <div class="vbar celltip${alt?' vbar-fb':''}" data-tip="${fmtN(v)}" style="height:${Math.max(3, Math.round(v/max*100))}%"></div>
     </div>`).join('');
   return `<div class="vchart">
     <div class="vy">${ticks.map(t=>'<span>'+t+'</span>').join('')}</div>
