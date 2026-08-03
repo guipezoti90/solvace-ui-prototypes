@@ -5128,7 +5128,7 @@
   function scW(a){ return isDoc(a)?document.documentElement.scrollWidth:(a.scrollWidth||a.clientWidth||1); }
   function scH(a){ return isDoc(a)?document.documentElement.scrollHeight:(a.scrollHeight||a.clientHeight||1); }
   function rvIsBoard(v){ return String(v).indexOf('doc')===0; }
-  function rvPinPos(c,W,H){ var v=c.view||'doc'; if(rvIsBoard(v) && window.rvBoard){ var s=window.rvBoard.toScreen(c.xPct,c.yPct), hr=(layer.parentNode||document.body).getBoundingClientRect(); return {l:s.x-hr.left, t:s.y-hr.top}; } if(String(v).indexOf('modal:')===0){ return {l:c.xPct*window.innerWidth, t:c.yPct*window.innerHeight}; } return {l:c.xPct*W, t:c.yPct*H}; }
+  function rvPinPos(c,W,H){ var v=c.view||'doc'; if(rvIsBoard(v) && window.rvBoard){ var s=window.rvBoard.toScreen(c.xPct,c.yPct); return {l:s.x, t:s.y}; } if(String(v).indexOf('modal:')===0){ return {l:c.xPct*window.innerWidth, t:c.yPct*window.innerHeight}; } return {l:c.xPct*W, t:c.yPct*H}; }
   function rvSync(){ var v=viewKey(); if(!rvIsBoard(v)||!window.rvBoard) return; var pins=layer.querySelectorAll('.rv-pin'),i,j; for(i=0;i<pins.length;i++){ var n=pins[i].dataset.n,c=null; for(j=0;j<comments.length;j++){ if(String(comments[j].n)===String(n)){c=comments[j];break;} } if(!c)continue; var p=rvPinPos(c,0,0); pins[i].style.left=p.l+'px'; pins[i].style.top=p.t+'px'; } }
   window.rvSync=rvSync;
 
@@ -5157,7 +5157,7 @@
   }
   function render(){
     if(RVMO){RVMO.disconnect();}
-    var view=viewKey(), modalV=(view.indexOf('modal:')===0), anchor, docMode, host, W, H;
+    var view=viewKey(), modalV=(view.indexOf('modal:')===0 || (rvIsBoard(view) && window.rvBoard)), anchor, docMode, host, W, H;
     if(modalV){
       host=document.body; if(layer.parentNode!==host) host.appendChild(layer);
       W=window.innerWidth; H=window.innerHeight;
@@ -5231,7 +5231,7 @@
   function dl(blob,name){var a=document.createElement('a');a.href=URL.createObjectURL(blob);a.download=name;a.click();setTimeout(function(){URL.revokeObjectURL(a.href)},2000);}
   window.addEventListener('resize',render); window.addEventListener('load',render);
   var rvLast={vk:'',W:0,H:0};
-  function maybeRender(){ try{ var v=viewKey(), a=getAnchor(v), w=scW(a), h=scH(a); if(v!==rvLast.vk||Math.abs(w-rvLast.W)>2||Math.abs(h-rvLast.H)>2) render(); }catch(e){} }
+  function maybeRender(){ try{ var v=viewKey(), w, h; if(v.indexOf('modal:')===0 || (rvIsBoard(v)&&window.rvBoard)){ w=window.innerWidth; h=window.innerHeight; } else { var a=getAnchor(v); w=scW(a); h=scH(a); } if(v!==rvLast.vk||Math.abs(w-rvLast.W)>2||Math.abs(h-rvLast.H)>2) render(); }catch(e){} }
   try{ RVMO=new MutationObserver(function(muts){ for(var i=0;i<muts.length;i++){ var t=muts[i].target; if(t&&t.nodeType===1&&t.closest&&t.closest('#rv-layer,#rv-pop,#rv-bar,#rv-panel,#rv-toggle,#rv-nub')) continue; clearTimeout(window.__rvmo); window.__rvmo=setTimeout(maybeRender,120); return; } });
     RVMO.observe(document.body,{childList:true,subtree:true,attributes:true,attributeFilter:['class','data-state']}); }catch(e){}
   render();
