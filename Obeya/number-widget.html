@@ -210,6 +210,16 @@
   .feed2-audio{ display:flex; align-items:center; gap:10px; background:#eef1fb; border-radius:99px; padding:7px 12px; margin-top:8px; }
   .feed2-audio .fa-play{ width:28px; height:28px; border-radius:50%; background:#001391; color:#fff; border:none; cursor:pointer; display:flex; align-items:center; justify-content:center; flex:0 0 auto; } .feed2-audio .fa-play svg{ width:13px; height:13px; }
   .feed2-audio .feed2-wave{ height:24px; } .feed2-audio .fa-dur{ font-size:12px; color:#4d5166; flex:0 0 auto; }
+  .feed2-attachbar{ display:flex; align-items:center; gap:8px; flex:1; min-width:0; }
+  .fa-chips{ flex:1; min-width:0; display:flex; flex-wrap:wrap; gap:6px; max-height:76px; overflow:auto; }
+  .fa-chip{ display:inline-flex; align-items:center; gap:6px; background:#eef1fb; color:#001391; border-radius:8px; padding:5px 8px; font-size:12px; max-width:100%; }
+  .fa-chip .fa-nm{ max-width:150px; overflow:hidden; text-overflow:ellipsis; white-space:nowrap; }
+  .fa-chip .fa-x{ border:0; background:none; color:#6a70a0; cursor:pointer; font-size:12px; padding:0 2px; }
+  .fa-acts{ display:flex; gap:6px; flex:0 0 auto; }
+  .feed2-files{ display:flex; flex-direction:column; gap:6px; margin-top:8px; }
+  .fa-dl{ display:flex; align-items:center; gap:8px; background:#eef1fb; color:#001391; border-radius:8px; padding:8px 10px; font-size:13px; text-decoration:none; }
+  .fa-dl .fa-nm{ flex:1; min-width:0; overflow:hidden; text-overflow:ellipsis; white-space:nowrap; }
+  .fa-dl:hover{ background:#e3e8fb; }
   .wrca{ display:flex; flex-direction:column; gap:8px; padding-top:4px; }
   .rcard{ border:1px solid #eeeff1; border-radius:11px; padding:10px; }
   .rcard-top{ display:flex; align-items:center; justify-content:space-between; gap:8px; }
@@ -499,7 +509,7 @@
                 <button data-fa="attach"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="m21.44 11.05-9.19 9.19a6 6 0 0 1-8.49-8.49l9.19-9.19a4 4 0 0 1 5.66 5.66l-9.2 9.19a2 2 0 0 1-2.83-2.83l8.49-8.48"/></svg>Attach</button>
                 <button data-fa="audio"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M12 2a3 3 0 0 0-3 3v7a3 3 0 0 0 6 0V5a3 3 0 0 0-3-3z"/><path d="M19 10v2a7 7 0 0 1-14 0v-2"/><line x1="12" x2="12" y1="19" y2="22"/></svg>Record audio</button>
               </div>
-              <input type="file" id="feed2File" style="display:none">
+              <input type="file" id="feed2File" multiple style="position:absolute;width:1px;height:1px;opacity:0;pointer-events:none;left:-9999px">
             </div>
             <div class="feed2-card hl">
               <div class="feed2-head"><span class="feed2-av">NU</span><div><div class="feed2-name">User name</div><div class="feed2-time">5:02 am</div></div></div>
@@ -983,7 +993,22 @@ document.addEventListener('keydown', function(e){ if(e.key==='Escape'){ closeFul
     more.addEventListener('click', function(e){ e.stopPropagation(); menu.classList.toggle('open'); });
     document.addEventListener('click', function(e){ if(menu.classList.contains('open') && !(e.target.closest && (e.target.closest('#feed2Menu')||e.target.closest('#feed2More')))) menu.classList.remove('open'); });
     menu.addEventListener('click', function(e){ var b=e.target.closest('button[data-fa]'); if(!b) return; var fa=b.getAttribute('data-fa'); menu.classList.remove('open'); if(fa==='attach'){ if(file) file.click(); } else if(fa==='audio'){ startRec(); } });
-    if(file) file.addEventListener('change', function(){ if(file.files&&file.files[0]){ var cc=comp(); if(cc){ var c=document.createElement('span'); c.className='feed2-react'; c.textContent='📎 '+file.files[0].name; cc.insertAdjacentElement('afterend', c); } } file.value=''; });
+    var PAPER='<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" style="width:14px;height:14px;flex:0 0 auto"><path d="m21.44 11.05-9.19 9.19a6 6 0 0 1-8.49-8.49l9.19-9.19a4 4 0 0 1 5.66 5.66l-9.2 9.19a2 2 0 0 1-2.83-2.83l8.49-8.48"/></svg>';
+    var DOWN='<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" style="width:14px;height:14px;flex:0 0 auto"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/><polyline points="7 10 12 15 17 10"/><line x1="12" x2="12" y1="15" y2="3"/></svg>';
+    function fesc(s){ return String(s==null?'':s).replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;').replace(/"/g,'&quot;'); }
+    var attach=[];
+    function renderAttach(){ var c=comp(); if(!c) return; var bar=c.querySelector('.feed2-attachbar'); [].forEach.call(c.children,function(ch){ if(!ch.classList.contains('feed2-attachbar')) ch.style.display=attach.length?'none':''; });
+      if(!attach.length){ if(bar) bar.remove(); return; }
+      if(!bar){ bar=document.createElement('div'); bar.className='feed2-attachbar'; c.appendChild(bar); }
+      bar.innerHTML='<div class="fa-chips">'+attach.map(function(f,i){ return '<span class="fa-chip">'+PAPER+'<span class="fa-nm">'+fesc(f.name)+'</span><button class="fa-x" data-ai="'+i+'" title="Remove">✕</button></span>'; }).join('')+'</div><div class="fa-acts"><button class="feed2-recbtn del" data-att="cancel" title="Discard">'+ICO.trash+'</button><button class="feed2-recbtn send" data-att="send" title="Send">'+ICO.send+'</button></div>';
+      bar.onclick=function(e){ var x=e.target.closest('.fa-x'); if(x){ attach.splice(+x.getAttribute('data-ai'),1); renderAttach(); return; } var a=e.target.closest('[data-att]'); if(!a) return; if(a.getAttribute('data-att')==='cancel'){ attach=[]; renderAttach(); } else sendAttach(); };
+    }
+    function sendAttach(){ var c=comp(); if(!c||!attach.length) return; var now=new Date(),hh=now.getHours(),mm=('0'+now.getMinutes()).slice(-2),ap=hh<12?'am':'pm',h12=((hh+11)%12)+1;
+      var files=attach.map(function(f){ return '<a class="fa-dl" href="'+(f.url||'#')+'" download="'+fesc(f.name)+'">'+PAPER+'<span class="fa-nm">'+fesc(f.name)+'</span>'+DOWN+'</a>'; }).join('');
+      var card=document.createElement('div'); card.className='feed2-card hl'; card.innerHTML='<div class="feed2-head"><span class="feed2-av">ME</span><div><div class="feed2-name">You</div><div class="feed2-time">'+h12+':'+mm+' '+ap+'</div></div></div><div class="feed2-files">'+files+'</div><div class="feed2-actions"><span>React</span><i>|</i><span>Reply</span><i>|</i><span>Translate</span><i>|</i><span>Delete</span></div>';
+      c.insertAdjacentElement('afterend', card); attach=[]; renderAttach();
+    }
+    if(file) file.addEventListener('change', function(){ if(file.files&&file.files.length){ for(var i=0;i<file.files.length;i++){ var f=file.files[i]; var u='#'; try{ u=URL.createObjectURL(f); }catch(_){ } attach.push({name:f.name, url:u}); } renderAttach(); } file.value=''; });
     var timer=null, dur=0;
     function comp(){ return document.querySelector('#fullModal .feed2-compose'); }
     function restore(){ var c=comp(); if(!c) return; if(timer){ clearInterval(timer); timer=null; } var rec=c.querySelector('.feed2-rec'); if(rec) rec.remove(); [].forEach.call(c.children, function(ch){ ch.style.display=''; }); }
