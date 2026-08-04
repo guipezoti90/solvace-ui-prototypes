@@ -1311,6 +1311,19 @@
   .ed-seg .seg-btn.active{ background:#001391; color:#fff; }
   .ed-tr span{ font-size:14px; color:#0d122f; }
   .ed-footer{ display:flex; align-items:center; justify-content:flex-end; gap:10px; padding:14px 22px; border-top:1px solid #eeeff1; }
+  .ed-kmenu{ position:absolute; left:0; bottom:calc(100% + 6px); background:#fff; border:1px solid #e6e6ea; border-radius:10px; box-shadow:0 12px 30px rgba(13,18,47,.16); padding:6px; display:none; min-width:170px; z-index:70; }
+  .ed-kmenu.open{ display:block; }
+  .ed-kmenu button{ display:block; width:100%; text-align:left; border:0; background:none; padding:9px 10px; border-radius:7px; font-size:13px; color:#0d122f; cursor:pointer; font-family:inherit; }
+  .ed-kmenu button:hover{ background:#f5f6fb; }
+  .xfer-ov{ position:fixed; inset:0; z-index:9900; background:rgba(10,12,25,.45); display:flex; align-items:center; justify-content:center; padding:24px; }
+  .xfer-card{ background:#fff; border-radius:14px; box-shadow:0 24px 60px rgba(0,0,0,.28); width:420px; max-width:100%; overflow:hidden; }
+  .xfer-h{ font-size:16px; font-weight:600; color:#0d122f; padding:18px 20px 2px; }
+  .xfer-sub{ font-size:13px; color:#6b7280; padding:0 20px 12px; }
+  .xfer-list{ max-height:280px; overflow:auto; padding:0 12px; }
+  .xfer-it{ display:flex; align-items:center; gap:10px; padding:11px 10px; border-radius:8px; font-size:14px; color:#0d122f; cursor:pointer; }
+  .xfer-it:hover{ background:#f5f6fb; } .xfer-it input{ accent-color:#001391; }
+  .xfer-cur{ color:#8a90a6; font-size:12px; }
+  .xfer-foot{ display:flex; justify-content:flex-end; gap:10px; padding:14px 20px; border-top:1px solid #eeeff1; margin-top:8px; }
   .swatch{ width:16px; height:16px; border-radius:4px; background:#0a0a0b; display:inline-block; }
   /* number widget General: toggle-gated sections */
   .ed-sectr{ margin-bottom:8px; }
@@ -1442,7 +1455,7 @@
   .feed2-send svg{ width:18px; height:18px; }
   .feed2-more{ width:40px; height:40px; border-radius:99px; background:#f2f2f4; color:#4d5166; border:none; cursor:pointer; display:flex; align-items:center; justify-content:center; flex:0 0 auto; }
   .feed2-compose{ position:relative; }
-  .feed2-menu{ position:absolute; right:0; bottom:calc(100% + 8px); background:#fff; border:1px solid #e6e6ea; border-radius:10px; box-shadow:0 14px 34px rgba(13,18,47,.18); padding:6px; display:none; z-index:40; min-width:190px; }
+  .feed2-menu{ position:absolute; right:0; top:calc(100% + 8px); background:#fff; border:1px solid #e6e6ea; border-radius:10px; box-shadow:0 14px 34px rgba(13,18,47,.18); padding:6px; display:none; z-index:60; min-width:190px; }
   .feed2-menu.open{ display:block; }
   .feed2-menu button{ display:flex; align-items:center; gap:10px; width:100%; border:0; background:none; padding:10px 12px; border-radius:8px; font-size:13px; color:#0d122f; cursor:pointer; text-align:left; font-family:inherit; }
   .feed2-menu button:hover{ background:#f5f6fb; }
@@ -2203,6 +2216,10 @@
         </div>
       </div>
       <div class="ed-footer">
+        <div class="ed-kebab-wrap" style="margin-right:auto;position:relative">
+          <button class="zbtn zbtn-outline" id="edKebab" title="More" style="padding:0 10px"><svg viewBox="0 0 24 24" width="18" height="18" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><circle cx="12" cy="5" r="1"/><circle cx="12" cy="12" r="1"/><circle cx="12" cy="19" r="1"/></svg></button>
+          <div class="ed-kmenu" id="edKMenu"><button id="edTransfer">Transfer widget</button></div>
+        </div>
         <button class="zbtn zbtn-outline" id="edCancel">Cancel</button>
         <button class="zbtn zbtn-default" id="edApply">Apply</button>
       </div>
@@ -3840,6 +3857,20 @@
   document.getElementById('edCancel').addEventListener('click', closeEditModal);
   document.getElementById('edApply').addEventListener('click', function(){ try{ if(selectedWidget && selectedWidget.querySelector && selectedWidget.querySelector('.num2')) applyCfgToCard(selectedWidget); }catch(e){} closeEditModal(); });
   editModal.addEventListener('mousedown', function(e){ if(e.target===editModal) closeEditModal(); });
+  // edit modal kebab -> Transfer widget
+  (function(){
+    var kebab=document.getElementById('edKebab'), kmenu=document.getElementById('edKMenu'), tbtn=document.getElementById('edTransfer'); if(!kebab||!kmenu) return;
+    kebab.addEventListener('click', function(e){ e.stopPropagation(); kmenu.classList.toggle('open'); });
+    document.addEventListener('click', function(e){ if(kmenu.classList.contains('open') && !(e.target.closest&&(e.target.closest('#edKMenu')||e.target.closest('#edKebab')))) kmenu.classList.remove('open'); });
+    function boardList(){ var out=[], tabs=document.querySelectorAll('#tabs .tab'); for(var i=0;i<tabs.length;i++){ var t=tabs[i]; var lbl=((t.querySelector('.tab-label')||t).textContent||'').trim(); out.push({idx:i, bp:t.getAttribute('data-bp')||('b'+i), label:lbl||('Board '+(i+1)), cur:t.classList.contains('active')}); } return out; }
+    if(tbtn) tbtn.addEventListener('click', function(){ kmenu.classList.remove('open'); if(!selectedWidget) return; var bs=boardList();
+      var ov=document.createElement('div'); ov.className='xfer-ov';
+      ov.innerHTML='<div class="xfer-card"><div class="xfer-h">Transfer widget</div><div class="xfer-sub">Select the destination board in this room.</div><div class="xfer-list">'+bs.map(function(b,i){ return '<label class="xfer-it"><input type="radio" name="xfer" value="'+b.bp+'" data-idx="'+b.idx+'"'+(i===0?' checked':'')+'>'+b.label+(b.cur?' <span class="xfer-cur">(current)</span>':'')+'</label>'; }).join('')+'</div><div class="xfer-foot"><button class="zbtn zbtn-outline" data-x="cancel">Cancel</button><button class="zbtn zbtn-default" data-x="save">Transfer</button></div></div>';
+      document.body.appendChild(ov);
+      ov.addEventListener('mousedown', function(e){ if(e.target===ov) ov.remove(); });
+      ov.addEventListener('click', function(e){ var b=e.target.closest('[data-x]'); if(!b) return; if(b.getAttribute('data-x')==='cancel'){ ov.remove(); return; } var sel=ov.querySelector('input[name="xfer"]:checked'); if(!sel||!selectedWidget){ ov.remove(); return; } var bp=sel.value, idx=+sel.getAttribute('data-idx'); var page=document.querySelector('.board-page[data-bp="'+bp+'"]'); if(!page){ page=document.createElement('div'); page.className='board-page'; page.setAttribute('data-bp',bp); canvas.appendChild(page); } page.appendChild(selectedWidget); ov.remove(); closeEditModal(); var all=document.querySelectorAll('#tabs .tab'); for(var k=0;k<all.length;k++) all[k].classList.remove('active'); if(all[idx]) all[idx].classList.add('active'); showBoard(bp); if(typeof fbToast==='function') fbToast('Widget transferred'); });
+    });
+  })();
   (function(){
     var tabs=document.querySelectorAll('#edTabs .ed-tab');
     var panels=document.querySelectorAll('#edBody .ed-panel');
@@ -4675,10 +4706,9 @@
   var WPREV={
     'Chart': pv('<rect x="16" y="16" width="46" height="6" rx="3" fill="#0d122f"/>'+
       '<rect x="18" y="64" width="11" height="34" rx="3" fill="#14ae5c"/><rect x="36" y="46" width="11" height="52" rx="3" fill="#14ae5c"/><rect x="54" y="72" width="11" height="26" rx="3" fill="#ec221f"/><rect x="72" y="54" width="11" height="44" rx="3" fill="#14ae5c"/><rect x="90" y="68" width="11" height="30" rx="3" fill="#ec221f"/><rect x="108" y="48" width="11" height="50" rx="3" fill="#14ae5c"/>'),
-    'Number': pv('<rect x="16" y="14" width="42" height="6" rx="3" fill="#0d122f"/>'+
-      '<rect x="18" y="32" width="114" height="60" rx="10" fill="#e7f8ee"/>'+
-      '<text x="75" y="68" text-anchor="middle" font-family="Inter,sans-serif" font-weight="700" font-size="24" fill="#14ae5c">3000</text>'+
-      '<text x="75" y="83" text-anchor="middle" font-family="Inter,sans-serif" font-size="8" fill="#14ae5c">unit</text>'),
+    'Number': pv('<rect x="16" y="16" width="54" height="6" rx="3" fill="#c9cede"/>'+
+      '<rect x="16" y="30" width="118" height="62" rx="12" fill="#e7f8ee"/>'+
+      '<text x="75" y="70" text-anchor="middle" font-family="Inter,sans-serif" font-weight="700" font-size="27" fill="#14ae5c">3.420</text>'),
     'Pivot table': pv('<rect x="16" y="24" width="118" height="14" fill="#e7eaf5"/><rect x="16" y="24" width="34" height="72" fill="#f0f2fa"/>'+
       '<rect x="113" y="24" width="21" height="72" fill="rgba(0,19,145,.10)"/><rect x="16" y="80" width="118" height="16" fill="rgba(0,19,145,.10)"/>'+
       '<g stroke="#d6dae8" stroke-width="1"><line x1="50" y1="24" x2="50" y2="96"/><line x1="71" y1="24" x2="71" y2="96"/><line x1="92" y1="24" x2="92" y2="96"/><line x1="113" y1="24" x2="113" y2="96"/>'+
@@ -4731,7 +4761,7 @@
     'Calendar':'A calendar widget that shows a single numeric value series, highlighting values that fall above or below a set threshold for each day.',
     'Chart':'A chart widget that plots a value series over time as bars, with target and conditional formatting.',
     'Message':'A message/feed widget for team comments, replies and translated updates.',
-    'Number':'A number widget that displays a single KPI value with its unit and conditional color.',
+    'Number':'A number widget that displays a single KPI value.',
     'Status':'A status widget with quick-toggle states to flag a routine as met, within standards or missed.',
     'Table':'A table widget to display structured rows and columns of board data.',
     'Pivot table':'Cross-tabulate values by two dimensions (rows × columns) with automatic row, column and grand totals.',
@@ -4784,10 +4814,19 @@
   function addWidget(label){
     var card=document.createElement('section');
     card.className='wcard';
-    card.innerHTML='<div class="wcard-head"><div><div class="wcard-title">'+(label||'Widget')+'</div></div>'+
-      '<span class="expand"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polyline points="15 3 21 3 21 9"/><polyline points="9 21 3 21 3 15"/><line x1="21" x2="14" y1="3" y2="10"/><line x1="3" x2="10" y1="21" y2="14"/></svg></span></div>'+
-      '<div style="flex:1;display:flex;align-items:center;justify-content:center;color:#9aa0c0;font-size:13px;border:1px dashed #e4e7ea;border-radius:10px;">'+(label||'Widget')+'</div>';
-    var vp=viewport.getBoundingClientRect(), cw=404, ch=260;
+    var EXP='<span class="expand"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polyline points="15 3 21 3 21 9"/><polyline points="9 21 3 21 3 15"/><line x1="21" x2="14" y1="3" y2="10"/><line x1="3" x2="10" y1="21" y2="14"/></svg></span>';
+    var isNum=(label==='Number'), cw, ch;
+    if(isNum){
+      card.innerHTML='<div class="wcard-head"><div><div class="wcard-title">Number</div><div class="wcard-sub"></div></div>'+EXP+'</div>'+
+        '<div class="num2" style="background:#f2f3f5"><span class="num2-hint" style="font-size:12px;color:#9aa0ac;text-align:center;padding:8px;line-height:1.35">Add the values in update mode</span></div>'+
+        '<div class="w-foot"><span class="w-foot-l"></span></div>';
+      cw=180; ch=180;
+    } else {
+      card.innerHTML='<div class="wcard-head"><div><div class="wcard-title">'+(label||'Widget')+'</div></div>'+EXP+'</div>'+
+        '<div style="flex:1;display:flex;align-items:center;justify-content:center;color:#9aa0c0;font-size:13px;border:1px dashed #e4e7ea;border-radius:10px;">'+(label||'Widget')+'</div>';
+      cw=404; ch=260;
+    }
+    var vp=viewport.getBoundingClientRect();
     var cx=(-view.x + vp.width/2)/view.z - cw/2;
     var cy=(-view.y + vp.height/2)/view.z - ch/2;
     card.style.width=cw+'px'; card.style.height=ch+'px';
