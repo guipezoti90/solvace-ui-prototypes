@@ -1455,6 +1455,9 @@
   .feed2-reply input{ flex:1; min-width:0; height:32px; border:1px solid #eeeff1; border-radius:99px; padding:0 12px; font-size:13px; outline:none; }
   .feed2-reply button{ border:0; background:#001391; color:#fff; border-radius:99px; padding:0 14px; font-size:13px; cursor:pointer; }
   .feed2-replyitem{ margin:7px 0 0 14px; padding:7px 11px; background:#f5f6fb; border-radius:8px; font-size:13px; color:#0d122f; border-left:2px solid #001391; }
+  .feed2-reactbar{ position:fixed; z-index:9700; display:flex; gap:2px; background:#fff; border:1px solid #e6e6ea; border-radius:99px; box-shadow:0 10px 28px rgba(13,18,47,.18); padding:4px 6px; }
+  .feed2-reactbar button{ border:0; background:none; cursor:pointer; font-size:20px; line-height:1; padding:4px 6px; border-radius:99px; transition:transform .1s; }
+  .feed2-reactbar button:hover{ transform:scale(1.25); background:#f5f6fb; }
   /* WhatsApp-like audio recording in the feed composer */
   .feed2-rec{ display:flex; align-items:center; gap:10px; flex:1; min-width:0; height:44px; border:1px solid #eeeff1; border-radius:99px; padding:0 8px 0 14px; background:#fafafa; }
   .feed2-rec .rec-dot{ width:10px; height:10px; border-radius:50%; background:#ec221f; flex:0 0 auto; animation:recBlink 1s infinite; }
@@ -4230,11 +4233,15 @@
   })();
   // full-view feed actions: React / Reply / Translate / Delete
   document.addEventListener('click', function(e){ var s=e.target.closest && e.target.closest('.feed2-actions span'); if(!s) return; var card=s.closest('.feed2-card'); if(!card) return; var act=(s.textContent||'').trim().toLowerCase();
-    if(act==='react'){ var r=card.querySelector('.feed2-react-badge'); if(r){ r.remove(); s.classList.remove('on'); } else { var d=document.createElement('div'); d.className='feed2-react feed2-react-badge'; d.textContent='👍 1'; var tx=card.querySelector('.feed2-text'); if(tx) tx.insertAdjacentElement('afterend', d); s.classList.add('on'); } }
+    if(act==='react'){ e.stopPropagation(); openReactBar(s, card); return; }
     else if(act==='reply'){ var ex=card.querySelector('.feed2-reply'); if(ex){ ex.remove(); return; } var w=document.createElement('div'); w.className='feed2-reply'; w.innerHTML='<input placeholder="Reply…"><button>Send</button>'; card.appendChild(w); var inp=w.querySelector('input'); inp.focus(); function send(){ var v=(inp.value||'').trim(); if(!v) return; var rc=document.createElement('div'); rc.className='feed2-replyitem'; rc.textContent=v; card.insertBefore(rc, w); inp.value=''; inp.focus(); } w.querySelector('button').addEventListener('click', send); inp.addEventListener('keydown', function(ev){ if(ev.key==='Enter'){ ev.preventDefault(); send(); } }); }
     else if(act==='translate'){ var t=card.querySelector('.feed2-text'); if(!t) return; if(t.getAttribute('data-orig')){ t.textContent=t.getAttribute('data-orig'); t.removeAttribute('data-orig'); s.classList.remove('on'); } else { t.setAttribute('data-orig', t.textContent); t.textContent='[Translated] '+t.textContent; s.classList.add('on'); } }
     else if(act==='delete'){ card.remove(); }
   });
+  // feed reactions: bar with several emoji options
+  function openReactBar(anchor, card){ var ex=document.getElementById('feed2ReactBar'); var same=ex&&ex.__a===anchor; if(ex) ex.remove(); if(same) return; var EMO=['👍','👏','🤣','💡','❤️']; var bar=document.createElement('div'); bar.id='feed2ReactBar'; bar.className='feed2-reactbar'; bar.__a=anchor; bar.innerHTML=EMO.map(function(em){return '<button type="button" data-emo="'+em+'">'+em+'</button>';}).join(''); document.body.appendChild(bar); var r=anchor.getBoundingClientRect(); bar.style.left=r.left+'px'; bar.style.top=(r.top-bar.offsetHeight-6)+'px'; bar.addEventListener('click', function(ev){ var b=ev.target.closest('button[data-emo]'); if(!b) return; setReact(card, b.getAttribute('data-emo'), anchor); bar.remove(); }); }
+  function setReact(card, emo, anchor){ var badge=card.querySelector('.feed2-react-badge'); if(badge && badge.getAttribute('data-emo')===emo){ badge.remove(); if(anchor) anchor.classList.remove('on'); return; } if(!badge){ badge=document.createElement('div'); badge.className='feed2-react feed2-react-badge'; var ref=card.querySelector('.feed2-text')||card.querySelector('.feed2-audio'); if(ref) ref.insertAdjacentElement('afterend', badge); else card.appendChild(badge); } badge.setAttribute('data-emo', emo); badge.textContent=emo+' 1'; if(anchor) anchor.classList.add('on'); }
+  document.addEventListener('mousedown', function(e){ var bar=document.getElementById('feed2ReactBar'); if(!bar) return; if(e.target.closest && (e.target.closest('#feed2ReactBar')||(e.target.closest('.feed2-actions span')&&(e.target.textContent||'').trim().toLowerCase()==='react'))) return; bar.remove(); });
 
   // ---- update mode: edit table cells / toggle attendance directly on the board ----
   var PRES_ICO={
