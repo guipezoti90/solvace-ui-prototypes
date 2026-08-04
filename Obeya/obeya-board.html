@@ -3782,6 +3782,11 @@
     if(!selectedWidget) return;
     var clone = selectedWidget.cloneNode(true);
     clone.classList.remove('selected');
+    // duplicado começa com o zoom zerado (sem ACP/RCA/feed): marca fresh e zera o rodapé
+    clone.setAttribute('data-fresh','1');
+    var _ap=clone.querySelector('.w-apalert'); if(_ap && _ap.parentNode) _ap.parentNode.removeChild(_ap);
+    var _an=clone.querySelector('.w-andon'); if(_an && _an.parentNode) _an.parentNode.removeChild(_an);
+    [].forEach.call(clone.querySelectorAll('.w-meta'), function(m){ var svg=m.querySelector('svg'); m.textContent=''; if(svg) m.appendChild(svg); m.appendChild(document.createTextNode('0')); });
     var ch2=clone.querySelector('.wresize'); if(ch2 && ch2.parentNode) ch2.parentNode.removeChild(ch2);
     clone.style.left=snap((parseInt(selectedWidget.style.left)||0)+24)+'px';
     clone.style.top =snap((parseInt(selectedWidget.style.top)||0)+24)+'px';
@@ -4815,9 +4820,10 @@
     card.className='wcard';
     var EXP='<span class="expand"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polyline points="15 3 21 3 21 9"/><polyline points="9 21 3 21 3 15"/><line x1="21" x2="14" y1="3" y2="10"/><line x1="3" x2="10" y1="21" y2="14"/></svg></span>';
     var isNum=(label==='Number'), cw, ch;
+    card.setAttribute('data-fresh','1');
     if(isNum){
       card.innerHTML='<div class="wcard-head"><div><div class="wcard-title">Number</div><div class="wcard-sub"></div></div>'+EXP+'</div>'+
-        '<div class="num2" style="background:#f2f3f5"><span class="num2-hint" style="font-size:12px;color:#9aa0ac;text-align:center;padding:8px;line-height:1.35">Add the values in update mode</span></div>'+
+        '<div class="num2" style="background:#f2f3f5"><span class="num2-val font-display" style="color:#0a0a0b">0</span></div>'+
         '<div class="w-foot"><span class="w-foot-l"></span></div>';
       cw=180; ch=180;
     } else {
@@ -5099,6 +5105,13 @@
   var fullBodyEl=document.getElementById('fullBody');
   var fullBodyHTML=fullBodyEl?fullBodyEl.innerHTML:'';
   var FV_PRIMARY={ feed:'New message', plan:'New action plan', rca:'New RCA', kaizen:'New Kaizen', projects:'New project' };
+  var FV_BADGES={}; (function(){ var ts=document.querySelectorAll('#fullTabs .ed-tab'); for(var i=0;i<ts.length;i++){ var k=ts[i].getAttribute('data-ftab'); var b=ts[i].querySelector('.ed-badge'); if(b) FV_BADGES[k]=b.textContent; } })();
+  function fvApplyFresh(card){ var fresh=card&&card.getAttribute&&card.getAttribute('data-fresh')==='1';
+    var ts=document.querySelectorAll('#fullTabs .ed-tab'); for(var i=0;i<ts.length;i++){ var k=ts[i].getAttribute('data-ftab'); var b=ts[i].querySelector('.ed-badge'); if(b) b.textContent = fresh ? '0' : (FV_BADGES[k]||b.textContent); }
+    if(!fresh||!fullBodyEl) return;
+    var fp=fullBodyEl.querySelector('[data-fpanel="feed"]'); if(fp){ [].forEach.call(fp.querySelectorAll('.feed2-card'), function(c){ c.remove(); }); }
+    ['plan','rca','kaizen','projects'].forEach(function(k){ var p=fullBodyEl.querySelector('[data-fpanel="'+k+'"]'); if(p){ var host=p.querySelector('.fv-cards')||p.querySelector('.wrca')||p; host.innerHTML='<div style="color:#9aa0ac;font-size:13px;padding:18px;text-align:center">No items yet.</div>'; } });
+  }
   // #90 — update mode: expanded indicator widget opens an update modal with a Result/Objective
   // switch; each mode keeps its own editable values (edited independently).
   var fbState=null;
@@ -5126,7 +5139,7 @@
     var fcb=document.getElementById('fullCloseBtn');
     var isNum=!!(card.querySelector && card.querySelector('.num2'));
     if(isBatch){ if(fTabs) fTabs.style.display='none'; startFullBatch(fullTitle.textContent, isNum); if(sub){ sub.textContent=''; sub.style.display='none'; } if(fullPrimary){ fullPrimary.style.display='inline-flex'; fullPrimary.textContent='Apply'; } if(fcb) fcb.textContent='Cancel'; }
-    else { fbState=null; if(fTabs) fTabs.style.display=''; if(fullBodyEl) fullBodyEl.innerHTML=fullBodyHTML; if(sub){ sub.textContent='Full view'; sub.style.display=''; } if(fcb) fcb.textContent='Close'; setFullTab('feed'); }
+    else { fbState=null; if(fTabs) fTabs.style.display=''; if(fullBodyEl) fullBodyEl.innerHTML=fullBodyHTML; if(sub){ sub.textContent='Full view'; sub.style.display=''; } if(fcb) fcb.textContent='Close'; setFullTab('feed'); fvApplyFresh(card); }
     // #192 — presence zoom is just the big widget + Links (no side drawer, no download/upload)
     var noDrawer = !isBatch && /^presence$/.test(typ);
     if(fullDrawer) fullDrawer.style.display = noDrawer ? 'none' : '';
