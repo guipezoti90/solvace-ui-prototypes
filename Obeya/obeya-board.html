@@ -4241,13 +4241,17 @@
   document.addEventListener('keydown', function(e){ if(e.key==='Enter' && e.target && e.target.matches && e.target.matches('.feed2-input')){ e.preventDefault(); var c=e.target.closest('.feed2-compose'); if(c) postFeed2(c.querySelector('.feed2-send')); } });
   // full-view feed kebab menu (Attach / Record audio) + WhatsApp-like recording
   (function(){
-    var more=document.getElementById('feed2More'), menu=document.getElementById('feed2Menu'), file=document.getElementById('feed2File'); if(!more||!menu) return;
     var ICO={ stop:'<svg viewBox="0 0 24 24" fill="currentColor"><rect x="6" y="6" width="12" height="12" rx="2"/></svg>', send:'<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><line x1="5" x2="19" y1="12" y2="12"/><polyline points="12 5 19 12 12 19"/></svg>', trash:'<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M3 6h18"/><path d="M19 6v14a2 2 0 0 1-2 2H7a2 2 0 0 1-2-2V6m3 0V4a2 2 0 0 1 2-2h4a2 2 0 0 1 2 2v2"/></svg>', play:'<svg viewBox="0 0 24 24" fill="currentColor"><path d="M8 5v14l11-7z"/></svg>' };
     function wave(live){ var b=''; for(var i=0;i<48;i++){ var h=live?'':(18+Math.round(Math.abs(Math.sin(i*1.7))*70))+'%'; b+='<span style="'+(live?'animation-delay:'+(i*35)+'ms':'height:'+h)+'"></span>'; } return '<div class="feed2-wave'+(live?' live':'')+'">'+b+'</div>'; }
-    more.addEventListener('click', function(e){ e.stopPropagation(); menu.classList.toggle('open'); });
-    document.addEventListener('click', function(e){ if(menu.classList.contains('open') && !(e.target.closest && (e.target.closest('#feed2Menu')||e.target.closest('#feed2More')))) menu.classList.remove('open'); });
-    menu.addEventListener('click', function(e){ var b=e.target.closest('button[data-fa]'); if(!b) return; var fa=b.getAttribute('data-fa'); menu.classList.remove('open'); if(fa==='attach'){ if(file) file.click(); } else if(fa==='audio'){ startRec(); } });
-    if(file) file.addEventListener('change', function(){ if(file.files&&file.files[0]){ var comp=document.querySelector('.feed2-compose'); if(comp){ var c=document.createElement('span'); c.className='feed2-react'; c.textContent='📎 '+file.files[0].name; comp.insertAdjacentElement('afterend', c); } } file.value=''; });
+    // delegação (o #fullBody é recriado ao abrir o zoom, então não usamos listeners fixos)
+    document.addEventListener('click', function(e){
+      var moreBtn=e.target.closest && e.target.closest('#feed2More');
+      if(moreBtn){ e.stopPropagation(); var mn=document.getElementById('feed2Menu'); if(mn) mn.classList.toggle('open'); return; }
+      var fa=e.target.closest && e.target.closest('#feed2Menu button[data-fa]');
+      if(fa){ var mn2=document.getElementById('feed2Menu'); if(mn2) mn2.classList.remove('open'); var act=fa.getAttribute('data-fa'); if(act==='attach'){ var file=document.getElementById('feed2File'); if(file) file.click(); } else if(act==='audio'){ startRec(); } return; }
+      var mn3=document.getElementById('feed2Menu'); if(mn3 && mn3.classList.contains('open') && !(e.target.closest&&(e.target.closest('#feed2Menu')||e.target.closest('#feed2More')))) mn3.classList.remove('open');
+    });
+    document.addEventListener('change', function(e){ var file=e.target.closest && e.target.closest('#feed2File'); if(!file) return; if(file.files&&file.files[0]){ var cp=document.querySelector('.feed2-compose'); if(cp){ var c=document.createElement('span'); c.className='feed2-react'; c.textContent='📎 '+file.files[0].name; cp.insertAdjacentElement('afterend', c); } } file.value=''; });
     var timer=null, dur=0;
     function comp(){ return document.querySelector('.feed2-compose'); }
     function restore(){ var c=comp(); if(!c) return; if(timer){ clearInterval(timer); timer=null; } var rec=c.querySelector('.feed2-rec'); if(rec) rec.remove(); [].forEach.call(c.children, function(ch){ ch.style.display=''; }); }
