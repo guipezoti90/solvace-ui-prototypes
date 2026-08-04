@@ -132,7 +132,7 @@
   .wcard-head{ display:flex; align-items:flex-start; justify-content:space-between; gap:8px; }
   .wcard-head>div:first-child{ min-width:0; }
   .wcard-title{ white-space:nowrap; overflow:hidden; text-overflow:ellipsis; }
-  .wcard-title{ font-size:13px; font-weight:600; line-height:15px; color:#0d122f; }
+  .wcard-title{ font-size:13px; font-weight:600; line-height:1.35; padding-bottom:1px; color:#0d122f; }
   .wcard-sub{ font-size:12px; color:#6b7280; margin-top:0; line-height:1.2; }
   .expand{ color:#0d122f; cursor:pointer; flex:0 0 auto; }
   .expand svg{ width:18px; height:18px; }
@@ -185,8 +185,8 @@
   .cpal-pop .cpal-sw{ width:20px; height:20px; border-radius:5px; cursor:pointer; border:1px solid rgba(0,0,0,.12); }
   .cpal-pop .cpal-sw:hover{ transform:scale(1.12); }
   .cpal-foot{ grid-column:1/-1; display:flex; align-items:center; gap:8px; margin-top:6px; padding-top:8px; border-top:1px solid #eef0f4; }
-  .cpal-foot input[type=color]{ width:30px; height:30px; border:1px solid #e6e6ea; border-radius:6px; background:#fff; padding:2px; cursor:pointer; }
-  .cpal-foot input[type=text]{ flex:1; height:30px; border:1px solid #eeeff1; border-radius:7px; padding:0 8px; font-size:12px; box-sizing:border-box; text-transform:uppercase; outline:none; }
+  .cpal-foot input[type=color]{ flex:0 0 28px; width:28px; height:28px; min-width:28px; box-sizing:border-box; border:1px solid #e6e6ea; border-radius:6px; background:#fff; padding:2px; cursor:pointer; }
+  .cpal-foot input[type=text]{ flex:1 1 0; min-width:0; width:0; height:30px; border:1px solid #eeeff1; border-radius:7px; padding:0 8px; font-size:12px; box-sizing:border-box; text-transform:uppercase; outline:none; }
   .rsel-pop .rsel-hint{ padding:10px 8px; font-size:12px; color:#8a90a6; }
   .rsel-pop .rsel-empty{ padding:8px; font-size:13px; color:#8a90a6; }
   /* DS select (replaces native OS <select>) */
@@ -704,9 +704,11 @@
   .rcode{ font-size:12px; font-weight:700; color:#001391; cursor:pointer; white-space:nowrap; }
   .rcode:hover{ text-decoration:underline; }
   .wtable td.rnum{ white-space:nowrap; }
-  .rsrc{ font-size:11px; color:#6b7280; margin-top:4px; }
+  .rsrc{ display:none; }
   .rwarn{ color:#ec221f; display:inline-flex; }
   .rwarn svg{ width:14px; height:14px; }
+  .resched{ color:#0e7aa8; display:inline-flex; } .resched svg{ width:14px; height:14px; }
+  .rescal{ color:#e8871e; display:inline-flex; } .rescal svg{ width:14px; height:14px; }
   .wap{ flex:1; display:flex; flex-direction:column; gap:8px; min-height:0; }
   .apstack{ display:flex; margin:0; flex:0 0 auto; gap:12px; }
   .apstack .apav{ position:relative; width:30px; height:30px; border-radius:99px; font-size:9px; font-weight:600; display:inline-flex; align-items:center; justify-content:center; border:2px solid #fff; margin-left:0; }
@@ -1310,6 +1312,13 @@
   .ed-tr span{ font-size:14px; color:#0d122f; }
   .ed-footer{ display:flex; align-items:center; justify-content:flex-end; gap:10px; padding:14px 22px; border-top:1px solid #eeeff1; }
   .swatch{ width:16px; height:16px; border-radius:4px; background:#0a0a0b; display:inline-block; }
+  /* number widget General: toggle-gated sections */
+  .ed-sectr{ margin-bottom:8px; }
+  .ed-secbox{ margin:0 0 16px; }
+  .ed-secbox.sec-hidden{ display:none; }
+  .ed-tolrow{ display:flex; gap:8px; align-items:center; }
+  .ed-tolrow .ed-input{ flex:1; }
+  .ed-tolrow .ed-tolcol{ width:60px; flex:0 0 auto; }
   /* edit-drawer tab panels + grouped fields */
   .ed-panel{ display:none; }
   .ed-panel.active{ display:block; }
@@ -1338,6 +1347,27 @@
   .andon-foot .andon-del{ margin-left:auto; }
   .andon-f label{ display:block; font-size:12px; color:#6b7280; margin-bottom:6px; }
   .andon-f .ed-input{ width:100%; }
+  /* Links: cards empilhados (padrão Andon), sem rolagem lateral */
+  .link-row{ border:1px solid #eef0f3; border-radius:10px; padding:12px; margin-bottom:14px; background:#fcfcfd; }
+  .link-fields{ display:grid; grid-template-columns:1fr 1fr; gap:10px 12px; align-items:end; }
+  .link-f label{ display:block; font-size:12px; color:#6b7280; margin-bottom:6px; }
+  .link-f .ed-input, .link-f .ds-select{ width:100%; }
+  .link-f.lf-name{ grid-column:1/-1; }
+  .link-foot{ display:flex; justify-content:flex-end; margin-top:10px; }
+  @media (max-width:560px){ .link-fields{ grid-template-columns:1fr; } }
+  /* Source tab (dynamic) */
+  .ed-sec2{ font-size:12px; font-weight:700; letter-spacing:.03em; color:#8a90a6; margin:14px 0 6px; }
+  .srcf-box{ display:flex; align-items:center; gap:8px; border:1px solid #eeeff1; border-radius:8px; padding:4px 6px; background:#fafafa; }
+  .src-add{ width:26px; height:26px; border-radius:6px; border:none; background:#001391; color:#fff; display:inline-flex; align-items:center; justify-content:center; cursor:pointer; flex:0 0 auto; } .src-add svg{ width:15px; height:15px; }
+  .srcf-txt{ font-size:13px; color:#0d122f; }
+  .srcv-list{ margin-top:10px; display:flex; flex-direction:column; gap:12px; }
+  .srcv-row{ border:1px solid #eef0f3; border-radius:10px; padding:12px; background:#fcfcfd; }
+  .srcv-fields{ display:grid; grid-template-columns:repeat(3,1fr); gap:10px 12px; align-items:end; }
+  .srcv-foot{ display:flex; justify-content:flex-end; margin-top:10px; }
+  .src-del{ border:none; background:none; color:#6b7280; cursor:pointer; padding:6px; display:inline-flex; border-radius:6px; } .src-del:hover{ background:#fee2e2; color:#dc2626; } .src-del svg{ width:16px; height:16px; }
+  .srcv-cell{ min-width:0; } .srcv-cell .ed-input, .srcv-cell .ds-select{ width:100%; }
+  @media (max-width:640px){ .srcv-fields{ grid-template-columns:1fr 1fr; } }
+  .num2.num2-tgt .num2-val{ font-size:clamp(16px,min(15cqw,34cqh),84px); }
   .andon-series{ background:#f1f1f3; border:1px solid #e2e5ec; border-radius:8px; padding:9px 12px; font-size:13px; color:#667085; }
   .andon-bellck{ display:flex; flex-direction:column; align-items:center; gap:8px; padding-bottom:2px; }
   .andon-bell{ border:none; background:none; color:#001391; cursor:pointer; padding:0; display:inline-flex; }
@@ -1411,6 +1441,39 @@
   .feed2-send:hover{ background:#0000d6; }
   .feed2-send svg{ width:18px; height:18px; }
   .feed2-more{ width:40px; height:40px; border-radius:99px; background:#f2f2f4; color:#4d5166; border:none; cursor:pointer; display:flex; align-items:center; justify-content:center; flex:0 0 auto; }
+  .feed2-compose{ position:relative; }
+  .feed2-menu{ position:absolute; right:0; bottom:calc(100% + 8px); background:#fff; border:1px solid #e6e6ea; border-radius:10px; box-shadow:0 14px 34px rgba(13,18,47,.18); padding:6px; display:none; z-index:40; min-width:190px; }
+  .feed2-menu.open{ display:block; }
+  .feed2-menu button{ display:flex; align-items:center; gap:10px; width:100%; border:0; background:none; padding:10px 12px; border-radius:8px; font-size:13px; color:#0d122f; cursor:pointer; text-align:left; font-family:inherit; }
+  .feed2-menu button:hover{ background:#f5f6fb; }
+  .feed2-menu button svg{ width:16px; height:16px; color:#4d5166; }
+  .feed2-actions span{ cursor:pointer; }
+  .feed2-actions span:hover{ color:#001391; }
+  .feed2-actions span.on{ color:#001391; font-weight:600; }
+  .feed2-react{ display:inline-flex; align-items:center; gap:5px; background:#eef1fb; color:#001391; border-radius:99px; padding:2px 9px; font-size:12px; font-weight:600; margin-top:7px; }
+  .feed2-reply{ display:flex; gap:8px; margin-top:8px; }
+  .feed2-reply input{ flex:1; min-width:0; height:32px; border:1px solid #eeeff1; border-radius:99px; padding:0 12px; font-size:13px; outline:none; }
+  .feed2-reply button{ border:0; background:#001391; color:#fff; border-radius:99px; padding:0 14px; font-size:13px; cursor:pointer; }
+  .feed2-replyitem{ margin:7px 0 0 14px; padding:7px 11px; background:#f5f6fb; border-radius:8px; font-size:13px; color:#0d122f; border-left:2px solid #001391; }
+  /* WhatsApp-like audio recording in the feed composer */
+  .feed2-rec{ display:flex; align-items:center; gap:10px; flex:1; min-width:0; height:44px; border:1px solid #eeeff1; border-radius:99px; padding:0 8px 0 14px; background:#fafafa; }
+  .feed2-rec .rec-dot{ width:10px; height:10px; border-radius:50%; background:#ec221f; flex:0 0 auto; animation:recBlink 1s infinite; }
+  @keyframes recBlink{ 0%,100%{opacity:1} 50%{opacity:.2} }
+  .feed2-rec .rec-time{ font-size:13px; color:#0d122f; font-variant-numeric:tabular-nums; flex:0 0 auto; min-width:34px; }
+  .feed2-wave{ flex:1; min-width:0; height:30px; display:flex; align-items:center; gap:2px; overflow:hidden; }
+  .feed2-wave span{ flex:0 0 3px; width:3px; background:#9aa0d8; border-radius:2px; height:24%; }
+  .feed2-wave.live span{ animation:recWave .9s ease-in-out infinite; }
+  @keyframes recWave{ 0%,100%{height:20%} 50%{height:92%} }
+  .feed2-recbtn{ width:40px; height:40px; border-radius:99px; border:none; cursor:pointer; display:flex; align-items:center; justify-content:center; flex:0 0 auto; }
+  .feed2-recbtn svg{ width:17px; height:17px; }
+  .feed2-recbtn.stop{ background:#ec221f; color:#fff; }
+  .feed2-recbtn.send{ background:#001391; color:#fff; }
+  .feed2-recbtn.del{ background:#fff; color:#ec221f; border:1px solid #f0c8c8; }
+  .feed2-audio{ display:flex; align-items:center; gap:10px; background:#eef1fb; border-radius:99px; padding:7px 12px; margin-top:8px; }
+  .feed2-audio .fa-play{ width:28px; height:28px; border-radius:50%; background:#001391; color:#fff; border:none; cursor:pointer; display:flex; align-items:center; justify-content:center; flex:0 0 auto; }
+  .feed2-audio .fa-play svg{ width:13px; height:13px; }
+  .feed2-audio .feed2-wave{ height:24px; }
+  .feed2-audio .fa-dur{ font-size:12px; color:#4d5166; flex:0 0 auto; font-variant-numeric:tabular-nums; }
   .feed2-more:hover{ background:#e7e9ee; }
   .feed2-more svg{ width:18px; height:18px; }
   .feed2-card{ border-radius:12px; padding:16px; background:#fff; border:1px solid #f0f2f5; }
@@ -1792,7 +1855,7 @@
           <div class="wcard-head"><div><div class="wcard-title">Number</div><div class="wcard-sub">subtitle</div></div>
             <span class="expand"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polyline points="15 3 21 3 21 9"/><polyline points="9 21 3 21 3 15"/><line x1="21" x2="14" y1="3" y2="10"/><line x1="3" x2="10" y1="21" y2="14"/></svg></span>
           </div>
-          <div class="num2"><span class="num2-val font-display">3000</span></div>
+          <div class="num2"><span class="num2-val font-display">3.000</span></div>
           <div class="w-foot"><span class="w-andon">!</span><span class="w-av" style="background:#d7e9ff;color:#001391">JD</span></div>
         </section>
         <!-- Status (semáforo) -->
@@ -1844,7 +1907,7 @@
      </div><!-- /board-page b0 -->
 
      <div class="board-page" data-bp="b2">
-      <section class="wcard no-ind up-editable" data-wi="0" style="left:160px;top:140px;width:280px;height:300px;z-index:1"><div class="wcard-head"><div><div class="wcard-title" title="Units Today">Units Today</div><div class="wcard-sub">vs target 3.000</div></div><span class="expand" title="Open full view"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polyline points="15 3 21 3 21 9"/><polyline points="9 21 3 21 3 15"/><line x1="21" x2="14" y1="3" y2="10"/><line x1="3" x2="10" y1="21" y2="14"/></svg></span><span class="up-acts"><button class="up-act-btn" title="Zoom" onclick="event.stopPropagation();var c=this.closest('.wcard');var ex=c&&c.querySelector('.expand');if(ex)ex.click();"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polyline points="15 3 21 3 21 9"/><polyline points="9 21 3 21 3 15"/><line x1="21" x2="14" y1="3" y2="10"/><line x1="3" x2="10" y1="21" y2="14"/></svg></button></span></div><div class="num2 pos" data-dtip data-v="3,420" data-t="3000"><span class="num2-val font-display">3,420</span></div><div class="w-foot"><span class="w-foot-l"><span class="w-apalert" data-goap="1" title="Delayed action plan — click to open"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="m21.73 18-8-14a2 2 0 0 0-3.48 0l-8 14A2 2 0 0 0 4 21h16a2 2 0 0 0 1.73-3Z"/><path d="M12 9v4"/><path d="M12 17h.01"/></svg></span><span class="w-meta" data-ftab="plan" title="4 action plans"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect width="8" height="4" x="8" y="2" rx="1"/><path d="M16 4h2a2 2 0 0 1 2 2v14a2 2 0 0 1-2 2H6a2 2 0 0 1-2-2V6a2 2 0 0 1 2-2h2"/></svg>4</span><span class="w-meta" data-ftab="feed" title="2 comments in feed"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M21 15a2 2 0 0 1-2 2H7l-4 4V5a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2z"/></svg>2</span></span><span class="w-av" title="Nick Usk" style="background:#ffd8a8;color:#9a4a00">NU</span></div></section>
+      <section class="wcard no-ind up-editable" data-wi="0" style="left:160px;top:140px;width:280px;height:300px;z-index:1"><div class="wcard-head"><div><div class="wcard-title" title="Units Today">Units Today</div><div class="wcard-sub">vs target 3.000</div></div><span class="expand" title="Open full view"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polyline points="15 3 21 3 21 9"/><polyline points="9 21 3 21 3 15"/><line x1="21" x2="14" y1="3" y2="10"/><line x1="3" x2="10" y1="21" y2="14"/></svg></span><span class="up-acts"><button class="up-act-btn" title="Zoom" onclick="event.stopPropagation();var c=this.closest('.wcard');var ex=c&&c.querySelector('.expand');if(ex)ex.click();"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polyline points="15 3 21 3 21 9"/><polyline points="9 21 3 21 3 15"/><line x1="21" x2="14" y1="3" y2="10"/><line x1="3" x2="10" y1="21" y2="14"/></svg></button></span></div><div class="num2 pos" data-dtip data-v="3,420" data-t="3000"><span class="num2-val font-display">3.420</span></div><div class="w-foot"><span class="w-foot-l"><span class="w-apalert" data-goap="1" title="Delayed action plan — click to open"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="m21.73 18-8-14a2 2 0 0 0-3.48 0l-8 14A2 2 0 0 0 4 21h16a2 2 0 0 0 1.73-3Z"/><path d="M12 9v4"/><path d="M12 17h.01"/></svg></span><span class="w-meta" data-ftab="plan" title="4 action plans"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect width="8" height="4" x="8" y="2" rx="1"/><path d="M16 4h2a2 2 0 0 1 2 2v14a2 2 0 0 1-2 2H6a2 2 0 0 1-2-2V6a2 2 0 0 1 2-2h2"/></svg>4</span><span class="w-meta" data-ftab="feed" title="2 comments in feed"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M21 15a2 2 0 0 1-2 2H7l-4 4V5a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2z"/></svg>2</span></span><span class="w-av" title="Nick Usk" style="background:#ffd8a8;color:#9a4a00">NU</span></div></section>
      </div><!-- /board-page widget numero (b7) -->
 
     </div><!-- /canvas -->
@@ -2053,85 +2116,19 @@
         <!-- SOURCE -->
         <div class="ed-panel" data-panel="sources">
           <label class="ed-label">SOURCE TYPE</label>
-          <select class="ed-input ed-native" id="edSrcType">
+          <select class="ed-input ed-native" id="edSrcType" style="max-width:320px">
             <option value="api">API</option>
             <option value="calc">Calculation</option>
             <option value="mirror">mirroring</option>
-            <option value="manual">Manual</option>
-            <option value="modules" selected>Solvace Modules</option>
+            <option value="manual" selected>Manual</option>
           </select>
-
-          <!-- API -->
-          <div class="src-variant" data-src="api">
-            <div class="ed-grid2" style="margin-top:14px">
-              <div><label class="ed-label">Target</label><button class="zswitch" type="button"></button></div>
-              <div><label class="ed-label">Value</label><button class="zswitch on" type="button"></button></div>
-            </div>
-          </div>
-
-          <!-- Calculation -->
-          <div class="src-variant" data-src="calc">
-            <label class="ed-label" style="margin-top:14px">Calculation Type</label>
-            <div class="ed-inbox"><span class="ed-chipcell">Formula <span class="cx"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round"><path d="M18 6 6 18M6 6l12 12"/></svg></span></span></div>
-            <div class="ed-sec2">FORMULA</div>
-            <div class="ed-inbox" style="gap:8px"><button class="ser-add" type="button" title="Add variable"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round"><path d="M5 12h14M12 5v14"/></svg></button><input class="ed-input" style="border:none;flex:1;height:30px;padding:0 4px" value="A+B"></div>
-            <div class="calc-var">
-              <div class="calc-var-h"><button class="ser-del" type="button" title="Remove"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M3 6h18"/><path d="M19 6v14a2 2 0 0 1-2 2H7a2 2 0 0 1-2-2V6m3 0V4a2 2 0 0 1 2-2h4a2 2 0 0 1 2 2v2"/></svg></button><input class="ed-input calc-let" value="A"></div>
-              <div class="ed-grid2">
-                <div><label class="ed-label">Site</label><div class="ed-inbox dis"><span class="ed-chipcell">Detroit</span></div></div>
-                <div><label class="ed-label">Room</label><div class="ed-inbox"><span class="ed-chipcell">(DOB-1) Lin… <span class="cx"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round"><path d="M18 6 6 18M6 6l12 12"/></svg></span></span></div></div>
-                <div><label class="ed-label">Board</label><div class="ed-inbox"><span class="ed-chipcell">DDS Line 1 <span class="cx"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round"><path d="M18 6 6 18M6 6l12 12"/></svg></span></span></div></div>
-                <div><label class="ed-label">Widget</label><div class="ed-inbox"><span class="ed-chipcell">Incident Shift 2 <span class="cx"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round"><path d="M18 6 6 18M6 6l12 12"/></svg></span></span></div></div>
-              </div>
-            </div>
-            <div class="calc-var">
-              <div class="calc-var-h"><button class="ser-del" type="button" title="Remove"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M3 6h18"/><path d="M19 6v14a2 2 0 0 1-2 2H7a2 2 0 0 1-2-2V6m3 0V4a2 2 0 0 1 2-2h4a2 2 0 0 1 2 2v2"/></svg></button><input class="ed-input calc-let" value="B"></div>
-              <div class="ed-grid2">
-                <div><label class="ed-label">Site</label><div class="ed-inbox dis"><span class="ed-chipcell">Detroit</span></div></div>
-                <div><label class="ed-label">Room</label><div class="ed-inbox"><span class="ed-chipcell">(DOB-1) Lin… <span class="cx"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round"><path d="M18 6 6 18M6 6l12 12"/></svg></span></span></div></div>
-                <div><label class="ed-label">Board</label><div class="ed-inbox"><span class="ed-chipcell">DDS Line 1 <span class="cx"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round"><path d="M18 6 6 18M6 6l12 12"/></svg></span></span></div></div>
-                <div><label class="ed-label">Widget</label><div class="ed-inbox"><span class="ed-chipcell">Incident Shift 3 <span class="cx"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round"><path d="M18 6 6 18M6 6l12 12"/></svg></span></span></div></div>
-              </div>
-            </div>
-          </div>
-
-          <!-- mirroring -->
-          <div class="src-variant" data-src="mirror">
-            <div class="ed-tr" style="margin-top:14px"><button class="zswitch" type="button"></button><span>Mirror goal</span></div>
-            <div class="ed-grid3" style="margin-top:6px">
-              <div><label class="ed-label">ROOM</label><input class="ed-input"></div>
-              <div><label class="ed-label">BOARD</label><input class="ed-input"></div>
-              <div><label class="ed-label">TOOL</label><input class="ed-input"></div>
-            </div>
-          </div>
-
-          <!-- Manual -->
-          <div class="src-variant" data-src="manual">
-            <div class="ed-empty" style="margin-top:14px">No extra settings for Manual source.</div>
-          </div>
-
-          <!-- Solvace Modules -->
-          <div class="src-variant" data-src="modules">
-            <div class="ed-grid3" style="margin-top:14px">
-              <div><label class="ed-label">Site</label><div class="ed-inbox"><span class="ed-chipcell">Detroit <span class="cx"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round"><path d="M18 6 6 18M6 6l12 12"/></svg></span></span></div></div>
-              <div><label class="ed-label">Module</label><input class="ed-input"></div>
-              <div><label class="ed-label">Indicator</label><input class="ed-input"></div>
-            </div>
-          </div>
+          <div id="srcVariant"></div>
         </div>
 
         <!-- LINKS (#76 — editable table; add as many rows as needed) -->
         <div class="ed-panel" data-panel="links">
           <button class="ed-addrow" id="edLinkAdd" title="Add link"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round"><path d="M5 12h14M12 5v14"/></svg></button>
-          <div class="ed-tbl-wrap">
-            <table class="ed-tbl"><thead><tr><th>NAME</th><th>ROOM</th><th>BOARD</th><th>WIDGET</th><th></th></tr></thead>
-              <tbody id="edLinkRows">
-                <tr><td><input class="ed-cell" value="teste"></td><td><span class="ed-chipcell">(DOB-1) Line 1 <span class="cx"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round"><path d="M18 6 6 18M6 6l12 12"/></svg></span></span></td><td><span class="ed-chipcell">13 periods <span class="cx"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round"><path d="M18 6 6 18M6 6l12 12"/></svg></span></span></td><td><span class="ed-chipcell">Daily <span class="cx"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round"><path d="M18 6 6 18M6 6l12 12"/></svg></span></span></td><td><button class="ed-trash" title="Remove"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M3 6h18"/><path d="M19 6v14a2 2 0 0 1-2 2H7a2 2 0 0 1-2-2V6m3 0V4a2 2 0 0 1 2-2h4a2 2 0 0 1 2 2v2"/></svg></button></td></tr>
-                <tr><td><input class="ed-cell"></td><td><input class="ed-cell"></td><td><input class="ed-cell"></td><td><input class="ed-cell"></td><td><button class="ed-trash" title="Remove"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M3 6h18"/><path d="M19 6v14a2 2 0 0 1-2 2H7a2 2 0 0 1-2-2V6m3 0V4a2 2 0 0 1 2-2h4a2 2 0 0 1 2 2v2"/></svg></button></td></tr>
-                <tr><td><input class="ed-cell"></td><td><input class="ed-cell"></td><td><input class="ed-cell"></td><td><input class="ed-cell"></td><td><button class="ed-trash" title="Remove"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M3 6h18"/><path d="M19 6v14a2 2 0 0 1-2 2H7a2 2 0 0 1-2-2V6m3 0V4a2 2 0 0 1 2-2h4a2 2 0 0 1 2 2v2"/></svg></button></td></tr>
-              </tbody>
-            </table>
-          </div>
+          <div id="edLinkRows"></div>
         </div>
 
         <!-- RELATED WIDGETS (#77 — table) -->
@@ -2587,7 +2584,12 @@
                 <div class="feed2-compose">
                   <input class="feed2-input" type="text" placeholder="Comment...">
                   <button class="feed2-send" title="Send"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><line x1="5" x2="19" y1="12" y2="12"/><polyline points="12 5 19 12 12 19"/></svg></button>
-                  <button class="feed2-more" title="More"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="1"/><circle cx="19" cy="12" r="1"/><circle cx="5" cy="12" r="1"/></svg></button>
+                  <button class="feed2-more" id="feed2More" title="More"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="1"/><circle cx="19" cy="12" r="1"/><circle cx="5" cy="12" r="1"/></svg></button>
+                  <div class="feed2-menu" id="feed2Menu">
+                    <button data-fa="attach"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="m21.44 11.05-9.19 9.19a6 6 0 0 1-8.49-8.49l9.19-9.19a4 4 0 0 1 5.66 5.66l-9.2 9.19a2 2 0 0 1-2.83-2.83l8.49-8.48"/></svg>Attach</button>
+                    <button data-fa="audio"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M12 2a3 3 0 0 0-3 3v7a3 3 0 0 0 6 0V5a3 3 0 0 0-3-3z"/><path d="M19 10v2a7 7 0 0 1-14 0v-2"/><line x1="12" x2="12" y1="19" y2="22"/></svg>Record audio</button>
+                  </div>
+                  <input type="file" id="feed2File" style="display:none">
                 </div>
                 <div class="feed2-card hl">
                   <div class="feed2-head"><span class="feed2-av">NU</span><div><div class="feed2-name">User name</div><div class="feed2-time">5:02 am</div></div></div>
@@ -2610,30 +2612,30 @@
             <div class="ed-panel" data-fpanel="plan">
               <div class="wrca fv-cards">
                 <div class="rcard"><div class="rcard-top"><span class="apleft"><span class="apav-sm" style="background:#d7e9ff;color:#17457a">CV</span><span class="rcode">ACP-499</span><span class="rwarn"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M10.29 3.86 1.82 18a2 2 0 0 0 1.71 3h16.94a2 2 0 0 0 1.71-3L13.71 3.86a2 2 0 0 0-3.42 0z"/><line x1="12" y1="9" x2="12" y2="13"/><line x1="12" y1="17" x2="12.01" y2="17"/></svg></span></span><span class="rbadge bad">Delayed</span></div><div class="rtxt">Clean maneuver area</div><div class="rmeta"><span class="rmc"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="4" width="18" height="18" rx="2"/><path d="M3 10h18M8 2v4M16 2v4"/></svg>603 days</span><span class="rmc"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M21 15a2 2 0 0 1-2 2H7l-4 4V5a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2z"/></svg>3</span></div></div>
-                <div class="rcard"><div class="rcard-top"><span class="apleft"><span class="apav-sm" style="background:#e7e9f5;color:#3a4790">OO</span><span class="rcode">ACP-607</span></span><span class="rbadge bad">Delayed</span></div><div class="rtxt">Information required on OEE below target</div><div class="rsrc">OEE Shift 2</div><div class="rmeta"><span class="rmc"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="4" width="18" height="18" rx="2"/><path d="M3 10h18M8 2v4M16 2v4"/></svg>423 days</span></div></div>
+                <div class="rcard"><div class="rcard-top"><span class="apleft"><span class="apav-sm" style="background:#e7e9f5;color:#3a4790">OO</span><span class="rcode">ACP-607</span><span class="resched" data-systip="Rescheduled to Jun 12, 2026"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M21 12a9 9 0 1 1-3-6.7"/><polyline points="21 3 21 9 15 9"/></svg></span></span><span class="rbadge bad">Delayed</span></div><div class="rtxt">Information required on OEE below target</div><div class="rsrc">OEE Shift 2</div><div class="rmeta"><span class="rmc"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="4" width="18" height="18" rx="2"/><path d="M3 10h18M8 2v4M16 2v4"/></svg>423 days</span></div></div>
                 <div class="rcard"><div class="rcard-top"><span class="apleft"><span class="apav-sm" style="background:#dcf5e6;color:#2d6a4f">JS</span><span class="rcode">ACP-562</span></span><span class="rbadge bad">Delayed</span></div><div class="rtxt">Train operators on the new procedure</div><div class="rmeta"><span class="rmc"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="4" width="18" height="18" rx="2"/><path d="M3 10h18M8 2v4M16 2v4"/></svg>463 days</span><span class="rmc"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M21 15a2 2 0 0 1-2 2H7l-4 4V5a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2z"/></svg>1</span></div></div>
-                <div class="rcard"><div class="rcard-top"><span class="apleft"><span class="apav-sm" style="background:#ffe3c2;color:#9a4a00">RG</span><span class="rcode">ACP-630</span></span><span class="rbadge bad">Delayed</span></div><div class="rtxt">Train Shift 2 team on reporting issues according to OPL-652</div><div class="rsrc">OEE Shift 2</div><div class="rmeta"><span class="rmc"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="4" width="18" height="18" rx="2"/><path d="M3 10h18M8 2v4M16 2v4"/></svg>259 days</span></div></div>
+                <div class="rcard"><div class="rcard-top"><span class="apleft"><span class="apav-sm" style="background:#ffe3c2;color:#9a4a00">RG</span><span class="rcode">ACP-630</span><span class="rescal" data-systip="Escalated to Renato Basso"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polyline points="23 6 13.5 15.5 8.5 10.5 1 18"/><polyline points="17 6 23 6 23 12"/></svg></span></span><span class="rbadge bad">Delayed</span></div><div class="rtxt">Train Shift 2 team on reporting issues according to OPL-652</div><div class="rsrc">OEE Shift 2</div><div class="rmeta"><span class="rmc"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="4" width="18" height="18" rx="2"/><path d="M3 10h18M8 2v4M16 2v4"/></svg>259 days</span></div></div>
               </div>
             </div>
             <!-- RCA — matches the live board RCA 1-pager widget (code · title · source) -->
             <div class="ed-panel" data-fpanel="rca">
               <div class="wrca fv-cards">
-                <div class="rcard"><div class="rcard-top"><span class="apleft"><span class="apav-sm" style="background:#fde7e7;color:#c0392b">!</span><span class="rcode">RCA-57</span></span></div><div class="rtxt">Operator from shift 1 slipped and almost fell on the floor</div><div class="rsrc">Incident Shift 1</div></div>
-                <div class="rcard"><div class="rcard-top"><span class="apleft"><span class="apav-sm" style="background:#fdf3d6;color:#a07d12">!</span><span class="rcode">RCA-58</span></span></div><div class="rtxt">Case packer stopped working for 1,5h</div><div class="rsrc">OEE Shift 1</div></div>
-                <div class="rcard"><div class="rcard-top"><span class="apleft"><span class="apav-sm" style="background:#e7e9f5;color:#3a4790">!</span><span class="rcode">RCA-75</span></span></div><div class="rtxt">Reklamation Nummer 1 2 3 von Kunde XYZ</div></div>
+                <div class="rcard"><div class="rcard-top"><span class="apleft"><span class="apav-sm" style="background:#fde7e7;color:#c0392b">!</span><span class="rcode">RCA-57</span></span><span class="rbadge warn">Open</span></div><div class="rtxt">Operator from shift 1 slipped and almost fell on the floor</div><div class="rmeta"><span class="rmc"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="4" width="18" height="18" rx="2"/><path d="M3 10h18M8 2v4M16 2v4"/></svg>868 days</span></div></div>
+                <div class="rcard"><div class="rcard-top"><span class="apleft"><span class="apav-sm" style="background:#fdf3d6;color:#a07d12">!</span><span class="rcode">RCA-58</span></span><span class="rbadge warn">Open</span></div><div class="rtxt">Case packer stopped working for 1,5h</div><div class="rmeta"><span class="rmc"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="4" width="18" height="18" rx="2"/><path d="M3 10h18M8 2v4M16 2v4"/></svg>820 days</span></div></div>
+                <div class="rcard"><div class="rcard-top"><span class="apleft"><span class="apav-sm" style="background:#e7e9f5;color:#3a4790">!</span><span class="rcode">RCA-75</span></span><span class="rbadge ok">Closed</span></div><div class="rtxt">Reklamation Nummer 1 2 3 von Kunde XYZ</div><div class="rmeta"><span class="rmc"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="4" width="18" height="18" rx="2"/><path d="M3 10h18M8 2v4M16 2v4"/></svg>640 days</span></div></div>
               </div>
             </div>
             <!-- Kaizen — board card (rcard) style -->
             <div class="ed-panel" data-fpanel="kaizen">
               <div class="wrca fv-cards">
-                <div class="rcard"><div class="rcard-top"><span class="apleft"><span class="rcode">KZ-21</span></span><span class="rbadge ok">Deployed</span></div><div class="rtxt">Eliminate double handling</div><div class="rsrc">Line 2 team · est. gain 8%</div></div>
+                <div class="rcard"><div class="rcard-top"><span class="apleft"><span class="apav-sm" style="background:#fdf3d6;color:#a07d12">RC</span><span class="rcode">IMP-72</span></span><span class="rbadge ok">Executed</span></div><div class="rtxt">Eliminate double handling</div></div>
               </div>
             </div>
             <!-- Projetos — standardized with the others (code · title · status · meta) -->
             <div class="ed-panel" data-fpanel="projects">
               <div class="wrca fv-cards">
-                <div class="rcard"><div class="rcard-top"><span class="apleft"><span class="rcode">PRJ-12</span></span><span class="rbadge warn">Ongoing</span></div><div class="rtxt">OEE Line 2 +5pp</div><div class="rsrc">Q3 2026 · 60% complete</div></div>
-                <div class="rcard"><div class="rcard-top"><span class="apleft"><span class="rcode">PRJ-08</span></span><span class="rbadge ok">On track</span></div><div class="rtxt">Energy reduction 10%</div><div class="rsrc">2026 · planning</div></div>
+                <div class="rcard"><div class="rcard-top"><span class="apleft"><span class="apav-sm" style="background:#dcf5e6;color:#2d6a4f">VQ</span><span class="rcode">PJT-21</span></span><span class="rbadge ok">On Track</span></div><div class="rtxt">OEE Line 2 +5pp</div></div>
+                <div class="rcard"><div class="rcard-top"><span class="apleft"><span class="apav-sm" style="background:#d7e9ff;color:#17457a">AR</span><span class="rcode">PJT-08</span></span><span class="rbadge ok">On Track</span></div><div class="rtxt">Energy reduction 10%</div></div>
               </div>
             </div>
           </div>
@@ -3357,7 +3359,7 @@
   function labelVal(mod,k,v){ var m=fieldMeta(mod,k); return (m&&m.t==='date')?MESES[v]:v; }
 
   var PAL=['#001391','#14ae5c','#e8b931','#ec221f','#6d6dff','#0ea5a5','#8b5cf6','#d6409f','#f59e0b','#0891b2'];
-  function fmt(n,d){ d=+d||0; return Number(n).toLocaleString('en-US',{minimumFractionDigits:d,maximumFractionDigits:d}); }
+  function fmt(n,d){ d=+d||0; return Number(n).toLocaleString('pt-BR',{minimumFractionDigits:d,maximumFractionDigits:d}); }
   function shorten(s,mx){ mx=mx||14; s=String(s); return s.length>mx?s.slice(0,mx-1)+'…':s; }
   function niceMax(v){ if(v<=0) return 10; var p=Math.pow(10,Math.floor(Math.log10(v))); var f=v/p; return (f<=1?1:f<=2?2:f<=5?5:10)*p; }
 
@@ -3852,20 +3854,82 @@
   })();
   // ===== General do config específico p/ widget de número (idêntico ao number-widget.html) =====
   var _edGenGeneral=null;
-  var _edNumGeneral='<div class="ed-grid4"><div><label class="ed-label">Show Title</label><button class="zswitch on" type="button"></button></div><div><label class="ed-label">Title</label><input class="ed-input" id="cfgTitle" value="Units Today"></div><div><label class="ed-label">Size</label><div class="ed-inbox"><span class="ed-chipcell">Small <span class="cx"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round"><path d="M18 6 6 18M6 6l12 12"/></svg></span></span></div></div><div><label class="ed-label">Color</label><div class="ed-select"><span class="swatch" style="background:#0a0a0b"></span><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="m6 9 6 6 6-6"/></svg></div></div></div><label class="ed-label" style="margin-top:14px">Decimal places</label><div class="ed-chips" data-single><button class="ed-chip active">None</button><button class="ed-chip">One</button><button class="ed-chip">Two</button><button class="ed-chip">Three</button></div><div class="ed-grid2" style="margin-top:16px"><div class="ed-tr" style="margin:0"><button class="zswitch" type="button"></button><span>Show Target</span></div><div class="ed-tr" style="margin:0"><button class="zswitch on" type="button"></button><span>Apply Conditional Formatting</span></div></div><div class="ed-grid4" style="margin-top:14px"><div><label class="ed-label">Below Goal</label><div class="ed-select sm"><span class="swatch" style="background:#14ae5c"></span><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="m6 9 6 6 6-6"/></svg></div></div><div><label class="ed-label">On Target</label><div class="ed-select sm"><span class="swatch" style="background:#e8b931"></span><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="m6 9 6 6 6-6"/></svg></div></div><div><label class="ed-label">Above Goal</label><div class="ed-select sm"><span class="swatch" style="background:#ec221f"></span><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="m6 9 6 6 6-6"/></svg></div></div><div><label class="ed-label">Andon</label><input class="ed-input"></div></div><label class="ed-label" style="margin-top:12px">Objective Tolerance</label><input class="ed-input" value="0,00" style="max-width:240px">';
+  var _CHEV='<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="m6 9 6 6 6-6"/></svg>';
+  var _edNumGeneral=''
+    +'<div class="ed-secbox" style="margin-top:0"><label class="ed-label">Display format</label><select class="ed-input ed-native" style="max-width:260px"><option value="standard">Standard</option><option value="reduced">Reduced</option></select></div>'
+    +'<div class="ed-tr ed-sectr"><button class="zswitch on" type="button" data-sec="title"></button><span>Show title</span></div>'
+    +'<div class="ed-secbox" data-secfields="title"><div class="ed-grid3"><div><label class="ed-label">Title</label><input class="ed-input" id="cfgTitle" data-cfg="title" value="Units Today"></div><div><label class="ed-label">Size</label><select class="ed-input ed-native" data-cfg="size"><option value="small">Small</option><option value="medium" selected>Medium</option><option value="large">Large</option></select></div><div><label class="ed-label">Color</label><div class="ed-select"><span class="swatch cfg-color-title" style="background:#0a0a0b"></span>'+_CHEV+'</div></div></div></div>'
+    +'<div class="ed-tr ed-sectr"><button class="zswitch on" type="button" data-sec="dec"></button><span>Decimal places</span></div>'
+    +'<div class="ed-secbox" data-secfields="dec"><select class="ed-input ed-native" data-cfg="dec" style="max-width:260px"><option value="0">None</option><option value="1">One</option><option value="2">Two</option><option value="3">Three</option></select></div>'
+    +'<div class="ed-tr ed-sectr"><button class="zswitch" type="button" data-sec="target"></button><span>Show target</span></div>'
+    +'<div class="ed-secbox" data-secfields="target"><div style="font-size:12px;color:#8a90a6">The target value is set in update mode.</div></div>'
+    +'<div class="ed-tr ed-sectr"><button class="zswitch on" type="button" data-sec="cf"></button><span>Conditional formatting</span></div>'
+    +'<div class="ed-secbox" data-secfields="cf"><div class="ed-grid3"><div><label class="ed-label">Below goal</label><div class="ed-select sm"><span class="swatch cfg-cf-below" style="background:#14ae5c"></span>'+_CHEV+'</div></div><div><label class="ed-label">On target</label><div class="ed-select sm"><span class="swatch cfg-cf-on" style="background:#e8b931"></span>'+_CHEV+'</div></div><div><label class="ed-label">Above goal</label><div class="ed-select sm"><span class="swatch cfg-cf-above" style="background:#ec221f"></span>'+_CHEV+'</div></div></div><div style="margin-top:12px"><label class="ed-label">Objective tolerance</label><div class="ed-tolrow" style="max-width:260px"><input class="ed-input" value="0,00"><div class="ed-select sm ed-tolcol"><span class="swatch" style="background:#001391"></span>'+_CHEV+'</div></div></div><div style="margin-top:12px"><label class="ed-label">Andon</label><select class="ed-input ed-native" data-cfg="andon" style="max-width:260px"><option value="none" selected>None</option><option value="below">Below target</option><option value="above">Above target</option></select></div></div>';
+  var _edNumAdvanced=''
+    +'<div class="ed-tr ed-sectr"><button class="zswitch" type="button" data-sec="caption"></button><span>Show Caption</span></div>'
+    +'<div class="ed-secbox sec-hidden" data-secfields="caption"><div class="ed-grid2"><div><label class="ed-label">Legend</label><input class="ed-input" data-cfg="legend"></div><div><label class="ed-label">Color</label><div class="ed-select"><span class="swatch cfg-color-cap" style="background:#9aa0ac"></span>'+_CHEV+'</div></div></div></div>'
+    +'<div class="ed-tr ed-sectr"><button class="zswitch" type="button" data-sec="unit"></button><span>Show Unit</span></div>'
+    +'<div class="ed-secbox sec-hidden" data-secfields="unit"><label class="ed-label">Unit</label><input class="ed-input" data-cfg="unit" placeholder="e.g. pcs, %, kg" style="max-width:260px"></div>'
+    +'<div class="ed-tr ed-sectr"><button class="zswitch" type="button" data-sec="tip"></button><span>Show Tip</span></div>'
+    +'<div class="ed-secbox sec-hidden" data-secfields="tip"><label class="ed-label">Tip</label><input class="ed-input" data-cfg="tip" placeholder="Enter tip text"></div>'
+    +'<div class="ed-tr"><button class="zswitch" type="button" data-cfgsw="tborder"></button><span>Transparent Border</span></div>'
+    +'<div class="ed-tr"><button class="zswitch" type="button" data-cfgsw="tbg"></button><span>Transparent background</span></div>'
+    +'<div class="ed-secbox"><label class="ed-label">Background Color</label><div class="ed-select" style="max-width:260px"><span class="swatch cfg-color-bg" style="background:#f2f3f5"></span>'+_CHEV+'</div></div>'
+    +'<div class="ed-tr"><button class="zswitch" type="button"></button><span>Automatic Update</span></div>'
+    +'<div class="ed-tr"><button class="zswitch on" type="button"></button><span>show mobile</span></div>'
+    +'<div class="ed-secbox"><label class="ed-label">Topic</label><select class="ed-input ed-native" style="max-width:260px"><option>Others</option><option>Safety</option><option>Quality</option><option>Cost</option><option>Delivery</option><option>Moral</option><option>People</option></select></div>'
+    +'<div class="ed-secbox"><label class="ed-label">Owner</label><div class="ed-select usel" data-sel="" data-single><span class="usel-l"><span class="usel-txt" style="color:#8a90a6">Select owner…</span></span>'+_CHEV+'</div></div>';
+  var _edGenAdvanced=null;
   function rewireDrawer(){
     var groups=document.querySelectorAll('.edit-drawer .ed-chips');
     for(var g=0;g<groups.length;g++){ (function(group){ var chips=group.querySelectorAll('.ed-chip'); for(var k=0;k<chips.length;k++){ chips[k].onclick=function(){ for(var m=0;m<chips.length;m++) chips[m].classList.remove('active'); this.classList.add('active'); }; } })(groups[g]); }
-    var sws=document.querySelectorAll('.edit-drawer .zswitch'); for(var n=0;n<sws.length;n++){ sws[n].onclick=function(){ this.classList.toggle('on'); }; }
+    var sws=document.querySelectorAll('.edit-drawer .zswitch'); for(var n=0;n<sws.length;n++){ sws[n].onclick=function(){ this.classList.toggle('on'); var sec=this.getAttribute('data-sec'); if(sec) edSyncSec(this); if(typeof applyCfgBoard==='function') applyCfgBoard(); }; }
+    edSyncAllSec();
   }
+  function edSyncSec(sw){ var sec=sw.getAttribute('data-sec'); if(!sec) return; var box=document.querySelector('#edBody .ed-secbox[data-secfields="'+sec+'"]'); if(box) box.classList.toggle('sec-hidden', !sw.classList.contains('on')); }
+  function edSyncAllSec(){ var sws=document.querySelectorAll('#edBody .zswitch[data-sec]'); for(var i=0;i<sws.length;i++) edSyncSec(sws[i]); }
   function edApplyType(card){
     var gp=document.querySelector('#edBody .ed-panel[data-panel="general"]'); if(!gp) return;
+    var ap=document.querySelector('#edBody .ed-panel[data-panel="advanced"]');
     if(_edGenGeneral===null) _edGenGeneral=gp.innerHTML;
+    if(_edGenAdvanced===null && ap) _edGenAdvanced=ap.innerHTML;
     var isNum=!!(card && card.querySelector && card.querySelector('.num2'));
     gp.innerHTML = isNum ? _edNumGeneral : _edGenGeneral;
+    if(ap) ap.innerHTML = isNum ? _edNumAdvanced : _edGenAdvanced;
     if(isNum){ var t=card.querySelector('.wcard-title'), ti=gp.querySelector('#cfgTitle'); if(t&&ti) ti.value=t.textContent.trim(); }
     rewireDrawer();
+    if(isNum){ (window.requestAnimationFrame||setTimeout)(applyCfgBoard); }
   }
+  // ===== preview em tempo real: reflete a config no widget clonado (#emWidget) =====
+  function applyCfgBoard(){
+    var scope=document.getElementById('edBody'), w=document.getElementById('emWidget'), card=w?w.querySelector('.wcard'):null;
+    if(!scope||!card) return;
+    if(!card.querySelector('.num2')) return; // só widget de número
+    var q=function(s){ return scope.querySelector(s); };
+    var val=function(s){ var e=q(s); return e?e.value:''; };
+    var secOn=function(sec){ var e=q('.zswitch[data-sec="'+sec+'"]'); return e?e.classList.contains('on'):false; };
+    var swOn=function(n){ var e=q('.zswitch[data-cfgsw="'+n+'"]'); return e?e.classList.contains('on'):false; };
+    var bg=function(s){ var e=q(s); return e?(e.style.background||''):''; };
+    var BASE=3420;
+    var head=card.querySelector('.wcard-head'); if(head) head.style.visibility=secOn('title')?'':'hidden';
+    var tt=card.querySelector('.wcard-title'); if(tt){ tt.textContent=val('[data-cfg="title"]')||'Units Today'; var tsize=val('[data-cfg="size"]')||'medium'; tt.style.fontSize=(tsize==='small'?'16px':tsize==='large'?'26px':'20px'); tt.style.lineHeight='1.35'; tt.style.paddingBottom='2px'; var tcol=bg('.cfg-color-title'); tt.style.color=tcol||''; }
+    var dec=parseInt(val('[data-cfg="dec"]')||'0',10); if(isNaN(dec)) dec=0;
+    var num=card.querySelector('.num2-val'); var TGT=3000;
+    if(num){ var disp=BASE.toLocaleString('pt-BR',{minimumFractionDigits:dec,maximumFractionDigits:dec}); if(secOn('target')) disp+='/'+TGT.toLocaleString('pt-BR'); num.textContent=disp; }
+    var sub=card.querySelector('.wcard-sub'); if(sub) sub.style.display='none';
+    var n2box=card.querySelector('.num2');
+    if(n2box){ n2box.classList.remove('pos','on','neg'); n2box.classList.toggle('num2-tgt', secOn('target')); if(secOn('cf')){ n2box.classList.add(BASE>TGT?'pos':(BASE<TGT?'neg':'on')); n2box.style.background=''; if(num) num.style.color=''; } else { n2box.style.background='#f2f3f5'; if(num) num.style.color='#0a0a0b'; } }
+    if(secOn('tip') && val('[data-cfg="tip"]')){ card.setAttribute('data-systip', val('[data-cfg="tip"]')); if(n2box) n2box.setAttribute('data-systip',''); } else { card.removeAttribute('data-systip'); if(n2box) n2box.removeAttribute('data-systip'); }
+    var an=card.querySelector('.w-andon'); if(an){ var a=val('[data-cfg="andon"]')||'none'; an.style.display=(a==='none')?'none':''; }
+    var cap=card.querySelector('.cfg-cap'); if(!cap){ cap=document.createElement('div'); cap.className='cfg-cap'; cap.style.cssText='font-size:14px;line-height:1.35;margin-top:3px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis'; if(tt&&tt.parentNode) tt.parentNode.appendChild(cap); }
+    if(cap){ if(secOn('caption')&&val('[data-cfg="legend"]')){ cap.textContent=val('[data-cfg="legend"]'); cap.style.color=bg('.cfg-color-cap')||'#9aa0ac'; cap.style.display=''; } else cap.style.display='none'; }
+    var num2=card.querySelector('.num2');
+    if(num2){ var u=num2.querySelector('.cfg-unit'); if(!u){ u=document.createElement('span'); u.className='cfg-unit'; u.style.cssText='margin-left:8px;font-weight:600;align-self:center'; num2.appendChild(u); } if(secOn('unit')&&val('[data-cfg="unit"]')){ u.textContent=val('[data-cfg="unit"]'); u.style.display=''; if(num){ var nc=getComputedStyle(num); u.style.color=nc.color; u.style.fontSize=Math.round(parseFloat(nc.fontSize)*0.5)+'px'; } } else u.style.display='none'; }
+    card.style.borderColor=swOn('tborder')?'transparent':'';
+    if(swOn('tbg')) card.style.background='transparent'; else { var bgc=bg('.cfg-color-bg'); card.style.background=bgc||''; }
+    var av=card.querySelector('.w-av'); var us=q('.ed-select.usel'); if(av && us){ var arr=(us.getAttribute('data-sel')||'').split(',').filter(Boolean); if(arr.length) av.textContent=arr[0]; }
+  }
+  (function(){ var b=document.getElementById('edBody'); if(b){ b.addEventListener('input', applyCfgBoard); b.addEventListener('change', applyCfgBoard); } })();
   // ===== Pivot edit drawer: mostra a config do modelo (design do board) só p/ o widget de Pivot =====
   function pvSetupDrawer(card){
     var isPivot=!!(card && card.querySelector && card.querySelector('.wpivot-w'));
@@ -3933,11 +3997,30 @@
   (function(){
     var TRASH='<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M3 6h18"/><path d="M19 6v14a2 2 0 0 1-2 2H7a2 2 0 0 1-2-2V6m3 0V4a2 2 0 0 1 2-2h4a2 2 0 0 1 2 2v2"/></svg>';
     var linkAdd=document.getElementById('edLinkAdd'), linkRows=document.getElementById('edLinkRows');
-    function emptyLinkRow(){ var tr=document.createElement('tr'); tr.innerHTML='<td><input class="ed-cell"></td><td><input class="ed-cell"></td><td><input class="ed-cell"></td><td><input class="ed-cell"></td><td><button class="ed-trash" title="Remove">'+TRASH+'</button></td>'; return tr; }
+    // Links: colunas Room -> Board -> Widget como droplists dependentes (cascata)
+    var LK_ROOMS=[
+      {r:'(DOB-1) Line 1', boards:[ {b:'DDS Line 1', widgets:['Units Today','OEE','Downtime']}, {b:'Performance', widgets:['Availability','Quality rate']} ]},
+      {r:'(DOB-12) Bearing Line #1', boards:[ {b:'SQDCM', widgets:['Safety cross','Scrap rate']}, {b:'Daily meeting', widgets:['Output','Rework']} ]},
+      {r:'(DOB-45) Assembly Cell A', boards:[ {b:'Line board', widgets:['Takt time','WIP']}, {b:'Meeting board', widgets:['Action plan','Attendance']} ]}
+    ];
+    function lkOpt(v){ return '<option value="'+String(v).replace(/"/g,'&quot;')+'">'+v+'</option>'; }
+    function lkRoomOpts(){ return '<option value="">Select room</option>'+LK_ROOMS.map(function(r){return lkOpt(r.r);}).join(''); }
+    function lkFindRoom(r){ for(var i=0;i<LK_ROOMS.length;i++) if(LK_ROOMS[i].r===r) return LK_ROOMS[i]; return null; }
+    function lkFindBoard(ro,b){ if(!ro) return null; for(var i=0;i<ro.boards.length;i++) if(ro.boards[i].b===b) return ro.boards[i]; return null; }
+    function lkSetWrap(sel){ var w=sel.nextElementSibling; if(w&&w.classList&&w.classList.contains('ds-select')){ w.style.opacity=sel.disabled?'.5':''; w.style.pointerEvents=sel.disabled?'none':''; } }
+    function lkFillBoards(sel,room){ if(!sel) return; var ro=lkFindRoom(room); sel.innerHTML='<option value="">Select board</option>'+(ro?ro.boards.map(function(b){return lkOpt(b.b);}).join(''):''); sel.selectedIndex=0; sel.disabled=!ro; lkSetWrap(sel); try{sel.dispatchEvent(new Event('change',{bubbles:true}));}catch(_){} }
+    function lkFillWidgets(sel,room,board){ if(!sel) return; var bo=lkFindBoard(lkFindRoom(room),board); sel.innerHTML='<option value="">Select widget</option>'+(bo?bo.widgets.map(function(w){return lkOpt(w);}).join(''):''); sel.selectedIndex=0; sel.disabled=!bo; lkSetWrap(sel); try{sel.dispatchEvent(new Event('change',{bubbles:true}));}catch(_){} }
+    function emptyLinkRow(){ var d=document.createElement('div'); d.className='link-row'; d.innerHTML='<div class="link-fields"><div class="link-f lf-name"><label>Name</label><input class="ed-input"></div><div class="link-f"><label>Room</label><select class="ed-input ed-native" data-lk="room">'+lkRoomOpts()+'</select></div><div class="link-f"><label>Board</label><select class="ed-input ed-native" data-lk="board" disabled><option value="">Select room first</option></select></div><div class="link-f"><label>Widget</label><select class="ed-input ed-native" data-lk="widget" disabled><option value="">Select board first</option></select></div></div><div class="link-foot"><button class="ed-trash link-del" title="Remove">'+TRASH+'</button></div>'; return d; }
     if(linkAdd&&linkRows) linkAdd.addEventListener('click', function(){ linkRows.appendChild(emptyLinkRow()); });
-    if(linkRows) linkRows.addEventListener('click', function(e){ var t=e.target.closest('.ed-trash'); if(t){ var tr=t.closest('tr'); if(tr&&tr.parentNode) tr.parentNode.removeChild(tr); return; } var cx=e.target.closest('.cx'); if(cx){ var td=cx.closest('td'); if(td) td.innerHTML='<input class="ed-cell">'; } });
+    if(linkRows) linkRows.addEventListener('click', function(e){ var t=e.target.closest('.ed-trash'); if(t){ var row=t.closest('.link-row'); if(row&&row.parentNode) row.parentNode.removeChild(row); } });
+    if(linkRows) linkRows.addEventListener('change', function(e){ var sel=e.target; if(!sel||sel.tagName!=='SELECT') return; var row=sel.closest('.link-row'); if(!row) return; var role=sel.getAttribute('data-lk'); if(role==='room'){ lkFillBoards(row.querySelector('[data-lk="board"]'), sel.value); } else if(role==='board'){ var rs=row.querySelector('[data-lk="room"]'); lkFillWidgets(row.querySelector('[data-lk="widget"]'), rs?rs.value:'', sel.value); } });
+    if(linkRows){ linkRows.innerHTML=''; var r1=emptyLinkRow(); linkRows.appendChild(r1); linkRows.appendChild(emptyLinkRow()); linkRows.appendChild(emptyLinkRow());
+      var nm=r1.querySelector('.lf-name input'); if(nm) nm.value='teste';
+      var rs1=r1.querySelector('[data-lk="room"]'), bs1=r1.querySelector('[data-lk="board"]'), ws1=r1.querySelector('[data-lk="widget"]');
+      if(rs1){ rs1.value='(DOB-1) Line 1'; var ro=lkFindRoom('(DOB-1) Line 1'); bs1.innerHTML='<option value="">Select board</option>'+ro.boards.map(function(b){return lkOpt(b.b);}).join(''); bs1.disabled=false; bs1.value='DDS Line 1'; var bo=lkFindBoard(ro,'DDS Line 1'); ws1.innerHTML='<option value="">Select widget</option>'+bo.widgets.map(function(w){return lkOpt(w);}).join(''); ws1.disabled=false; ws1.value='Units Today'; }
+    }
     var andonAdd=document.getElementById('edAndonAdd'), andonRows=document.getElementById('edAndonRows');
-    function andonRow(){ var d=document.createElement('div'); d.className='andon-row'; d.innerHTML='<div class="andon-fields"><div class="andon-f"><label>With</label><div class="andon-series">Series</div></div><div class="andon-f"><label>Regarding Target for</label><input class="ed-input"></div><div class="andon-f"><label>in (units)</label><input class="ed-input"></div><div class="andon-f"><label>Notify</label><input class="ed-input"></div></div><div class="andon-foot"><button class="andon-bell" title="Notification"><svg viewBox="0 0 24 24" fill="currentColor"><path d="M12 2a6 6 0 0 0-6 6c0 7-3 9-3 9h18s-3-2-3-9a6 6 0 0 0-6-6z"/><path d="M10.5 21a1.5 1.5 0 0 0 3 0z"/></svg></button><input class="andon-ck" type="checkbox" checked><button class="andon-del" title="Remove">'+TRASH+'</button></div>'; return d; }
+    function andonRow(){ var d=document.createElement('div'); d.className='andon-row'; d.innerHTML='<div class="andon-fields"><div class="andon-f"><label>With</label><div class="andon-series">Series</div></div><div class="andon-f"><label>Regarding Target for</label><select class="ed-input ed-native"><option value="none">None</option><option value="minor">Minor</option><option value="higher">Higher</option></select></div><div class="andon-f"><label>in (units)</label><input class="ed-input" type="number" step="1" placeholder="0"></div><div class="andon-f"><label>Notify</label><div class="ed-select usel" data-sel=""><span class="usel-l"><span class="usel-txt" style="color:#8a90a6">Select…</span></span><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="m6 9 6 6 6-6"/></svg></div></div></div><div class="andon-foot"><button class="andon-bell" title="Notification"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M18 8a6 6 0 0 0-12 0c0 7-3 9-3 9h18s-3-2-3-9"/><path d="M13.73 21a2 2 0 0 1-3.46 0"/></svg></button><input class="andon-ck" type="checkbox" checked><button class="andon-del" title="Remove">'+TRASH+'</button></div>'; return d; }
     if(andonRows){ for(var i=0;i<3;i++) andonRows.appendChild(andonRow()); }
     if(andonAdd&&andonRows) andonAdd.addEventListener('click', function(){ andonRows.appendChild(andonRow()); });
     if(andonRows) andonRows.addEventListener('click', function(e){ var d=e.target.closest('.andon-del'); if(d){ var row=d.closest('.andon-row'); if(row&&row.parentNode) row.parentNode.removeChild(row); } });
@@ -3951,10 +4034,64 @@
     if(seriesAdd&&seriesRows) seriesAdd.addEventListener('click', function(){ seriesRows.appendChild(seriesRow('')); });
     if(seriesRows) seriesRows.addEventListener('click', function(e){ var d=e.target.closest('.ser-del'); if(d){ var row=d.closest('.ser-row'); if(row&&row.parentNode) row.parentNode.removeChild(row); } });
 
-    // Source type variants (fields change with the droplist)
-    var srcType=document.getElementById('edSrcType');
-    function updSrc(){ var v=srcType?srcType.value:''; Array.prototype.forEach.call(document.querySelectorAll('.src-variant'), function(el){ el.style.display = el.getAttribute('data-src')===v ? 'block' : 'none'; }); }
-    if(srcType){ srcType.addEventListener('change', updSrc); updSrc(); }
+    // Source tab — dynamic, functional form
+    (function(){
+      var elSrc=document.getElementById('edSrcType'), host=document.getElementById('srcVariant'); if(!elSrc||!host) return;
+      var ROOMS=[
+        {r:'(DOB-1) Line 1', boards:[{b:'DDS Line 1',widgets:['Units Today','OEE','Downtime']},{b:'Performance',widgets:['Availability','Quality rate']}]},
+        {r:'(DOB-12) Bearing Line #1', boards:[{b:'SQDCM',widgets:['Safety cross','Scrap rate']},{b:'Daily meeting',widgets:['Output','Rework']}]},
+        {r:'(DOB-45) Assembly Cell A', boards:[{b:'Line board',widgets:['Takt time','WIP']},{b:'Meeting board',widgets:['Action plan','Attendance']}]}
+      ];
+      function findR(r){ for(var i=0;i<ROOMS.length;i++) if(ROOMS[i].r===r) return ROOMS[i]; return null; }
+      function findB(ro,b){ if(!ro) return null; for(var i=0;i<ro.boards.length;i++) if(ro.boards[i].b===b) return ro.boards[i]; return null; }
+      function opt(v,cur){ return '<option value="'+String(v).replace(/"/g,'&quot;')+'"'+(v===cur?' selected':'')+'>'+v+'</option>'; }
+      function roomSel(f,cur){ return '<select class="ed-input ed-native" data-srcf="'+f+'"><option value="">Select room</option>'+ROOMS.map(function(r){return opt(r.r,cur);}).join('')+'</select>'; }
+      function boardSel(f,room,cur){ var ro=findR(room); return '<select class="ed-input ed-native" data-srcf="'+f+'"'+(ro?'':' disabled')+'><option value="">Select board</option>'+(ro?ro.boards.map(function(b){return opt(b.b,cur);}).join(''):'')+'</select>'; }
+      function leafSel(f,room,board,cur){ var bo=findB(findR(room),board); return '<select class="ed-input ed-native" data-srcf="'+f+'"'+(bo?'':' disabled')+'><option value="">Select</option>'+(bo?bo.widgets.map(function(w){return opt(w,cur);}).join(''):'')+'</select>'; }
+      var TRASH='<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M3 6h18"/><path d="M19 6v14a2 2 0 0 1-2 2H7a2 2 0 0 1-2-2V6m3 0V4a2 2 0 0 1 2-2h4a2 2 0 0 1 2 2v2"/></svg>';
+      var PLUS='<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round"><path d="M5 12h14M12 5v14"/></svg>';
+      var S={ type:elSrc.value||'manual', apiTarget:false, calcType:'add', vars:[{op:'add',room:'',board:'',widget:''}], formula:'', mirrorGoal:false, mRoom:'', mBoard:'', mTool:'' };
+      function L(i){ return String.fromCharCode(65+i); }
+      function formula(){ if(S.calcType==='avg') return "AVG("+S.vars.map(function(v,i){return "'"+L(i)+"'";}).join(',')+")"; if(S.calcType==='formula') return S.formula; return S.vars.map(function(v,i){ return (v.op==='sub'?"-":"+")+"'"+L(i)+"'"; }).join(''); }
+      function calcRow(v,i){ var op=(S.calcType==='add');
+        var f='<div class="srcv-cell srcv-let"><label class="ed-label">Var</label><input class="ed-input" value="'+L(i)+'" readonly></div>';
+        if(op) f+='<div class="srcv-cell"><label class="ed-label">Operation</label><select class="ed-input ed-native" data-srcf="op"><option value="add"'+(v.op==='add'?' selected':'')+'>Addition</option><option value="sub"'+(v.op==='sub'?' selected':'')+'>Subtraction</option></select></div>';
+        f+='<div class="srcv-cell"><label class="ed-label">Site</label><div class="ed-inbox dis"><span class="ed-chipcell">Detroit</span></div></div>';
+        f+='<div class="srcv-cell"><label class="ed-label">Room</label>'+roomSel('room',v.room)+'</div>';
+        f+='<div class="srcv-cell"><label class="ed-label">Board</label>'+boardSel('board',v.room,v.board)+'</div>';
+        f+='<div class="srcv-cell"><label class="ed-label">Widget</label>'+leafSel('widget',v.room,v.board,v.widget)+'</div>';
+        return '<div class="srcv-row" data-i="'+i+'"><div class="srcv-fields">'+f+'</div><div class="srcv-foot"><button class="src-del" type="button" title="Remove">'+TRASH+'</button></div></div>';
+      }
+      function render(){ var v=S.type, h='';
+        if(v==='api'){ h='<div class="ed-grid2" style="margin-top:14px"><div><label class="ed-label">Target</label><button class="zswitch'+(S.apiTarget?' on':'')+'" type="button" data-srcsw="apiTarget"></button></div><div><label class="ed-label">Value</label><button class="zswitch on" type="button" disabled style="opacity:.55;pointer-events:none" data-systip="Value comes active and locked"></button></div></div>'; }
+        else if(v==='calc'){ var ct=[['add','Addition/Subtraction'],['avg','Average'],['formula','Formula']];
+          h='<label class="ed-label" style="margin-top:14px">Calculation Type</label><select class="ed-input ed-native" data-srcf="calcType" style="max-width:320px">'+ct.map(function(c){return '<option value="'+c[0]+'"'+(S.calcType===c[0]?' selected':'')+'>'+c[1]+'</option>';}).join('')+'</select>';
+          h+='<div class="ed-sec2" style="margin-top:14px">FORMULA</div>';
+          if(S.calcType==='formula') h+='<div class="srcf-box"><button class="src-add" type="button" title="Add variable">'+PLUS+'</button><input class="ed-input" data-srcf="formula" style="border:none;flex:1;height:30px" value="'+String(S.formula).replace(/"/g,'&quot;')+'"></div>';
+          else h+='<div class="srcf-box"><button class="src-add" type="button" title="Add variable">'+PLUS+'</button><span class="srcf-txt">'+formula()+'</span></div>';
+          h+='<div class="srcv-list">'+S.vars.map(calcRow).join('')+'</div>';
+        }
+        else if(v==='mirror'){ h='<label class="ed-check" style="margin-top:14px"><input type="checkbox" data-srcsw="mirrorGoal"'+(S.mirrorGoal?' checked':'')+'>Mirror goal</label><div class="ed-grid3" style="margin-top:6px"><div><label class="ed-label">ROOM</label>'+roomSel('mroom',S.mRoom)+'</div><div><label class="ed-label">BOARD</label>'+boardSel('mboard',S.mRoom,S.mBoard)+'</div><div><label class="ed-label">TOOL</label>'+leafSel('mtool',S.mRoom,S.mBoard,S.mTool)+'</div></div>'; }
+        else h='';
+        host.innerHTML=h;
+      }
+      elSrc.addEventListener('change', function(){ S.type=elSrc.value; render(); });
+      host.addEventListener('change', function(e){ var t=e.target, f=t.getAttribute&&t.getAttribute('data-srcf'); if(!f) return;
+        if(f==='calcType'){ S.calcType=t.value; render(); return; }
+        if(f==='formula'){ S.formula=t.value; return; }
+        if(f==='mroom'){ S.mRoom=t.value; S.mBoard=''; S.mTool=''; render(); return; }
+        if(f==='mboard'){ S.mBoard=t.value; S.mTool=''; render(); return; }
+        if(f==='mtool'){ S.mTool=t.value; return; }
+        var row=t.closest('.srcv-row'); if(!row) return; var i=+row.getAttribute('data-i'), vv=S.vars[i]; if(!vv) return;
+        if(f==='room'){ vv.room=t.value; vv.board=''; vv.widget=''; render(); }
+        else if(f==='board'){ vv.board=t.value; vv.widget=''; render(); }
+        else if(f==='widget'){ vv.widget=t.value; }
+        else if(f==='op'){ vv.op=t.value; var ft=host.querySelector('.srcf-txt'); if(ft) ft.textContent=formula(); }
+      });
+      host.addEventListener('click', function(e){ var add=e.target.closest&&e.target.closest('.src-add'); if(add){ S.vars.push({op:'add',room:'',board:'',widget:''}); render(); return; } var del=e.target.closest&&e.target.closest('.src-del'); if(del){ var row=del.closest('.srcv-row'); if(row){ var i=+row.getAttribute('data-i'); S.vars.splice(i,1); if(!S.vars.length) S.vars.push({op:'add',room:'',board:'',widget:''}); render(); } return; } var sw=e.target.closest&&e.target.closest('[data-srcsw]'); if(sw && sw.classList.contains('zswitch')){ sw.classList.toggle('on'); S[sw.getAttribute('data-srcsw')]=sw.classList.contains('on'); return; } });
+      host.addEventListener('input', function(e){ var cb=e.target; if(cb.type==='checkbox' && cb.getAttribute('data-srcsw')){ S[cb.getAttribute('data-srcsw')]=cb.checked; } });
+      render();
+    })();
   })();
 
   // overlays are outside the viewport, so they never trigger pan; keep clicks local
@@ -4060,6 +4197,44 @@
   }
   document.addEventListener('click', function(e){ var s=e.target.closest&&e.target.closest('.feed2-send'); if(s){ e.preventDefault(); postFeed2(s); } });
   document.addEventListener('keydown', function(e){ if(e.key==='Enter' && e.target && e.target.matches && e.target.matches('.feed2-input')){ e.preventDefault(); var c=e.target.closest('.feed2-compose'); if(c) postFeed2(c.querySelector('.feed2-send')); } });
+  // full-view feed kebab menu (Attach / Record audio) + WhatsApp-like recording
+  (function(){
+    var more=document.getElementById('feed2More'), menu=document.getElementById('feed2Menu'), file=document.getElementById('feed2File'); if(!more||!menu) return;
+    var ICO={ stop:'<svg viewBox="0 0 24 24" fill="currentColor"><rect x="6" y="6" width="12" height="12" rx="2"/></svg>', send:'<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><line x1="5" x2="19" y1="12" y2="12"/><polyline points="12 5 19 12 12 19"/></svg>', trash:'<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M3 6h18"/><path d="M19 6v14a2 2 0 0 1-2 2H7a2 2 0 0 1-2-2V6m3 0V4a2 2 0 0 1 2-2h4a2 2 0 0 1 2 2v2"/></svg>', play:'<svg viewBox="0 0 24 24" fill="currentColor"><path d="M8 5v14l11-7z"/></svg>' };
+    function wave(live){ var b=''; for(var i=0;i<48;i++){ var h=live?'':(18+Math.round(Math.abs(Math.sin(i*1.7))*70))+'%'; b+='<span style="'+(live?'animation-delay:'+(i*35)+'ms':'height:'+h)+'"></span>'; } return '<div class="feed2-wave'+(live?' live':'')+'">'+b+'</div>'; }
+    more.addEventListener('click', function(e){ e.stopPropagation(); menu.classList.toggle('open'); });
+    document.addEventListener('click', function(e){ if(menu.classList.contains('open') && !(e.target.closest && (e.target.closest('#feed2Menu')||e.target.closest('#feed2More')))) menu.classList.remove('open'); });
+    menu.addEventListener('click', function(e){ var b=e.target.closest('button[data-fa]'); if(!b) return; var fa=b.getAttribute('data-fa'); menu.classList.remove('open'); if(fa==='attach'){ if(file) file.click(); } else if(fa==='audio'){ startRec(); } });
+    if(file) file.addEventListener('change', function(){ if(file.files&&file.files[0]){ var comp=document.querySelector('.feed2-compose'); if(comp){ var c=document.createElement('span'); c.className='feed2-react'; c.textContent='📎 '+file.files[0].name; comp.insertAdjacentElement('afterend', c); } } file.value=''; });
+    var timer=null, dur=0;
+    function comp(){ return document.querySelector('.feed2-compose'); }
+    function restore(){ var c=comp(); if(!c) return; if(timer){ clearInterval(timer); timer=null; } var rec=c.querySelector('.feed2-rec'); if(rec) rec.remove(); [].forEach.call(c.children, function(ch){ ch.style.display=''; }); }
+    function fmt(s){ return Math.floor(s/60)+':'+('0'+(s%60)).slice(-2); }
+    function startRec(){ var c=comp(); if(!c||c.querySelector('.feed2-rec')) return; [].forEach.call(c.children, function(ch){ ch.style.display='none'; });
+      var rec=document.createElement('div'); rec.className='feed2-rec';
+      rec.innerHTML='<span class="rec-dot"></span><span class="rec-time">0:00</span>'+wave(true)+'<button class="feed2-recbtn stop" data-rec="stop" data-systip="Stop">'+ICO.stop+'</button>';
+      c.appendChild(rec); dur=0; timer=setInterval(function(){ dur++; var tt=rec.querySelector('.rec-time'); if(tt) tt.textContent=fmt(dur); }, 1000);
+      rec.addEventListener('click', function(e){ var btn=e.target.closest('[data-rec]'); if(!btn) return; var act=btn.getAttribute('data-rec');
+        if(act==='stop'){ if(timer){ clearInterval(timer); timer=null; } var w=rec.querySelector('.feed2-wave'); if(w){ w.outerHTML=wave(false); } var right=rec.querySelector('.feed2-recbtn'); rec.querySelector('.rec-dot').style.animation='none'; rec.querySelector('.rec-dot').style.background='#9aa0ac';
+          // troca o Stop por Delete + Send
+          btn.outerHTML='<button class="feed2-recbtn del" data-rec="del" data-systip="Delete">'+ICO.trash+'</button><button class="feed2-recbtn send" data-rec="send" data-systip="Send">'+ICO.send+'</button>';
+        } else if(act==='del'){ restore(); }
+        else if(act==='send'){ sendAudio(dur); restore(); }
+      });
+    }
+    function sendAudio(sec){ var c=comp(); if(!c) return; var now=new Date(), hh=now.getHours(), mm=('0'+now.getMinutes()).slice(-2), ap=hh<12?'am':'pm', h12=((hh+11)%12)+1;
+      var card=document.createElement('div'); card.className='feed2-card hl';
+      card.innerHTML='<div class="feed2-head"><span class="feed2-av">ME</span><div><div class="feed2-name">You</div><div class="feed2-time">'+h12+':'+mm+' '+ap+'</div></div></div><div class="feed2-audio"><button class="fa-play">'+ICO.play+'</button>'+wave(false)+'<span class="fa-dur">'+fmt(sec||1)+'</span></div><div class="feed2-actions"><span>React</span><i>|</i><span>Reply</span><i>|</i><span>Translate</span><i>|</i><span>Delete</span></div>';
+      c.insertAdjacentElement('afterend', card);
+    }
+  })();
+  // full-view feed actions: React / Reply / Translate / Delete
+  document.addEventListener('click', function(e){ var s=e.target.closest && e.target.closest('.feed2-actions span'); if(!s) return; var card=s.closest('.feed2-card'); if(!card) return; var act=(s.textContent||'').trim().toLowerCase();
+    if(act==='react'){ var r=card.querySelector('.feed2-react-badge'); if(r){ r.remove(); s.classList.remove('on'); } else { var d=document.createElement('div'); d.className='feed2-react feed2-react-badge'; d.textContent='👍 1'; var tx=card.querySelector('.feed2-text'); if(tx) tx.insertAdjacentElement('afterend', d); s.classList.add('on'); } }
+    else if(act==='reply'){ var ex=card.querySelector('.feed2-reply'); if(ex){ ex.remove(); return; } var w=document.createElement('div'); w.className='feed2-reply'; w.innerHTML='<input placeholder="Reply…"><button>Send</button>'; card.appendChild(w); var inp=w.querySelector('input'); inp.focus(); function send(){ var v=(inp.value||'').trim(); if(!v) return; var rc=document.createElement('div'); rc.className='feed2-replyitem'; rc.textContent=v; card.insertBefore(rc, w); inp.value=''; inp.focus(); } w.querySelector('button').addEventListener('click', send); inp.addEventListener('keydown', function(ev){ if(ev.key==='Enter'){ ev.preventDefault(); send(); } }); }
+    else if(act==='translate'){ var t=card.querySelector('.feed2-text'); if(!t) return; if(t.getAttribute('data-orig')){ t.textContent=t.getAttribute('data-orig'); t.removeAttribute('data-orig'); s.classList.remove('on'); } else { t.setAttribute('data-orig', t.textContent); t.textContent='[Translated] '+t.textContent; s.classList.add('on'); } }
+    else if(act==='delete'){ card.remove(); }
+  });
 
   // ---- update mode: edit table cells / toggle attendance directly on the board ----
   var PRES_ICO={
@@ -4116,11 +4291,12 @@
   // ---- hover tooltip for green/red indicators (chart bars): date · series · result(%) · target ----
   var barTip=document.createElement('div'); barTip.id='barTip'; barTip.style.display='none'; document.body.appendChild(barTip);
   function btSeries(el){ var card=el.closest('.wcard'); var tEl=card&&card.querySelector('.wcard-title'); return tEl?tEl.textContent.trim():'Series'; }
+  function btNum(x){ var s=String(x==null?'':x).trim(); if(!s) return s; if(/[^\d.,\-]/.test(s)) return s; if(/^-?\d{1,3}[.,]\d{1,2}$/.test(s)) return s; var neg=/^-/.test(s); var digs=s.replace(/\D/g,''); if(!digs) return s; return (neg?'-':'')+parseInt(digs,10).toLocaleString('pt-BR'); }
   function btHTML(series,d,col,v,p,t){
     return '<div class="bt-title">'+series+'</div>'+
       (d?'<div class="bt-date">'+d+'</div>':'')+
-      '<div class="bt-row"><span class="bt-l"><i class="bt-dot" style="background:'+col+'"></i>Actual</span><b>'+v+'</b></div>'+
-      '<div class="bt-row"><span class="bt-l"><i class="bt-dot" style="background:#8b91b5"></i>Target</span><b>'+(t||'—')+'</b></div>'+
+      '<div class="bt-row"><span class="bt-l">Actual</span><b>'+btNum(v)+'</b></div>'+
+      '<div class="bt-row"><span class="bt-l">Target</span><b>'+(t?btNum(t):'—')+'</b></div>'+
       '<div class="bt-arrow"></div>';
   }
   function showBarTip(mb){
@@ -4151,7 +4327,7 @@
   document.addEventListener('mouseover', function(e){ var sg=e.target.closest && e.target.closest('.wpie .pie-seg'); if(sg){ barTip.innerHTML='<div class="bt-row"><span class="bt-l"><i class="bt-dot" style="background:'+(sg.getAttribute('data-col')||'#001391')+'"></i>'+(sg.getAttribute('data-d')||'')+'</span><b>'+(sg.getAttribute('data-v')||'')+'%</b></div><div class="bt-arrow"></div>'; barTip.style.display='block'; var r=sg.getBoundingClientRect(); barTip.style.left=(r.left+r.width/2)+'px'; barTip.style.top=r.top+'px'; } });
   document.addEventListener('mouseout', function(e){ var sg=e.target.closest && e.target.closest('.wpie .pie-seg'); if(sg) barTip.style.display='none'; });
   // CS #27 — hover an Andon badge shows a preview of the andon rules
-  document.addEventListener('mouseover', function(e){ var an=e.target.closest && e.target.closest('.w-andon'); if(an){ barTip.innerHTML='<div class="bt-date">Andon rules</div><div class="bt-row"><span class="bt-l"><i class="bt-dot" style="background:#ec221f"></i>Result below Target</span><b>notify</b></div><div class="bt-row"><span class="bt-l">Quality lead · Shift lead</span><b></b></div><div class="bt-arrow"></div>'; barTip.style.display='block'; var r=an.getBoundingClientRect(); barTip.style.left=(r.left+r.width/2)+'px'; barTip.style.top=r.top+'px'; } });
+  // (andon tooltip agora é o tooltip padrão via data-systip, sem bolinha de cor)
   document.addEventListener('mouseout', function(e){ var an=e.target.closest && e.target.closest('.w-andon'); if(an) barTip.style.display='none'; });
   // #116 — consistent name tooltip for every user-avatar badge (on hover)
   (function(){ var AVSEL='.w-av,.apav,.apav-sm,.av,.tav,.ava,.uav';
@@ -4163,6 +4339,18 @@
     function lbl(el){ return el.getAttribute('data-systip')||el.getAttribute('title')||''; }
     document.addEventListener('mouseover', function(e){ var el=e.target.closest && e.target.closest(TIPSEL); if(!el) return; var t=lbl(el); if(!t) return; if(el.hasAttribute('title')){ el.setAttribute('data-systip', t); el.removeAttribute('title'); } barTip.innerHTML='<div class="bt-row"><span class="bt-l" style="color:#fff;font-weight:600">'+t+'</span></div><div class="bt-arrow"></div>'; barTip.style.display='block'; barTip.style.minWidth='0'; var r=el.getBoundingClientRect(); barTip.style.left=(r.left+r.width/2)+'px'; barTip.style.top=r.top+'px'; });
     document.addEventListener('mouseout', function(e){ var el=e.target.closest && e.target.closest(TIPSEL); if(el){ barTip.style.display='none'; barTip.style.minWidth=''; } });
+  })();
+  // tooltips nos ícones do rodapé do widget (andon/planos/feed/avatar) — texto padrão, hug content
+  (function(){
+    var NM={JD:'John Davis',NU:'Nick Usk',RK:'Rafael Klein',SA:'Solvace Administrator',JF:'Jardel Florentino',SL:'Steve Loren',RB:'Renato Basso',LB:'Lilia Buzato',JM:'Julien Moreau',RG:'Raphaël Guillaumet'};
+    function enh(){ document.querySelectorAll('.w-foot').forEach(function(f){
+      var al=f.querySelector('.w-andon,.w-apalert'); if(al&&!al.getAttribute('data-systip')){ al.removeAttribute('title'); al.setAttribute('data-systip','There are overdue action plans'); }
+      var m=f.querySelectorAll('.w-meta');
+      if(m[0]&&!m[0].getAttribute('data-systip')){ m[0].removeAttribute('title'); m[0].setAttribute('data-systip','Total action plans'); }
+      if(m[1]&&!m[1].getAttribute('data-systip')){ m[1].removeAttribute('title'); m[1].setAttribute('data-systip','Total feed comments'); }
+      var av=f.querySelector('.w-av'); if(av&&!av.getAttribute('data-systip')){ var ini=(av.textContent||'').trim(); av.removeAttribute('title'); av.setAttribute('data-systip', NM[ini]||ini||'User'); }
+    }); }
+    enh(); try{ new MutationObserver(function(){ clearTimeout(window.__ftip); window.__ftip=setTimeout(enh,200); }).observe(document.body,{childList:true,subtree:true}); }catch(_){}
   })();
   // #213 — click-to-sort (A→Z / Z→A) on every widget table header
   (function(){
@@ -4291,7 +4479,7 @@
     (function(){ function step(d){ var inp=document.getElementById('dpeIn'); var v=parseFloat(inp.value)||0; v=Math.max(0, Math.round((v+d)*100)/100); inp.value=v; } var mn=document.getElementById('dpeMinus'), pl=document.getElementById('dpePlus'); if(mn) mn.addEventListener('click', function(e){ e.stopPropagation(); step(-1); }); if(pl) pl.addEventListener('click', function(e){ e.stopPropagation(); step(1); }); })();
     function closeDp(){ ed.style.display='none'; curEl=null; }
     document.getElementById('dpeCancel').addEventListener('click', closeDp);
-    document.getElementById('dpeSave').addEventListener('click', function(){ if(curEl){ var nv=document.getElementById('dpeIn').value; var ov=parseFloat(curEl.getAttribute('data-v'))||0; curEl.setAttribute('data-v', nv); if(curEl.classList.contains('bar')||curEl.classList.contains('mb')){ var hs=curEl.style.height||''; var num=parseFloat(hs)||0; var unit=(hs.indexOf('%')>=0)?'%':'px'; var nh=(ov>0)? num*(parseFloat(nv)/ov) : num; nh=(unit==='%')?Math.max(1,Math.min(100,nh)):Math.max(2,Math.min(150,nh)); curEl.style.height=nh+unit; } else if(curEl.classList.contains('cd')){ var tg=parseFloat(curEl.getAttribute('data-t'))||80; var pc=Math.round((parseFloat(nv)||0)/tg*100); curEl.setAttribute('data-p', pc); curEl.classList.remove('r','g','y'); curEl.classList.add(pc>=100?'g':(pc>=85?'y':'r')); } else if(curEl.classList.contains('num2')){ var vv=parseFloat(nv)||0; var t2=parseFloat(curEl.getAttribute('data-t')); if(isNaN(t2)) t2=vv; curEl.classList.remove('pos','neg','on'); curEl.classList.add(vv>t2?'pos':(vv<t2?'neg':'on')); var vEl=curEl.querySelector('.num2-val'); if(vEl) vEl.textContent=Number(vv).toLocaleString('en-US'); } } closeDp(); });
+    document.getElementById('dpeSave').addEventListener('click', function(){ if(curEl){ var nv=document.getElementById('dpeIn').value; var ov=parseFloat(curEl.getAttribute('data-v'))||0; curEl.setAttribute('data-v', nv); if(curEl.classList.contains('bar')||curEl.classList.contains('mb')){ var hs=curEl.style.height||''; var num=parseFloat(hs)||0; var unit=(hs.indexOf('%')>=0)?'%':'px'; var nh=(ov>0)? num*(parseFloat(nv)/ov) : num; nh=(unit==='%')?Math.max(1,Math.min(100,nh)):Math.max(2,Math.min(150,nh)); curEl.style.height=nh+unit; } else if(curEl.classList.contains('cd')){ var tg=parseFloat(curEl.getAttribute('data-t'))||80; var pc=Math.round((parseFloat(nv)||0)/tg*100); curEl.setAttribute('data-p', pc); curEl.classList.remove('r','g','y'); curEl.classList.add(pc>=100?'g':(pc>=85?'y':'r')); } else if(curEl.classList.contains('num2')){ var vv=parseFloat(nv)||0; var t2=parseFloat(curEl.getAttribute('data-t')); if(isNaN(t2)) t2=vv; curEl.classList.remove('pos','neg','on'); curEl.classList.add(vv>t2?'pos':(vv<t2?'neg':'on')); var vEl=curEl.querySelector('.num2-val'); if(vEl) vEl.textContent=Number(vv).toLocaleString('pt-BR'); } } closeDp(); });
     ed.addEventListener('mousedown', function(e){ e.stopPropagation(); });
     document.addEventListener('click', function(e){
       if(app.getAttribute('data-state')!=='update'){ return; }
@@ -4732,7 +4920,7 @@
         si.focus(); si.addEventListener('input', function(){ var q=this.value.toLowerCase().trim(); if(q.length<3){ lst.style.display='none'; hint.style.display=''; return; } hint.style.display='none'; lst.style.display=''; renderList(q); }); }
     }
     document.addEventListener('click', function(e){
-      if(pop && e.target.closest && e.target.closest('.rsel-pop')){ var opt=e.target.closest('.rsel-opt'); if(opt && anchor){ anchor.childNodes[0].nodeValue=opt.getAttribute('data-t')+' '; close(); return; } var it=e.target.closest('.rsel-it'); if(it && anchor){ var cb=it.querySelector('input'); if(e.target.tagName!=='INPUT') cb.checked=!cb.checked; var id=it.getAttribute('data-i'); var arr=(anchor.getAttribute('data-sel')||'').split(',').filter(Boolean); var ix=arr.indexOf(id); if(cb.checked&&ix<0) arr.push(id); if(!cb.checked&&ix>=0) arr.splice(ix,1); anchor.setAttribute('data-sel', arr.join(',')); renderUsel(anchor); } return; }
+      if(pop && e.target.closest && e.target.closest('.rsel-pop')){ var opt=e.target.closest('.rsel-opt'); if(opt && anchor){ anchor.childNodes[0].nodeValue=opt.getAttribute('data-t')+' '; close(); return; } var it=e.target.closest('.rsel-it'); if(it && anchor){ var id=it.getAttribute('data-i'); if(anchor.hasAttribute('data-single')){ anchor.setAttribute('data-sel', id); renderUsel(anchor); close(); if(typeof applyCfgBoard==='function') applyCfgBoard(); return; } var cb=it.querySelector('input'); if(e.target.tagName!=='INPUT') cb.checked=!cb.checked; var arr=(anchor.getAttribute('data-sel')||'').split(',').filter(Boolean); var ix=arr.indexOf(id); if(cb.checked&&ix<0) arr.push(id); if(!cb.checked&&ix>=0) arr.splice(ix,1); anchor.setAttribute('data-sel', arr.join(',')); renderUsel(anchor); if(typeof applyCfgBoard==='function') applyCfgBoard(); } return; }
       var sel=e.target.closest && e.target.closest('#roomDrawer .ed-select, #editDrawer .ed-select.usel'); if(sel){ e.stopPropagation(); if(anchor===sel) close(); else openFor(sel); return; }
       close();
     });
@@ -4743,7 +4931,7 @@
     var pop=null, sw=null;
     function close(){ if(pop){ pop.remove(); pop=null; sw=null; } }
     function curHex(){ var b=(sw&&sw.style.background||'').trim(); if(/^#([0-9a-f]{6})$/i.test(b)) return b; var m=/rgba?\((\d+),\s*(\d+),\s*(\d+)/i.exec(b); if(m){ return '#'+[1,2,3].map(function(i){return ('0'+(+m[i]).toString(16)).slice(-2);}).join(''); } return '#001391'; }
-    function apply(c){ if(sw) sw.style.background=c; }
+    function apply(c){ if(sw) sw.style.background=c; if(typeof applyCfgBoard==='function') applyCfgBoard(); }
     document.addEventListener('click', function(e){
       if(pop && e.target.closest && e.target.closest('.cpal-pop')){ var c=e.target.closest('.cpal-sw'); if(c && sw){ apply(c.getAttribute('data-c')); close(); } return; }
       var sel=e.target.closest && e.target.closest('#editDrawer .ed-select'); if(sel && sel.querySelector('.swatch')){ e.stopPropagation(); var s=sel.querySelector('.swatch'); if(sw===s){ close(); return; } close(); sw=s;

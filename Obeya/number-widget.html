@@ -73,7 +73,7 @@
   .wcard{ position:relative; overflow:hidden; background:#fff; border:1px solid #eeeff1; border-radius:12px; box-shadow:0 1px 2px 0 rgba(0,5,36,.05); padding:20px; display:flex; flex-direction:column; gap:14px; height:100%; }
   .wcard-head{ display:flex; align-items:flex-start; justify-content:space-between; gap:8px; }
   .wcard-head>div:first-child{ min-width:0; }
-  .wcard-title{ white-space:nowrap; overflow:hidden; text-overflow:ellipsis; font-size:13px; font-weight:600; line-height:15px; color:#0d122f; }
+  .wcard-title{ white-space:nowrap; overflow:hidden; text-overflow:ellipsis; font-size:13px; font-weight:600; line-height:1.35; padding-bottom:1px; color:#0d122f; }
   .wcard-sub{ font-size:12px; color:#6b7280; margin-top:0; line-height:1.2; }
   .expand{ cursor:pointer; color:#8a90a6; flex:0 0 auto; display:inline-flex; padding:2px; border-radius:6px; } .expand:hover{ background:#f2f2f4; color:#001391; } .expand svg{ width:15px; height:15px; }
   .w-foot{ display:flex; align-items:center; justify-content:space-between; margin-top:auto; padding-top:6px; flex:0 0 auto; }
@@ -134,6 +134,12 @@
   .ed-chips{ display:flex; flex-wrap:wrap; gap:8px; }
   .ed-chip{ border:1px solid #eeeff1; background:#fff; border-radius:8px; padding:8px 12px; font-size:13px; color:#0d122f; cursor:pointer; } .ed-chip:hover{ background:#f9f9fa; } .ed-chip.active{ border-color:#001391; color:#001391; background:#f5f5ff; }
   .swatch{ width:16px; height:16px; border-radius:4px; background:#14ae5c; display:inline-block; }
+  .ed-sectr{ margin-bottom:8px; }
+  .ed-secbox{ margin:0 0 16px; }
+  .ed-secbox.sec-hidden{ display:none; }
+  .ed-tolrow{ display:flex; gap:8px; align-items:center; }
+  .ed-tolrow .ed-input{ flex:1; }
+  .ed-tolrow .ed-tolcol{ width:60px; flex:0 0 auto; }
   .ed-panel{ display:none; } .ed-panel.active{ display:block; }
   .ed-foot{ display:flex; justify-content:flex-end; gap:10px; padding:14px 22px; border-top:1px solid #eeeff1; flex:0 0 auto; }
   .zswitch{ position:relative; width:44px; height:24px; border-radius:99px; background:#cccdd3; border:none; cursor:pointer; padding:0; flex:0 0 auto; transition:background .15s; }
@@ -204,8 +210,8 @@
   .cpal-pop .cpal-sw{ width:20px; height:20px; border-radius:5px; cursor:pointer; border:1px solid rgba(0,0,0,.12); }
   .cpal-pop .cpal-sw:hover{ transform:scale(1.12); }
   .cpal-foot{ grid-column:1/-1; display:flex; align-items:center; gap:8px; margin-top:6px; padding-top:8px; border-top:1px solid #eef0f4; }
-  .cpal-foot input[type=color]{ width:30px; height:30px; border:1px solid #e6e6ea; border-radius:6px; background:#fff; padding:2px; cursor:pointer; }
-  .cpal-foot input[type=text]{ flex:1; height:30px; border:1px solid #eeeff1; border-radius:7px; padding:0 8px; font-size:12px; box-sizing:border-box; text-transform:uppercase; outline:none; }
+  .cpal-foot input[type=color]{ flex:0 0 28px; width:28px; height:28px; min-width:28px; box-sizing:border-box; border:1px solid #e6e6ea; border-radius:6px; background:#fff; padding:2px; cursor:pointer; }
+  .cpal-foot input[type=text]{ flex:1 1 0; min-width:0; width:0; height:30px; border:1px solid #eeeff1; border-radius:7px; padding:0 8px; font-size:12px; box-sizing:border-box; text-transform:uppercase; outline:none; }
   .ds-select{ position:relative; }
   .ds-trg{ width:100%; height:38px; border:1px solid #eeeff1; border-radius:8px; display:flex; align-items:center; justify-content:space-between; gap:8px; padding:0 12px; font-size:14px; color:#0d122f; cursor:pointer; background:#fff; text-align:left; font-family:inherit; }
   .ds-trg:hover{ border-color:#c7ccf5; }
@@ -243,6 +249,25 @@
   .andon-foot{ display:flex; align-items:center; gap:14px; margin-top:12px; }
   .andon-foot .andon-del{ margin-left:auto; }
   .andon-f label{ display:block; font-size:12px; color:#6b7280; margin-bottom:6px; } .andon-f .ed-input{ width:100%; }
+  .link-row{ border:1px solid #eef0f3; border-radius:10px; padding:12px; margin-bottom:14px; background:#fcfcfd; }
+  .link-fields{ display:grid; grid-template-columns:1fr 1fr; gap:10px 12px; align-items:end; }
+  .link-f label{ display:block; font-size:12px; color:#6b7280; margin-bottom:6px; }
+  .link-f .ed-input, .link-f .ds-select{ width:100%; }
+  .link-f.lf-name{ grid-column:1/-1; }
+  .link-foot{ display:flex; justify-content:flex-end; margin-top:10px; }
+  @media (max-width:560px){ .link-fields{ grid-template-columns:1fr; } }
+  .ed-sec2{ font-size:12px; font-weight:700; letter-spacing:.03em; color:#8a90a6; margin:14px 0 6px; }
+  .srcf-box{ display:flex; align-items:center; gap:8px; border:1px solid #eeeff1; border-radius:8px; padding:4px 6px; background:#fafafa; }
+  .src-add{ width:26px; height:26px; border-radius:6px; border:none; background:#001391; color:#fff; display:inline-flex; align-items:center; justify-content:center; cursor:pointer; flex:0 0 auto; } .src-add svg{ width:15px; height:15px; }
+  .srcf-txt{ font-size:13px; color:#0d122f; }
+  .srcv-list{ margin-top:10px; display:flex; flex-direction:column; gap:12px; }
+  .srcv-row{ border:1px solid #eef0f3; border-radius:10px; padding:12px; background:#fcfcfd; }
+  .srcv-fields{ display:grid; grid-template-columns:repeat(3,1fr); gap:10px 12px; align-items:end; }
+  .srcv-foot{ display:flex; justify-content:flex-end; margin-top:10px; }
+  .src-del{ border:none; background:none; color:#6b7280; cursor:pointer; padding:6px; display:inline-flex; border-radius:6px; } .src-del:hover{ background:#fee2e2; color:#dc2626; } .src-del svg{ width:16px; height:16px; }
+  .srcv-cell{ min-width:0; } .srcv-cell .ed-input, .srcv-cell .ds-select{ width:100%; }
+  @media (max-width:640px){ .srcv-fields{ grid-template-columns:1fr 1fr; } }
+  .num2.num2-tgt .num2-val{ font-size:clamp(16px,min(15cqw,34cqh),84px); }
   .andon-series{ background:#f1f1f3; border:1px solid #e2e5ec; border-radius:8px; padding:9px 12px; font-size:13px; color:#667085; }
   .andon-bell{ border:none; background:none; color:#001391; cursor:pointer; padding:0; display:inline-flex; } .andon-bell svg{ width:20px; height:20px; }
   .andon-ck{ width:18px; height:18px; accent-color:#001391; cursor:pointer; }
@@ -332,7 +357,7 @@
             <div><div class="wcard-title" title="Units Today">Units Today</div><div class="wcard-sub">vs target 3.000</div></div>
             <span class="expand" title="Open full view"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polyline points="15 3 21 3 21 9"/><polyline points="9 21 3 21 3 15"/><line x1="21" x2="14" y1="3" y2="10"/><line x1="3" x2="10" y1="21" y2="14"/></svg></span>
           </div>
-          <div class="num2"><span class="num2-val font-display wmain">3,420</span></div>
+          <div class="num2"><span class="num2-val font-display wmain">3.420</span></div>
           <div class="w-foot">
             <span class="w-foot-l">
               <span class="w-andon" title="Andon alert">!</span>
@@ -363,7 +388,7 @@
           <div><div class="wcard-title" title="Units Today">Units Today</div><div class="wcard-sub">vs target 3.000</div></div>
           <span class="expand" title="Open full view" onclick="openFull()"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polyline points="15 3 21 3 21 9"/><polyline points="9 21 3 21 3 15"/><line x1="21" x2="14" y1="3" y2="10"/><line x1="3" x2="10" y1="21" y2="14"/></svg></span>
         </div>
-        <div class="num2"><span class="num2-val font-display wmain" id="valNormal">3,420</span></div>
+        <div class="num2"><span class="num2-val font-display wmain" id="valNormal">3.420</span></div>
         <div class="w-foot">
           <span class="w-foot-l">
             <span class="w-andon" title="Andon alert">!</span>
@@ -393,7 +418,7 @@
             <button class="zbtn zbtn-outline" title="Zoom (batch update)" onclick="openBatch()"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polyline points="15 3 21 3 21 9"/><polyline points="9 21 3 21 3 15"/><line x1="21" x2="14" y1="3" y2="10"/><line x1="3" x2="10" y1="21" y2="14"/></svg></button>
           </span>
         </div>
-        <div class="num2"><span class="num2-val font-display wmain" id="valUpdate" onclick="openDpe()">3,420</span></div>
+        <div class="num2"><span class="num2-val font-display wmain" id="valUpdate" onclick="openDpe()">3.420</span></div>
         <div class="w-foot">
           <span class="w-foot-l">
             <span class="w-andon" title="Andon alert">!</span>
@@ -422,7 +447,7 @@
       <div class="fv-stage">
         <section class="wcard" style="width:680px;max-width:100%;height:520px;max-height:100%;">
           <div class="wcard-head"><div><div class="wcard-title">Units Today</div><div class="wcard-sub">vs target 3.000</div></div></div>
-          <div class="num2"><span class="num2-val font-display">3,420</span></div>
+          <div class="num2"><span class="num2-val font-display">3.420</span></div>
           <div class="w-foot"><span class="w-foot-l"><span class="w-andon" title="Andon alert">!</span><span class="w-meta"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect width="8" height="4" x="8" y="2" rx="1"/><path d="M16 4h2a2 2 0 0 1 2 2v14a2 2 0 0 1-2 2H6a2 2 0 0 1-2-2V6a2 2 0 0 1 2-2h2"/></svg>4</span><span class="w-meta"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M21 15a2 2 0 0 1-2 2H7l-4 4V5a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2z"/></svg>2</span></span><span class="w-av" style="background:#ffd8a8;color:#9a4a00">NU</span></div>
         </section>
       </div>
@@ -503,9 +528,9 @@
 <div class="edit-modal" id="editModal">
   <div class="em-stage">
     <div class="em-widget" id="emWidget">
-      <section class="wcard" style="width:680px;max-width:100%;height:520px;max-height:100%;">
+      <section class="wcard" id="cfgPrevCard" style="width:680px;max-width:100%;height:520px;max-height:100%;">
         <div class="wcard-head"><div><div class="wcard-title" id="cfgPrevTitle">Units Today</div><div class="wcard-sub" id="cfgPrevSub">vs target 3.000</div></div></div>
-        <div class="num2"><span class="num2-val font-display">3,420</span></div>
+        <div class="num2"><span class="num2-val font-display">3.420</span></div>
         <div class="w-foot"><span class="w-foot-l"><span class="w-andon">!</span></span><span class="w-av" style="background:#ffd8a8;color:#9a4a00">NU</span></div>
       </section>
     </div>
@@ -525,159 +550,54 @@
       <div class="ed-body" data-body="edit">
         <!-- GENERAL (Figma 1233-19722) -->
         <div class="ed-panel active" data-panel="general">
-          <div class="ed-grid4">
-            <div><label class="ed-label">Show Title</label><button class="zswitch on" type="button" onclick="tSw(this)"></button></div>
-            <div><label class="ed-label">Title</label><input class="ed-input" id="cfgTitle" value="Units Today" oninput="syncPrev()"></div>
-            <div><label class="ed-label">Size</label><div class="ed-inbox"><span class="ed-chipcell">Small <span class="cx"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round"><path d="M18 6 6 18M6 6l12 12"/></svg></span></span></div></div>
-            <div><label class="ed-label">Color</label><div class="ed-select"><span class="swatch" style="background:#0a0a0b"></span><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="m6 9 6 6 6-6"/></svg></div></div>
+          <div class="ed-secbox" style="margin-top:0"><label class="ed-label">Display format</label><select class="ed-input ed-native" style="max-width:260px"><option value="standard">Standard</option><option value="reduced">Reduced</option></select></div>
+          <div class="ed-tr ed-sectr"><button class="zswitch on" type="button" data-sec="title" onclick="tSw(this)"></button><span>Show title</span></div>
+          <div class="ed-secbox" data-secfields="title"><div class="ed-grid3"><div><label class="ed-label">Title</label><input class="ed-input" id="cfgTitle" data-cfg="title" value="Units Today"></div><div><label class="ed-label">Size</label><select class="ed-input ed-native" data-cfg="size"><option value="small">Small</option><option value="medium" selected>Medium</option><option value="large">Large</option></select></div><div><label class="ed-label">Color</label><div class="ed-select"><span class="swatch cfg-color-title" style="background:#0a0a0b"></span><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="m6 9 6 6 6-6"/></svg></div></div></div></div>
+          <div class="ed-tr ed-sectr"><button class="zswitch on" type="button" data-sec="dec" onclick="tSw(this)"></button><span>Decimal places</span></div>
+          <div class="ed-secbox" data-secfields="dec"><select class="ed-input ed-native" data-cfg="dec" style="max-width:260px"><option value="0">None</option><option value="1">One</option><option value="2">Two</option><option value="3">Three</option></select></div>
+          <div class="ed-tr ed-sectr"><button class="zswitch" type="button" data-sec="target" onclick="tSw(this)"></button><span>Show target</span></div>
+          <div class="ed-secbox" data-secfields="target"><div style="font-size:12px;color:#8a90a6">The target value is set in update mode.</div></div>
+          <div class="ed-tr ed-sectr"><button class="zswitch on" type="button" data-sec="cf" onclick="tSw(this)"></button><span>Conditional formatting</span></div>
+          <div class="ed-secbox" data-secfields="cf">
+            <div class="ed-grid3"><div><label class="ed-label">Below goal</label><div class="ed-select sm"><span class="swatch cfg-cf-below" style="background:#14ae5c"></span><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="m6 9 6 6 6-6"/></svg></div></div><div><label class="ed-label">On target</label><div class="ed-select sm"><span class="swatch cfg-cf-on" style="background:#e8b931"></span><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="m6 9 6 6 6-6"/></svg></div></div><div><label class="ed-label">Above goal</label><div class="ed-select sm"><span class="swatch cfg-cf-above" style="background:#ec221f"></span><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="m6 9 6 6 6-6"/></svg></div></div></div>
+            <div style="margin-top:12px"><label class="ed-label">Objective tolerance</label><div class="ed-tolrow" style="max-width:260px"><input class="ed-input" value="0,00"><div class="ed-select sm ed-tolcol"><span class="swatch" style="background:#001391"></span><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="m6 9 6 6 6-6"/></svg></div></div></div>
+            <div style="margin-top:12px"><label class="ed-label">Andon</label><select class="ed-input ed-native" data-cfg="andon" style="max-width:260px"><option value="none" selected>None</option><option value="below">Below target</option><option value="above">Above target</option></select></div>
           </div>
-          <label class="ed-label" style="margin-top:14px">Decimal places</label>
-          <div class="ed-chips" data-single><button class="ed-chip active">None</button><button class="ed-chip">One</button><button class="ed-chip">Two</button><button class="ed-chip">Three</button></div>
-          <div class="ed-grid2" style="margin-top:16px">
-            <div class="ed-tr" style="margin:0"><button class="zswitch" type="button" onclick="tSw(this)"></button><span>Show Target</span></div>
-            <div class="ed-tr" style="margin:0"><button class="zswitch" type="button" onclick="tSw(this)"></button><span>Apply Conditional Formatting</span></div>
-          </div>
-          <div class="ed-grid4" style="margin-top:14px">
-            <div><label class="ed-label">Below Goal</label><div class="ed-select sm"><span class="swatch" style="background:#567714"></span><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="m6 9 6 6 6-6"/></svg></div></div>
-            <div><label class="ed-label">On Target</label><div class="ed-select sm"><span class="swatch" style="background:#e8b931"></span><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="m6 9 6 6 6-6"/></svg></div></div>
-            <div><label class="ed-label">Above Goal</label><div class="ed-select sm"><span class="swatch" style="background:#ec221f"></span><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="m6 9 6 6 6-6"/></svg></div></div>
-            <div><label class="ed-label">Andon</label><input class="ed-input"></div>
-          </div>
-          <div class="ed-grid2" style="margin-top:10px">
-            <div><label class="ed-label">Objective Tolerance</label><input class="ed-input" value="0,00"></div>
-            <div><label class="ed-label">&nbsp;</label><div class="ed-select sm"><span class="swatch" style="background:#0a0a0b"></span><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="m6 9 6 6 6-6"/></svg></div></div>
-          </div>
-          <label class="ed-label" style="margin-top:14px">display format</label>
-          <div class="ed-inbox"><span class="ed-chipcell">Standard <span class="cx"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round"><path d="M18 6 6 18M6 6l12 12"/></svg></span></span></div>
         </div>
 
         <!-- ADVANCED (board — Figma 1233-20029) -->
         <div class="ed-panel" data-panel="advanced">
-          <div class="ed-grid3">
-            <div><label class="ed-label">Show Caption</label><button class="zswitch" type="button" onclick="tSw(this)"></button></div>
-            <div><label class="ed-label">Legend</label><input class="ed-input"></div>
-            <div><label class="ed-label">Color</label><div class="ed-select"><span class="swatch" style="background:#9aa0ac"></span><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="m6 9 6 6 6-6"/></svg></div></div>
-          </div>
-          <div class="ed-grid3">
-            <div><label class="ed-label">Show Unit</label><button class="zswitch" type="button" onclick="tSw(this)"></button></div>
-            <div><label class="ed-label">Site</label><input class="ed-input"></div>
-            <div></div>
-          </div>
-          <div class="ed-grid3">
-            <div><label class="ed-label">Show Tip</label><button class="zswitch" type="button" onclick="tSw(this)"></button></div>
-            <div><label class="ed-label">Tip</label><input class="ed-input"></div>
-            <div></div>
-          </div>
-          <div class="ed-grid3">
-            <div><label class="ed-label">Transparent Border</label><button class="zswitch" type="button" onclick="tSw(this)"></button></div>
-            <div><label class="ed-label">Transparent background</label><button class="zswitch" type="button" onclick="tSw(this)"></button></div>
-            <div><label class="ed-label">Background Color</label><div class="ed-select"><span class="swatch" style="background:#f2f3f5"></span><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="m6 9 6 6 6-6"/></svg></div></div>
-          </div>
-          <div class="ed-grid3">
-            <div><label class="ed-label">Automatic Update</label><button class="zswitch" type="button" onclick="tSw(this)"></button></div>
-            <div><label class="ed-label">show mobile</label><button class="zswitch on" type="button" onclick="tSw(this)"></button></div>
-            <div></div>
-          </div>
-          <label class="ed-label" style="margin-top:6px">Topic</label>
-          <div class="ed-inbox"><span class="ed-chipcell">Others <span class="cx"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round"><path d="M18 6 6 18M6 6l12 12"/></svg></span></span></div>
-          <label class="ed-label" style="margin-top:14px">Owner</label>
-          <div class="ed-select usel"><span class="usel-l"><span class="usel-txt" style="color:#8a90a6">Select owner…</span></span><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="m6 9 6 6 6-6"/></svg></div>
-          <div class="ed-divider"></div>
-          <div class="ed-grid2">
-            <div class="ed-tr" style="margin:0"><button class="zswitch" type="button" onclick="tSw(this)"></button><span>Show Caption</span></div>
-            <div class="ed-tr" style="margin:0"><button class="zswitch on" type="button" onclick="tSw(this)"></button><span>Show Label</span></div>
-          </div>
-          <label class="ed-label" style="margin-top:14px">Decimal places</label>
-          <div class="ed-inbox"><span class="ed-chipcell">None <span class="cx"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round"><path d="M18 6 6 18M6 6l12 12"/></svg></span></span></div>
-          <div class="ed-grid2" style="margin-top:14px">
-            <div><label class="ed-label">Vertical Axis</label><div class="ed-inbox"><span class="ed-chipcell">Automatic <span class="cx"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round"><path d="M18 6 6 18M6 6l12 12"/></svg></span></span></div></div>
-            <div><label class="ed-label">Maximum vertical axis value</label><input class="ed-input" value="0,00"></div>
-          </div>
-          <div class="ed-tr" style="margin-top:14px"><button class="zswitch" type="button" onclick="tSw(this)"></button><span>Stack series</span></div>
+          <div class="ed-tr ed-sectr"><button class="zswitch" type="button" data-sec="caption" onclick="tSw(this)"></button><span>Show Caption</span></div>
+          <div class="ed-secbox sec-hidden" data-secfields="caption"><div class="ed-grid2"><div><label class="ed-label">Legend</label><input class="ed-input" data-cfg="legend"></div><div><label class="ed-label">Color</label><div class="ed-select"><span class="swatch cfg-color-cap" style="background:#9aa0ac"></span><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="m6 9 6 6 6-6"/></svg></div></div></div></div>
+          <div class="ed-tr ed-sectr"><button class="zswitch" type="button" data-sec="unit" onclick="tSw(this)"></button><span>Show Unit</span></div>
+          <div class="ed-secbox sec-hidden" data-secfields="unit"><label class="ed-label">Unit</label><input class="ed-input" data-cfg="unit" placeholder="e.g. pcs, %, kg" style="max-width:260px"></div>
+          <div class="ed-tr ed-sectr"><button class="zswitch" type="button" data-sec="tip" onclick="tSw(this)"></button><span>Show Tip</span></div>
+          <div class="ed-secbox sec-hidden" data-secfields="tip"><label class="ed-label">Tip</label><input class="ed-input" data-cfg="tip" placeholder="Enter tip text"></div>
+          <div class="ed-tr"><button class="zswitch" type="button" data-cfgsw="tborder" onclick="tSw(this)"></button><span>Transparent Border</span></div>
+          <div class="ed-tr"><button class="zswitch" type="button" data-cfgsw="tbg" onclick="tSw(this)"></button><span>Transparent background</span></div>
+          <div class="ed-secbox"><label class="ed-label">Background Color</label><div class="ed-select" style="max-width:260px"><span class="swatch cfg-color-bg" style="background:#f2f3f5"></span><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="m6 9 6 6 6-6"/></svg></div></div>
+          <div class="ed-tr"><button class="zswitch" type="button" onclick="tSw(this)"></button><span>Automatic Update</span></div>
+          <div class="ed-tr"><button class="zswitch on" type="button" onclick="tSw(this)"></button><span>show mobile</span></div>
+          <div class="ed-secbox"><label class="ed-label">Topic</label><select class="ed-input ed-native" style="max-width:260px"><option>Others</option><option>Safety</option><option>Quality</option><option>Cost</option><option>Delivery</option><option>Moral</option><option>People</option></select></div>
+          <div class="ed-secbox"><label class="ed-label">Owner</label><div class="ed-select usel" data-sel="" data-single><span class="usel-l"><span class="usel-txt" style="color:#8a90a6">Select owner…</span></span><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="m6 9 6 6 6-6"/></svg></div></div>
         </div>
 
         <!-- SOURCE (board — select edSrcType + variantes) -->
         <div class="ed-panel" data-panel="sources">
           <label class="ed-label">SOURCE TYPE</label>
-          <select class="ed-input ed-native" id="edSrcType">
+          <select class="ed-input ed-native" id="edSrcType" style="max-width:320px">
             <option value="api">API</option>
             <option value="calc">Calculation</option>
             <option value="mirror">mirroring</option>
-            <option value="manual">Manual</option>
-            <option value="modules" selected>Solvace Modules</option>
+            <option value="manual" selected>Manual</option>
           </select>
-
-          <!-- API -->
-          <div class="src-variant" data-src="api">
-            <div class="ed-grid2" style="margin-top:14px">
-              <div><label class="ed-label">Target</label><button class="zswitch" type="button" onclick="tSw(this)"></button></div>
-              <div><label class="ed-label">Value</label><button class="zswitch on" type="button" onclick="tSw(this)"></button></div>
-            </div>
-          </div>
-
-          <!-- Calculation -->
-          <div class="src-variant" data-src="calc">
-            <label class="ed-label" style="margin-top:14px">Calculation Type</label>
-            <div class="ed-inbox"><span class="ed-chipcell">Formula <span class="cx"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round"><path d="M18 6 6 18M6 6l12 12"/></svg></span></span></div>
-            <div class="ed-sec2">FORMULA</div>
-            <div class="ed-inbox" style="gap:8px"><button class="ser-add" type="button" title="Add variable"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round"><path d="M5 12h14M12 5v14"/></svg></button><input class="ed-input" style="border:none;flex:1;height:30px;padding:0 4px" value="A+B"></div>
-            <div class="calc-var">
-              <div class="calc-var-h"><button class="ser-del" type="button" title="Remove"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M3 6h18"/><path d="M19 6v14a2 2 0 0 1-2 2H7a2 2 0 0 1-2-2V6m3 0V4a2 2 0 0 1 2-2h4a2 2 0 0 1 2 2v2"/></svg></button><input class="ed-input calc-let" value="A"></div>
-              <div class="ed-grid2">
-                <div><label class="ed-label">Site</label><div class="ed-inbox dis"><span class="ed-chipcell">Detroit</span></div></div>
-                <div><label class="ed-label">Room</label><div class="ed-inbox"><span class="ed-chipcell">(DOB-1) Lin… <span class="cx"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round"><path d="M18 6 6 18M6 6l12 12"/></svg></span></span></div></div>
-                <div><label class="ed-label">Board</label><div class="ed-inbox"><span class="ed-chipcell">DDS Line 1 <span class="cx"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round"><path d="M18 6 6 18M6 6l12 12"/></svg></span></span></div></div>
-                <div><label class="ed-label">Widget</label><div class="ed-inbox"><span class="ed-chipcell">Incident Shift 2 <span class="cx"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round"><path d="M18 6 6 18M6 6l12 12"/></svg></span></span></div></div>
-              </div>
-            </div>
-            <div class="calc-var">
-              <div class="calc-var-h"><button class="ser-del" type="button" title="Remove"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M3 6h18"/><path d="M19 6v14a2 2 0 0 1-2 2H7a2 2 0 0 1-2-2V6m3 0V4a2 2 0 0 1 2-2h4a2 2 0 0 1 2 2v2"/></svg></button><input class="ed-input calc-let" value="B"></div>
-              <div class="ed-grid2">
-                <div><label class="ed-label">Site</label><div class="ed-inbox dis"><span class="ed-chipcell">Detroit</span></div></div>
-                <div><label class="ed-label">Room</label><div class="ed-inbox"><span class="ed-chipcell">(DOB-1) Lin… <span class="cx"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round"><path d="M18 6 6 18M6 6l12 12"/></svg></span></span></div></div>
-                <div><label class="ed-label">Board</label><div class="ed-inbox"><span class="ed-chipcell">DDS Line 1 <span class="cx"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round"><path d="M18 6 6 18M6 6l12 12"/></svg></span></span></div></div>
-                <div><label class="ed-label">Widget</label><div class="ed-inbox"><span class="ed-chipcell">Incident Shift 3 <span class="cx"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round"><path d="M18 6 6 18M6 6l12 12"/></svg></span></span></div></div>
-              </div>
-            </div>
-          </div>
-
-          <!-- mirroring -->
-          <div class="src-variant" data-src="mirror">
-            <div class="ed-tr" style="margin-top:14px"><button class="zswitch" type="button" onclick="tSw(this)"></button><span>Mirror goal</span></div>
-            <div class="ed-grid3" style="margin-top:6px">
-              <div><label class="ed-label">ROOM</label><input class="ed-input"></div>
-              <div><label class="ed-label">BOARD</label><input class="ed-input"></div>
-              <div><label class="ed-label">TOOL</label><input class="ed-input"></div>
-            </div>
-          </div>
-
-          <!-- Manual -->
-          <div class="src-variant" data-src="manual">
-            <div class="ed-empty" style="margin-top:14px">No extra settings for Manual source.</div>
-          </div>
-
-          <!-- Solvace Modules -->
-          <div class="src-variant" data-src="modules">
-            <div class="ed-grid3" style="margin-top:14px">
-              <div><label class="ed-label">Site</label><div class="ed-inbox"><span class="ed-chipcell">Detroit <span class="cx"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round"><path d="M18 6 6 18M6 6l12 12"/></svg></span></span></div></div>
-              <div><label class="ed-label">Module</label><input class="ed-input"></div>
-              <div><label class="ed-label">Indicator</label><input class="ed-input"></div>
-            </div>
-          </div>
+          <div id="srcVariant"></div>
         </div>
 
         <!-- LINKS (board — tabela editável, adiciona linhas) -->
         <div class="ed-panel" data-panel="links">
           <button class="ed-addrow" id="edLinkAdd" title="Add link"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round"><path d="M5 12h14M12 5v14"/></svg></button>
-          <div class="ed-tbl-wrap">
-            <table class="ed-tbl"><thead><tr><th>NAME</th><th>ROOM</th><th>BOARD</th><th>WIDGET</th><th></th></tr></thead>
-              <tbody id="edLinkRows">
-                <tr><td><input class="ed-cell" value="teste"></td><td><span class="ed-chipcell">(DOB-1) Line 1 <span class="cx"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round"><path d="M18 6 6 18M6 6l12 12"/></svg></span></span></td><td><span class="ed-chipcell">13 periods <span class="cx"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round"><path d="M18 6 6 18M6 6l12 12"/></svg></span></span></td><td><span class="ed-chipcell">Daily <span class="cx"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round"><path d="M18 6 6 18M6 6l12 12"/></svg></span></span></td><td><button class="ed-trash" title="Remove"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M3 6h18"/><path d="M19 6v14a2 2 0 0 1-2 2H7a2 2 0 0 1-2-2V6m3 0V4a2 2 0 0 1 2-2h4a2 2 0 0 1 2 2v2"/></svg></button></td></tr>
-                <tr><td><input class="ed-cell"></td><td><input class="ed-cell"></td><td><input class="ed-cell"></td><td><input class="ed-cell"></td><td><button class="ed-trash" title="Remove"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M3 6h18"/><path d="M19 6v14a2 2 0 0 1-2 2H7a2 2 0 0 1-2-2V6m3 0V4a2 2 0 0 1 2-2h4a2 2 0 0 1 2 2v2"/></svg></button></td></tr>
-                <tr><td><input class="ed-cell"></td><td><input class="ed-cell"></td><td><input class="ed-cell"></td><td><input class="ed-cell"></td><td><button class="ed-trash" title="Remove"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M3 6h18"/><path d="M19 6v14a2 2 0 0 1-2 2H7a2 2 0 0 1-2-2V6m3 0V4a2 2 0 0 1 2-2h4a2 2 0 0 1 2 2v2"/></svg></button></td></tr>
-              </tbody>
-            </table>
-          </div>
+          <div id="edLinkRows"></div>
         </div>
 
         <!-- RELATED WIDGETS -->
@@ -709,7 +629,7 @@
       <div class="fv-stage">
         <section class="wcard" style="width:680px;max-width:100%;height:520px;max-height:100%;">
           <div class="wcard-head"><div><div class="wcard-title">Units Today</div><div class="wcard-sub">vs target 3.000</div></div></div>
-          <div class="num2"><span class="num2-val font-display">3,420</span></div>
+          <div class="num2"><span class="num2-val font-display">3.420</span></div>
           <div class="w-foot"><span class="w-foot-l"><span class="w-andon" title="Andon alert">!</span></span><span class="w-av" style="background:#ffd8a8;color:#9a4a00">NU</span></div>
         </section>
       </div>
@@ -744,10 +664,10 @@ function openFull(){ var m=document.getElementById('fullModal'); var tabs=m.quer
 function closeFull(){ document.getElementById('fullModal').classList.remove('open'); }
 function openEdit(){ document.getElementById('editModal').classList.add('open'); }
 function closeEdit(){ document.getElementById('editModal').classList.remove('open'); }
-function openDpe(){ var el=document.getElementById('valUpdate'); var ed=document.getElementById('dpEdit'), inp=document.getElementById('dpeIn'); inp.value=(el.textContent||'').replace(/[^0-9.-]/g,'')||'0'; ed.classList.add('open'); var r=el.getBoundingClientRect(); ed.style.left=Math.min(window.innerWidth-210, Math.max(8, r.left+r.width/2-100))+'px'; var top=r.top-ed.offsetHeight-10; ed.style.top=(top>8?top:r.bottom+10)+'px'; inp.focus(); inp.select(); }
+function openDpe(){ var el=document.getElementById('valUpdate'); var ed=document.getElementById('dpEdit'), inp=document.getElementById('dpeIn'); inp.value=(el.textContent||'').replace(/\./g,'').replace(',','.').replace(/[^0-9.\-]/g,'')||'0'; ed.classList.add('open'); var r=el.getBoundingClientRect(); ed.style.left=Math.min(window.innerWidth-210, Math.max(8, r.left+r.width/2-100))+'px'; var top=r.top-ed.offsetHeight-10; ed.style.top=(top>8?top:r.bottom+10)+'px'; inp.focus(); inp.select(); }
 function closeDpe(){ document.getElementById('dpEdit').classList.remove('open'); }
 function dpeStep(d){ var inp=document.getElementById('dpeIn'); var v=parseFloat(inp.value)||0; v=Math.max(0, Math.round((v+d)*100)/100); inp.value=v; }
-function saveDpe(){ var n=Number(document.getElementById('dpeIn').value||0); var s=n.toLocaleString('en-US'); document.querySelectorAll('.wmain').forEach(function(el){ el.textContent=s; }); applyNumStates(); closeDpe(); }
+function saveDpe(){ var n=Number(document.getElementById('dpeIn').value||0); var s=n.toLocaleString('pt-BR'); document.querySelectorAll('.wmain').forEach(function(el){ el.textContent=s; }); applyNumStates(); closeDpe(); }
 
 /* page tabs: Edit / Meeting / Update */
 document.querySelectorAll('.pgtab').forEach(function(tab){
@@ -797,9 +717,60 @@ document.querySelectorAll('.ed-chips[data-single]').forEach(function(g){
   g.querySelectorAll('.ed-chip').forEach(function(c){ c.addEventListener('click', function(){ g.querySelectorAll('.ed-chip').forEach(function(x){ x.classList.remove('active'); }); c.classList.add('active'); }); });
 });
 /* switches */
-function tSw(b){ b.classList.toggle('on'); }
-/* config preview live sync */
-function syncPrev(){ document.getElementById('cfgPrevTitle').textContent=document.getElementById('cfgTitle').value; }
+function tSw(b){ b.classList.toggle('on'); if(b.getAttribute('data-sec')) nwSyncSec(b); applyCfg(); }
+function nwSyncSec(b){ var sec=b.getAttribute('data-sec'); if(!sec) return; var box=document.querySelector('#editDrawer .ed-secbox[data-secfields="'+sec+'"]'); if(box) box.classList.toggle('sec-hidden', !b.classList.contains('on')); }
+function nwSyncAllSec(){ var sws=document.querySelectorAll('#editDrawer .zswitch[data-sec]'); for(var i=0;i<sws.length;i++) nwSyncSec(sws[i]); }
+document.addEventListener('DOMContentLoaded', function(){ nwSyncAllSec(); applyCfg(); }); nwSyncAllSec();
+/* config preview live sync — reflete toda a config no widget ao lado */
+function syncPrev(){ applyCfg(); }
+function applyCfg(){
+  var scope=document.getElementById('editDrawer'), card=document.getElementById('cfgPrevCard');
+  if(!scope||!card) return;
+  var q=function(s){ return scope.querySelector(s); };
+  var val=function(s){ var e=q(s); return e?e.value:''; };
+  var secOn=function(sec){ var e=q('.zswitch[data-sec="'+sec+'"]'); return e?e.classList.contains('on'):false; };
+  var swOn=function(n){ var e=q('.zswitch[data-cfgsw="'+n+'"]'); return e?e.classList.contains('on'):false; };
+  var bg=function(s){ var e=q(s); return e?(e.style.background||''):''; };
+  applyCfgTo(card, {q:q,val:val,secOn:secOn,swOn:swOn,bg:bg});
+}
+/* aplica a config (getters) sobre um card de preview qualquer (standalone ou clone do board) */
+function applyCfgTo(card, g){
+  var BASE=3420;
+  // título (texto + Size + Color afetam o TÍTULO)
+  var head=card.querySelector('.wcard-head'); if(head) head.style.visibility=g.secOn('title')?'':'hidden';
+  var tt=card.querySelector('.wcard-title');
+  if(tt){ tt.textContent=g.val('[data-cfg="title"]')||'Units Today';
+    var tsize=g.val('[data-cfg="size"]')||'medium';
+    tt.style.fontSize=(tsize==='small'?'13px':tsize==='large'?'22px':'17px');
+    tt.style.lineHeight='1.35'; tt.style.paddingBottom='2px';
+    var tcol=g.bg('.cfg-color-title'); tt.style.color=tcol||''; }
+  // número + casas decimais
+  var dec=parseInt(g.val('[data-cfg="dec"]')||'0',10); if(isNaN(dec)) dec=0;
+  var num=card.querySelector('.num2-val'); var TGT=3000;
+  // Show target: mostra "valor/target" ao lado do número
+  if(num){ var disp=BASE.toLocaleString('pt-BR',{minimumFractionDigits:dec,maximumFractionDigits:dec}); if(g.secOn('target')) disp+='/'+TGT.toLocaleString('pt-BR'); num.textContent=disp; }
+  var sub=card.querySelector('.wcard-sub'); if(sub) sub.style.display='none';
+  // Conditional formatting: ligado => fundo/numero alternam (verde/vermelho/amarelo); desligado => número preto + fundo cinza claro
+  var n2box=card.querySelector('.num2');
+  if(n2box){ n2box.classList.remove('pos','on','neg'); n2box.classList.toggle('num2-tgt', g.secOn('target')); if(g.secOn('cf')){ n2box.classList.add(BASE>TGT?'pos':(BASE<TGT?'neg':'on')); n2box.style.background=''; if(num) num.style.color=''; } else { n2box.style.background='#f2f3f5'; if(num) num.style.color='#0a0a0b'; } }
+  // tip: tooltip só nas partes brancas (fora do número)
+  if(g.secOn('tip') && g.val('[data-cfg="tip"]')){ card.setAttribute('data-systip', g.val('[data-cfg="tip"]')); if(n2box) n2box.setAttribute('data-systip',''); } else { card.removeAttribute('data-systip'); if(n2box) n2box.removeAttribute('data-systip'); }
+  // andon
+  var an=card.querySelector('.w-andon'); if(an){ var a=g.val('[data-cfg="andon"]')||'none'; an.style.display=(a==='none')?'none':''; }
+  // caption / legend: abaixo do título, menor e na cor selecionada
+  var cap=card.querySelector('.cfg-cap'); if(!cap){ cap=document.createElement('div'); cap.className='cfg-cap'; cap.style.cssText='font-size:14px;line-height:1.35;margin-top:3px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis'; if(tt&&tt.parentNode) tt.parentNode.appendChild(cap); }
+  if(cap){ if(g.secOn('caption')&&g.val('[data-cfg="legend"]')){ cap.textContent=g.val('[data-cfg="legend"]'); cap.style.color=g.bg('.cfg-color-cap')||'#9aa0ac'; cap.style.display=''; } else cap.style.display='none'; }
+  // unit: acompanha a cor do número e é 50% menor que a fonte do número
+  var num2=card.querySelector('.num2');
+  if(num2){ var u=num2.querySelector('.cfg-unit'); if(!u){ u=document.createElement('span'); u.className='cfg-unit'; u.style.cssText='margin-left:8px;font-weight:600;align-self:center'; num2.appendChild(u); } if(g.secOn('unit')&&g.val('[data-cfg="unit"]')){ u.textContent=g.val('[data-cfg="unit"]'); u.style.display=''; if(num){ var nc=getComputedStyle(num); u.style.color=nc.color; u.style.fontSize=Math.round(parseFloat(nc.fontSize)*0.5)+'px'; } } else u.style.display='none'; }
+  // borda / fundo
+  card.style.borderColor=g.swOn('tborder')?'transparent':'';
+  if(g.swOn('tbg')) card.style.background='transparent'; else { var bgc=g.bg('.cfg-color-bg'); card.style.background=bgc||''; }
+  // owner (avatar no rodapé)
+  var av=card.querySelector('.w-av'); var us=g.q('.ed-select.usel');
+  if(av && us){ var arr=(us.getAttribute('data-sel')||'').split(',').filter(Boolean); if(arr.length){ av.textContent=arr[0]; } }
+}
+(function(){ var d=document.getElementById('editDrawer'); if(d){ d.addEventListener('input', applyCfg); d.addEventListener('change', applyCfg); } })();
 /* number status color: verde (acima do target), amarelo (no target), vermelho (abaixo) */
 var NUM_TARGET=3000;
 function numState(v){ if(v>NUM_TARGET) return 'pos'; if(v<NUM_TARGET) return 'neg'; return 'on'; }
@@ -814,21 +785,92 @@ document.addEventListener('keydown', function(e){ if(e.key==='Escape'){ closeFul
 /* ---- config drawer: dynamic rows synced with the board (Source variants, Andon cards, Links) ---- */
 (function(){
   var TRASH='<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M3 6h18"/><path d="M19 6v14a2 2 0 0 1-2 2H7a2 2 0 0 1-2-2V6m3 0V4a2 2 0 0 1 2-2h4a2 2 0 0 1 2 2v2"/></svg>';
-  /* Source type -> variant */
-  var srcType=document.getElementById('edSrcType');
-  function updSrc(){ var v=srcType?srcType.value:''; document.querySelectorAll('.src-variant').forEach(function(el){ el.style.display = el.getAttribute('data-src')===v ? 'block' : 'none'; }); }
-  if(srcType){ srcType.addEventListener('change', updSrc); updSrc(); }
+  /* Source tab — dynamic, functional form */
+  (function(){
+    var elSrc=document.getElementById('edSrcType'), host=document.getElementById('srcVariant'); if(!elSrc||!host) return;
+    var ROOMS=[
+      {r:'(DOB-1) Line 1', boards:[{b:'DDS Line 1',widgets:['Units Today','OEE','Downtime']},{b:'Performance',widgets:['Availability','Quality rate']}]},
+      {r:'(DOB-12) Bearing Line #1', boards:[{b:'SQDCM',widgets:['Safety cross','Scrap rate']},{b:'Daily meeting',widgets:['Output','Rework']}]},
+      {r:'(DOB-45) Assembly Cell A', boards:[{b:'Line board',widgets:['Takt time','WIP']},{b:'Meeting board',widgets:['Action plan','Attendance']}]}
+    ];
+    function findR(r){ for(var i=0;i<ROOMS.length;i++) if(ROOMS[i].r===r) return ROOMS[i]; return null; }
+    function findB(ro,b){ if(!ro) return null; for(var i=0;i<ro.boards.length;i++) if(ro.boards[i].b===b) return ro.boards[i]; return null; }
+    function opt(v,cur){ return '<option value="'+String(v).replace(/"/g,'&quot;')+'"'+(v===cur?' selected':'')+'>'+v+'</option>'; }
+    function roomSel(f,cur){ return '<select class="ed-input ed-native" data-srcf="'+f+'"><option value="">Select room</option>'+ROOMS.map(function(r){return opt(r.r,cur);}).join('')+'</select>'; }
+    function boardSel(f,room,cur){ var ro=findR(room); return '<select class="ed-input ed-native" data-srcf="'+f+'"'+(ro?'':' disabled')+'><option value="">Select board</option>'+(ro?ro.boards.map(function(b){return opt(b.b,cur);}).join(''):'')+'</select>'; }
+    function leafSel(f,room,board,cur){ var bo=findB(findR(room),board); return '<select class="ed-input ed-native" data-srcf="'+f+'"'+(bo?'':' disabled')+'><option value="">Select</option>'+(bo?bo.widgets.map(function(w){return opt(w,cur);}).join(''):'')+'</select>'; }
+    var PLUS='<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round"><path d="M5 12h14M12 5v14"/></svg>';
+    var S={ type:elSrc.value||'manual', apiTarget:false, calcType:'add', vars:[{op:'add',room:'',board:'',widget:''}], formula:'', mirrorGoal:false, mRoom:'', mBoard:'', mTool:'' };
+    function LT(i){ return String.fromCharCode(65+i); }
+    function formula(){ if(S.calcType==='avg') return "AVG("+S.vars.map(function(v,i){return "'"+LT(i)+"'";}).join(',')+")"; if(S.calcType==='formula') return S.formula; return S.vars.map(function(v,i){ return (v.op==='sub'?"-":"+")+"'"+LT(i)+"'"; }).join(''); }
+    function calcRow(v,i){ var op=(S.calcType==='add');
+      var f='<div class="srcv-cell srcv-let"><label class="ed-label">Var</label><input class="ed-input" value="'+LT(i)+'" readonly></div>';
+      if(op) f+='<div class="srcv-cell"><label class="ed-label">Operation</label><select class="ed-input ed-native" data-srcf="op"><option value="add"'+(v.op==='add'?' selected':'')+'>Addition</option><option value="sub"'+(v.op==='sub'?' selected':'')+'>Subtraction</option></select></div>';
+      f+='<div class="srcv-cell"><label class="ed-label">Site</label><div class="ed-inbox dis"><span class="ed-chipcell">Detroit</span></div></div>';
+      f+='<div class="srcv-cell"><label class="ed-label">Room</label>'+roomSel('room',v.room)+'</div>';
+      f+='<div class="srcv-cell"><label class="ed-label">Board</label>'+boardSel('board',v.room,v.board)+'</div>';
+      f+='<div class="srcv-cell"><label class="ed-label">Widget</label>'+leafSel('widget',v.room,v.board,v.widget)+'</div>';
+      return '<div class="srcv-row" data-i="'+i+'"><div class="srcv-fields">'+f+'</div><div class="srcv-foot"><button class="src-del" type="button" title="Remove">'+TRASH+'</button></div></div>';
+    }
+    function render(){ var v=S.type, h='';
+      if(v==='api'){ h='<div class="ed-grid2" style="margin-top:14px"><div><label class="ed-label">Target</label><button class="zswitch'+(S.apiTarget?' on':'')+'" type="button" data-srcsw="apiTarget"></button></div><div><label class="ed-label">Value</label><button class="zswitch on" type="button" disabled style="opacity:.55;pointer-events:none" data-systip="Value comes active and locked"></button></div></div>'; }
+      else if(v==='calc'){ var ct=[['add','Addition/Subtraction'],['avg','Average'],['formula','Formula']];
+        h='<label class="ed-label" style="margin-top:14px">Calculation Type</label><select class="ed-input ed-native" data-srcf="calcType" style="max-width:320px">'+ct.map(function(c){return '<option value="'+c[0]+'"'+(S.calcType===c[0]?' selected':'')+'>'+c[1]+'</option>';}).join('')+'</select>';
+        h+='<div class="ed-sec2" style="margin-top:14px">FORMULA</div>';
+        if(S.calcType==='formula') h+='<div class="srcf-box"><button class="src-add" type="button" title="Add variable">'+PLUS+'</button><input class="ed-input" data-srcf="formula" style="border:none;flex:1;height:30px" value="'+String(S.formula).replace(/"/g,'&quot;')+'"></div>';
+        else h+='<div class="srcf-box"><button class="src-add" type="button" title="Add variable">'+PLUS+'</button><span class="srcf-txt">'+formula()+'</span></div>';
+        h+='<div class="srcv-list">'+S.vars.map(calcRow).join('')+'</div>';
+      }
+      else if(v==='mirror'){ h='<label class="ed-check" style="margin-top:14px"><input type="checkbox" data-srcsw="mirrorGoal"'+(S.mirrorGoal?' checked':'')+'>Mirror goal</label><div class="ed-grid3" style="margin-top:6px"><div><label class="ed-label">ROOM</label>'+roomSel('mroom',S.mRoom)+'</div><div><label class="ed-label">BOARD</label>'+boardSel('mboard',S.mRoom,S.mBoard)+'</div><div><label class="ed-label">TOOL</label>'+leafSel('mtool',S.mRoom,S.mBoard,S.mTool)+'</div></div>'; }
+      else h='';
+      host.innerHTML=h;
+    }
+    elSrc.addEventListener('change', function(){ S.type=elSrc.value; render(); });
+    host.addEventListener('change', function(e){ var t=e.target, f=t.getAttribute&&t.getAttribute('data-srcf'); if(!f) return;
+      if(f==='calcType'){ S.calcType=t.value; render(); return; }
+      if(f==='formula'){ S.formula=t.value; return; }
+      if(f==='mroom'){ S.mRoom=t.value; S.mBoard=''; S.mTool=''; render(); return; }
+      if(f==='mboard'){ S.mBoard=t.value; S.mTool=''; render(); return; }
+      if(f==='mtool'){ S.mTool=t.value; return; }
+      var row=t.closest('.srcv-row'); if(!row) return; var i=+row.getAttribute('data-i'), vv=S.vars[i]; if(!vv) return;
+      if(f==='room'){ vv.room=t.value; vv.board=''; vv.widget=''; render(); }
+      else if(f==='board'){ vv.board=t.value; vv.widget=''; render(); }
+      else if(f==='widget'){ vv.widget=t.value; }
+      else if(f==='op'){ vv.op=t.value; var ft=host.querySelector('.srcf-txt'); if(ft) ft.textContent=formula(); }
+    });
+    host.addEventListener('click', function(e){ var add=e.target.closest&&e.target.closest('.src-add'); if(add){ S.vars.push({op:'add',room:'',board:'',widget:''}); render(); return; } var del=e.target.closest&&e.target.closest('.src-del'); if(del){ var row=del.closest('.srcv-row'); if(row){ var i=+row.getAttribute('data-i'); S.vars.splice(i,1); if(!S.vars.length) S.vars.push({op:'add',room:'',board:'',widget:''}); render(); } return; } var sw=e.target.closest&&e.target.closest('[data-srcsw]'); if(sw && sw.classList.contains('zswitch')){ sw.classList.toggle('on'); S[sw.getAttribute('data-srcsw')]=sw.classList.contains('on'); return; } });
+    host.addEventListener('input', function(e){ var cb=e.target; if(cb.type==='checkbox' && cb.getAttribute('data-srcsw')){ S[cb.getAttribute('data-srcsw')]=cb.checked; } });
+    render();
+  })();
   /* Andon — repeatable rule cards (3 by default) */
   var andonAdd=document.getElementById('edAndonAdd'), andonRows=document.getElementById('edAndonRows');
-  function andonRow(){ var d=document.createElement('div'); d.className='andon-row'; d.innerHTML='<div class="andon-fields"><div class="andon-f"><label>With</label><div class="andon-series">Series</div></div><div class="andon-f"><label>Regarding Target for</label><input class="ed-input"></div><div class="andon-f"><label>in (units)</label><input class="ed-input"></div><div class="andon-f"><label>Notify</label><input class="ed-input"></div></div><div class="andon-foot"><button class="andon-bell" title="Notification"><svg viewBox="0 0 24 24" fill="currentColor"><path d="M12 2a6 6 0 0 0-6 6c0 7-3 9-3 9h18s-3-2-3-9a6 6 0 0 0-6-6z"/><path d="M10.5 21a1.5 1.5 0 0 0 3 0z"/></svg></button><input class="andon-ck" type="checkbox" checked><button class="andon-del" title="Remove">'+TRASH+'</button></div>'; return d; }
+  function andonRow(){ var d=document.createElement('div'); d.className='andon-row'; d.innerHTML='<div class="andon-fields"><div class="andon-f"><label>With</label><div class="andon-series">Series</div></div><div class="andon-f"><label>Regarding Target for</label><select class="ed-input ed-native"><option value="none">None</option><option value="minor">Minor</option><option value="higher">Higher</option></select></div><div class="andon-f"><label>in (units)</label><input class="ed-input" type="number" step="1" placeholder="0"></div><div class="andon-f"><label>Notify</label><div class="ed-select usel" data-sel=""><span class="usel-l"><span class="usel-txt" style="color:#8a90a6">Select…</span></span><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="m6 9 6 6 6-6"/></svg></div></div></div><div class="andon-foot"><button class="andon-bell" title="Notification"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M18 8a6 6 0 0 0-12 0c0 7-3 9-3 9h18s-3-2-3-9"/><path d="M13.73 21a2 2 0 0 1-3.46 0"/></svg></button><input class="andon-ck" type="checkbox" checked><button class="andon-del" title="Remove">'+TRASH+'</button></div>'; return d; }
   if(andonRows){ for(var i=0;i<3;i++) andonRows.appendChild(andonRow()); }
   if(andonAdd&&andonRows) andonAdd.addEventListener('click', function(){ andonRows.appendChild(andonRow()); });
   if(andonRows) andonRows.addEventListener('click', function(e){ var d=e.target.closest('.andon-del'); if(d){ var row=d.closest('.andon-row'); if(row&&row.parentNode) row.parentNode.removeChild(row); } });
   /* Links — add / remove rows */
   var linkAdd=document.getElementById('edLinkAdd'), linkRows=document.getElementById('edLinkRows');
-  function emptyLinkRow(){ var tr=document.createElement('tr'); tr.innerHTML='<td><input class="ed-cell"></td><td><input class="ed-cell"></td><td><input class="ed-cell"></td><td><input class="ed-cell"></td><td><button class="ed-trash" title="Remove">'+TRASH+'</button></td>'; return tr; }
+  var LK_ROOMS=[
+    {r:'(DOB-1) Line 1', boards:[ {b:'DDS Line 1', widgets:['Units Today','OEE','Downtime']}, {b:'Performance', widgets:['Availability','Quality rate']} ]},
+    {r:'(DOB-12) Bearing Line #1', boards:[ {b:'SQDCM', widgets:['Safety cross','Scrap rate']}, {b:'Daily meeting', widgets:['Output','Rework']} ]},
+    {r:'(DOB-45) Assembly Cell A', boards:[ {b:'Line board', widgets:['Takt time','WIP']}, {b:'Meeting board', widgets:['Action plan','Attendance']} ]}
+  ];
+  function lkOpt(v){ return '<option value="'+String(v).replace(/"/g,'&quot;')+'">'+v+'</option>'; }
+  function lkRoomOpts(){ return '<option value="">Select room</option>'+LK_ROOMS.map(function(r){return lkOpt(r.r);}).join(''); }
+  function lkFindRoom(r){ for(var i=0;i<LK_ROOMS.length;i++) if(LK_ROOMS[i].r===r) return LK_ROOMS[i]; return null; }
+  function lkFindBoard(ro,b){ if(!ro) return null; for(var i=0;i<ro.boards.length;i++) if(ro.boards[i].b===b) return ro.boards[i]; return null; }
+  function lkSetWrap(sel){ var w=sel.nextElementSibling; if(w&&w.classList&&w.classList.contains('ds-select')){ w.style.opacity=sel.disabled?'.5':''; w.style.pointerEvents=sel.disabled?'none':''; } }
+  function lkFillBoards(sel,room){ if(!sel) return; var ro=lkFindRoom(room); sel.innerHTML='<option value="">Select board</option>'+(ro?ro.boards.map(function(b){return lkOpt(b.b);}).join(''):''); sel.selectedIndex=0; sel.disabled=!ro; lkSetWrap(sel); try{sel.dispatchEvent(new Event('change',{bubbles:true}));}catch(_){} }
+  function lkFillWidgets(sel,room,board){ if(!sel) return; var bo=lkFindBoard(lkFindRoom(room),board); sel.innerHTML='<option value="">Select widget</option>'+(bo?bo.widgets.map(function(w){return lkOpt(w);}).join(''):''); sel.selectedIndex=0; sel.disabled=!bo; lkSetWrap(sel); try{sel.dispatchEvent(new Event('change',{bubbles:true}));}catch(_){} }
+  function emptyLinkRow(){ var d=document.createElement('div'); d.className='link-row'; d.innerHTML='<div class="link-fields"><div class="link-f lf-name"><label>Name</label><input class="ed-input"></div><div class="link-f"><label>Room</label><select class="ed-input ed-native" data-lk="room">'+lkRoomOpts()+'</select></div><div class="link-f"><label>Board</label><select class="ed-input ed-native" data-lk="board" disabled><option value="">Select room first</option></select></div><div class="link-f"><label>Widget</label><select class="ed-input ed-native" data-lk="widget" disabled><option value="">Select board first</option></select></div></div><div class="link-foot"><button class="ed-trash link-del" title="Remove">'+TRASH+'</button></div>'; return d; }
   if(linkAdd&&linkRows) linkAdd.addEventListener('click', function(){ linkRows.appendChild(emptyLinkRow()); });
-  if(linkRows) linkRows.addEventListener('click', function(e){ var t=e.target.closest('.ed-trash'); if(t){ var tr=t.closest('tr'); if(tr&&tr.parentNode) tr.parentNode.removeChild(tr); return; } var cx=e.target.closest('.cx'); if(cx){ var td=cx.closest('td'); if(td) td.innerHTML='<input class="ed-cell">'; } });
+  if(linkRows) linkRows.addEventListener('click', function(e){ var t=e.target.closest('.ed-trash'); if(t){ var row=t.closest('.link-row'); if(row&&row.parentNode) row.parentNode.removeChild(row); } });
+  if(linkRows) linkRows.addEventListener('change', function(e){ var sel=e.target; if(!sel||sel.tagName!=='SELECT') return; var row=sel.closest('.link-row'); if(!row) return; var role=sel.getAttribute('data-lk'); if(role==='room'){ lkFillBoards(row.querySelector('[data-lk="board"]'), sel.value); } else if(role==='board'){ var rs=row.querySelector('[data-lk="room"]'); lkFillWidgets(row.querySelector('[data-lk="widget"]'), rs?rs.value:'', sel.value); } });
+  if(linkRows){ linkRows.innerHTML=''; var r1=emptyLinkRow(); linkRows.appendChild(r1); linkRows.appendChild(emptyLinkRow()); linkRows.appendChild(emptyLinkRow());
+    var nm=r1.querySelector('.lf-name input'); if(nm) nm.value='teste';
+    var rs1=r1.querySelector('[data-lk="room"]'), bs1=r1.querySelector('[data-lk="board"]'), ws1=r1.querySelector('[data-lk="widget"]');
+    if(rs1){ rs1.value='(DOB-1) Line 1'; var ro=lkFindRoom('(DOB-1) Line 1'); bs1.innerHTML='<option value="">Select board</option>'+ro.boards.map(function(b){return lkOpt(b.b);}).join(''); bs1.disabled=false; bs1.value='DDS Line 1'; var bo=lkFindBoard(ro,'DDS Line 1'); ws1.innerHTML='<option value="">Select widget</option>'+bo.widgets.map(function(w){return lkOpt(w);}).join(''); ws1.disabled=false; ws1.value='Units Today'; }
+  }
 })();
 /* System tooltip for control buttons/icons — replaces the native browser title */
 (function(){ var barTip=document.createElement('div'); barTip.id='barTip'; barTip.style.display='none'; document.body.appendChild(barTip);
@@ -837,13 +879,25 @@ document.addEventListener('keydown', function(e){ if(e.key==='Escape'){ closeFul
   document.addEventListener('mouseover', function(e){ var el=e.target.closest && e.target.closest(TIPSEL); if(!el) return; var t=lbl(el); if(!t) return; if(el.hasAttribute('title')){ el.setAttribute('data-systip', t); el.removeAttribute('title'); } barTip.innerHTML='<div class="bt-row"><span class="bt-l" style="color:#fff;font-weight:600">'+t+'</span></div><div class="bt-arrow"></div>'; barTip.style.display='block'; var r=el.getBoundingClientRect(); barTip.style.left=(r.left+r.width/2)+'px'; barTip.style.top=r.top+'px'; });
   document.addEventListener('mouseout', function(e){ var el=e.target.closest && e.target.closest(TIPSEL); if(el) barTip.style.display='none'; });
 })();
+/* tooltips nos ícones do rodapé do widget (andon/planos/feed/avatar) — texto padrão, hug content */
+(function(){
+  var NM={JD:'John Davis',NU:'Nick Usk',RK:'Rafael Klein',SA:'Solvace Administrator',JF:'Jardel Florentino',SL:'Steve Loren',RB:'Renato Basso',LB:'Lilia Buzato'};
+  function enh(){ document.querySelectorAll('.w-foot').forEach(function(f){
+    var al=f.querySelector('.w-andon,.w-apalert'); if(al&&!al.getAttribute('data-systip')){ al.removeAttribute('title'); al.setAttribute('data-systip','There are overdue action plans'); }
+    var m=f.querySelectorAll('.w-meta');
+    if(m[0]&&!m[0].getAttribute('data-systip')){ m[0].removeAttribute('title'); m[0].setAttribute('data-systip','Total action plans'); }
+    if(m[1]&&!m[1].getAttribute('data-systip')){ m[1].removeAttribute('title'); m[1].setAttribute('data-systip','Total feed comments'); }
+    var av=f.querySelector('.w-av'); if(av&&!av.getAttribute('data-systip')){ var ini=(av.textContent||'').trim(); av.removeAttribute('title'); av.setAttribute('data-systip', NM[ini]||ini||'User'); }
+  }); }
+  enh(); try{ new MutationObserver(function(){ clearTimeout(window.__ftip); window.__ftip=setTimeout(enh,200); }).observe(document.body,{childList:true,subtree:true}); }catch(_){}
+})();
 /* config: color selects (swatch) abrem uma paleta do DS com seletor RGB */
 (function(){
   var PAL=['#001391','#0a0a0b','#4d5166','#9aa0ac','#dfe3ea','#f2f3f5','#ffffff','#14ae5c','#8bc34a','#e8b931','#f5a524','#ec221f','#d41d1a','#0e7aa8'];
   var pop=null, sw=null;
   function close(){ if(pop){ pop.remove(); pop=null; sw=null; } }
   function curHex(){ var b=(sw&&sw.style.background||'').trim(); if(/^#([0-9a-f]{6})$/i.test(b)) return b; var m=/rgba?\((\d+),\s*(\d+),\s*(\d+)/i.exec(b); if(m){ return '#'+[1,2,3].map(function(i){return ('0'+(+m[i]).toString(16)).slice(-2);}).join(''); } return '#001391'; }
-  function apply(c){ if(sw) sw.style.background=c; }
+  function apply(c){ if(sw) sw.style.background=c; if(typeof applyCfg==='function') applyCfg(); }
   document.addEventListener('click', function(e){
     if(pop && e.target.closest && e.target.closest('.cpal-pop')){ var c=e.target.closest('.cpal-sw'); if(c && sw){ apply(c.getAttribute('data-c')); close(); } return; }
     var sel=e.target.closest && e.target.closest('#editDrawer .ed-select'); if(sel && sel.querySelector('.swatch')){ e.stopPropagation(); var s=sel.querySelector('.swatch'); if(sw===s){ close(); return; } close(); sw=s;
@@ -875,7 +929,7 @@ document.addEventListener('keydown', function(e){ if(e.key==='Escape'){ closeFul
   function byInit(i){ for(var k=0;k<POOL.length;k++) if(POOL[k].i===i) return POOL[k]; return {i:i,n:i,c:'#e6e6ea',t:'#4d5166'}; }
   function renderUsel(sel){ var arr=(sel.getAttribute('data-sel')||'').split(',').filter(Boolean); var l=sel.querySelector('.usel-l'); if(!l) return; if(!arr.length){ l.innerHTML='<span class="usel-txt" style="color:#8a90a6">Select owner…</span>'; return; } var avs=arr.slice(0,3).map(function(i){var p=byInit(i);return '<span class="uav" style="background:'+p.c+';color:'+p.t+'">'+p.i+'</span>';}).join(''); var first=byInit(arr[0]).n, extra=arr.length>1?(', +'+(arr.length-1)):''; l.innerHTML='<span class="usel-avs">'+avs+'</span><span class="usel-txt">'+first+extra+'</span>'; }
   function openFor(sel){ close(); anchor=sel; pop=document.createElement('div'); pop.className='rsel-pop'; pop.innerHTML='<div class="rsel-search"><input placeholder="Type 3+ letters…"></div><div class="rsel-hint">Type at least 3 letters to search users</div><div class="rsel-list" style="display:none"></div>'; document.body.appendChild(pop); var r=sel.getBoundingClientRect(); pop.style.left=r.left+'px'; pop.style.top=(r.bottom+6)+'px'; pop.style.minWidth=r.width+'px'; var si=pop.querySelector('.rsel-search input'), lst=pop.querySelector('.rsel-list'), hint=pop.querySelector('.rsel-hint'); function rl(q){ var cur=(sel.getAttribute('data-sel')||'').split(',').filter(Boolean); var ms=POOL.filter(function(p){return p.n.toLowerCase().indexOf(q)>=0;}); lst.innerHTML=ms.length?ms.map(function(p){var on=cur.indexOf(p.i)>=0; return '<label class="rsel-it" data-i="'+p.i+'"><input type="checkbox" '+(on?'checked':'')+'><span class="uav" style="background:'+p.c+';color:'+p.t+'">'+p.i+'</span><span>'+p.n+'</span></label>';}).join(''):'<div class="rsel-empty">No users found</div>'; } si.focus(); si.addEventListener('input', function(){ var q=this.value.toLowerCase().trim(); if(q.length<3){ lst.style.display='none'; hint.style.display=''; return; } hint.style.display='none'; lst.style.display=''; rl(q); }); }
-  document.addEventListener('click', function(e){ if(pop && e.target.closest && e.target.closest('.rsel-pop')){ var it=e.target.closest('.rsel-it'); if(it && anchor){ var cb=it.querySelector('input'); if(e.target.tagName!=='INPUT') cb.checked=!cb.checked; var id=it.getAttribute('data-i'); var arr=(anchor.getAttribute('data-sel')||'').split(',').filter(Boolean); var ix=arr.indexOf(id); if(cb.checked&&ix<0) arr.push(id); if(!cb.checked&&ix>=0) arr.splice(ix,1); anchor.setAttribute('data-sel', arr.join(',')); renderUsel(anchor); } return; } var sel=e.target.closest && e.target.closest('#editDrawer .ed-select.usel'); if(sel){ e.stopPropagation(); if(anchor===sel) close(); else openFor(sel); return; } close(); });
+  document.addEventListener('click', function(e){ if(pop && e.target.closest && e.target.closest('.rsel-pop')){ var it=e.target.closest('.rsel-it'); if(it && anchor){ var id=it.getAttribute('data-i'); if(anchor.hasAttribute('data-single')){ anchor.setAttribute('data-sel', id); renderUsel(anchor); close(); if(typeof applyCfg==='function') applyCfg(); return; } var cb=it.querySelector('input'); if(e.target.tagName!=='INPUT') cb.checked=!cb.checked; var arr=(anchor.getAttribute('data-sel')||'').split(',').filter(Boolean); var ix=arr.indexOf(id); if(cb.checked&&ix<0) arr.push(id); if(!cb.checked&&ix>=0) arr.splice(ix,1); anchor.setAttribute('data-sel', arr.join(',')); renderUsel(anchor); if(typeof applyCfg==='function') applyCfg(); } return; } var sel=e.target.closest && e.target.closest('#editDrawer .ed-select.usel'); if(sel){ e.stopPropagation(); if(anchor===sel) close(); else openFor(sel); return; } close(); });
 })();
 </script>
 </body>
