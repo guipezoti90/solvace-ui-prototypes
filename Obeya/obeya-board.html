@@ -2118,7 +2118,7 @@
 
         <!-- SOURCE -->
         <div class="ed-panel" data-panel="sources">
-          <label class="ed-label">SOURCE TYPE</label>
+          <label class="ed-label">Source type</label>
           <select class="ed-input ed-native" id="edSrcType" style="max-width:320px">
             <option value="api">API</option>
             <option value="calc">Calculation</option>
@@ -2137,7 +2137,7 @@
         <!-- RELATED WIDGETS (#77 — table) -->
         <div class="ed-panel" data-panel="related">
           <div class="ed-tbl-wrap">
-            <table class="ed-tbl"><thead><tr><th>SITE</th><th>ROOM</th><th>BOARD</th><th>WIDGET</th></tr></thead>
+            <table class="ed-tbl"><thead><tr><th>Site</th><th>Room</th><th>Board</th><th>Widget</th></tr></thead>
               <tbody>
                 <tr><td class="ed-tdtext">Detroit</td><td class="ed-tdtext">(DOB-1) Line 1</td><td class="ed-tdtext">DDS Line 1</td><td class="ed-tdtext">Incident Shift 1</td></tr>
               </tbody>
@@ -3838,7 +3838,7 @@
   }
   document.getElementById('edClose').addEventListener('click', closeEditModal);
   document.getElementById('edCancel').addEventListener('click', closeEditModal);
-  document.getElementById('edApply').addEventListener('click', closeEditModal);
+  document.getElementById('edApply').addEventListener('click', function(){ try{ if(selectedWidget && selectedWidget.querySelector && selectedWidget.querySelector('.num2')) applyCfgToCard(selectedWidget); }catch(e){} closeEditModal(); });
   editModal.addEventListener('mousedown', function(e){ if(e.target===editModal) closeEditModal(); });
   (function(){
     var tabs=document.querySelectorAll('#edTabs .ed-tab');
@@ -3859,34 +3859,37 @@
   var _edGenGeneral=null;
   var _CHEV='<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="m6 9 6 6 6-6"/></svg>';
   var _edNumGeneral=''
-    +'<div class="ed-secbox" style="margin-top:0"><label class="ed-label">Display format</label><select class="ed-input ed-native" style="max-width:260px"><option value="standard">Standard</option><option value="reduced">Reduced</option></select></div>'
     +'<div class="ed-tr ed-sectr"><button class="zswitch on" type="button" data-sec="title"></button><span>Show title</span></div>'
     +'<div class="ed-secbox" data-secfields="title"><div class="ed-grid3"><div><label class="ed-label">Title</label><input class="ed-input" id="cfgTitle" data-cfg="title" value="Units Today"></div><div><label class="ed-label">Size</label><select class="ed-input ed-native" data-cfg="size"><option value="small">Small</option><option value="medium" selected>Medium</option><option value="large">Large</option></select></div><div><label class="ed-label">Color</label><div class="ed-select"><span class="swatch cfg-color-title" style="background:#0a0a0b"></span>'+_CHEV+'</div></div></div></div>'
+    +'<div class="ed-tr" style="margin-top:2px"><button class="zswitch on" type="button" disabled style="opacity:.55;pointer-events:none" data-systip="Always on"></button><span>Display format</span></div>'
+    +'<div class="ed-secbox"><select class="ed-input ed-native" data-cfg="dispfmt" style="max-width:260px"><option value="standard">Standard</option><option value="reduced">Reduced</option></select></div>'
+    +'<hr class="ed-hr">'
     +'<div class="ed-tr ed-sectr"><button class="zswitch on" type="button" data-sec="dec"></button><span>Decimal places</span></div>'
     +'<div class="ed-secbox" data-secfields="dec"><select class="ed-input ed-native" data-cfg="dec" style="max-width:260px"><option value="0">None</option><option value="1">One</option><option value="2">Two</option><option value="3">Three</option></select></div>'
     +'<div class="ed-tr ed-sectr"><button class="zswitch" type="button" data-sec="target"></button><span>Show target</span></div>'
     +'<div class="ed-secbox" data-secfields="target"><div style="font-size:12px;color:#8a90a6">The target value is set in update mode.</div></div>'
     +'<div class="ed-tr ed-sectr"><button class="zswitch on" type="button" data-sec="cf"></button><span>Conditional formatting</span></div>'
-    +'<div class="ed-secbox" data-secfields="cf"><div class="ed-grid3"><div><label class="ed-label">Below goal</label><div class="ed-select sm"><span class="swatch cfg-cf-below" style="background:#14ae5c"></span>'+_CHEV+'</div></div><div><label class="ed-label">On target</label><div class="ed-select sm"><span class="swatch cfg-cf-on" style="background:#e8b931"></span>'+_CHEV+'</div></div><div><label class="ed-label">Above goal</label><div class="ed-select sm"><span class="swatch cfg-cf-above" style="background:#ec221f"></span>'+_CHEV+'</div></div></div><div style="margin-top:12px"><label class="ed-label">Objective tolerance</label><div class="ed-tolrow" style="max-width:260px"><input class="ed-input" value="0,00"><div class="ed-select sm ed-tolcol"><span class="swatch" style="background:#001391"></span>'+_CHEV+'</div></div></div><div style="margin-top:12px"><label class="ed-label">Andon</label><select class="ed-input ed-native" data-cfg="andon" style="max-width:260px"><option value="none" selected>None</option><option value="below">Below target</option><option value="above">Above target</option></select></div></div>';
+    +'<div class="ed-secbox" data-secfields="cf"><div class="ed-grid3"><div><label class="ed-label">Below goal</label><div class="ed-select sm"><span class="swatch cfg-cf-below" style="background:#14ae5c"></span>'+_CHEV+'</div></div><div><label class="ed-label">On target</label><div class="ed-select sm"><span class="swatch cfg-cf-on" style="background:#e8b931"></span>'+_CHEV+'</div></div><div><label class="ed-label">Above goal</label><div class="ed-select sm"><span class="swatch cfg-cf-above" style="background:#ec221f"></span>'+_CHEV+'</div></div></div><div style="margin-top:12px"><label class="ed-label">Objective tolerance</label><div class="ed-tolrow" style="max-width:260px"><input class="ed-input" value="0,00"><div class="ed-select sm ed-tolcol"><span class="swatch" style="background:#001391"></span>'+_CHEV+'</div></div></div><div style="margin-top:12px"><label class="ed-label">Andon</label><select class="ed-input ed-native" data-cfg="andon" style="max-width:260px"><option value="below" selected>Below target</option><option value="above">Above target</option></select></div></div>';
   var _edNumAdvanced=''
-    +'<div class="ed-tr ed-sectr"><button class="zswitch" type="button" data-sec="caption"></button><span>Show Caption</span></div>'
+    +'<div class="ed-tr ed-sectr"><button class="zswitch" type="button" data-sec="caption"></button><span>Show caption</span></div>'
     +'<div class="ed-secbox sec-hidden" data-secfields="caption"><div class="ed-grid2"><div><label class="ed-label">Legend</label><input class="ed-input" data-cfg="legend"></div><div><label class="ed-label">Color</label><div class="ed-select"><span class="swatch cfg-color-cap" style="background:#9aa0ac"></span>'+_CHEV+'</div></div></div></div>'
-    +'<div class="ed-tr ed-sectr"><button class="zswitch" type="button" data-sec="unit"></button><span>Show Unit</span></div>'
+    +'<div class="ed-tr ed-sectr"><button class="zswitch" type="button" data-sec="unit"></button><span>Show unit</span></div>'
     +'<div class="ed-secbox sec-hidden" data-secfields="unit"><label class="ed-label">Unit</label><input class="ed-input" data-cfg="unit" placeholder="e.g. pcs, %, kg" style="max-width:260px"></div>'
-    +'<div class="ed-tr ed-sectr"><button class="zswitch" type="button" data-sec="tip"></button><span>Show Tip</span></div>'
+    +'<div class="ed-tr ed-sectr"><button class="zswitch" type="button" data-sec="tip"></button><span>Show tip</span></div>'
     +'<div class="ed-secbox sec-hidden" data-secfields="tip"><label class="ed-label">Tip</label><input class="ed-input" data-cfg="tip" placeholder="Enter tip text"></div>'
-    +'<div class="ed-tr"><button class="zswitch" type="button" data-cfgsw="tborder"></button><span>Transparent Border</span></div>'
-    +'<div class="ed-tr"><button class="zswitch" type="button" data-cfgsw="tbg"></button><span>Transparent background</span></div>'
-    +'<div class="ed-secbox"><label class="ed-label">Background Color</label><div class="ed-select" style="max-width:260px"><span class="swatch cfg-color-bg" style="background:#f2f3f5"></span>'+_CHEV+'</div></div>'
-    +'<div class="ed-tr"><button class="zswitch" type="button"></button><span>Automatic Update</span></div>'
-    +'<div class="ed-tr"><button class="zswitch on" type="button"></button><span>show mobile</span></div>'
+    +'<div class="ed-tr"><button class="zswitch" type="button" data-cfgsw="tborder"></button><span>Transparent border</span></div>'
+    +'<div class="ed-tr"><button class="zswitch" type="button" data-cfgsw="tbg" data-excl="bg"></button><span>Transparent background</span></div>'
+    +'<div class="ed-tr ed-sectr"><button class="zswitch" type="button" data-sec="bg" data-excl="tbg"></button><span>Background color</span></div>'
+    +'<div class="ed-secbox sec-hidden" data-secfields="bg"><div class="ed-select" style="max-width:260px"><span class="swatch cfg-color-bg" style="background:#f2f3f5"></span>'+_CHEV+'</div></div>'
+    +'<div class="ed-tr"><button class="zswitch" type="button"></button><span>Automatic update</span></div>'
+    +'<div class="ed-tr"><button class="zswitch on" type="button"></button><span>Show mobile</span></div>'
     +'<div class="ed-secbox"><label class="ed-label">Topic</label><select class="ed-input ed-native" style="max-width:260px"><option>Others</option><option>Safety</option><option>Quality</option><option>Cost</option><option>Delivery</option><option>Moral</option><option>People</option></select></div>'
     +'<div class="ed-secbox"><label class="ed-label">Owner</label><div class="ed-select usel" data-sel="" data-single><span class="usel-l"><span class="usel-txt" style="color:#8a90a6">Select owner…</span></span>'+_CHEV+'</div></div>';
   var _edGenAdvanced=null;
   function rewireDrawer(){
     var groups=document.querySelectorAll('.edit-drawer .ed-chips');
     for(var g=0;g<groups.length;g++){ (function(group){ var chips=group.querySelectorAll('.ed-chip'); for(var k=0;k<chips.length;k++){ chips[k].onclick=function(){ for(var m=0;m<chips.length;m++) chips[m].classList.remove('active'); this.classList.add('active'); }; } })(groups[g]); }
-    var sws=document.querySelectorAll('.edit-drawer .zswitch'); for(var n=0;n<sws.length;n++){ sws[n].onclick=function(){ this.classList.toggle('on'); var sec=this.getAttribute('data-sec'); if(sec) edSyncSec(this); if(typeof applyCfgBoard==='function') applyCfgBoard(); }; }
+    var sws=document.querySelectorAll('.edit-drawer .zswitch'); for(var n=0;n<sws.length;n++){ sws[n].onclick=function(){ this.classList.toggle('on'); var sec=this.getAttribute('data-sec'); if(sec) edSyncSec(this); var ex=this.getAttribute('data-excl'); if(ex && this.classList.contains('on')){ var other=document.querySelector('#edBody .zswitch[data-cfgsw="'+ex+'"], #edBody .zswitch[data-sec="'+ex+'"]'); if(other && other.classList.contains('on')){ other.classList.remove('on'); if(other.getAttribute('data-sec')) edSyncSec(other); } } if(typeof applyCfgBoard==='function') applyCfgBoard(); }; }
     edSyncAllSec();
   }
   function edSyncSec(sw){ var sec=sw.getAttribute('data-sec'); if(!sec) return; var box=document.querySelector('#edBody .ed-secbox[data-secfields="'+sec+'"]'); if(box) box.classList.toggle('sec-hidden', !sw.classList.contains('on')); }
@@ -3904,8 +3907,9 @@
     if(isNum){ (window.requestAnimationFrame||setTimeout)(applyCfgBoard); }
   }
   // ===== preview em tempo real: reflete a config no widget clonado (#emWidget) =====
-  function applyCfgBoard(){
-    var scope=document.getElementById('edBody'), w=document.getElementById('emWidget'), card=w?w.querySelector('.wcard'):null;
+  function applyCfgBoard(){ var w=document.getElementById('emWidget'); applyCfgToCard(w?w.querySelector('.wcard'):null); }
+  function applyCfgToCard(card){
+    var scope=document.getElementById('edBody');
     if(!scope||!card) return;
     if(!card.querySelector('.num2')) return; // só widget de número
     var q=function(s){ return scope.querySelector(s); };
@@ -3923,7 +3927,7 @@
     var n2box=card.querySelector('.num2');
     if(n2box){ n2box.classList.remove('pos','on','neg'); n2box.classList.toggle('num2-tgt', secOn('target')); if(secOn('cf')){ n2box.classList.add(BASE>TGT?'pos':(BASE<TGT?'neg':'on')); n2box.style.background=''; if(num) num.style.color=''; } else { n2box.style.background='#f2f3f5'; if(num) num.style.color='#0a0a0b'; } }
     if(secOn('tip') && val('[data-cfg="tip"]')){ card.setAttribute('data-systip', val('[data-cfg="tip"]')); if(n2box) n2box.setAttribute('data-systip',''); } else { card.removeAttribute('data-systip'); if(n2box) n2box.removeAttribute('data-systip'); }
-    var an=card.querySelector('.w-andon'); if(an){ var a=val('[data-cfg="andon"]')||'none'; an.style.display=(a==='none')?'none':''; }
+    var an=card.querySelector('.w-andon'); if(an){ var a=val('[data-cfg="andon"]')||'below'; an.style.display=(secOn('cf') && a!=='none')?'':'none'; }
     var cap=card.querySelector('.cfg-cap'); if(!cap){ cap=document.createElement('div'); cap.className='cfg-cap'; cap.style.cssText='font-size:14px;line-height:1.35;margin-top:3px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis'; if(tt&&tt.parentNode) tt.parentNode.appendChild(cap); }
     if(cap){ if(secOn('caption')&&val('[data-cfg="legend"]')){ cap.textContent=val('[data-cfg="legend"]'); cap.style.color=bg('.cfg-color-cap')||'#9aa0ac'; cap.style.display=''; } else cap.style.display='none'; }
     var num2=card.querySelector('.num2');
@@ -4023,7 +4027,7 @@
       if(rs1){ rs1.value='(DOB-1) Line 1'; var ro=lkFindRoom('(DOB-1) Line 1'); bs1.innerHTML='<option value="">Select board</option>'+ro.boards.map(function(b){return lkOpt(b.b);}).join(''); bs1.disabled=false; bs1.value='DDS Line 1'; var bo=lkFindBoard(ro,'DDS Line 1'); ws1.innerHTML='<option value="">Select widget</option>'+bo.widgets.map(function(w){return lkOpt(w);}).join(''); ws1.disabled=false; ws1.value='Units Today'; }
     }
     var andonAdd=document.getElementById('edAndonAdd'), andonRows=document.getElementById('edAndonRows');
-    function andonRow(){ var d=document.createElement('div'); d.className='andon-row'; d.innerHTML='<div class="andon-fields"><div class="andon-f"><label>With</label><div class="andon-series">Series</div></div><div class="andon-f"><label>Regarding Target for</label><select class="ed-input ed-native"><option value="none">None</option><option value="minor">Minor</option><option value="higher">Higher</option></select></div><div class="andon-f"><label>in (units)</label><input class="ed-input" type="number" step="1" placeholder="0"></div><div class="andon-f"><label>Notify</label><div class="ed-select usel" data-sel=""><span class="usel-l"><span class="usel-txt" style="color:#8a90a6">Select…</span></span><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="m6 9 6 6 6-6"/></svg></div></div></div><div class="andon-foot"><button class="andon-bell" title="Notification"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M18 8a6 6 0 0 0-12 0c0 7-3 9-3 9h18s-3-2-3-9"/><path d="M13.73 21a2 2 0 0 1-3.46 0"/></svg></button><input class="andon-ck" type="checkbox" checked><button class="andon-del" title="Remove">'+TRASH+'</button></div>'; return d; }
+    function andonRow(){ var d=document.createElement('div'); d.className='andon-row'; d.innerHTML='<div class="andon-fields"><div class="andon-f"><label>With</label><div class="andon-series">Series</div></div><div class="andon-f"><label>Regarding target for</label><select class="ed-input ed-native"><option value="none">None</option><option value="minor">Minor</option><option value="higher">Higher</option></select></div><div class="andon-f"><label>in (units)</label><input class="ed-input" type="number" step="1" placeholder="0"></div><div class="andon-f"><label>Notify</label><div class="ed-select usel" data-sel=""><span class="usel-l"><span class="usel-txt" style="color:#8a90a6">Select…</span></span><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="m6 9 6 6 6-6"/></svg></div></div></div><div class="andon-foot"><button class="andon-bell" title="Notification"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M18 8a6 6 0 0 0-12 0c0 7-3 9-3 9h18s-3-2-3-9"/><path d="M13.73 21a2 2 0 0 1-3.46 0"/></svg></button><input class="andon-ck" type="checkbox" checked><button class="andon-del" title="Remove">'+TRASH+'</button></div>'; return d; }
     if(andonRows){ for(var i=0;i<3;i++) andonRows.appendChild(andonRow()); }
     if(andonAdd&&andonRows) andonAdd.addEventListener('click', function(){ andonRows.appendChild(andonRow()); });
     if(andonRows) andonRows.addEventListener('click', function(e){ var d=e.target.closest('.andon-del'); if(d){ var row=d.closest('.andon-row'); if(row&&row.parentNode) row.parentNode.removeChild(row); } });
@@ -4068,13 +4072,13 @@
       function render(){ var v=S.type, h='';
         if(v==='api'){ h='<div class="ed-grid2" style="margin-top:14px"><div><label class="ed-label">Target</label><button class="zswitch'+(S.apiTarget?' on':'')+'" type="button" data-srcsw="apiTarget"></button></div><div><label class="ed-label">Value</label><button class="zswitch on" type="button" disabled style="opacity:.55;pointer-events:none" data-systip="Value comes active and locked"></button></div></div>'; }
         else if(v==='calc'){ var ct=[['add','Addition/Subtraction'],['avg','Average'],['formula','Formula']];
-          h='<label class="ed-label" style="margin-top:14px">Calculation Type</label><select class="ed-input ed-native" data-srcf="calcType" style="max-width:320px">'+ct.map(function(c){return '<option value="'+c[0]+'"'+(S.calcType===c[0]?' selected':'')+'>'+c[1]+'</option>';}).join('')+'</select>';
-          h+='<div class="ed-sec2" style="margin-top:14px">FORMULA</div>';
+          h='<label class="ed-label" style="margin-top:14px">Calculation type</label><select class="ed-input ed-native" data-srcf="calcType" style="max-width:320px">'+ct.map(function(c){return '<option value="'+c[0]+'"'+(S.calcType===c[0]?' selected':'')+'>'+c[1]+'</option>';}).join('')+'</select>';
+          h+='<label class="ed-label" style="margin-top:14px;display:block">Formula</label>';
           if(S.calcType==='formula') h+='<div class="srcf-box"><button class="src-add" type="button" title="Add variable">'+PLUS+'</button><input class="ed-input" data-srcf="formula" style="border:none;flex:1;height:30px" value="'+String(S.formula).replace(/"/g,'&quot;')+'"></div>';
           else h+='<div class="srcf-box"><button class="src-add" type="button" title="Add variable">'+PLUS+'</button><span class="srcf-txt">'+formula()+'</span></div>';
           h+='<div class="srcv-list">'+S.vars.map(calcRow).join('')+'</div>';
         }
-        else if(v==='mirror'){ h='<label class="ed-check" style="margin-top:14px"><input type="checkbox" data-srcsw="mirrorGoal"'+(S.mirrorGoal?' checked':'')+'>Mirror goal</label><div class="ed-grid3" style="margin-top:6px"><div><label class="ed-label">ROOM</label>'+roomSel('mroom',S.mRoom)+'</div><div><label class="ed-label">BOARD</label>'+boardSel('mboard',S.mRoom,S.mBoard)+'</div><div><label class="ed-label">TOOL</label>'+leafSel('mtool',S.mRoom,S.mBoard,S.mTool)+'</div></div>'; }
+        else if(v==='mirror'){ h='<label class="ed-check" style="margin-top:14px"><input type="checkbox" data-srcsw="mirrorGoal"'+(S.mirrorGoal?' checked':'')+'>Mirror goal</label><div class="ed-grid3" style="margin-top:6px"><div><label class="ed-label">Room</label>'+roomSel('mroom',S.mRoom)+'</div><div><label class="ed-label">Board</label>'+boardSel('mboard',S.mRoom,S.mBoard)+'</div><div><label class="ed-label">Tool</label>'+leafSel('mtool',S.mRoom,S.mBoard,S.mTool)+'</div></div>'; }
         else h='';
         host.innerHTML=h;
       }

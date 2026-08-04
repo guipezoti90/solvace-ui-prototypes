@@ -550,9 +550,11 @@
       <div class="ed-body" data-body="edit">
         <!-- GENERAL (Figma 1233-19722) -->
         <div class="ed-panel active" data-panel="general">
-          <div class="ed-secbox" style="margin-top:0"><label class="ed-label">Display format</label><select class="ed-input ed-native" style="max-width:260px"><option value="standard">Standard</option><option value="reduced">Reduced</option></select></div>
           <div class="ed-tr ed-sectr"><button class="zswitch on" type="button" data-sec="title" onclick="tSw(this)"></button><span>Show title</span></div>
           <div class="ed-secbox" data-secfields="title"><div class="ed-grid3"><div><label class="ed-label">Title</label><input class="ed-input" id="cfgTitle" data-cfg="title" value="Units Today"></div><div><label class="ed-label">Size</label><select class="ed-input ed-native" data-cfg="size"><option value="small">Small</option><option value="medium" selected>Medium</option><option value="large">Large</option></select></div><div><label class="ed-label">Color</label><div class="ed-select"><span class="swatch cfg-color-title" style="background:#0a0a0b"></span><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="m6 9 6 6 6-6"/></svg></div></div></div></div>
+          <div class="ed-tr" style="margin-top:2px"><button class="zswitch on" type="button" disabled style="opacity:.55;pointer-events:none" data-systip="Always on"></button><span>Display format</span></div>
+          <div class="ed-secbox"><select class="ed-input ed-native" data-cfg="dispfmt" style="max-width:260px"><option value="standard">Standard</option><option value="reduced">Reduced</option></select></div>
+          <hr class="ed-hr">
           <div class="ed-tr ed-sectr"><button class="zswitch on" type="button" data-sec="dec" onclick="tSw(this)"></button><span>Decimal places</span></div>
           <div class="ed-secbox" data-secfields="dec"><select class="ed-input ed-native" data-cfg="dec" style="max-width:260px"><option value="0">None</option><option value="1">One</option><option value="2">Two</option><option value="3">Three</option></select></div>
           <div class="ed-tr ed-sectr"><button class="zswitch" type="button" data-sec="target" onclick="tSw(this)"></button><span>Show target</span></div>
@@ -561,30 +563,31 @@
           <div class="ed-secbox" data-secfields="cf">
             <div class="ed-grid3"><div><label class="ed-label">Below goal</label><div class="ed-select sm"><span class="swatch cfg-cf-below" style="background:#14ae5c"></span><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="m6 9 6 6 6-6"/></svg></div></div><div><label class="ed-label">On target</label><div class="ed-select sm"><span class="swatch cfg-cf-on" style="background:#e8b931"></span><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="m6 9 6 6 6-6"/></svg></div></div><div><label class="ed-label">Above goal</label><div class="ed-select sm"><span class="swatch cfg-cf-above" style="background:#ec221f"></span><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="m6 9 6 6 6-6"/></svg></div></div></div>
             <div style="margin-top:12px"><label class="ed-label">Objective tolerance</label><div class="ed-tolrow" style="max-width:260px"><input class="ed-input" value="0,00"><div class="ed-select sm ed-tolcol"><span class="swatch" style="background:#001391"></span><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="m6 9 6 6 6-6"/></svg></div></div></div>
-            <div style="margin-top:12px"><label class="ed-label">Andon</label><select class="ed-input ed-native" data-cfg="andon" style="max-width:260px"><option value="none" selected>None</option><option value="below">Below target</option><option value="above">Above target</option></select></div>
+            <div style="margin-top:12px"><label class="ed-label">Andon</label><select class="ed-input ed-native" data-cfg="andon" style="max-width:260px"><option value="below" selected>Below target</option><option value="above">Above target</option></select></div>
           </div>
         </div>
 
         <!-- ADVANCED (board — Figma 1233-20029) -->
         <div class="ed-panel" data-panel="advanced">
-          <div class="ed-tr ed-sectr"><button class="zswitch" type="button" data-sec="caption" onclick="tSw(this)"></button><span>Show Caption</span></div>
+          <div class="ed-tr ed-sectr"><button class="zswitch" type="button" data-sec="caption" onclick="tSw(this)"></button><span>Show caption</span></div>
           <div class="ed-secbox sec-hidden" data-secfields="caption"><div class="ed-grid2"><div><label class="ed-label">Legend</label><input class="ed-input" data-cfg="legend"></div><div><label class="ed-label">Color</label><div class="ed-select"><span class="swatch cfg-color-cap" style="background:#9aa0ac"></span><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="m6 9 6 6 6-6"/></svg></div></div></div></div>
-          <div class="ed-tr ed-sectr"><button class="zswitch" type="button" data-sec="unit" onclick="tSw(this)"></button><span>Show Unit</span></div>
+          <div class="ed-tr ed-sectr"><button class="zswitch" type="button" data-sec="unit" onclick="tSw(this)"></button><span>Show unit</span></div>
           <div class="ed-secbox sec-hidden" data-secfields="unit"><label class="ed-label">Unit</label><input class="ed-input" data-cfg="unit" placeholder="e.g. pcs, %, kg" style="max-width:260px"></div>
-          <div class="ed-tr ed-sectr"><button class="zswitch" type="button" data-sec="tip" onclick="tSw(this)"></button><span>Show Tip</span></div>
+          <div class="ed-tr ed-sectr"><button class="zswitch" type="button" data-sec="tip" onclick="tSw(this)"></button><span>Show tip</span></div>
           <div class="ed-secbox sec-hidden" data-secfields="tip"><label class="ed-label">Tip</label><input class="ed-input" data-cfg="tip" placeholder="Enter tip text"></div>
-          <div class="ed-tr"><button class="zswitch" type="button" data-cfgsw="tborder" onclick="tSw(this)"></button><span>Transparent Border</span></div>
-          <div class="ed-tr"><button class="zswitch" type="button" data-cfgsw="tbg" onclick="tSw(this)"></button><span>Transparent background</span></div>
-          <div class="ed-secbox"><label class="ed-label">Background Color</label><div class="ed-select" style="max-width:260px"><span class="swatch cfg-color-bg" style="background:#f2f3f5"></span><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="m6 9 6 6 6-6"/></svg></div></div>
-          <div class="ed-tr"><button class="zswitch" type="button" onclick="tSw(this)"></button><span>Automatic Update</span></div>
-          <div class="ed-tr"><button class="zswitch on" type="button" onclick="tSw(this)"></button><span>show mobile</span></div>
+          <div class="ed-tr"><button class="zswitch" type="button" data-cfgsw="tborder" onclick="tSw(this)"></button><span>Transparent border</span></div>
+          <div class="ed-tr"><button class="zswitch" type="button" data-cfgsw="tbg" data-excl="bg" onclick="tSw(this)"></button><span>Transparent background</span></div>
+          <div class="ed-tr ed-sectr"><button class="zswitch" type="button" data-sec="bg" data-excl="tbg" onclick="tSw(this)"></button><span>Background color</span></div>
+          <div class="ed-secbox sec-hidden" data-secfields="bg"><div class="ed-select" style="max-width:260px"><span class="swatch cfg-color-bg" style="background:#f2f3f5"></span><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="m6 9 6 6 6-6"/></svg></div></div>
+          <div class="ed-tr"><button class="zswitch" type="button" onclick="tSw(this)"></button><span>Automatic update</span></div>
+          <div class="ed-tr"><button class="zswitch on" type="button" onclick="tSw(this)"></button><span>Show mobile</span></div>
           <div class="ed-secbox"><label class="ed-label">Topic</label><select class="ed-input ed-native" style="max-width:260px"><option>Others</option><option>Safety</option><option>Quality</option><option>Cost</option><option>Delivery</option><option>Moral</option><option>People</option></select></div>
           <div class="ed-secbox"><label class="ed-label">Owner</label><div class="ed-select usel" data-sel="" data-single><span class="usel-l"><span class="usel-txt" style="color:#8a90a6">Select owner…</span></span><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="m6 9 6 6 6-6"/></svg></div></div>
         </div>
 
         <!-- SOURCE (board — select edSrcType + variantes) -->
         <div class="ed-panel" data-panel="sources">
-          <label class="ed-label">SOURCE TYPE</label>
+          <label class="ed-label">Source type</label>
           <select class="ed-input ed-native" id="edSrcType" style="max-width:320px">
             <option value="api">API</option>
             <option value="calc">Calculation</option>
@@ -603,7 +606,7 @@
         <!-- RELATED WIDGETS -->
         <div class="ed-panel" data-panel="related">
           <div class="ed-tbl-wrap">
-            <table class="ed-tbl"><thead><tr><th>SITE</th><th>ROOM</th><th>BOARD</th><th>WIDGET</th></tr></thead>
+            <table class="ed-tbl"><thead><tr><th>Site</th><th>Room</th><th>Board</th><th>Widget</th></tr></thead>
               <tbody>
                 <tr><td class="ed-tdtext">Detroit</td><td class="ed-tdtext">(DOB-1) Line 1</td><td class="ed-tdtext">DDS Line 1</td><td class="ed-tdtext">Incident Shift 1</td></tr>
               </tbody>
@@ -717,7 +720,7 @@ document.querySelectorAll('.ed-chips[data-single]').forEach(function(g){
   g.querySelectorAll('.ed-chip').forEach(function(c){ c.addEventListener('click', function(){ g.querySelectorAll('.ed-chip').forEach(function(x){ x.classList.remove('active'); }); c.classList.add('active'); }); });
 });
 /* switches */
-function tSw(b){ b.classList.toggle('on'); if(b.getAttribute('data-sec')) nwSyncSec(b); applyCfg(); }
+function tSw(b){ b.classList.toggle('on'); if(b.getAttribute('data-sec')) nwSyncSec(b); var ex=b.getAttribute('data-excl'); if(ex && b.classList.contains('on')){ var other=document.querySelector('#editDrawer .zswitch[data-cfgsw="'+ex+'"], #editDrawer .zswitch[data-sec="'+ex+'"]'); if(other && other.classList.contains('on')){ other.classList.remove('on'); if(other.getAttribute('data-sec')) nwSyncSec(other); } } applyCfg(); }
 function nwSyncSec(b){ var sec=b.getAttribute('data-sec'); if(!sec) return; var box=document.querySelector('#editDrawer .ed-secbox[data-secfields="'+sec+'"]'); if(box) box.classList.toggle('sec-hidden', !b.classList.contains('on')); }
 function nwSyncAllSec(){ var sws=document.querySelectorAll('#editDrawer .zswitch[data-sec]'); for(var i=0;i<sws.length;i++) nwSyncSec(sws[i]); }
 document.addEventListener('DOMContentLoaded', function(){ nwSyncAllSec(); applyCfg(); }); nwSyncAllSec();
@@ -756,7 +759,7 @@ function applyCfgTo(card, g){
   // tip: tooltip só nas partes brancas (fora do número)
   if(g.secOn('tip') && g.val('[data-cfg="tip"]')){ card.setAttribute('data-systip', g.val('[data-cfg="tip"]')); if(n2box) n2box.setAttribute('data-systip',''); } else { card.removeAttribute('data-systip'); if(n2box) n2box.removeAttribute('data-systip'); }
   // andon
-  var an=card.querySelector('.w-andon'); if(an){ var a=g.val('[data-cfg="andon"]')||'none'; an.style.display=(a==='none')?'none':''; }
+  var an=card.querySelector('.w-andon'); if(an){ var a=g.val('[data-cfg="andon"]')||'below'; an.style.display=(g.secOn('cf') && a!=='none')?'':'none'; }
   // caption / legend: abaixo do título, menor e na cor selecionada
   var cap=card.querySelector('.cfg-cap'); if(!cap){ cap=document.createElement('div'); cap.className='cfg-cap'; cap.style.cssText='font-size:14px;line-height:1.35;margin-top:3px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis'; if(tt&&tt.parentNode) tt.parentNode.appendChild(cap); }
   if(cap){ if(g.secOn('caption')&&g.val('[data-cfg="legend"]')){ cap.textContent=g.val('[data-cfg="legend"]'); cap.style.color=g.bg('.cfg-color-cap')||'#9aa0ac'; cap.style.display=''; } else cap.style.display='none'; }
@@ -815,13 +818,13 @@ document.addEventListener('keydown', function(e){ if(e.key==='Escape'){ closeFul
     function render(){ var v=S.type, h='';
       if(v==='api'){ h='<div class="ed-grid2" style="margin-top:14px"><div><label class="ed-label">Target</label><button class="zswitch'+(S.apiTarget?' on':'')+'" type="button" data-srcsw="apiTarget"></button></div><div><label class="ed-label">Value</label><button class="zswitch on" type="button" disabled style="opacity:.55;pointer-events:none" data-systip="Value comes active and locked"></button></div></div>'; }
       else if(v==='calc'){ var ct=[['add','Addition/Subtraction'],['avg','Average'],['formula','Formula']];
-        h='<label class="ed-label" style="margin-top:14px">Calculation Type</label><select class="ed-input ed-native" data-srcf="calcType" style="max-width:320px">'+ct.map(function(c){return '<option value="'+c[0]+'"'+(S.calcType===c[0]?' selected':'')+'>'+c[1]+'</option>';}).join('')+'</select>';
-        h+='<div class="ed-sec2" style="margin-top:14px">FORMULA</div>';
+        h='<label class="ed-label" style="margin-top:14px">Calculation type</label><select class="ed-input ed-native" data-srcf="calcType" style="max-width:320px">'+ct.map(function(c){return '<option value="'+c[0]+'"'+(S.calcType===c[0]?' selected':'')+'>'+c[1]+'</option>';}).join('')+'</select>';
+        h+='<label class="ed-label" style="margin-top:14px;display:block">Formula</label>';
         if(S.calcType==='formula') h+='<div class="srcf-box"><button class="src-add" type="button" title="Add variable">'+PLUS+'</button><input class="ed-input" data-srcf="formula" style="border:none;flex:1;height:30px" value="'+String(S.formula).replace(/"/g,'&quot;')+'"></div>';
         else h+='<div class="srcf-box"><button class="src-add" type="button" title="Add variable">'+PLUS+'</button><span class="srcf-txt">'+formula()+'</span></div>';
         h+='<div class="srcv-list">'+S.vars.map(calcRow).join('')+'</div>';
       }
-      else if(v==='mirror'){ h='<label class="ed-check" style="margin-top:14px"><input type="checkbox" data-srcsw="mirrorGoal"'+(S.mirrorGoal?' checked':'')+'>Mirror goal</label><div class="ed-grid3" style="margin-top:6px"><div><label class="ed-label">ROOM</label>'+roomSel('mroom',S.mRoom)+'</div><div><label class="ed-label">BOARD</label>'+boardSel('mboard',S.mRoom,S.mBoard)+'</div><div><label class="ed-label">TOOL</label>'+leafSel('mtool',S.mRoom,S.mBoard,S.mTool)+'</div></div>'; }
+      else if(v==='mirror'){ h='<label class="ed-check" style="margin-top:14px"><input type="checkbox" data-srcsw="mirrorGoal"'+(S.mirrorGoal?' checked':'')+'>Mirror goal</label><div class="ed-grid3" style="margin-top:6px"><div><label class="ed-label">Room</label>'+roomSel('mroom',S.mRoom)+'</div><div><label class="ed-label">Board</label>'+boardSel('mboard',S.mRoom,S.mBoard)+'</div><div><label class="ed-label">Tool</label>'+leafSel('mtool',S.mRoom,S.mBoard,S.mTool)+'</div></div>'; }
       else h='';
       host.innerHTML=h;
     }
@@ -844,7 +847,7 @@ document.addEventListener('keydown', function(e){ if(e.key==='Escape'){ closeFul
   })();
   /* Andon — repeatable rule cards (3 by default) */
   var andonAdd=document.getElementById('edAndonAdd'), andonRows=document.getElementById('edAndonRows');
-  function andonRow(){ var d=document.createElement('div'); d.className='andon-row'; d.innerHTML='<div class="andon-fields"><div class="andon-f"><label>With</label><div class="andon-series">Series</div></div><div class="andon-f"><label>Regarding Target for</label><select class="ed-input ed-native"><option value="none">None</option><option value="minor">Minor</option><option value="higher">Higher</option></select></div><div class="andon-f"><label>in (units)</label><input class="ed-input" type="number" step="1" placeholder="0"></div><div class="andon-f"><label>Notify</label><div class="ed-select usel" data-sel=""><span class="usel-l"><span class="usel-txt" style="color:#8a90a6">Select…</span></span><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="m6 9 6 6 6-6"/></svg></div></div></div><div class="andon-foot"><button class="andon-bell" title="Notification"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M18 8a6 6 0 0 0-12 0c0 7-3 9-3 9h18s-3-2-3-9"/><path d="M13.73 21a2 2 0 0 1-3.46 0"/></svg></button><input class="andon-ck" type="checkbox" checked><button class="andon-del" title="Remove">'+TRASH+'</button></div>'; return d; }
+  function andonRow(){ var d=document.createElement('div'); d.className='andon-row'; d.innerHTML='<div class="andon-fields"><div class="andon-f"><label>With</label><div class="andon-series">Series</div></div><div class="andon-f"><label>Regarding target for</label><select class="ed-input ed-native"><option value="none">None</option><option value="minor">Minor</option><option value="higher">Higher</option></select></div><div class="andon-f"><label>in (units)</label><input class="ed-input" type="number" step="1" placeholder="0"></div><div class="andon-f"><label>Notify</label><div class="ed-select usel" data-sel=""><span class="usel-l"><span class="usel-txt" style="color:#8a90a6">Select…</span></span><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="m6 9 6 6 6-6"/></svg></div></div></div><div class="andon-foot"><button class="andon-bell" title="Notification"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M18 8a6 6 0 0 0-12 0c0 7-3 9-3 9h18s-3-2-3-9"/><path d="M13.73 21a2 2 0 0 1-3.46 0"/></svg></button><input class="andon-ck" type="checkbox" checked><button class="andon-del" title="Remove">'+TRASH+'</button></div>'; return d; }
   if(andonRows){ for(var i=0;i<3;i++) andonRows.appendChild(andonRow()); }
   if(andonAdd&&andonRows) andonAdd.addEventListener('click', function(){ andonRows.appendChild(andonRow()); });
   if(andonRows) andonRows.addEventListener('click', function(e){ var d=e.target.closest('.andon-del'); if(d){ var row=d.closest('.andon-row'); if(row&&row.parentNode) row.parentNode.removeChild(row); } });
