@@ -360,9 +360,9 @@
   .vbars{ display:flex; align-items:flex-end; gap:8px; height:100%; padding:0 6px }
   .vcol{ flex:1; min-width:0; height:100%; display:flex; flex-direction:column; align-items:center; justify-content:flex-end; cursor:pointer; position:relative }
   .vcol:hover .vbar{ background:#001072 }
-  .vbar{ width:100%; max-width:26px; background:var(--color-primary); border-radius:6px 6px 0 0; transition:height .25s }
-  .vbar.vbar-fb{ background:#a8aede }
-  .vcol:hover .vbar.vbar-fb{ background:#9aa0d6 }
+  .vbar{ width:100%; max-width:26px; background:var(--color-primary); border-radius:12px 12px 0 0; transition:height .25s }
+  .vbar.vbar-fb{ background:#FECACA }
+  .vcol:hover .vbar.vbar-fb{ background:#FCA5A5 }
   .vval{ font-size:10px; font-weight:700; color:#4D5166; margin-bottom:3px }
   .vlbls{ display:flex; gap:8px; padding:0 6px; margin-left:38px; margin-top:6px }
   .vlbls span{ flex:1; text-align:center; font-size:10px; color:#999BA7; white-space:nowrap; overflow:hidden; text-overflow:ellipsis }
@@ -696,10 +696,10 @@
   .drawer-body{ flex:1; overflow-y:auto; padding:20px; display:flex; flex-direction:column; gap:16px }
   .drawer-foot{ flex:0 0 auto; padding:16px 20px; border-top:1px solid var(--color-input); display:flex; justify-content:flex-end; gap:10px }
   /* filtro seccionado: drawer cinza claro + blocos brancos por seção */
-  #filter-drawer-body{ background:#F4F5F7; gap:12px }
-  .flt-sec{ background:#fff; border:1px solid var(--color-input); border-radius:12px; padding:16px }
-  .flt-sec-title{ font-size:14px; font-weight:700; color:#0D122F; margin-bottom:14px }
-  .flt-sec .flt-fld{ margin-bottom:14px } .flt-sec .flt-fld:last-child{ margin-bottom:0 }
+  #filter-drawer-body{ background:#F6F7F9; gap:16px; padding:18px }
+  .flt-sec{ background:#fff; border:1px solid #ECEEF2; border-radius:16px; padding:18px 18px 20px; box-shadow:0 1px 3px rgba(16,24,40,.05) }
+  .flt-sec-title{ font-size:12px; font-weight:700; text-transform:uppercase; letter-spacing:.06em; color:var(--color-primary); margin-bottom:16px }
+  .flt-sec .flt-fld{ margin-bottom:16px } .flt-sec .flt-fld:last-child{ margin-bottom:0 }
   .km-item{ display:flex; align-items:center; gap:8px; width:100%; padding:8px 10px; border-radius:7px; border:0; background:transparent; font-size:14px; color:#1c1c1c; text-align:left; cursor:pointer } .km-item:hover{ background:var(--color-muted) }
   /* notificações (dropdown do sino) */
   .km-notif{ display:flex; gap:11px; padding:12px 14px; cursor:pointer; align-items:flex-start; border-bottom:1px solid #F0F1F4; transition:background .12s } .km-notif:hover{ background:#F7F8FB } .km-notif:last-child{ border-bottom:0 }
@@ -759,8 +759,8 @@
   .chart-legend{ display:flex; align-items:center; gap:8px; font-weight:600; font-size:14px; margin-bottom:4px }
   /* dual-range (seleção de período) */
   .dual-range{ position:relative; height:26px; margin-top:6px }
-  .dual-range .dr-track{ position:absolute; top:50%; left:0; right:0; height:5px; transform:translateY(-50%); background:#dfe1ea; border-radius:9999px }
-  .dual-range .dr-fill{ position:absolute; top:50%; height:5px; transform:translateY(-50%); background:var(--color-primary); border-radius:9999px }
+  .dual-range .dr-track{ position:absolute; top:50%; left:0; right:0; height:5px; transform:translateY(-50%); background:var(--color-input); border-radius:9999px }
+  .dual-range .dr-fill{ position:absolute; top:50%; height:5px; transform:translateY(-50%); background:var(--color-input); border-radius:9999px }
   .dual-range input[type=range]{ position:absolute; top:0; left:0; width:100%; height:26px; margin:0; background:transparent; -webkit-appearance:none; appearance:none; pointer-events:none }
   .dual-range input[type=range]::-webkit-slider-runnable-track{ background:transparent; border:0 }
   .dual-range input[type=range]::-moz-range-track{ background:transparent; border:0 }
@@ -768,7 +768,7 @@
   .dual-range input[type=range]::-moz-range-thumb{ pointer-events:auto; width:16px; height:16px; border-radius:9999px; background:var(--color-primary); border:2px solid #fff; box-shadow:0 1px 4px rgba(0,0,0,.3); cursor:grab }
   .bar-label{ font-size:11px; color:#666 }
   .mini-prog{ height:14px;border-radius:7px;background:var(--color-primary) }
-  .mini-prog.alt{ background:#a8aede }
+  .mini-prog.alt{ background:#FECACA }
 
   /* ---- skeleton / estados ---- */
   @keyframes shimmer { 0%{ background-position:100% 0 } 100%{ background-position:-100% 0 } }
@@ -1025,54 +1025,54 @@
     <input type="range" class="dr-min" min="0" max="11" step="1" value="0" oninput="onDualRange(&#39;views&#39;,12)" onchange="applyDualRange(&#39;views&#39;)">
     <input type="range" class="dr-max" min="0" max="11" step="1" value="11" oninput="onDualRange(&#39;views&#39;,12)" onchange="applyDualRange(&#39;views&#39;)">
   </div>
-       <div class="chart-legend" style="margin-top:28px"><span style="width:14px;height:14px;background:#a8aede;border-radius:3px"></span>Feedbacks</div>
+       <div class="chart-legend" style="margin-top:28px"><span style="width:14px;height:14px;background:#FECACA;border-radius:3px"></span>Feedbacks</div>
        <div class="bar-wrap">
     <div class="bar-col" onclick="openDrill(&#39;feedbacks&#39;,&#39;Jan&#39;)" style="cursor:pointer">
-      <div class="bar alt" style="height:155px;background:#a8aede"><span class="val">180</span></div>
+      <div class="bar alt" style="height:155px;background:#FECACA"><span class="val">180</span></div>
       <div class="bar-label">Jan</div>
     </div>
     <div class="bar-col" onclick="openDrill(&#39;feedbacks&#39;,&#39;Feb&#39;)" style="cursor:pointer">
-      <div class="bar alt" style="height:103px;background:#a8aede"><span class="val">120</span></div>
+      <div class="bar alt" style="height:103px;background:#FECACA"><span class="val">120</span></div>
       <div class="bar-label">Feb</div>
     </div>
     <div class="bar-col" onclick="openDrill(&#39;feedbacks&#39;,&#39;Mar&#39;)" style="cursor:pointer">
-      <div class="bar alt" style="height:34px;background:#a8aede"><span class="val">40</span></div>
+      <div class="bar alt" style="height:34px;background:#FECACA"><span class="val">40</span></div>
       <div class="bar-label">Mar</div>
     </div>
     <div class="bar-col" onclick="openDrill(&#39;feedbacks&#39;,&#39;Apr&#39;)" style="cursor:pointer">
-      <div class="bar alt" style="height:112px;background:#a8aede"><span class="val">130</span></div>
+      <div class="bar alt" style="height:112px;background:#FECACA"><span class="val">130</span></div>
       <div class="bar-label">Apr</div>
     </div>
     <div class="bar-col" onclick="openDrill(&#39;feedbacks&#39;,&#39;May&#39;)" style="cursor:pointer">
-      <div class="bar alt" style="height:138px;background:#a8aede"><span class="val">160</span></div>
+      <div class="bar alt" style="height:138px;background:#FECACA"><span class="val">160</span></div>
       <div class="bar-label">May</div>
     </div>
     <div class="bar-col" onclick="openDrill(&#39;feedbacks&#39;,&#39;Jun&#39;)" style="cursor:pointer">
-      <div class="bar alt" style="height:26px;background:#a8aede"><span class="val">30</span></div>
+      <div class="bar alt" style="height:26px;background:#FECACA"><span class="val">30</span></div>
       <div class="bar-label">Jun</div>
     </div>
     <div class="bar-col" onclick="openDrill(&#39;feedbacks&#39;,&#39;Jul&#39;)" style="cursor:pointer">
-      <div class="bar alt" style="height:121px;background:#a8aede"><span class="val">140</span></div>
+      <div class="bar alt" style="height:121px;background:#FECACA"><span class="val">140</span></div>
       <div class="bar-label">Jul</div>
     </div>
     <div class="bar-col" onclick="openDrill(&#39;feedbacks&#39;,&#39;Aug&#39;)" style="cursor:pointer">
-      <div class="bar alt" style="height:146px;background:#a8aede"><span class="val">170</span></div>
+      <div class="bar alt" style="height:146px;background:#FECACA"><span class="val">170</span></div>
       <div class="bar-label">Aug</div>
     </div>
     <div class="bar-col" onclick="openDrill(&#39;feedbacks&#39;,&#39;Sep&#39;)" style="cursor:pointer">
-      <div class="bar alt" style="height:142px;background:#a8aede"><span class="val">165</span></div>
+      <div class="bar alt" style="height:142px;background:#FECACA"><span class="val">165</span></div>
       <div class="bar-label">Sep</div>
     </div>
     <div class="bar-col" onclick="openDrill(&#39;feedbacks&#39;,&#39;Oct&#39;)" style="cursor:pointer">
-      <div class="bar alt" style="height:112px;background:#a8aede"><span class="val">130</span></div>
+      <div class="bar alt" style="height:112px;background:#FECACA"><span class="val">130</span></div>
       <div class="bar-label">Oct</div>
     </div>
     <div class="bar-col" onclick="openDrill(&#39;feedbacks&#39;,&#39;Nov&#39;)" style="cursor:pointer">
-      <div class="bar alt" style="height:110px;background:#a8aede"><span class="val">128</span></div>
+      <div class="bar alt" style="height:110px;background:#FECACA"><span class="val">128</span></div>
       <div class="bar-label">Nov</div>
     </div>
     <div class="bar-col" onclick="openDrill(&#39;feedbacks&#39;,&#39;Dec&#39;)" style="cursor:pointer">
-      <div class="bar alt" style="height:138px;background:#a8aede"><span class="val">160</span></div>
+      <div class="bar alt" style="height:138px;background:#FECACA"><span class="val">160</span></div>
       <div class="bar-label">Dec</div>
     </div></div>
    <div style="display:flex;justify-content:space-between;font-size:12px;color:#888;margin-top:6px"><span>Jan</span><span>Dec</span></div>
@@ -1943,6 +1943,7 @@ const FILTER_OPTS={
   'Participants':['User name','Fernando Alex','Renato Basso','Evandro Silva'],
   'Tag categories':['Configuration','System','Notifications','Getting Started','Data Management','Integrations'],
   'Period':['Day','Month','Year'],
+  'Status':['Published','Draft','Archived'],
   'Feedback category':['Missing details','Incorrect information','Outdated','Confusing or poorly explained',"Didn't solve my problem",'Other'],
 };
 let fltTrgEl=null;
@@ -2144,7 +2145,7 @@ function buildCustomPeriod(start,end){
 function applyCal(){
   if(!calStart || !calEnd){ showToast('Select a date range','error'); return; }
   el('date-dd').classList.remove('open'); document.removeEventListener('click', closeCalOnce);   /* evita listener preso (#120) */
-  if(calMode==='dash'){ PERIOD.custom = buildCustomPeriod(calStart, calEnd); DASH_PERIOD_LBL.custom = fmtDate(calStart)+' – '+fmtDate(calEnd); dashPeriod='custom'; dashWindow={}; renderDashboard(); showToast('Custom period applied'); }
+  if(calMode==='dash'){ PERIOD.custom = buildCustomPeriod(calStart, calEnd); DASH_PERIOD_LBL.custom = fmtDate(calStart)+' – '+fmtDate(calEnd); dashPeriod='custom'; chartsFollowCustom=true; dashWindow={}; renderDashboard(); showToast('Custom period applied'); }
   else { updateDateTrg(); refreshFilterDeps(); }
 }
 function updateDateTrg(){
@@ -2159,30 +2160,38 @@ function filterField(label,type,disabled){
   if(type==='select') ctrl=`<button class="select-trigger${dis}" data-fld="${label}" data-sel onclick="openFilterDD(this,'${label}')"><span class="flt-val"><span class="flt-ph">Select</span></span>${I.chevDown}</button>`;
   else if(type==='multiselect') ctrl=`<button class="select-trigger${dis}" data-fld="${label}" data-sel onclick="openFilterDD(this,'${label}',true)"><span class="flt-val"><span class="flt-ph">Select</span></span>${I.chevDown}</button>`;
   else if(type==='date') ctrl=`<button class="input${dis}" data-fld="${label}" data-date onclick="openDateDD(this)" style="display:flex;align-items:center;justify-content:space-between;color:#9aa0ac;width:100%;cursor:pointer"><span class="date-val">dd/mm/yyyy</span>${I.cal}</button>`;
+  else if(type==='search') ctrl=`<div class="search-box"><input class="input" data-fld="${label}" placeholder="Search by name, number…" style="padding-left:38px;padding-right:14px"><span class="s-ico" style="right:auto;left:12px;color:#9aa0ac">${I.search}</span></div>`;
   else ctrl=`<input class="input" data-fld="${label}" placeholder="Type here">`;
   return `<div class="flt-fld"><label class="lbl-field">${label}</label>${ctrl}</div>`;
 }
-const FILTER_SECTIONS = [
-  ['Register',       ['Article']],
-  ['Classification', ['Category','Subcategory','Tags','Feedback category']],
-  ['People',         ['Originator','Participants']],
-  ['Location',       ['Client','Site']],
-  ['Period',         ['Version date','Date']],
-];
+/* Modelo de seções agnóstico a módulo (cobre Action Plan, RCA, BOS, Obeya, KC…):
+   General  = busca (nome/número) + status + atributos do próprio registro (type/system)
+   People   = tudo que envolve pessoas/times (owner, responsible, originator, approver…)
+   Location = tudo relacionado a lugar (client, site, place, area, region…)
+   Others   = o que não se encaixa acima (category, subcategory, tags, period/datas…) */
+const FLT_GENERAL  = ['Status','Type','System','Source'];
+const FLT_PEOPLE   = ['Owner','Responsible','Originator','Approver','Reviewer','Author','Participants','Assignee','User','Team'];
+const FLT_LOCATION = ['Location','Area','Region','Client','Site','Place','Plant'];
 function openFilter(view){
   fltSel={};
   const fields=FILTER_FIELDS[view]||[], names=fields.map(f=>f[0]);
   const depActive=lbl=> (lbl==='Site' && names.indexOf('Client')>=0) || (lbl==='Originator' && names.indexOf('Client')>=0 && names.indexOf('Site')>=0);
   var byLabel={}; fields.forEach(function(f){ byLabel[f[0]]=f; });
-  var used={}, html='';
-  FILTER_SECTIONS.forEach(function(sec){
-    var inSec=sec[1].filter(function(l){ return byLabel[l]; });
-    if(!inSec.length) return;
-    inSec.forEach(function(l){ used[l]=1; });
-    html += '<div class="flt-sec"><div class="flt-sec-title">'+sec[0]+'</div>'+inSec.map(function(l){ return filterField(byLabel[l][0], byLabel[l][1], depActive(l)); }).join('')+'</div>';
-  });
+  var used={};
+  function fld(l){ used[l]=1; return filterField(byLabel[l][0], byLabel[l][1], depActive(l)); }
+  function section(title, set, extra){
+    var inner=(extra||'');
+    set.forEach(function(l){ if(byLabel[l] && !used[l]) inner+=fld(l); });
+    return inner ? '<div class="flt-sec"><div class="flt-sec-title">'+title+'</div>'+inner+'</div>' : '';
+  }
+  var html='';
+  /* General — sempre busca transversal; usa o Status do módulo se houver, senão injeta um padrão */
+  var gExtra = filterField('Search','search',false) + (byLabel['Status'] ? '' : filterField('Status','multiselect',false));
+  html += section('General', FLT_GENERAL, gExtra);
+  html += section('People', FLT_PEOPLE);
+  html += section('Location', FLT_LOCATION);
   var rest=fields.filter(function(f){ return !used[f[0]]; });
-  if(rest.length) html += '<div class="flt-sec"><div class="flt-sec-title">More filters</div>'+rest.map(function(f){ return filterField(f[0],f[1],depActive(f[0])); }).join('')+'</div>';
+  if(rest.length) html += '<div class="flt-sec"><div class="flt-sec-title">Others</div>'+rest.map(function(f){ return filterField(f[0],f[1],depActive(f[0])); }).join('')+'</div>';
   el('filter-drawer-body').innerHTML = html;
   el('overlay').classList.add('open'); el('filter-drawer').classList.add('open');
 }
@@ -2255,7 +2264,7 @@ function openAvatarMenu(trg){
         + '<div style="padding:8px 14px 6px;text-align:center;font-size:11px;color:#9aa0ac">Version 3-273-10</div>';
   m.innerHTML = html;
   var r=trg.getBoundingClientRect(); m.style.left=Math.max(8, r.right-248)+'px'; m.style.top=(r.bottom+6)+'px';
-  m.classList.add('open'); setTimeout(function(){document.addEventListener('click',closeKebabOnce);},0);
+  m.classList.add('open'); document.removeEventListener('click',closeKebabOnce); setTimeout(function(){document.addEventListener('click',closeKebabOnce);},0);
 }
 function toggleTopSearch(){ var b=el('top-search-m'); if(!b) return; b.classList.add('open'); var i=el('top-search-m-input'); if(i){ i.value=''; setTimeout(function(){ try{i.focus();}catch(e){} },30); } }
 function closeTopSearch(){ var b=el('top-search-m'); if(b) b.classList.remove('open'); }
@@ -2270,7 +2279,7 @@ function openPlantMenu(trg){
     return '<button class="km-item" style="'+(on?'color:var(--color-primary);font-weight:700':'')+'" onclick="setPlant(\''+p[0]+'\')">'+ic+'<span>'+p[0]+(on?' ✓':'')+'</span></button>';
   }).join('');
   m.style.left=Math.max(8,Math.min(r.left, window.innerWidth-248))+'px'; m.style.top=(r.bottom+6)+'px';
-  m.classList.add('open'); setTimeout(function(){document.addEventListener('click',closeKebabOnce);},0);
+  m.classList.add('open'); document.removeEventListener('click',closeKebabOnce); setTimeout(function(){document.addEventListener('click',closeKebabOnce);},0);
 }
 function setPlant(p){ currentPlant=p; var l=el('loc-label'); if(l) l.textContent=p; el('kebab-menu').classList.remove('open'); showToast('Plant changed to '+p); }
 /* 3 abas, cada uma com sua própria lógica (igual à produção MyWorkSpace):
@@ -2358,7 +2367,7 @@ function openNotifMenu(trg){
   var m=el('kebab-menu'); var r=trg.getBoundingClientRect(); m.style.width='380px';
   m.innerHTML = notifMenuInner();
   m.style.left=Math.max(8,Math.min(r.right-380, window.innerWidth-388))+'px'; m.style.top=(r.bottom+8)+'px';
-  m.classList.add('open'); setTimeout(function(){document.addEventListener('click',closeKebabOnce);},0);
+  m.classList.add('open'); document.removeEventListener('click',closeKebabOnce); setTimeout(function(){document.addEventListener('click',closeKebabOnce);},0);
 }
 function switchNotifTab(g){ notifTab=g; el('kebab-menu').innerHTML = notifMenuInner(); }
 function markAllNotifRead(){ NOTIFS.forEach(function(n){ n.unread=false; }); var b=document.querySelector('.top-badge'); if(b) b.style.display='none'; el('kebab-menu').innerHTML = notifMenuInner(); showToast('All notifications marked as read'); }
@@ -2373,7 +2382,7 @@ function openExportMenu(trg){
   m.style.left=Math.max(8, r.right-200)+'px';
   m.style.top=(r.bottom+6)+'px';
   m.classList.add('open');
-  setTimeout(()=>document.addEventListener('click',closeKebabOnce),0);
+  document.removeEventListener('click',closeKebabOnce); setTimeout(()=>document.addEventListener('click',closeKebabOnce),0);
 }
 /* menu de opções dos gráficos do dashboard (Embed + Export) — pino #106 */
 function openChartMenu(trg){
@@ -2387,7 +2396,7 @@ function openChartMenu(trg){
   m.style.left=Math.max(8, r.right-210)+'px';
   m.style.top=(r.bottom+6)+'px';
   m.classList.add('open');
-  setTimeout(()=>document.addEventListener('click',closeKebabOnce),0);
+  document.removeEventListener('click',closeKebabOnce); setTimeout(()=>document.addEventListener('click',closeKebabOnce),0);
 }
 
 function openKebabMenu(trg, onDelete){
@@ -2399,7 +2408,7 @@ function openKebabMenu(trg, onDelete){
   m.style.left=Math.max(8, r.right-150)+'px';
   m.style.top=Math.max(8, r.top-48)+'px';
   m.classList.add('open');
-  setTimeout(()=>document.addEventListener('click',closeKebabOnce),0);
+  document.removeEventListener('click',closeKebabOnce); setTimeout(()=>document.addEventListener('click',closeKebabOnce),0);
 }
 function closeKebabOnce(e){ if(!e.target.closest('#kebab-menu')){ el('kebab-menu').classList.remove('open'); document.removeEventListener('click',closeKebabOnce);} }
 function articleDelete(){ el('kebab-menu').classList.remove('open'); showDialog({title:'Are you sure you want to delete?',desc:'This action cannot be undone.',actions:[{label:'Cancel'},{label:'Delete',primary:true,destructive:true,onClick:function(){closeArticleModal();showToast('Article deleted','error');}}]}); }
@@ -2577,7 +2586,7 @@ function openLangMenu(trg){
   var m=el('kebab-menu'); m.style.width=Math.max(trg.offsetWidth,160)+'px';
   m.innerHTML = FB_LANGS.map(function(l){ var on=fbLang===l; return '<button class="km-item" style="'+(on?'color:var(--color-primary);font-weight:700':'')+'" onclick="pickFbLang(\''+l+'\')">'+l+(on?' '+I.check:'')+'</button>'; }).join('');
   var r=trg.getBoundingClientRect(); m.style.left=Math.max(8,Math.min(r.left, window.innerWidth-m.offsetWidth-8))+'px'; m.style.top=(r.bottom+6)+'px';
-  m.classList.add('open'); setTimeout(function(){document.addEventListener('click',closeKebabOnce);},0);
+  m.classList.add('open'); document.removeEventListener('click',closeKebabOnce); setTimeout(function(){document.addEventListener('click',closeKebabOnce);},0);
 }
 function pickFbLang(l){ fbLang=(fbLang===l?'':l); el('kebab-menu').classList.remove('open'); if(fbLang) showToast('Feedbacks translated to '+fbLang); renderFeedbacksSearch(); }
 var fbTotFilter = null;
@@ -3120,12 +3129,13 @@ let dashViewsTab='Client';   // Client | Site
 let dashWindow={};           // janela de período por gráfico: {views:[lo,hi], fb:[lo,hi]}
 const PERIOD = {
   Day:   { labels:['01','02','03','04','05','06','07','08','09','10','11','12','13','14'], tipDates:['01/06/2026','02/06/2026','03/06/2026','04/06/2026','05/06/2026','06/06/2026','07/06/2026','08/06/2026','09/06/2026','10/06/2026','11/06/2026','12/06/2026','13/06/2026','14/06/2026'], views:[60,82,45,120,98,150,72,88,134,90,160,110,95,140], fb:[40,55,30,80,66,100,48,60,90,62,108,75,64,95], range:['01/06','14/06'] },
-  Month: { labels:['Aug','Sep','Oct','Nov','Dec','Jan','Feb','Mar','Apr','May','Jun','Jul'], years:['25','25','25','25','25','26','26','26','26','26','26','26'], views:DATA_VIEWS, fb:[29,18,7,20,25,5,21,25,25,20,20,24], range:['Aug 2025','Jul 2026'] },
+  Month: { labels:['Aug','Sep','Oct','Nov','Dec','Jan','Feb','Mar','Apr','May','Jun','Jul'], years:['25','25','25','25','25','26','26','26','26','26','26','26'], views:DATA_VIEWS, fb:[190,118,44,132,165,32,138,168,167,133,131,162], range:['Aug 2025','Jul 2026'] },
   Year:  { labels:['2019','2020','2021','2022','2023'], views:[820,1040,960,1230,1480], fb:[700,910,840,1100,1290], range:['2019','2023'] },
 };
-function setDashPeriod(p){ dashPeriod=p; dashWindow={}; renderDashboard(); }   // reset janela ao trocar período (topo → board inteiro)
+function setDashPeriod(p){ dashPeriod=p; chartsFollowCustom=false; dashWindow={}; renderDashboard(); }   // reset janela ao trocar período (topo → board inteiro)
 let chartPeriod='Month';   // período do gráfico Views/Feedbacks — independente do restante do board
-function setChartPeriod(p){ chartPeriod=p; dashWindow={}; var c=el('chartsCard'); if(c){ c.innerHTML=chartsCardInner(); (window.requestAnimationFrame||setTimeout)(syncByClientHeight); } else renderDashboard(); }  // abas do gráfico re-renderizam só o card de gráficos
+let chartsFollowCustom=false;   // quando o período customizado do topo é aplicado, os gráficos passam a refletir esse range
+function setChartPeriod(p){ chartPeriod=p; chartsFollowCustom=false; dashWindow={}; var c=el('chartsCard'); if(c){ c.innerHTML=chartsCardInner(); (window.requestAnimationFrame||setTimeout)(syncByClientHeight); } else renderDashboard(); }  // abas do gráfico re-renderizam só o card de gráficos
 function setDashViewsTab(t){ dashViewsTab=t; var c=el('byClientCard'); if(c){ c.innerHTML=byClientCardInner(); (window.requestAnimationFrame||setTimeout)(syncByClientHeight); } else renderDashboard(); }  /* troca de aba re-renderiza só o card by-client (não afeta os totalizadores) */
 function fmtN(n){ return Number(n).toLocaleString('pt-BR'); }   /* separador de milhar com ponto, em todo o sistema */
 function barChart(data, alt, labels, years, tipDates){
@@ -3181,7 +3191,7 @@ function applyDualRange(key){
   dashWindow[key]=[Math.min(a,b), Math.max(a,b)];
   renderDashboard();
 }
-function periodTab(p){ const on=chartPeriod===p; return `<span onclick="setChartPeriod('${p}')" style="cursor:pointer;color:${on?'var(--color-primary)':'#9aa0ac'};font-weight:${on?'600':'400'};border-bottom:${on?'2px solid var(--color-primary)':'2px solid transparent'};padding-bottom:8px">${p}</span>`; }
+function periodTab(p){ const on=!chartsFollowCustom && chartPeriod===p; return `<span onclick="setChartPeriod('${p}')" style="cursor:pointer;color:${on?'var(--color-primary)':'#9aa0ac'};font-weight:${on?'600':'400'};border-bottom:${on?'2px solid var(--color-primary)':'2px solid transparent'};padding-bottom:8px">${p}</span>`; }
 function viewsTab(t){ const on=dashViewsTab===t; return `<span onclick="setDashViewsTab('${t}')" style="cursor:pointer;color:${on?'var(--color-primary)':'#9aa0ac'};font-weight:${on?'600':'400'};border-bottom:${on?'2px solid var(--color-primary)':'2px solid transparent'};padding-bottom:8px">${t}</span>`; }
 /* ---------- Dashboard (redesign visual) ---------- */
 const DASH_PERIOD_LBL = { Day:'Last 14 days', Month:'Last 12 months', Year:'Last 5 years' };
@@ -3197,7 +3207,7 @@ function openDashPeriodMenu(trg){
   const r=trg.getBoundingClientRect();
   m.style.left=r.left+'px'; m.style.top=(r.bottom+6)+'px';
   m.classList.add('open');
-  setTimeout(()=>document.addEventListener('click',closeKebabOnce),0);
+  document.removeEventListener('click',closeKebabOnce); setTimeout(()=>document.addEventListener('click',closeKebabOnce),0);
 }
 function openDashCustom(){
   el('kebab-menu').classList.remove('open');
@@ -3291,13 +3301,17 @@ function clientBarsRow(r, isSite){
   var label = isSite
     ? '<span class="hl hl-2"><span class="hl-main">'+r.name+'</span><span class="hl-sub">'+r.client+'</span></span>'
     : '<span class="hl">'+r.name+'</span>';
-  return '<div class="hrow celltip" data-tip="Open details">'
+  return '<div class="hrow" onmousemove="cbTipMove(event,\''+drill+'\',\''+(r.v*2)+'\',\''+(r.fb*2)+'\')" onmouseleave="cbTipHide()">'
     + label
     +'<div class="hbars">'
     +'<div style="display:flex;align-items:center;gap:8px;cursor:pointer" onclick="openDrill(\'views\',\''+drill+'\')"><div class="hbar" style="width:'+(r.v/max*100)+'%;background:var(--color-primary)"></div><span class="hval">'+r.v*2+'</span></div>'
-    +'<div style="display:flex;align-items:center;gap:8px;cursor:pointer" onclick="openDrill(\'feedbacks\',\''+drill+'\')"><div class="hbar" style="width:'+(r.fb/max*100)+'%;background:#a8aede"></div><span class="hval" style="color:#4D5166">'+r.fb*2+'</span></div>'
+    +'<div style="display:flex;align-items:center;gap:8px;cursor:pointer" onclick="openDrill(\'feedbacks\',\''+drill+'\')"><div class="hbar" style="width:'+(r.fb/max*100)+'%;background:#FECACA"></div><span class="hval" style="color:#4D5166">'+r.fb*2+'</span></div>'
     +'</div></div>';
 }
+/* tooltip flutuante do gráfico by-client: segue o mouse e mostra Views/Feedbacks */
+function cbTipEl(){ var t=document.getElementById('cbTip'); if(!t){ t=document.createElement('div'); t.id='cbTip'; t.style.cssText='position:fixed;z-index:400;background:#1c1c1c;color:#fff;font-size:12px;line-height:1.45;padding:8px 12px;border-radius:8px;pointer-events:none;opacity:0;transition:opacity .1s;box-shadow:0 8px 24px rgba(0,0,0,.25);white-space:nowrap'; document.body.appendChild(t); } return t; }
+function cbTipMove(e,name,v,fb){ var t=cbTipEl(); t.innerHTML='<b>'+name+'</b><br><span style="display:inline-flex;align-items:center;gap:5px"><span style="width:8px;height:8px;border-radius:2px;background:var(--color-primary);display:inline-block"></span>Views '+fmtN(v)+'</span>&nbsp;&nbsp;<span style="display:inline-flex;align-items:center;gap:5px"><span style="width:8px;height:8px;border-radius:2px;background:#FECACA;display:inline-block"></span>Feedbacks '+fmtN(fb)+'</span>'; var x=e.clientX+14, y=e.clientY+16, w=t.offsetWidth, h=t.offsetHeight; if(x+w>window.innerWidth-8) x=e.clientX-w-14; if(y+h>window.innerHeight-8) y=e.clientY-h-16; t.style.left=x+'px'; t.style.top=y+'px'; t.style.opacity='1'; }
+function cbTipHide(){ var t=document.getElementById('cbTip'); if(t) t.style.opacity='0'; }
 function clientBarsBatch(n){
   var isSite=dashViewsTab==='Site', end=Math.min(dashBarsShown+n, dashBarsAll.length), html='';
   for(var i=dashBarsShown;i<end;i++){ html+=clientBarsRow(dashBarsAll[i], isSite); }
@@ -3317,7 +3331,7 @@ function onClientBarsScroll(){
   if(sc.scrollTop+sc.clientHeight >= sc.scrollHeight-48 && dashBarsShown<dashBarsAll.length){ sc.insertAdjacentHTML('beforeend', clientBarsBatch(24)); }
 }
 function chartsCardInner(){
-  var P = PERIOD[chartPeriod] || PERIOD.Month;
+  var P = chartsFollowCustom ? (PERIOD.custom || PERIOD.Month) : (PERIOD[chartPeriod] || PERIOD.Month);
   return `<div class="dash-chart-tabs" style="display:flex;justify-content:center;gap:24px;border-bottom:1px solid var(--color-input);padding-bottom:10px;margin-bottom:12px;font-size:14px">${periodTab('Day')}${periodTab('Month')}${periodTab('Year')}</div>
        <div class="card-head"><span class="ttl">Views</span>
          <button class="kebab" title="Chart options" style="margin-left:auto" onclick="openChartMenu(this)">${I.kebab}</button>
@@ -3332,7 +3346,7 @@ function byClientCardInner(){
   return `<div class="card-head"><span class="ttl">Views & feedbacks by client</span>
          <span class="sb-leg" style="margin-left:auto">
            <span><span class="dot" style="background:var(--color-primary)"></span>Views</span>
-           <span><span class="dot" style="background:#a8aede"></span>Feedbacks</span>
+           <span><span class="dot" style="background:#FECACA"></span>Feedbacks</span>
          </span>
          <button class="kebab" title="Chart options" style="margin-left:8px" onclick="openChartMenu(this)">${I.kebab}</button>
        </div>
@@ -3666,7 +3680,7 @@ function openReactionMenu(trg){
     +'<div style="height:1px;background:var(--color-input);margin:4px 2px"></div>'
     +'<button class="km-item" onclick="el(\'kebab-menu\').classList.remove(\'open\');openFeedback()"><span style="display:inline-flex;transform:rotate(180deg)">'+I.like+'</span> Dislike</button>';
   var r=trg.getBoundingClientRect(); m.style.left=Math.max(8,r.left)+'px'; m.style.top=(r.bottom+6)+'px';
-  m.classList.add('open'); setTimeout(function(){document.addEventListener('click',closeKebabOnce);},0);
+  m.classList.add('open'); document.removeEventListener('click',closeKebabOnce); setTimeout(function(){document.addEventListener('click',closeKebabOnce);},0);
 }
 function openShareMenu(trg){
   var m=el('kebab-menu'); m.style.width='170px';
@@ -3674,7 +3688,7 @@ function openShareMenu(trg){
     +'<div style="height:1px;background:var(--color-input);margin:4px 2px"></div>'
     +'<button class="km-item" onclick="el(\'kebab-menu\').classList.remove(\'open\');copyArticleLink()"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M10 13a5 5 0 0 0 7.07 0l1.41-1.41a5 5 0 0 0-7.07-7.07L10 6"/><path d="M14 11a5 5 0 0 0-7.07 0L5.5 12.4a5 5 0 0 0 7.07 7.07L14 18"/></svg> Copy link</button>';
   var r=trg.getBoundingClientRect(); m.style.left=Math.max(8,Math.min(r.left, window.innerWidth-180))+'px'; m.style.top=(r.bottom+6)+'px';
-  m.classList.add('open'); setTimeout(function(){document.addEventListener('click',closeKebabOnce);},0);
+  m.classList.add('open'); document.removeEventListener('click',closeKebabOnce); setTimeout(function(){document.addEventListener('click',closeKebabOnce);},0);
 }
 function renderKcArticle(){
   const steps=[
@@ -4080,7 +4094,7 @@ function openArtKebab(trg){
   if(artMode!=='creation') items.push('<button class="km-item" onclick="articleDelete()">'+I.trash+' Delete</button>');
   m.innerHTML=items.join('');
   var r=trg.getBoundingClientRect(); m.style.left=Math.max(8, r.right-180)+'px'; m.style.top=Math.max(8, r.top-(items.length*42)-8)+'px';
-  m.classList.add('open'); setTimeout(function(){document.addEventListener('click',closeKebabOnce);},0);
+  m.classList.add('open'); document.removeEventListener('click',closeKebabOnce); setTimeout(function(){document.addEventListener('click',closeKebabOnce);},0);
 }
 function artSave(){
   if(!artFormValid()){ showToast('Fill all required fields','error'); return; }
