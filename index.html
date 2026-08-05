@@ -3120,7 +3120,7 @@ let dashViewsTab='Client';   // Client | Site
 let dashWindow={};           // janela de período por gráfico: {views:[lo,hi], fb:[lo,hi]}
 const PERIOD = {
   Day:   { labels:['01','02','03','04','05','06','07','08','09','10','11','12','13','14'], tipDates:['01/06/2026','02/06/2026','03/06/2026','04/06/2026','05/06/2026','06/06/2026','07/06/2026','08/06/2026','09/06/2026','10/06/2026','11/06/2026','12/06/2026','13/06/2026','14/06/2026'], views:[60,82,45,120,98,150,72,88,134,90,160,110,95,140], fb:[40,55,30,80,66,100,48,60,90,62,108,75,64,95], range:['01/06','14/06'] },
-  Month: { labels:['Aug','Sep','Oct','Nov','Dec','Jan','Feb','Mar','Apr','May','Jun','Jul'], years:['25','25','25','25','25','26','26','26','26','26','26','26'], views:DATA_VIEWS, fb:[180,120,40,130,160,30,140,170,165,130,128,160], range:['Aug 2025','Jul 2026'] },
+  Month: { labels:['Aug','Sep','Oct','Nov','Dec','Jan','Feb','Mar','Apr','May','Jun','Jul'], years:['25','25','25','25','25','26','26','26','26','26','26','26'], views:DATA_VIEWS, fb:[29,18,7,20,25,5,21,25,25,20,20,24], range:['Aug 2025','Jul 2026'] },
   Year:  { labels:['2019','2020','2021','2022','2023'], views:[820,1040,960,1230,1480], fb:[700,910,840,1100,1290], range:['2019','2023'] },
 };
 function setDashPeriod(p){ dashPeriod=p; dashWindow={}; renderDashboard(); }   // reset janela ao trocar período (topo → board inteiro)
@@ -3230,7 +3230,6 @@ function kpiDonut(){
     </svg>
     <div style="display:flex;flex-direction:column;gap:6px">
       <span class="kpi-lbl" style="display:inline-flex;align-items:center;gap:6px">Read completion <span class="kc-tip" data-tip="% of readers who finished the article, out of those who opened it, in the selected period.">${I.info}</span></span>
-      <span style="display:inline-flex;align-items:center;gap:6px;flex-wrap:wrap;font-size:12.5px;color:#4D5166"><span class="kpi-trend" style="color:#14AE5C">${I.trendUp} +1.5%</span><span>vs previous period</span></span>
     </div>
   </div>`;
 }
@@ -3239,7 +3238,7 @@ function kpiNegative(){
     <div class="kpi-tile" style="background:#FDE7E7;color:#EC221F;border:1px solid #EC221F"><svg width="30" height="30" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" style="transform:rotate(180deg)"><path d="M7 10v12M15 5.88 14 10h5.83a2 2 0 0 1 1.92 2.56l-2.33 8A2 2 0 0 1 17.5 22H4a2 2 0 0 1-2-2v-8a2 2 0 0 1 2-2h2.76a2 2 0 0 0 1.79-1.11L12 2a3.13 3.13 0 0 1 3 3.88Z"/></svg></div>
     <div style="display:flex;flex-direction:column;gap:4px">
       <span class="kpi-lbl" style="display:inline-flex;align-items:center;gap:6px">Negative feedbacks <span class="kc-tip" data-tip="Number of negative feedbacks received in the selected period.">${I.info}</span></span>
-      <span class="kpi-big">14</span>
+      <span class="kpi-big">238</span>
       <span style="display:inline-flex;align-items:center;gap:6px;flex-wrap:wrap;font-size:12.5px;color:#4D5166"><span class="kpi-trend" style="color:#EC221F">${I.trendDown} +1</span><span>vs previous period</span></span>
     </div>
   </div>`;
