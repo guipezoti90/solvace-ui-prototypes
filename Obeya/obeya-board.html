@@ -5285,6 +5285,7 @@
     </div>
     <div class="row"><button id="rv-togglepins" style="flex:1">🙈 Hide all pins</button></div>
     <div class="row"><button id="rv-importbtn" style="flex:1">⬆ Import comments</button></div>
+    <div class="row"><button id="rv-backups" style="flex:1">↺ Backups / restore</button></div>
     <input type="file" id="rv-import" accept=".html,.json" style="display:none">
     <div class="hint">Enable the mode, <b>click the spot</b> you want to comment on and type. When done, <b>Export</b> generates a file with the saved comments to send back.</div>
   </div>
@@ -5420,7 +5421,18 @@
   function rvSync(){ var v=viewKey(); if(!rvIsBoard(v)||!window.rvBoard) return; var pins=layer.querySelectorAll('.rv-pin'),i,j; for(i=0;i<pins.length;i++){ var n=pins[i].dataset.n,c=null; for(j=0;j<comments.length;j++){ if(String(comments[j].n)===String(n)){c=comments[j];break;} } if(!c)continue; var p=rvPinPos(c,0,0); pins[i].style.left=p.l+'px'; pins[i].style.top=p.t+'px'; } }
   window.rvSync=rvSync;
 
-  function save(){var p={savedAt:Date.now(),comments:comments};if(cloud){try{db.collection(COL).doc(KEY).set(p).then(function(){setStatus('Live sync on',true);}).catch(function(){cloud=false;setStatus('Local only — write blocked (check Firestore rules)',false);});}catch(e){cloud=false;setStatus('Local only — write error',false);}}localStorage.setItem(KEY,JSON.stringify(p));localStorage.setItem(KEY+'_name',nameInput.value||'');document.getElementById('rv-data').textContent=JSON.stringify(p);}
+  function save(){var p={savedAt:Date.now(),comments:comments};if(cloud){try{db.collection(COL).doc(KEY).set(p).then(function(){setStatus('Live sync on',true);}).catch(function(){cloud=false;setStatus('Local only — write blocked (check Firestore rules)',false);});}catch(e){cloud=false;setStatus('Local only — write error',false);}}localStorage.setItem(KEY,JSON.stringify(p));localStorage.setItem(KEY+'_name',nameInput.value||'');document.getElementById('rv-data').textContent=JSON.stringify(p);try{ if(comments&&comments.length) backupNow(p); }catch(_){}}
+  // ---- automatic backups (rolling) so deletions/wipes are always recoverable ----
+  function backupNow(p){
+    try{ var bkKey=KEY+'_backups', arr=[]; try{ arr=JSON.parse(localStorage.getItem(bkKey)||'[]')||[]; }catch(_){ arr=[]; } arr.push({savedAt:p.savedAt, comments:p.comments}); if(arr.length>12) arr=arr.slice(-12); localStorage.setItem(bkKey, JSON.stringify(arr)); }catch(_){}
+    if(cloud){ try{ db.collection('rv_backups').doc(KEY+'_bak_'+p.savedAt).set({key:KEY, savedAt:p.savedAt, count:(p.comments||[]).length, comments:p.comments}).then(function(){ pruneBackups(); }).catch(function(){}); }catch(_){} }
+  }
+  function pruneBackups(){ if(!cloud) return; try{ db.collection('rv_backups').where('key','==',KEY).get().then(function(s){ var docs=[]; s.forEach(function(d){ docs.push({ref:d.ref, savedAt:(d.data()||{}).savedAt||0}); }); docs.sort(function(a,b){return b.savedAt-a.savedAt;}); for(var i=40;i<docs.length;i++){ docs[i].ref.delete().catch(function(){}); } }).catch(function(){}); }catch(_){} }
+  function listBackups(){ if(cloud){ return db.collection('rv_backups').where('key','==',KEY).get().then(function(s){ var out=[]; s.forEach(function(d){ var x=d.data()||{}; out.push({id:d.id, src:'cloud', savedAt:x.savedAt, count:x.count, comments:x.comments}); }); out.sort(function(a,b){return b.savedAt-a.savedAt;}); return out; }); } var arr=[]; try{ arr=JSON.parse(localStorage.getItem(KEY+'_backups')||'[]')||[]; }catch(_){} return Promise.resolve(arr.map(function(b,i){ return {id:'ls'+i, src:'local', savedAt:b.savedAt, count:(b.comments||[]).length, comments:b.comments}; }).sort(function(a,b){return b.savedAt-a.savedAt;})); }
+  function restoreBackup(b){ if(!b||!b.comments){ return; } comments=(b.comments||[]).slice(); save(); render(); setStatus('Restored '+comments.length+' comments', true); }
+  window.rvListBackups=function(){ return listBackups().then(function(l){ try{ console.table(l.map(function(x){return {id:x.id, when:new Date(x.savedAt).toLocaleString(), count:x.count};})); }catch(_){} return l; }); };
+  window.rvRestore=function(id){ return listBackups().then(function(l){ var b=l.filter(function(x){return x.id===id;})[0]; if(b) restoreBackup(b); else console.warn('backup not found'); }); };
+  function showBackups(){ listBackups().then(function(l){ var ov=document.createElement('div'); ov.className='xfer-ov'; ov.style.zIndex='10000'; ov.innerHTML='<div class="xfer-card"><div class="xfer-h">Restore a backup</div><div class="xfer-sub">Automatic snapshots of this board’s review comments.</div><div class="xfer-list">'+(l.length?l.map(function(b){ return '<label class="xfer-it"><input type="radio" name="bk" value="'+b.id+'"><span style="flex:1">'+new Date(b.savedAt).toLocaleString()+' <span class="xfer-cur">('+b.count+' comments · '+b.src+')</span></span></label>'; }).join(''):'<div style="padding:16px;color:#94a3b8;font-size:13px">No backups yet. They start accruing from now on.</div>')+'</div><div class="xfer-foot"><button class="zbtn zbtn-outline" data-x="cancel">Cancel</button><button class="zbtn zbtn-default" data-x="restore">Restore</button></div></div>'; document.body.appendChild(ov); ov.addEventListener('mousedown', function(e){ if(e.target===ov) ov.remove(); }); ov.addEventListener('click', function(e){ var bt=e.target.closest('[data-x]'); if(!bt) return; if(bt.getAttribute('data-x')==='cancel'){ ov.remove(); return; } var sel=ov.querySelector('input[name="bk"]:checked'); if(sel){ var b=l.filter(function(x){return x.id===sel.value;})[0]; if(b) restoreBackup(b); } ov.remove(); }); }); }
   function esc(s){return (s||'').replace(/[&<>"]/g,function(m){return {'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;'}[m]})}
   function findC(n){for(var i=0;i<comments.length;i++){if(String(comments[i].n)===String(n))return comments[i];}return null;}  // resolve current object by pin number (array is replaced on each onSnapshot)
 
@@ -5512,6 +5524,7 @@
     var name=(document.title||'arquivo').replace(/[^a-z0-9]+/gi,'-').toLowerCase()+'-COMENTADO.html';
     dl(new Blob(['<!DOCTYPE html>\n'+clone.outerHTML],{type:'text/html'}),name);};
   document.getElementById('rv-importbtn').onclick=function(){document.getElementById('rv-import').click()};
+  var _rvbk=document.getElementById('rv-backups'); if(_rvbk) _rvbk.onclick=function(){ showBackups(); };
   document.getElementById('rv-import').onchange=function(e){var f=e.target.files[0];if(!f)return;var rd=new FileReader();
     rd.onload=function(){var data=null,t=rd.result;if(f.name.endsWith('.json')){data=parse(t)}else{var m=t.match(/<script[^>]*id="rv-data"[^>]*>([\s\S]*?)<\/script>/);if(m)data=parse(m[1]);}
       if(data&&data.comments){comments=data.comments;seq=comments.reduce(function(mx,c){return Math.max(mx,c.n||0)},0);save();render();alert('Imported '+comments.length+' comment(s).');}else alert('No comments found in this file.');};
