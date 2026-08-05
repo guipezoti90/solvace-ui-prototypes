@@ -297,7 +297,7 @@
   .wcard.sm .gauge2 svg{ width:auto; max-width:240px; }
   .wcard.sm .gauge2 .scale{ width:150px; font-size:11px; }
   .num2{ flex:1; display:flex; align-items:center; justify-content:center; background:#f2f3f5; border-radius:12px; container-type:size; overflow:hidden; padding:8px; }
-  .num2-val{ font-size:clamp(22px,min(26cqw,40cqh),130px); font-weight:700; line-height:1; color:#14ae5c; white-space:nowrap; max-width:100%; }
+  .num2-val{ font-size:clamp(22px,min(26cqw,40cqh),130px); font-weight:700; line-height:1; color:#0a0a0b; white-space:nowrap; max-width:100%; }
   .num2.pos{ background:#e7f8ee; } .num2.pos .num2-val{ color:#14ae5c; }
   .num2.on{ background:#fdf3d6; } .num2.on .num2-val{ color:#A07D12; }
   .num2.neg{ background:#fdeceb; } .num2.neg .num2-val{ color:#ec221f; }
@@ -709,6 +709,8 @@
   .rwarn svg{ width:14px; height:14px; }
   .resched{ color:#0e7aa8; display:inline-flex; } .resched svg{ width:14px; height:14px; }
   .rescal{ color:#e8871e; display:inline-flex; } .rescal svg{ width:14px; height:14px; }
+  .rrecv{ color:#0e7aa8; display:inline-flex; } .rrecv svg{ width:14px; height:14px; }
+  .rbadge.ontrack{ background:#eafaf1; color:#5cbd88; }
   .wap{ flex:1; display:flex; flex-direction:column; gap:8px; min-height:0; }
   .apstack{ display:flex; margin:0; flex:0 0 auto; gap:12px; }
   .apstack .apav{ position:relative; width:30px; height:30px; border-radius:99px; font-size:9px; font-weight:600; display:inline-flex; align-items:center; justify-content:center; border:2px solid #fff; margin-left:0; }
@@ -1279,6 +1281,14 @@
   .usel-avs .uav{ margin-left:-7px; }
   .usel-avs .uav:first-child{ margin-left:0; }
   .usel-txt{ font-size:13px; color:#0d122f; white-space:nowrap; overflow:hidden; text-overflow:ellipsis; }
+  /* selected users as removable chips (#25) */
+  .ed-select.usel{ height:auto; min-height:38px; }
+  .usel .usel-l{ flex-wrap:wrap; gap:6px; }
+  .usel-chips{ display:flex; flex-wrap:wrap; gap:6px; align-items:center; }
+  .usel-chip{ display:inline-flex; align-items:center; gap:6px; background:#eef0f4; border-radius:9999px; padding:3px 6px 3px 4px; }
+  .usel-chip .uav{ width:18px; height:18px; font-size:9px; border-width:1px; box-shadow:none; margin:0; }
+  .usel-cn{ font-size:12px; color:#0d122f; }
+  .usel-x{ border:0; background:transparent; color:#5A5F6B; cursor:pointer; font-size:12px; line-height:1; padding:0 2px; border-radius:9999px; } .usel-x:hover{ background:#dfe1e8; }
   /* favorite star toggle */
   .fav-star{ background:none; border:none; cursor:pointer; color:#c0c4cc; padding:0; display:inline-flex; align-items:center; }
   .fav-star svg{ width:22px; height:22px; fill:none; stroke:currentColor; stroke-width:2; }
@@ -1338,7 +1348,7 @@
   /* editModal tables (Links #76 / Related #77) */
   .ed-tbl-wrap{ overflow-x:auto; margin-top:2px; }
   .ed-tbl{ width:100%; border-collapse:collapse; font-size:13px; }
-  .ed-tbl th{ text-align:left; font-size:11px; font-weight:600; color:#6b7280; letter-spacing:.02em; background:#ececec; padding:9px 10px; white-space:nowrap; }
+  .ed-tbl th{ text-align:left; text-transform:uppercase; font-size:12px; font-weight:600; color:#555; letter-spacing:.03em; background:#ececec; padding:13px 10px; white-space:nowrap; }
   .ed-tbl td{ padding:7px 8px; vertical-align:middle; border-bottom:1px solid #f0f2f5; }
   .ed-tbl td.ed-tdtext{ color:#0d122f; padding:11px 10px; }
   .ed-cell{ width:100%; border:1px solid #d0d5dd; border-radius:8px; padding:8px 10px; font-size:13px; color:#0d122f; outline:none; background:#fff; }
@@ -1354,14 +1364,14 @@
   /* Andon rule rows (#78) */
   .andon-add{ width:26px; height:26px; border-radius:50%; border:none; background:#001391; color:#fff; display:inline-flex; align-items:center; justify-content:center; cursor:pointer; margin-bottom:14px; }
   .andon-add svg{ width:15px; height:15px; }
-  .andon-row{ border:1px solid #eef0f3; border-radius:10px; padding:12px; margin-bottom:14px; background:#fcfcfd; }
+  .andon-row{ border:1px solid #eef0f3; border-radius:10px; padding:12px; margin-bottom:14px; background:#f3f4f6; }
   .andon-fields{ display:grid; grid-template-columns:1fr 1fr; gap:10px 12px; align-items:end; }
   .andon-foot{ display:flex; align-items:center; gap:14px; margin-top:12px; }
   .andon-foot .andon-del{ margin-left:auto; }
   .andon-f label{ display:block; font-size:12px; color:#6b7280; margin-bottom:6px; }
   .andon-f .ed-input{ width:100%; }
   /* Links: cards empilhados (padrão Andon), sem rolagem lateral */
-  .link-row{ border:1px solid #eef0f3; border-radius:10px; padding:12px; margin-bottom:14px; background:#fcfcfd; }
+  .link-row{ border:1px solid #eef0f3; border-radius:10px; padding:12px; margin-bottom:14px; background:#f3f4f6; }
   .link-fields{ display:grid; grid-template-columns:1fr 1fr; gap:10px 12px; align-items:end; }
   .link-f label{ display:block; font-size:12px; color:#6b7280; margin-bottom:6px; }
   .link-f .ed-input, .link-f .ds-select{ width:100%; }
@@ -1370,11 +1380,11 @@
   @media (max-width:560px){ .link-fields{ grid-template-columns:1fr; } }
   /* Source tab (dynamic) */
   .ed-sec2{ font-size:12px; font-weight:700; letter-spacing:.03em; color:#8a90a6; margin:14px 0 6px; }
-  .srcf-box{ display:flex; align-items:center; gap:8px; border:1px solid #eeeff1; border-radius:8px; padding:4px 6px; background:#fafafa; }
+  .srcf-box{ display:flex; align-items:center; gap:8px; border:1px solid #e6e8ee; border-radius:8px; padding:4px 6px; background:#f1f2f4; }
   .src-add{ width:26px; height:26px; border-radius:6px; border:none; background:#001391; color:#fff; display:inline-flex; align-items:center; justify-content:center; cursor:pointer; flex:0 0 auto; } .src-add svg{ width:15px; height:15px; }
   .srcf-txt{ font-size:13px; color:#0d122f; }
   .srcv-list{ margin-top:10px; display:flex; flex-direction:column; gap:12px; }
-  .srcv-row{ border:1px solid #eef0f3; border-radius:10px; padding:12px; background:#fcfcfd; }
+  .srcv-row{ border:1px solid #eef0f3; border-radius:10px; padding:12px; background:#f3f4f6; }
   .srcv-fields{ display:grid; grid-template-columns:repeat(3,1fr); gap:10px 12px; align-items:end; }
   .srcv-foot{ display:flex; justify-content:flex-end; margin-top:10px; }
   .src-del{ border:none; background:none; color:#6b7280; cursor:pointer; padding:6px; display:inline-flex; border-radius:6px; } .src-del:hover{ background:#fee2e2; color:#dc2626; } .src-del svg{ width:16px; height:16px; }
@@ -1404,7 +1414,7 @@
   .ed-sec2{ font-size:12px; font-weight:700; text-transform:uppercase; letter-spacing:.03em; color:#8a90a6; margin:14px 0 6px; }
   .ed-divider{ border-top:1px solid #eeeff1; margin:16px 0 8px; }
   .ed-inbox.dis{ background:#f4f5f7; }
-  .calc-var{ border:1px solid #eef0f3; border-radius:10px; padding:10px; margin-top:10px; background:#fcfcfd; }
+  .calc-var{ border:1px solid #eef0f3; border-radius:10px; padding:10px; margin-top:10px; background:#f3f4f6; }
   .calc-var-h{ display:flex; align-items:center; gap:8px; margin-bottom:8px; }
   .calc-let{ width:60px; flex:0 0 60px; height:34px; min-height:34px; font-weight:600; }
   /* zoom date-range filter pills (chart full view #zoom-filter) */
@@ -1450,6 +1460,55 @@
   .feed2-input{ flex:1; height:44px; border:1px solid #eeeff1; border-radius:99px; padding:0 18px; background:#fafafa; font-size:14px; color:#0d122f; outline:none; }
   .feed2-input::placeholder{ color:#9ba0a3; }
   .feed2-input:focus{ border-color:#001391; background:#fff; }
+  /* Padrão de campo de busca: 14px / 400 / rgb(117,117,117) */
+  input[placeholder^="Search"], input[placeholder^="Buscar"]{ font-size:14px !important; font-weight:400 !important; color:#757575 !important }
+  input[placeholder^="Search"]::placeholder, input[placeholder^="Buscar"]::placeholder{ font-size:14px; font-weight:400; color:#757575; opacity:1 }
+  /* full-view tab toolbar: keyword search + filter */
+  .fv-tools{ display:flex; align-items:center; gap:8px; margin-bottom:12px; }
+  .fv-search{ flex:1; display:flex; align-items:center; gap:8px; height:40px; border:1px solid #e2e8f0; border-radius:8px; padding:0 10px; }
+  .fv-search svg{ width:16px; height:16px; color:#757575; flex:0 0 auto; }
+  .fv-search input{ flex:1; border:0; outline:0; font-size:14px; font-family:inherit; background:none; color:#0d122f; }
+  .fv-filter{ display:inline-flex; align-items:center; justify-content:center; width:40px; height:40px; flex:0 0 auto; padding:0; border:1px solid #e2e8f0; border-radius:8px; background:#fff; color:#0d122f; cursor:pointer; }
+  .fv-filter:hover{ background:#f4f6ff; border-color:#c7ccf5; } .fv-filter svg{ width:18px; height:18px; }
+  .fv-filter.on{ border-color:#001391; color:#001391; }
+  /* Advanced Search modal */
+  .adv-ov{ position:fixed; inset:0; background:rgba(13,18,47,.45); display:none; align-items:flex-start; justify-content:center; z-index:9700; }
+  .adv-ov.open{ display:flex; }
+  .adv-card{ background:#fff; border-radius:12px; width:min(960px,94vw); margin-top:6vh; max-height:88vh; display:flex; flex-direction:column; overflow:hidden; box-shadow:0 24px 60px rgba(0,0,0,.28); font-family:Inter,system-ui,sans-serif; }
+  .adv-head{ background:#fff; color:#0d122f; padding:18px 22px; display:flex; align-items:center; justify-content:space-between; border-bottom:1px solid #eef0f3; }
+  .adv-head .adv-title{ font-size:18px; font-weight:600; color:#0d122f; }
+  .adv-head .adv-x{ background:none; border:0; color:#5A5F6B; cursor:pointer; display:inline-flex; } .adv-head .adv-x svg{ width:20px; height:20px; }
+  .adv-body{ padding:20px; overflow-y:auto; overflow-x:hidden; display:flex; flex-direction:column; gap:16px; background:#fff; }
+  .adv-body *{ box-sizing:border-box; } .adv-in, .adv-date{ max-width:100%; }
+  .adv-sec{ background:#fff; border:1px solid #E6E8EE; border-radius:14px; box-shadow:0 2px 8px rgba(16,24,40,.06); padding:18px; }
+  .adv-sec-h{ font-size:13px; font-weight:600; color:#001391; margin-bottom:14px; }
+  .adv-grid{ display:grid; grid-template-columns:1fr 1fr; gap:14px 20px; }
+  .adv-f.full{ grid-column:1 / -1; }
+  .adv-ms{ position:relative; min-height:42px; border:1px solid #d7dbe3; border-radius:8px; padding:5px 34px 5px 10px; display:flex; align-items:center; flex-wrap:wrap; gap:6px; cursor:pointer; }
+  .adv-ms.open{ border-color:#001391; }
+  .adv-ms-val{ display:flex; flex-wrap:wrap; gap:6px; align-items:center; }
+  .adv-ms-ph{ color:#9aa0ac; font-size:14px; }
+  .adv-ms-chip{ display:inline-flex; align-items:center; gap:6px; background:#eef0f4; border-radius:8px; padding:4px 8px; font-size:13px; color:#0d122f; }
+  .adv-ms-chip button{ border:0; background:none; cursor:pointer; color:#5A5F6B; display:inline-flex; padding:0; } .adv-ms-chip button svg{ width:13px; height:13px; }
+  .adv-ms-cv{ position:absolute; right:10px; top:12px; color:#8a90a6; pointer-events:none; } .adv-ms-cv svg{ width:16px; height:16px; }
+  .adv-ms-pop{ position:absolute; left:0; right:0; top:calc(100% + 4px); background:#fff; border:1px solid #e6e8ee; border-radius:10px; box-shadow:0 12px 30px rgba(13,18,47,.16); padding:4px; z-index:20; max-height:230px; overflow:auto; display:none; }
+  .adv-ms.open .adv-ms-pop{ display:block; }
+  .adv-ms-opt{ display:flex; align-items:center; gap:10px; padding:9px 10px; border-radius:8px; cursor:pointer; font-size:14px; color:#33373f; } .adv-ms-opt:hover{ background:#f2f2f4; }
+  .adv-ms-ck{ width:16px; height:16px; flex:0 0 auto; border:1.5px solid #c5c9d3; border-radius:4px; display:inline-flex; align-items:center; justify-content:center; color:#fff; } .adv-ms-ck svg{ width:12px; height:12px; opacity:0; }
+  .adv-ms-opt.on .adv-ms-ck{ background:#001391; border-color:#001391; } .adv-ms-opt.on .adv-ms-ck svg{ opacity:1; }
+  .adv-f{ display:flex; flex-direction:column; }
+  .adv-f > label{ font-size:12px; font-weight:700; letter-spacing:.03em; text-transform:uppercase; color:#33373f; margin-bottom:6px; }
+  .adv-in{ height:42px; border:1px solid #d7dbe3; border-radius:8px; padding:0 12px; font-size:14px; font-family:inherit; outline:none; color:#0d122f; }
+  .adv-in:focus{ border-color:#001391; } .adv-in.dis{ background:#f2f3f5; color:#8a90a6; pointer-events:none; }
+  .adv-daterow{ display:flex; gap:14px; } .adv-date{ flex:1; display:flex; align-items:center; gap:8px; height:42px; border:1px solid #d7dbe3; border-radius:8px; padding:0 12px; } .adv-date svg{ width:16px; height:16px; color:#8a90a6; flex:0 0 auto; } .adv-date input{ flex:1; min-width:0; border:0; outline:0; font-size:14px; font-family:inherit; color:#0d122f; }
+  .adv-chips{ display:flex; flex-wrap:wrap; gap:8px; min-height:42px; align-items:center; }
+  .adv-chip{ display:inline-flex; align-items:center; gap:6px; background:#eef0f4; border-radius:8px; padding:6px 10px; font-size:14px; color:#0d122f; }
+  .adv-chip button{ border:0; background:none; cursor:pointer; color:#5A5F6B; display:inline-flex; padding:0; } .adv-chip button svg{ width:15px; height:15px; }
+  .adv-foot{ display:flex; align-items:center; justify-content:space-between; padding:16px 26px; border-top:1px solid #eef0f3; }
+  .adv-clear{ background:none; border:0; color:#001391; font-size:14px; font-weight:600; cursor:pointer; }
+  .adv-foot-r{ display:flex; align-items:center; gap:18px; }
+  .adv-go{ background:#001391; color:#fff; border:0; border-radius:8px; height:40px; padding:0 24px; font-size:14px; font-weight:600; cursor:pointer; }
+  .adv-cancel{ background:none; border:0; color:#001391; font-size:14px; font-weight:600; cursor:pointer; }
   .feed2-send{ width:44px; height:44px; border-radius:99px; background:#001391; color:#fff; border:none; cursor:pointer; display:flex; align-items:center; justify-content:center; flex:0 0 auto; }
   .feed2-send:hover{ background:#0000d6; }
   .feed2-send svg{ width:18px; height:18px; }
@@ -1575,6 +1634,8 @@
   #fullModal .em-widget .wtable td{ font-size:12px; }
   #fullModal .em-widget .minibars-x span{ font-size:10px; }
   #fullModal .em-widget .rtxt{ font-size:13px; }
+  /* zoom tab record cards — standard 14px fonts */
+  #fullBody .rtxt{ font-size:14px; } #fullBody .rcode{ font-size:14px; } #fullBody .rmeta{ font-size:14px; } #fullBody .rmeta .rmc svg{ width:15px; height:15px; } #fullBody .rbadge{ font-size:12px; }
   #fullModal .em-widget .rcode, #fullModal .em-widget .rid{ font-size:12px; }
   #fullModal .em-widget .wcard-title{ font-size:13px; }
   #fullModal .em-widget .wcard-sub{ font-size:12px; }
@@ -1774,8 +1835,8 @@
     <!-- Size toolbar (shown when 'Size' is clicked) -->
     <div class="size-toolbar" id="sizeToolbar">
       <span class="stexp"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polyline points="15 3 21 3 21 9"/><polyline points="9 21 3 21 3 15"/><line x1="21" x2="14" y1="3" y2="10"/><line x1="3" x2="10" y1="21" y2="14"/></svg></span>
-      <input id="sizeW" type="number" min="120" value="404" aria-label="Largura (px)">
-      <input id="sizeH" type="number" min="100" value="300" aria-label="Altura (px)">
+      <input id="sizeW" type="number" min="180" value="404" aria-label="Largura (px)">
+      <input id="sizeH" type="number" min="180" value="300" aria-label="Altura (px)">
       <button class="stok" id="sizeOk" title="OK"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round"><path d="M20 6 9 17l-5-5"/></svg></button>
     </div>
 
@@ -1933,7 +1994,7 @@
      </div><!-- /board-page b0 -->
 
      <div class="board-page" data-bp="b2">
-      <section class="wcard no-ind up-editable" data-wi="0" style="left:160px;top:140px;width:280px;height:300px;z-index:1"><div class="wcard-head"><div><div class="wcard-title" title="Units Today">Units Today</div><div class="wcard-sub"></div></div><span class="expand" title="Open full view"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polyline points="15 3 21 3 21 9"/><polyline points="9 21 3 21 3 15"/><line x1="21" x2="14" y1="3" y2="10"/><line x1="3" x2="10" y1="21" y2="14"/></svg></span><span class="up-acts"><button class="up-act-btn" title="Zoom" onclick="event.stopPropagation();var c=this.closest('.wcard');var ex=c&&c.querySelector('.expand');if(ex)ex.click();"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polyline points="15 3 21 3 21 9"/><polyline points="9 21 3 21 3 15"/><line x1="21" x2="14" y1="3" y2="10"/><line x1="3" x2="10" y1="21" y2="14"/></svg></button></span></div><div class="num2 pos" data-dtip data-v="3,420" data-t="3000"><span class="num2-val font-display">3.420</span></div><div class="w-foot"><span class="w-foot-l"><span class="w-apalert" data-goap="1" title="Delayed action plan — click to open"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="m21.73 18-8-14a2 2 0 0 0-3.48 0l-8 14A2 2 0 0 0 4 21h16a2 2 0 0 0 1.73-3Z"/><path d="M12 9v4"/><path d="M12 17h.01"/></svg></span><span class="w-meta" data-ftab="plan" title="4 action plans"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect width="8" height="4" x="8" y="2" rx="1"/><path d="M16 4h2a2 2 0 0 1 2 2v14a2 2 0 0 1-2 2H6a2 2 0 0 1-2-2V6a2 2 0 0 1 2-2h2"/></svg>4</span><span class="w-meta" data-ftab="feed" title="2 comments in feed"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M21 15a2 2 0 0 1-2 2H7l-4 4V5a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2z"/></svg>2</span></span><span class="w-av" title="Nick Usk" style="background:#ffd8a8;color:#9a4a00">NU</span></div></section>
+      <section class="wcard no-ind up-editable" data-wi="0" style="left:160px;top:140px;width:280px;height:300px;z-index:1"><div class="wcard-head"><div><div class="wcard-title" title="Units Today">Units Today</div><div class="wcard-sub"></div></div><span class="expand" title="Open full view"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polyline points="15 3 21 3 21 9"/><polyline points="9 21 3 21 3 15"/><line x1="21" x2="14" y1="3" y2="10"/><line x1="3" x2="10" y1="21" y2="14"/></svg></span><span class="up-acts"><button class="up-act-btn" title="Zoom" onclick="event.stopPropagation();var c=this.closest('.wcard');var ex=c&&c.querySelector('.expand');if(ex)ex.click();"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polyline points="15 3 21 3 21 9"/><polyline points="9 21 3 21 3 15"/><line x1="21" x2="14" y1="3" y2="10"/><line x1="3" x2="10" y1="21" y2="14"/></svg></button></span></div><div class="num2" data-dtip data-v="3,420" data-t="3000"><span class="num2-val font-display">3.420</span></div><div class="w-foot"><span class="w-foot-l"><span class="w-apalert" data-goap="1" title="Delayed action plan — click to open"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="m21.73 18-8-14a2 2 0 0 0-3.48 0l-8 14A2 2 0 0 0 4 21h16a2 2 0 0 0 1.73-3Z"/><path d="M12 9v4"/><path d="M12 17h.01"/></svg></span><span class="w-meta" data-ftab="plan" title="4 action plans"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect width="8" height="4" x="8" y="2" rx="1"/><path d="M16 4h2a2 2 0 0 1 2 2v14a2 2 0 0 1-2 2H6a2 2 0 0 1-2-2V6a2 2 0 0 1 2-2h2"/></svg>4</span><span class="w-meta" data-ftab="feed" title="2 comments in feed"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M21 15a2 2 0 0 1-2 2H7l-4 4V5a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2z"/></svg>2</span></span><span class="w-av" title="Nick Usk" style="background:#ffd8a8;color:#9a4a00">NU</span></div></section>
      </div><!-- /board-page widget numero (b7) -->
 
     </div><!-- /canvas -->
@@ -2055,7 +2116,7 @@
         <button class="ed-tab active" data-tab="general">General</button>
         <button class="ed-tab" data-tab="advanced">Advanced</button>
         <button class="ed-tab" data-tab="sources">Source</button>
-        <button class="ed-tab" data-tab="links">Links</button>
+        <button class="ed-tab" data-tab="links">Links <span class="ed-badge" id="edLinkBadge">3</span></button>
         <button class="ed-tab" data-tab="related">Related widgets <span class="ed-badge">1</span></button>
         <button class="ed-tab" data-tab="andon">Andon</button>
       </div>
@@ -2143,10 +2204,10 @@
         <div class="ed-panel" data-panel="sources">
           <label class="ed-label">Source type</label>
           <select class="ed-input ed-native" id="edSrcType" style="max-width:320px">
-            <option value="api">API</option>
-            <option value="calc">Calculation</option>
-            <option value="mirror">mirroring</option>
             <option value="manual" selected>Manual</option>
+            <option value="mirror">Mirroring</option>
+            <option value="calc">Calculation</option>
+            <option value="api">API</option>
           </select>
           <div id="srcVariant"></div>
         </div>
@@ -2160,9 +2221,9 @@
         <!-- RELATED WIDGETS (#77 — table) -->
         <div class="ed-panel" data-panel="related">
           <div class="ed-tbl-wrap">
-            <table class="ed-tbl"><thead><tr><th>Site</th><th>Room</th><th>Board</th><th>Widget</th></tr></thead>
+            <table class="ed-tbl"><thead><tr><th>Origin</th><th>Site</th><th>Room</th><th>Board</th><th>Widget</th></tr></thead>
               <tbody>
-                <tr><td class="ed-tdtext">Detroit</td><td class="ed-tdtext">(DOB-1) Line 1</td><td class="ed-tdtext">DDS Line 1</td><td class="ed-tdtext">Incident Shift 1</td></tr>
+                <tr><td class="ed-tdtext">Mirror</td><td class="ed-tdtext">Detroit</td><td class="ed-tdtext">(DOB-1) Line 1</td><td class="ed-tdtext">DDS Line 1</td><td class="ed-tdtext">Incident Shift 1</td></tr>
               </tbody>
             </table>
           </div>
@@ -2640,32 +2701,36 @@
             </div>
             <!-- Plano de ação — matches the live board Action Plan widget (code · title · status · days · comments) -->
             <div class="ed-panel" data-fpanel="plan">
+              <div class="fv-tools"><div class="fv-search"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><circle cx="11" cy="11" r="7"/><path d="m21 21-4.3-4.3"/></svg><input type="text" placeholder="Search..." data-fvsearch="plan"></div><button class="fv-filter" title="Filters" data-advsearch="plan"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polygon points="22 3 2 3 10 12.46 10 19 14 21 14 12.46 22 3"/></svg></button><button class="fv-filter" data-fvkanban="1" title="Kanban view"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="3" width="7" height="18" rx="1"/><rect x="14" y="3" width="7" height="11" rx="1"/></svg></button></div>
               <div class="wrca fv-cards">
-                <div class="rcard"><div class="rcard-top"><span class="apleft"><span class="apav-sm" style="background:#d7e9ff;color:#17457a">CV</span><span class="rcode">ACP-499</span><span class="rwarn"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M10.29 3.86 1.82 18a2 2 0 0 0 1.71 3h16.94a2 2 0 0 0 1.71-3L13.71 3.86a2 2 0 0 0-3.42 0z"/><line x1="12" y1="9" x2="12" y2="13"/><line x1="12" y1="17" x2="12.01" y2="17"/></svg></span></span><span class="rbadge bad">Delayed</span></div><div class="rtxt">Clean maneuver area</div><div class="rmeta"><span class="rmc"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="4" width="18" height="18" rx="2"/><path d="M3 10h18M8 2v4M16 2v4"/></svg>603 days</span><span class="rmc"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M21 15a2 2 0 0 1-2 2H7l-4 4V5a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2z"/></svg>3</span></div></div>
+                <div class="rcard"><div class="rcard-top"><span class="apleft"><span class="apav-sm" style="background:#d7e9ff;color:#17457a">CV</span><span class="rcode">ACP-499</span></span><span class="rbadge bad">Delayed</span></div><div class="rtxt">Clean maneuver area</div><div class="rmeta"><span class="rmc"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="4" width="18" height="18" rx="2"/><path d="M3 10h18M8 2v4M16 2v4"/></svg>603 days</span><span class="rmc"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M21 15a2 2 0 0 1-2 2H7l-4 4V5a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2z"/></svg>3</span></div></div>
                 <div class="rcard"><div class="rcard-top"><span class="apleft"><span class="apav-sm" style="background:#e7e9f5;color:#3a4790">OO</span><span class="rcode">ACP-607</span><span class="resched" data-systip="Rescheduled to Jun 12, 2026"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M21 12a9 9 0 1 1-3-6.7"/><polyline points="21 3 21 9 15 9"/></svg></span></span><span class="rbadge bad">Delayed</span></div><div class="rtxt">Information required on OEE below target</div><div class="rsrc">OEE Shift 2</div><div class="rmeta"><span class="rmc"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="4" width="18" height="18" rx="2"/><path d="M3 10h18M8 2v4M16 2v4"/></svg>423 days</span></div></div>
-                <div class="rcard"><div class="rcard-top"><span class="apleft"><span class="apav-sm" style="background:#dcf5e6;color:#2d6a4f">JS</span><span class="rcode">ACP-562</span></span><span class="rbadge bad">Delayed</span></div><div class="rtxt">Train operators on the new procedure</div><div class="rmeta"><span class="rmc"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="4" width="18" height="18" rx="2"/><path d="M3 10h18M8 2v4M16 2v4"/></svg>463 days</span><span class="rmc"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M21 15a2 2 0 0 1-2 2H7l-4 4V5a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2z"/></svg>1</span></div></div>
-                <div class="rcard"><div class="rcard-top"><span class="apleft"><span class="apav-sm" style="background:#ffe3c2;color:#9a4a00">RG</span><span class="rcode">ACP-630</span><span class="rescal" data-systip="Escalated to Renato Basso"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polyline points="23 6 13.5 15.5 8.5 10.5 1 18"/><polyline points="17 6 23 6 23 12"/></svg></span></span><span class="rbadge bad">Delayed</span></div><div class="rtxt">Train Shift 2 team on reporting issues according to OPL-652</div><div class="rsrc">OEE Shift 2</div><div class="rmeta"><span class="rmc"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="4" width="18" height="18" rx="2"/><path d="M3 10h18M8 2v4M16 2v4"/></svg>259 days</span></div></div>
+                <div class="rcard"><div class="rcard-top"><span class="apleft"><span class="apav-sm" style="background:#dcf5e6;color:#2d6a4f">JS</span><span class="rcode">ACP-562</span><span class="rrecv" data-systip="Received via escalation from board (DOB-3) Assembly Cell A"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><line x1="17" y1="7" x2="7" y2="17"/><polyline points="16 17 7 17 7 8"/></svg></span></span><span class="rbadge bad">Delayed</span></div><div class="rtxt">Train operators on the new procedure</div><div class="rmeta"><span class="rmc"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="4" width="18" height="18" rx="2"/><path d="M3 10h18M8 2v4M16 2v4"/></svg>463 days</span><span class="rmc"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M21 15a2 2 0 0 1-2 2H7l-4 4V5a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2z"/></svg>1</span></div></div>
+                <div class="rcard"><div class="rcard-top"><span class="apleft"><span class="apav-sm" style="background:#ffe3c2;color:#9a4a00">RG</span><span class="rcode">ACP-630</span><span class="rescal" data-systip="Escalated to board (DOB-2) Line 2"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><line x1="7" y1="17" x2="17" y2="7"/><polyline points="8 7 17 7 17 16"/></svg></span></span><span class="rbadge bad">Delayed</span></div><div class="rtxt">Train Shift 2 team on reporting issues according to OPL-652</div><div class="rsrc">OEE Shift 2</div><div class="rmeta"><span class="rmc"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="4" width="18" height="18" rx="2"/><path d="M3 10h18M8 2v4M16 2v4"/></svg>259 days</span></div></div>
               </div>
             </div>
             <!-- RCA — matches the live board RCA 1-pager widget (code · title · source) -->
             <div class="ed-panel" data-fpanel="rca">
+              <div class="fv-tools"><div class="fv-search"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><circle cx="11" cy="11" r="7"/><path d="m21 21-4.3-4.3"/></svg><input type="text" placeholder="Search..." data-fvsearch="rca"></div><button class="fv-filter" title="Filters" data-advsearch="rca"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polygon points="22 3 2 3 10 12.46 10 19 14 21 14 12.46 22 3"/></svg></button></div>
               <div class="wrca fv-cards">
-                <div class="rcard"><div class="rcard-top"><span class="apleft"><span class="apav-sm" style="background:#fde7e7;color:#c0392b">!</span><span class="rcode">RCA-57</span></span><span class="rbadge warn">Open</span></div><div class="rtxt">Operator from shift 1 slipped and almost fell on the floor</div><div class="rmeta"><span class="rmc"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="4" width="18" height="18" rx="2"/><path d="M3 10h18M8 2v4M16 2v4"/></svg>868 days</span></div></div>
-                <div class="rcard"><div class="rcard-top"><span class="apleft"><span class="apav-sm" style="background:#fdf3d6;color:#a07d12">!</span><span class="rcode">RCA-58</span></span><span class="rbadge warn">Open</span></div><div class="rtxt">Case packer stopped working for 1,5h</div><div class="rmeta"><span class="rmc"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="4" width="18" height="18" rx="2"/><path d="M3 10h18M8 2v4M16 2v4"/></svg>820 days</span></div></div>
-                <div class="rcard"><div class="rcard-top"><span class="apleft"><span class="apav-sm" style="background:#e7e9f5;color:#3a4790">!</span><span class="rcode">RCA-75</span></span><span class="rbadge ok">Closed</span></div><div class="rtxt">Reklamation Nummer 1 2 3 von Kunde XYZ</div><div class="rmeta"><span class="rmc"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="4" width="18" height="18" rx="2"/><path d="M3 10h18M8 2v4M16 2v4"/></svg>640 days</span></div></div>
+                <div class="rcard"><div class="rcard-top"><span class="apleft"><span class="apav-sm" style="background:#fde7e7;color:#c0392b">!</span><span class="rcode">RCA-57</span></span><span class="rbadge warn">Opened</span></div><div class="rtxt">Operator from shift 1 slipped and almost fell on the floor</div><div class="rmeta"><span class="rmc"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="4" width="18" height="18" rx="2"/><path d="M3 10h18M8 2v4M16 2v4"/></svg>868 days</span><span class="rmc"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M21 15a2 2 0 0 1-2 2H7l-4 4V5a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2z"/></svg>2</span></div></div>
+                <div class="rcard"><div class="rcard-top"><span class="apleft"><span class="apav-sm" style="background:#fdf3d6;color:#a07d12">!</span><span class="rcode">RCA-58</span></span><span class="rbadge warn">Opened</span></div><div class="rtxt">Case packer stopped working for 1,5h</div><div class="rmeta"><span class="rmc"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="4" width="18" height="18" rx="2"/><path d="M3 10h18M8 2v4M16 2v4"/></svg>820 days</span><span class="rmc"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M21 15a2 2 0 0 1-2 2H7l-4 4V5a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2z"/></svg>1</span></div></div>
+                <div class="rcard"><div class="rcard-top"><span class="apleft"><span class="apav-sm" style="background:#e7e9f5;color:#3a4790">!</span><span class="rcode">RCA-75</span></span><span class="rbadge ok">Closed</span></div><div class="rtxt">Reklamation Nummer 1 2 3 von Kunde XYZ</div><div class="rmeta"><span class="rmc"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="4" width="18" height="18" rx="2"/><path d="M3 10h18M8 2v4M16 2v4"/></svg>640 days</span><span class="rmc"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M21 15a2 2 0 0 1-2 2H7l-4 4V5a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2z"/></svg>3</span></div></div>
               </div>
             </div>
             <!-- Kaizen — board card (rcard) style -->
             <div class="ed-panel" data-fpanel="kaizen">
+              <div class="fv-tools"><div class="fv-search"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><circle cx="11" cy="11" r="7"/><path d="m21 21-4.3-4.3"/></svg><input type="text" placeholder="Search..." data-fvsearch="kaizen"></div><button class="fv-filter" title="Filters" data-advsearch="kaizen"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polygon points="22 3 2 3 10 12.46 10 19 14 21 14 12.46 22 3"/></svg></button></div>
               <div class="wrca fv-cards">
                 <div class="rcard"><div class="rcard-top"><span class="apleft"><span class="apav-sm" style="background:#fdf3d6;color:#a07d12">RC</span><span class="rcode">IMP-72</span></span><span class="rbadge ok">Executed</span></div><div class="rtxt">Eliminate double handling</div></div>
               </div>
             </div>
             <!-- Projetos — standardized with the others (code · title · status · meta) -->
             <div class="ed-panel" data-fpanel="projects">
+              <div class="fv-tools"><div class="fv-search"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><circle cx="11" cy="11" r="7"/><path d="m21 21-4.3-4.3"/></svg><input type="text" placeholder="Search..." data-fvsearch="projects"></div><button class="fv-filter" title="Filters" data-advsearch="projects"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polygon points="22 3 2 3 10 12.46 10 19 14 21 14 12.46 22 3"/></svg></button></div>
               <div class="wrca fv-cards">
-                <div class="rcard"><div class="rcard-top"><span class="apleft"><span class="apav-sm" style="background:#dcf5e6;color:#2d6a4f">VQ</span><span class="rcode">PJT-21</span></span><span class="rbadge ok">On Track</span></div><div class="rtxt">OEE Line 2 +5pp</div></div>
-                <div class="rcard"><div class="rcard-top"><span class="apleft"><span class="apav-sm" style="background:#d7e9ff;color:#17457a">AR</span><span class="rcode">PJT-08</span></span><span class="rbadge ok">On Track</span></div><div class="rtxt">Energy reduction 10%</div></div>
+                <div class="rcard"><div class="rcard-top"><span class="apleft"><span class="apav-sm" style="background:#dcf5e6;color:#2d6a4f">VQ</span><span class="rcode">PJT-21</span></span><span class="rbadge ontrack">On Track</span></div><div class="rtxt">OEE Line 2 +5pp</div></div>
+                <div class="rcard"><div class="rcard-top"><span class="apleft"><span class="apav-sm" style="background:#d7e9ff;color:#17457a">AR</span><span class="rcode">PJT-08</span></span><span class="rbadge ontrack">On Track</span></div><div class="rtxt">Energy reduction 10%</div></div>
               </div>
             </div>
           </div>
@@ -2678,6 +2743,15 @@
     </div>
 
   </main>
+
+  <!-- Advanced Search (zoom tabs: ACP/RCA/Kaizen/Projects) -->
+  <div class="adv-ov" id="advSearch">
+    <div class="adv-card">
+      <div class="adv-head"><span class="adv-title">Advanced Search</span><button class="adv-x" id="advX"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M18 6 6 18"/><path d="m6 6 12 12"/></svg></button></div>
+      <div class="adv-body" id="advBody"></div>
+      <div class="adv-foot"><button class="adv-clear" id="advClear">Clear filters</button><div class="adv-foot-r"><button class="adv-cancel" id="advCancel">Cancel</button><button class="adv-go" id="advGo">Apply</button></div></div>
+    </div>
+  </div>
 </div>
 
 
@@ -3218,7 +3292,7 @@
   function gCal(seed){ var o='', i; var _n=new Date(), _mm=('0'+(_n.getMonth()+1)).slice(-2), _yy=_n.getFullYear(); for(i=1;i<=31;i++){ var r=(seed*13+i*7)%10; var c=r<2?'r':(r<4?'g':(r===4?'y':'')); var tgt=80, col=c==='r'?'#ec221f':(c==='g'?'#14ae5c':(c==='y'?'#e8b931':'#8b91b5')), val=c==='r'?(40+(i*7)%14):(c==='g'?(84+(i*5)%14):(c==='y'?(72+(i*3)%7):tgt)), pct=Math.round(val/tgt*100); var ds=('0'+i).slice(-2)+'/'+_mm+'/'+_yy; o+='<span class="cd'+(c?' '+c:'')+'" data-d="'+ds+'" data-v="'+val+'" data-p="'+pct+'" data-t="'+tgt+'" data-col="'+col+'">'+i+'</span>'; } return '<div class="wcal">'+o+'</div>'; }
   function gTrend(seed){ var s=seed||1, W=160, H=78; var dates=['13/04/2020 18:54:00','13/04/2020 23:54:00','22/04/2020 18:40:00','23/04/2020 09:52:00','07/05/2020 16:46:00','20/05/2020 16:23:00','02/12/2022 11:43:05']; var base=[0.72,0.70,0.74,0.71,0.73,0.30,0.72]; var vals=base.map(function(v,i){ return Math.max(0.12,Math.min(0.9, v+((s*7+i*13)%9-4)/100)); }); var n=vals.length, step=W/(n-1); var pts=vals.map(function(v,i){ return [i*step, H-v*H]; }); var line=pts.map(function(p,i){ return (i?'L':'M')+p[0].toFixed(1)+' '+p[1].toFixed(1); }).join(' '); var dots=''; for(var i=0;i<n;i++){ var xp=(pts[i][0]/W*100).toFixed(2), yp=(pts[i][1]/H*100).toFixed(2); dots+='<span class="trd-dot" data-td="'+dates[i]+'" data-tv="'+(vals[i]>=0.5?'Yes':'No')+'" data-tc="-" style="left:'+xp+'%;top:'+yp+'%"></span>'; } return '<div class="trend2"><div class="trend2-cap">Chart title</div><div class="trend2-plot"><svg viewBox="0 0 160 78" preserveAspectRatio="none"><rect x="0" y="0" width="160" height="39" fill="#14ae5c" opacity="0.92"/><rect x="0" y="39" width="160" height="39" fill="#ec221f" opacity="0.92"/><path d="'+line+'" fill="none" stroke="#111" stroke-width="2.5"/></svg>'+dots+'</div></div>'; }
   function numState(v,t){ return v>t?'pos':(v<t?'neg':'on'); }
-  function gNumber(val,target){ var v=parseFloat(String(val==null?'':val).replace(/[^0-9.-]/g,''))||0; var t=(target!=null&&target!=='')?parseFloat(target):v; if(isNaN(t)) t=v; return '<div class="num2 '+numState(v,t)+'" data-dtip data-v="'+(val||'0')+'" data-t="'+t+'"><span class="num2-val font-display">'+(val||'0')+'</span></div>'; }
+  function gNumber(val,target){ var v=parseFloat(String(val==null?'':val).replace(/[^0-9.-]/g,''))||0; var t=(target!=null&&target!=='')?parseFloat(target):v; if(isNaN(t)) t=v; return '<div class="num2" data-dtip data-v="'+(val||'0')+'" data-t="'+t+'"><span class="num2-val font-display">'+(val||'0')+'</span></div>'; }
   function gStatus(){ return '<div class="semaf-wrap"><div class="semaf"><span class="off-r"></span><span class="off-y"></span><span class="on-g"></span></div></div>'; }
   function gPyramid(seed){ var d=[['12','#cdd5f7','#1f2b6b'],['34','#9fb0f0','#1f2b6b'],['58','#5c7cfa','#fff'],['77','#3b5bdb','#fff'],['96','#001391','#fff']], lbl=['Fatality','Lost time','Recordable','First aid','Near miss'], o='', i; for(i=0;i<d.length;i++){ var w=42+i*14; o+='<div class="pyr-row"><span class="pyr-bar" data-dtip data-d="'+lbl[i]+'" data-v="'+d[i][0]+'" style="width:'+w+'%;background:'+d[i][1]+';color:'+d[i][2]+'">'+d[i][0]+'</span></div>'; } return '<div class="wpyr">'+o+'</div>'; }
   // Pizza (pie/donut) — modern layout (US 65018)
@@ -3761,8 +3835,8 @@
       }
       repositionMenus();
     } else if(ptr.mode==='resize'){
-      ptr.el.style.width =Math.max(120, snap(ptr.ow + dx/view.z))+'px';
-      ptr.el.style.height=Math.max(100, snap(ptr.oh + dy/view.z))+'px';
+      ptr.el.style.width =Math.max(180, snap(ptr.ow + dx/view.z))+'px';
+      ptr.el.style.height=Math.max(180, snap(ptr.oh + dy/view.z))+'px';
       repositionMenus();
     } else if(ptr.mode==='cresize'){
       var nw=Math.max(240, ptr.ow + dx/view.z), nh=Math.max(160, ptr.oh + dy/view.z);
@@ -3821,8 +3895,8 @@
     if(selectedWidget){
       var w=parseInt(document.getElementById('sizeW').value)||404;
       var h=parseInt(document.getElementById('sizeH').value)||300;
-      selectedWidget.style.width=Math.max(120,w)+'px';
-      selectedWidget.style.height=Math.max(100,h)+'px';
+      selectedWidget.style.width=Math.max(180,w)+'px';
+      selectedWidget.style.height=Math.max(180,h)+'px';
     }
     sizeToolbar.style.display='none';
     editToolbar.style.display='flex';
@@ -3906,10 +3980,10 @@
   var _CHEV='<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="m6 9 6 6 6-6"/></svg>';
   var _edNumGeneral=''
     +'<div class="ed-tr ed-sectr"><button class="zswitch on" type="button" data-sec="title"></button><span>Show title</span></div>'
-    +'<div class="ed-secbox" data-secfields="title"><div class="ed-grid3" style="grid-template-columns:2.4fr 1.1fr 0.7fr"><div><label class="ed-label">Title</label><input class="ed-input" id="cfgTitle" data-cfg="title" value="Units Today"></div><div><label class="ed-label">Size</label><select class="ed-input ed-native" data-cfg="size"><option value="small">Small</option><option value="medium" selected>Medium</option><option value="large">Large</option></select></div><div><label class="ed-label">Color</label><div class="ed-select"><span class="swatch cfg-color-title" style="background:#0a0a0b"></span>'+_CHEV+'</div></div></div></div>'
+    +'<div class="ed-secbox" data-secfields="title"><div class="ed-grid3" style="grid-template-columns:2.4fr 1.1fr 0.7fr"><div><label class="ed-label">Title</label><input class="ed-input" id="cfgTitle" data-cfg="title" value="Units Today" placeholder="Enter title"></div><div><label class="ed-label">Size</label><select class="ed-input ed-native" data-cfg="size"><option value="small">Small</option><option value="medium" selected>Medium</option><option value="large">Large</option></select></div><div><label class="ed-label">Color</label><div class="ed-select"><span class="swatch cfg-color-title" style="background:#0a0a0b"></span>'+_CHEV+'</div></div></div></div>'
+    +'<hr class="ed-hr">'
     +'<div class="ed-tr" style="margin-top:2px"><button class="zswitch on" type="button" disabled style="opacity:.55;pointer-events:none" data-systip="Always on"></button><span>Display format</span></div>'
     +'<div class="ed-secbox"><select class="ed-input ed-native" data-cfg="dispfmt" style="max-width:260px"><option value="standard">Standard</option><option value="reduced">Reduced</option></select></div>'
-    +'<hr class="ed-hr">'
     +'<div class="ed-tr ed-sectr"><button class="zswitch" type="button" data-sec="dec"></button><span>Decimal places</span></div>'
     +'<div class="ed-secbox" data-secfields="dec"><select class="ed-input ed-native" data-cfg="dec" style="max-width:260px"><option value="0">None</option><option value="1">One</option><option value="2">Two</option><option value="3">Three</option></select></div>'
     +'<div class="ed-tr ed-sectr"><button class="zswitch" type="button" data-sec="target"></button><span>Show target</span></div>'
@@ -3918,18 +3992,17 @@
     +'<div class="ed-secbox" data-secfields="cf"><div class="ed-grid3"><div><label class="ed-label">Below goal</label><div class="ed-select sm"><span class="swatch cfg-cf-below" style="background:#14ae5c"></span>'+_CHEV+'</div></div><div><label class="ed-label">On target</label><div class="ed-select sm"><span class="swatch cfg-cf-on" style="background:#e8b931"></span>'+_CHEV+'</div></div><div><label class="ed-label">Above goal</label><div class="ed-select sm"><span class="swatch cfg-cf-above" style="background:#ec221f"></span>'+_CHEV+'</div></div></div><div style="margin-top:12px"><label class="ed-label">Objective tolerance</label><div class="ed-tolrow" style="max-width:260px"><input class="ed-input" value="0,00"><div class="ed-select sm ed-tolcol"><span class="swatch" style="background:#001391"></span>'+_CHEV+'</div></div></div><div style="margin-top:12px"><label class="ed-label">Andon</label><select class="ed-input ed-native" data-cfg="andon" style="max-width:260px"><option value="below" selected>Below target</option><option value="above">Above target</option></select></div></div>';
   var _edNumAdvanced=''
     +'<div class="ed-tr ed-sectr"><button class="zswitch" type="button" data-sec="caption"></button><span>Show legend</span></div>'
-    +'<div class="ed-secbox sec-hidden" data-secfields="caption"><div class="ed-grid2"><div><label class="ed-label">Legend</label><input class="ed-input" data-cfg="legend"></div><div><label class="ed-label">Color</label><div class="ed-select"><span class="swatch cfg-color-cap" style="background:#9aa0ac"></span>'+_CHEV+'</div></div></div></div>'
+    +'<div class="ed-secbox sec-hidden" data-secfields="caption"><div class="ed-grid2"><div><label class="ed-label">Legend</label><input class="ed-input" data-cfg="legend" placeholder="Enter legend"></div><div><label class="ed-label">Color</label><div class="ed-select"><span class="swatch cfg-color-cap" style="background:#9aa0ac"></span>'+_CHEV+'</div></div></div></div>'
     +'<div class="ed-tr ed-sectr"><button class="zswitch" type="button" data-sec="unit"></button><span>Show unit</span></div>'
     +'<div class="ed-secbox sec-hidden" data-secfields="unit"><label class="ed-label">Unit</label><input class="ed-input" data-cfg="unit" placeholder="e.g. pcs, %, kg" style="max-width:260px"></div>'
     +'<div class="ed-tr ed-sectr"><button class="zswitch" type="button" data-sec="tip"></button><span>Show tip</span></div>'
     +'<div class="ed-secbox sec-hidden" data-secfields="tip"><label class="ed-label">Tip</label><input class="ed-input" data-cfg="tip" placeholder="Enter tip text"></div>'
     +'<div class="ed-tr"><button class="zswitch" type="button" data-cfgsw="tborder"></button><span>Transparent border</span></div>'
-    +'<div class="ed-tr"><button class="zswitch" type="button" data-cfgsw="tbg" data-excl="bg"></button><span>Transparent background</span></div>'
-    +'<div class="ed-tr ed-sectr"><button class="zswitch" type="button" data-sec="bg" data-excl="tbg"></button><span>Background color</span></div>'
-    +'<div class="ed-secbox sec-hidden" data-secfields="bg"><div class="ed-select" style="max-width:260px"><span class="swatch cfg-color-bg" style="background:#f2f3f5"></span>'+_CHEV+'</div></div>'
+    +'<div class="ed-tr ed-sectr"><button class="zswitch" type="button" data-sec="bg"></button><span>Background color</span></div>'
+    +'<div class="ed-secbox sec-hidden" data-secfields="bg"><div class="ed-grid2" style="max-width:340px"><div><label class="ed-label">Color</label><div class="ed-select"><span class="swatch cfg-color-bg" style="background:#f2f3f5"></span>'+_CHEV+'</div></div><div><label class="ed-label">Transparency</label><div class="ed-tolrow"><input class="ed-input" type="range" min="0" max="100" value="0" data-cfg="bgtransp"><span class="cfg-bgtransp-val" style="font-size:12px;color:#8a90a6;min-width:38px;text-align:right">0%</span></div></div></div></div>'
     +'<div class="ed-tr"><button class="zswitch" type="button"></button><span>Automatic update</span></div>'
     +'<div class="ed-tr"><button class="zswitch on" type="button"></button><span>Show mobile</span></div>'
-    +'<div class="ed-secbox"><label class="ed-label">Topic</label><select class="ed-input ed-native" style="max-width:260px"><option>Others</option><option>Safety</option><option>Quality</option><option>Cost</option><option>Delivery</option><option>Moral</option><option>People</option></select></div>'
+    +'<div class="ed-secbox"><label class="ed-label">Topic</label><select class="ed-input ed-native" style="max-width:260px"><option>Safety</option><option>Quality</option><option>Cost</option><option>Delivery</option><option>Moral</option><option>People</option><option>Others</option></select></div>'
     +'<div class="ed-secbox"><label class="ed-label">Owner</label><div class="ed-select usel" data-sel="" data-single><span class="usel-l"><span class="usel-txt" style="color:#8a90a6">Select owner…</span></span>'+_CHEV+'</div></div>';
   var _edGenAdvanced=null;
   function rewireDrawer(){
@@ -3953,6 +4026,7 @@
     if(isNum){ (window.requestAnimationFrame||setTimeout)(applyCfgBoard); }
   }
   // ===== preview em tempo real: reflete a config no widget clonado (#emWidget) =====
+  function _rgbaAlpha(c,a){ c=(c||'').trim(); if(!c) return ''; var m=c.match(/^#?([0-9a-fA-F]{6})$/); if(m){ var n=parseInt(m[1],16); return 'rgba('+((n>>16)&255)+','+((n>>8)&255)+','+(n&255)+','+a+')'; } m=c.match(/rgba?\(([^)]+)\)/); if(m){ var p=m[1].split(',').map(function(s){return s.trim();}); return 'rgba('+p[0]+','+p[1]+','+p[2]+','+a+')'; } return c; }
   function applyCfgBoard(){ var w=document.getElementById('emWidget'); applyCfgToCard(w?w.querySelector('.wcard'):null); }
   function applyCfgToCard(card){
     var scope=document.getElementById('edBody');
@@ -3966,7 +4040,7 @@
     var BASE=3420;
     var head=card.querySelector('.wcard-head'); if(head) head.style.visibility=secOn('title')?'':'hidden';
     var tt=card.querySelector('.wcard-title'); if(tt){ tt.textContent=val('[data-cfg="title"]')||'Units Today'; var tsize=val('[data-cfg="size"]')||'medium'; tt.style.fontSize=(tsize==='small'?'16px':tsize==='large'?'26px':'20px'); tt.style.lineHeight='1.35'; tt.style.paddingBottom='2px'; var tcol=bg('.cfg-color-title'); tt.style.color=tcol||''; }
-    var dec=parseInt(val('[data-cfg="dec"]')||'0',10); if(isNaN(dec)) dec=0;
+    var dec=secOn('dec')?(parseInt(val('[data-cfg="dec"]')||'0',10)||0):0; if(isNaN(dec)) dec=0;
     var num=card.querySelector('.num2-val'); var TGT=3000;
     if(num){ var disp=BASE.toLocaleString('pt-BR',{minimumFractionDigits:dec,maximumFractionDigits:dec}); if(secOn('target')) disp+='/'+TGT.toLocaleString('pt-BR'); num.textContent=disp; }
     var sub=card.querySelector('.wcard-sub');
@@ -3978,7 +4052,7 @@
     var num2=card.querySelector('.num2');
     if(num2){ var u=num2.querySelector('.cfg-unit'); if(!u){ u=document.createElement('span'); u.className='cfg-unit'; u.style.cssText='margin-left:8px;font-weight:600;align-self:center'; num2.appendChild(u); } if(secOn('unit')&&val('[data-cfg="unit"]')){ u.textContent=val('[data-cfg="unit"]'); u.style.display=''; if(num){ var nc=getComputedStyle(num); u.style.color=nc.color; u.style.fontSize=Math.round(parseFloat(nc.fontSize)*0.5)+'px'; } } else u.style.display='none'; }
     card.style.borderColor=swOn('tborder')?'transparent':'';
-    if(swOn('tbg')) card.style.background='transparent'; else { var bgc=bg('.cfg-color-bg'); card.style.background=bgc||''; }
+    if(secOn('bg')){ var bgc=bg('.cfg-color-bg'); var tp=parseInt(val('[data-cfg="bgtransp"]')||'0',10); if(isNaN(tp)) tp=0; var lab=scope.querySelector('.cfg-bgtransp-val'); if(lab) lab.textContent=tp+'%'; card.style.background=_rgbaAlpha(bgc, 1-tp/100); } else { card.style.background=''; }
     var av=card.querySelector('.w-av'); var us=q('.ed-select.usel'); if(av && us){ var arr=(us.getAttribute('data-sel')||'').split(',').filter(Boolean); if(arr.length) av.textContent=arr[0]; }
   }
   (function(){ var b=document.getElementById('edBody'); if(b){ b.addEventListener('input', applyCfgBoard); b.addEventListener('change', applyCfgBoard); } })();
@@ -4063,19 +4137,21 @@
     function lkFillBoards(sel,room){ if(!sel) return; var ro=lkFindRoom(room); sel.innerHTML='<option value="">Select board</option>'+(ro?ro.boards.map(function(b){return lkOpt(b.b);}).join(''):''); sel.selectedIndex=0; sel.disabled=!ro; lkSetWrap(sel); try{sel.dispatchEvent(new Event('change',{bubbles:true}));}catch(_){} }
     function lkFillWidgets(sel,room,board){ if(!sel) return; var bo=lkFindBoard(lkFindRoom(room),board); sel.innerHTML='<option value="">Select widget</option>'+(bo?bo.widgets.map(function(w){return lkOpt(w);}).join(''):''); sel.selectedIndex=0; sel.disabled=!bo; lkSetWrap(sel); try{sel.dispatchEvent(new Event('change',{bubbles:true}));}catch(_){} }
     function emptyLinkRow(){ var d=document.createElement('div'); d.className='link-row'; d.innerHTML='<div class="link-fields"><div class="link-f lf-name"><label>Name</label><input class="ed-input"></div><div class="link-f"><label>Room</label><select class="ed-input ed-native" data-lk="room">'+lkRoomOpts()+'</select></div><div class="link-f"><label>Board</label><select class="ed-input ed-native" data-lk="board" disabled><option value="">Select room first</option></select></div><div class="link-f"><label>Widget</label><select class="ed-input ed-native" data-lk="widget" disabled><option value="">Select board first</option></select></div></div><div class="link-foot"><button class="ed-trash link-del" title="Remove">'+TRASH+'</button></div>'; return d; }
-    if(linkAdd&&linkRows) linkAdd.addEventListener('click', function(){ linkRows.appendChild(emptyLinkRow()); });
-    if(linkRows) linkRows.addEventListener('click', function(e){ var t=e.target.closest('.ed-trash'); if(t){ var row=t.closest('.link-row'); if(row&&row.parentNode) row.parentNode.removeChild(row); } });
+    if(linkAdd&&linkRows) linkAdd.addEventListener('click', function(){ linkRows.insertBefore(emptyLinkRow(), linkRows.firstChild); edLinkBadge(); });
+    if(linkRows) linkRows.addEventListener('click', function(e){ var t=e.target.closest('.ed-trash'); if(t){ var row=t.closest('.link-row'); if(row&&row.parentNode){ sysConfirm('Remove this link?', function(){ row.parentNode.removeChild(row); edLinkBadge(); }, {title:'Remove link'}); } } });
     if(linkRows) linkRows.addEventListener('change', function(e){ var sel=e.target; if(!sel||sel.tagName!=='SELECT') return; var row=sel.closest('.link-row'); if(!row) return; var role=sel.getAttribute('data-lk'); if(role==='room'){ lkFillBoards(row.querySelector('[data-lk="board"]'), sel.value); } else if(role==='board'){ var rs=row.querySelector('[data-lk="room"]'); lkFillWidgets(row.querySelector('[data-lk="widget"]'), rs?rs.value:'', sel.value); } });
     if(linkRows){ linkRows.innerHTML=''; var r1=emptyLinkRow(); linkRows.appendChild(r1); linkRows.appendChild(emptyLinkRow()); linkRows.appendChild(emptyLinkRow());
       var nm=r1.querySelector('.lf-name input'); if(nm) nm.value='teste';
       var rs1=r1.querySelector('[data-lk="room"]'), bs1=r1.querySelector('[data-lk="board"]'), ws1=r1.querySelector('[data-lk="widget"]');
       if(rs1){ rs1.value='(DOB-1) Line 1'; var ro=lkFindRoom('(DOB-1) Line 1'); bs1.innerHTML='<option value="">Select board</option>'+ro.boards.map(function(b){return lkOpt(b.b);}).join(''); bs1.disabled=false; bs1.value='DDS Line 1'; var bo=lkFindBoard(ro,'DDS Line 1'); ws1.innerHTML='<option value="">Select widget</option>'+bo.widgets.map(function(w){return lkOpt(w);}).join(''); ws1.disabled=false; ws1.value='Units Today'; }
+      edLinkBadge();
     }
+    function edLinkBadge(){ var b=document.getElementById('edLinkBadge'), lr=document.getElementById('edLinkRows'); if(!b) return; var n=lr?lr.querySelectorAll('.link-row').length:0; b.textContent=n; b.style.display=n?'':'none'; }
     var andonAdd=document.getElementById('edAndonAdd'), andonRows=document.getElementById('edAndonRows');
     function andonRow(){ var d=document.createElement('div'); d.className='andon-row'; d.innerHTML='<div class="andon-fields"><div class="andon-f"><label>With</label><div class="andon-series">Series</div></div><div class="andon-f"><label>Regarding target for</label><select class="ed-input ed-native"><option value="none">None</option><option value="minor">Minor</option><option value="higher">Higher</option></select></div><div class="andon-f"><label>in (units)</label><input class="ed-input" type="number" step="1" placeholder="0"></div><div class="andon-f"><label>Notify</label><div class="ed-select usel" data-sel=""><span class="usel-l"><span class="usel-txt" style="color:#8a90a6">Select…</span></span><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="m6 9 6 6 6-6"/></svg></div></div></div><div class="andon-foot"><button class="andon-bell" title="Notification"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M18 8a6 6 0 0 0-12 0c0 7-3 9-3 9h18s-3-2-3-9"/><path d="M13.73 21a2 2 0 0 1-3.46 0"/></svg></button><input class="andon-ck" type="checkbox" checked><button class="andon-del" title="Remove">'+TRASH+'</button></div>'; return d; }
     if(andonRows){ for(var i=0;i<3;i++) andonRows.appendChild(andonRow()); }
-    if(andonAdd&&andonRows) andonAdd.addEventListener('click', function(){ andonRows.appendChild(andonRow()); });
-    if(andonRows) andonRows.addEventListener('click', function(e){ var d=e.target.closest('.andon-del'); if(d){ var row=d.closest('.andon-row'); if(row&&row.parentNode) row.parentNode.removeChild(row); } });
+    if(andonAdd&&andonRows) andonAdd.addEventListener('click', function(){ andonRows.insertBefore(andonRow(), andonRows.firstChild); });
+    if(andonRows) andonRows.addEventListener('click', function(e){ var d=e.target.closest('.andon-del'); if(d){ var row=d.closest('.andon-row'); if(row&&row.parentNode){ sysConfirm('Remove this Andon rule?', function(){ row.parentNode.removeChild(row); }, {title:'Remove rule'}); } } });
 
     // Series rows (General)
     var seriesAdd=document.getElementById('edSeriesAdd'), seriesRows=document.getElementById('edSeriesRows');
@@ -4104,7 +4180,7 @@
       var PLUS='<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round"><path d="M5 12h14M12 5v14"/></svg>';
       var S={ type:elSrc.value||'manual', apiTarget:false, calcType:'add', vars:[{op:'add',room:'',board:'',widget:''}], formula:'', mirrorGoal:false, mRoom:'', mBoard:'', mTool:'' };
       function L(i){ return String.fromCharCode(65+i); }
-      function formula(){ if(S.calcType==='avg') return "AVG("+S.vars.map(function(v,i){return "'"+L(i)+"'";}).join(',')+")"; if(S.calcType==='formula') return S.formula; return S.vars.map(function(v,i){ return (v.op==='sub'?"-":"+")+"'"+L(i)+"'"; }).join(''); }
+      function formula(){ if(S.calcType==='avg') return "AVG("+S.vars.map(function(v,i){return "'"+L(i)+"'";}).join('+')+")"; if(S.calcType==='formula') return S.formula; return S.vars.map(function(v,i){ return (v.op==='sub'?"-":"+")+"'"+L(i)+"'"; }).join(''); }
       function calcRow(v,i){ var op=(S.calcType==='add');
         var f='<div class="srcv-cell srcv-let"><label class="ed-label">Var</label><input class="ed-input" value="'+L(i)+'" readonly></div>';
         if(op) f+='<div class="srcv-cell"><label class="ed-label">Operation</label><select class="ed-input ed-native" data-srcf="op"><option value="add"'+(v.op==='add'?' selected':'')+'>Addition</option><option value="sub"'+(v.op==='sub'?' selected':'')+'>Subtraction</option></select></div>';
@@ -4123,7 +4199,7 @@
           else h+='<div class="srcf-box"><button class="src-add" type="button" title="Add variable">'+PLUS+'</button><span class="srcf-txt">'+formula()+'</span></div>';
           h+='<div class="srcv-list">'+S.vars.map(calcRow).join('')+'</div>';
         }
-        else if(v==='mirror'){ h='<label class="ed-check" style="margin-top:14px"><input type="checkbox" data-srcsw="mirrorGoal"'+(S.mirrorGoal?' checked':'')+'>Mirror goal</label><div class="ed-grid3" style="margin-top:6px"><div><label class="ed-label">Room</label>'+roomSel('mroom',S.mRoom)+'</div><div><label class="ed-label">Board</label>'+boardSel('mboard',S.mRoom,S.mBoard)+'</div><div><label class="ed-label">Tool</label>'+leafSel('mtool',S.mRoom,S.mBoard,S.mTool)+'</div></div>'; }
+        else if(v==='mirror'){ h='<div class="ed-tr" style="margin-top:14px"><button class="zswitch'+(S.mirrorGoal?' on':'')+'" type="button" data-srcsw="mirrorGoal"></button><span>Mirror goal</span></div><div class="ed-grid3" style="margin-top:6px"><div><label class="ed-label">Room</label>'+roomSel('mroom',S.mRoom)+'</div><div><label class="ed-label">Board</label>'+boardSel('mboard',S.mRoom,S.mBoard)+'</div><div><label class="ed-label">Tool</label>'+leafSel('mtool',S.mRoom,S.mBoard,S.mTool)+'</div></div>'; }
         else h='';
         host.innerHTML=h;
       }
@@ -4140,7 +4216,7 @@
         else if(f==='widget'){ vv.widget=t.value; }
         else if(f==='op'){ vv.op=t.value; var ft=host.querySelector('.srcf-txt'); if(ft) ft.textContent=formula(); }
       });
-      host.addEventListener('click', function(e){ var add=e.target.closest&&e.target.closest('.src-add'); if(add){ S.vars.push({op:'add',room:'',board:'',widget:''}); render(); return; } var del=e.target.closest&&e.target.closest('.src-del'); if(del){ var row=del.closest('.srcv-row'); if(row){ var i=+row.getAttribute('data-i'); S.vars.splice(i,1); if(!S.vars.length) S.vars.push({op:'add',room:'',board:'',widget:''}); render(); } return; } var sw=e.target.closest&&e.target.closest('[data-srcsw]'); if(sw && sw.classList.contains('zswitch')){ sw.classList.toggle('on'); S[sw.getAttribute('data-srcsw')]=sw.classList.contains('on'); return; } });
+      host.addEventListener('click', function(e){ var add=e.target.closest&&e.target.closest('.src-add'); if(add){ S.vars.push({op:'add',room:'',board:'',widget:''}); render(); return; } var del=e.target.closest&&e.target.closest('.src-del'); if(del){ var row=del.closest('.srcv-row'); if(row){ var i=+row.getAttribute('data-i'); sysConfirm('Remove this variable?', function(){ S.vars.splice(i,1); if(!S.vars.length) S.vars.push({op:'add',room:'',board:'',widget:''}); render(); }, {title:'Remove variable'}); } return; } var sw=e.target.closest&&e.target.closest('[data-srcsw]'); if(sw && sw.classList.contains('zswitch')){ sw.classList.toggle('on'); S[sw.getAttribute('data-srcsw')]=sw.classList.contains('on'); return; } });
       host.addEventListener('input', function(e){ var cb=e.target; if(cb.type==='checkbox' && cb.getAttribute('data-srcsw')){ S[cb.getAttribute('data-srcsw')]=cb.checked; } });
       render();
     })();
@@ -4303,7 +4379,7 @@
     if(act==='react'){ e.stopPropagation(); openReactBar(s, card); return; }
     else if(act==='reply'){ var ex=card.querySelector('.feed2-reply'); if(ex){ ex.remove(); return; } var w=document.createElement('div'); w.className='feed2-reply'; w.innerHTML='<input placeholder="Reply…"><button>Send</button>'; card.appendChild(w); var inp=w.querySelector('input'); inp.focus(); function send(){ var v=(inp.value||'').trim(); if(!v) return; var rc=document.createElement('div'); rc.className='feed2-replyitem'; rc.textContent=v; card.insertBefore(rc, w); inp.value=''; inp.focus(); } w.querySelector('button').addEventListener('click', send); inp.addEventListener('keydown', function(ev){ if(ev.key==='Enter'){ ev.preventDefault(); send(); } }); }
     else if(act==='translate'){ var t=card.querySelector('.feed2-text'); if(!t) return; if(t.getAttribute('data-orig')){ t.textContent=t.getAttribute('data-orig'); t.removeAttribute('data-orig'); s.classList.remove('on'); } else { t.setAttribute('data-orig', t.textContent); t.textContent='[Translated] '+t.textContent; s.classList.add('on'); } }
-    else if(act==='delete'){ card.remove(); }
+    else if(act==='delete'){ sysConfirm('Delete this comment?', function(){ card.remove(); }, {title:'Delete comment'}); }
   });
   // feed reactions: bar with several emoji options
   function openReactBar(anchor, card){ var ex=document.getElementById('feed2ReactBar'); var same=ex&&ex.__a===anchor; if(ex) ex.remove(); if(same) return; var EMO=['👍','👏','🤣','💡','❤️']; var bar=document.createElement('div'); bar.id='feed2ReactBar'; bar.className='feed2-reactbar'; bar.__a=anchor; bar.innerHTML=EMO.map(function(em){return '<button type="button" data-emo="'+em+'">'+em+'</button>';}).join(''); document.body.appendChild(bar); var r=anchor.getBoundingClientRect(); bar.style.left=r.left+'px'; bar.style.top=(r.top-bar.offsetHeight-6)+'px'; bar.addEventListener('click', function(ev){ var b=ev.target.closest('button[data-emo]'); if(!b) return; setReact(card, b.getAttribute('data-emo'), anchor); bar.remove(); }); }
@@ -4451,7 +4527,7 @@
     if(s){ e.stopPropagation(); var w2=s.closest('.wdefect'); if(w2) w2.classList.remove('tots-hidden'); }
   });
   // #173 — clicking a widget's "delayed action plan" alert opens the Action Plan widget
-  document.addEventListener('click', function(e){ var al=e.target.closest && e.target.closest('.w-apalert'); if(!al) return; e.stopPropagation(); var ap=null; var cs=document.querySelectorAll('.wcard'); for(var i=0;i<cs.length;i++){ var t=cs[i].querySelector('.wcard-title'); if(t&&/action plan/i.test(t.textContent)){ ap=cs[i]; break; } } if(ap){ var ex=ap.querySelector('.expand'); if(ex){ ex.click(); } else { ap.scrollIntoView({behavior:'smooth',block:'center'}); } } });
+  document.addEventListener('click', function(e){ var al=e.target.closest && e.target.closest('.w-apalert'); if(!al) return; e.stopPropagation(); var card=al.closest('.wcard'); if(card && typeof openFullView==='function' && document.getElementById('app').getAttribute('data-state')!=='edit'){ openFullView(card); setTimeout(function(){ if(typeof setFullTab==='function') setFullTab('plan'); if(typeof fvFilterOverdue==='function') fvFilterOverdue(); }, 60); return; } var ap=null; var cs=document.querySelectorAll('.wcard'); for(var i=0;i<cs.length;i++){ var t=cs[i].querySelector('.wcard-title'); if(t&&/action plan/i.test(t.textContent)){ ap=cs[i]; break; } } if(ap){ var ex=ap.querySelector('.expand'); if(ex){ ex.click(); } else { ap.scrollIntoView({behavior:'smooth',block:'center'}); } } });
   // #14 — period selector on big charts (single-select)
   function rebuildBars(box, seed, red, period){
     var cfg = period==='30d'?{n:10,step:3} : period==='90d'?{n:12,step:7} : {n:7,step:1};
@@ -4992,7 +5068,7 @@
     function close(){ if(pop){ pop.remove(); pop=null; anchor=null; } }
     function byInit(i){ for(var k=0;k<POOL.length;k++) if(POOL[k].i===i) return POOL[k]; return {i:i,n:i,c:'#e6e6ea',t:'#4d5166'}; }
     function initSel(sel){ if(!sel.hasAttribute('data-sel')){ var avs=[].map.call(sel.querySelectorAll('.uav'),function(a){return a.textContent.trim();}); sel.setAttribute('data-sel', avs.join(',')); } }
-    function renderUsel(sel){ var arr=(sel.getAttribute('data-sel')||'').split(',').filter(Boolean); var l=sel.querySelector('.usel-l'); if(!l) return; if(!arr.length){ l.innerHTML='<span class="usel-txt" style="color:#8a90a6">Select…</span>'; return; } var avs=arr.slice(0,3).map(function(i){var p=byInit(i);return '<span class="uav" style="background:'+p.c+';color:'+p.t+'">'+p.i+'</span>';}).join(''); var first=byInit(arr[0]).n, extra=arr.length>1?(', +'+(arr.length-1)):''; l.innerHTML='<span class="usel-avs">'+avs+'</span><span class="usel-txt">'+first+extra+'</span>'; }
+    function renderUsel(sel){ var arr=(sel.getAttribute('data-sel')||'').split(',').filter(Boolean); var l=sel.querySelector('.usel-l'); if(!l) return; if(!arr.length){ l.innerHTML='<span class="usel-txt" style="color:#8a90a6">Select…</span>'; return; } l.innerHTML='<span class="usel-chips">'+arr.map(function(i){var p=byInit(i);return '<span class="usel-chip"><span class="uav" style="background:'+p.c+';color:'+p.t+'">'+p.i+'</span><span class="usel-cn">'+p.n+'</span><button type="button" class="usel-x" data-rm="'+i+'" title="Remove">✕</button></span>';}).join('')+'</span>'; }
     function openFor(sel){ close(); anchor=sel; pop=document.createElement('div'); pop.className='rsel-pop'; var isUsel=sel.classList.contains('usel');
       if(isUsel){ initSel(sel); pop.innerHTML='<div class="rsel-search"><input placeholder="Type 3+ letters…"></div><div class="rsel-hint">Type at least 3 letters to search users</div><div class="rsel-list" style="display:none"></div>'; }
       else { var txt=(sel.textContent||'').trim(); var h='<div class="rsel-list">'; TYPES.forEach(function(t){ h+='<div class="rsel-opt'+(txt.indexOf(t)===0?' active':'')+'" data-t="'+t+'">'+t+'</div>'; }); h+='</div>'; pop.innerHTML=h; }
@@ -5002,6 +5078,7 @@
         si.focus(); si.addEventListener('input', function(){ var q=this.value.toLowerCase().trim(); if(q.length<3){ lst.style.display='none'; hint.style.display=''; return; } hint.style.display='none'; lst.style.display=''; renderList(q); }); }
     }
     document.addEventListener('click', function(e){
+      var xrm=e.target.closest && e.target.closest('.usel-x'); if(xrm){ e.stopPropagation(); e.preventDefault(); var host=xrm.closest('.ed-select.usel'); if(host){ var rid=xrm.getAttribute('data-rm'); var a2=(host.getAttribute('data-sel')||'').split(',').filter(Boolean); var ix2=a2.indexOf(rid); if(ix2>=0) a2.splice(ix2,1); host.setAttribute('data-sel', a2.join(',')); renderUsel(host); if(typeof applyCfgBoard==='function') applyCfgBoard(); } return; }
       if(pop && e.target.closest && e.target.closest('.rsel-pop')){ var opt=e.target.closest('.rsel-opt'); if(opt && anchor){ anchor.childNodes[0].nodeValue=opt.getAttribute('data-t')+' '; close(); return; } var it=e.target.closest('.rsel-it'); if(it && anchor){ var id=it.getAttribute('data-i'); if(anchor.hasAttribute('data-single')){ anchor.setAttribute('data-sel', id); renderUsel(anchor); close(); if(typeof applyCfgBoard==='function') applyCfgBoard(); return; } var cb=it.querySelector('input'); if(e.target.tagName!=='INPUT') cb.checked=!cb.checked; var arr=(anchor.getAttribute('data-sel')||'').split(',').filter(Boolean); var ix=arr.indexOf(id); if(cb.checked&&ix<0) arr.push(id); if(!cb.checked&&ix>=0) arr.splice(ix,1); anchor.setAttribute('data-sel', arr.join(',')); renderUsel(anchor); if(typeof applyCfgBoard==='function') applyCfgBoard(); } return; }
       var sel=e.target.closest && e.target.closest('#roomDrawer .ed-select, #editDrawer .ed-select.usel'); if(sel){ e.stopPropagation(); if(anchor===sel) close(); else openFor(sel); return; }
       close();
@@ -5215,6 +5292,61 @@
     document.addEventListener('click', function(e){ if(zp.style.display==='block' && !(e.target.closest && (e.target.closest('#zfPicker')||e.target.closest('.zoom-filter .zf')))) closeZp(); });
   })();
   (function(){ var t=document.querySelectorAll('#fullTabs .ed-tab'); for(var i=0;i<t.length;i++){ t[i].addEventListener('click', function(){ setFullTab(this.getAttribute('data-ftab')); }); } })();
+  // ===== Advanced Search + keyword search for zoom tabs (ACP/RCA/Kaizen/Projects) =====
+  (function(){
+    var CAL='<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="4" width="18" height="18" rx="2"/><path d="M3 10h18M8 2v4M16 2v4"/></svg>';
+    var XC='<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="10"/><path d="m15 9-6 6M9 9l6 6"/></svg>';
+    var KZST=['In Progress','In Approval','CM ongoing','Released','In Validation (Area)','In Validation (Finance)','Validated'];
+    var F={
+      plan:[ {t:'Register', f:[['System','ro','OBEYA DIGITAL'],["System's group",'in'],['Priority','in'],['Status','multi',['Delayed','On Time','In Approval','Completed','Canceled']]]},
+             {t:'People', f:[['Responsible','in'],['Originator','in']]},
+             {t:'Period', f:[['Inclusion date','date'],['Due date','date'],['Conclusion date','date']]} ],
+      rca:[ {t:'Register', f:[['Type','in'],['Status','multi',['Opened','Closed']]]},
+            {t:'People', f:[['Originator','in'],['Team','in']]},
+            {t:'Location', f:[['Location','in']]},
+            {t:'Period', f:[['Inclusion date','date'],['Closure date','date']]} ],
+      kaizen:[ {t:'Register', f:[['Type','in'],['Hashtag','in'],['Status','multi',KZST]]},
+               {t:'People', f:[['Originator','in'],['Approver','in'],['Participants','in'],['Team','in']]},
+               {t:'Location', f:[['Location','in'],['Equipment','in']]},
+               {t:'Period', f:[['Inclusion date','date'],['Approval submission date','date'],['Approval date','date'],['Finished date','date']]} ],
+      projects:[ {t:'Register', f:[['Type','in'],['Status','multi',['On Track','At Risk','Delayed','Completed']]]},
+                 {t:'People', f:[['Leader','in'],['Member','in']]},
+                 {t:'Period', f:[['Start date','date'],['Date delivered','date']]} ]
+    };
+    var CHK='<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"><polyline points="20 6 9 17 4 12"/></svg>';
+    var CHV='<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="m6 9 6 6 6-6"/></svg>';
+    function fieldHTML(f){ var lbl=f[0], t=f[1], inner='', full=(t==='chips'||t==='multi');
+      if(t==='ro') inner='<input class="adv-in dis" value="'+(f[2]||'')+'" readonly>';
+      else if(t==='date'){ inner='<div class="adv-daterow"><div class="adv-date">'+CAL+'<input placeholder="dd/mm/yyyy"></div><div class="adv-date">'+CAL+'<input placeholder="dd/mm/yyyy"></div></div>'; full=true; }
+      else if(t==='chips') inner='<div class="adv-chips">'+(f[2]||[]).map(function(c){return '<span class="adv-chip">'+c+'<button type="button" class="adv-chip-x">'+XC+'</button></span>';}).join('')+'</div>';
+      else if(t==='multi') inner='<div class="adv-ms" data-ms><span class="adv-ms-val"><span class="adv-ms-ph">Select</span></span><span class="adv-ms-cv">'+CHV+'</span><div class="adv-ms-pop">'+(f[2]||[]).map(function(o){return '<div class="adv-ms-opt" data-v="'+o.replace(/"/g,'&quot;')+'"><span class="adv-ms-ck">'+CHK+'</span><span>'+o+'</span></div>';}).join('')+'</div></div>';
+      else inner='<input class="adv-in">';
+      return '<div class="adv-f'+(full?' full':'')+'"><label>'+lbl+'</label>'+inner+'</div>'; }
+    function render(tab){ var secs=F[tab]||F.plan; var b=document.getElementById('advBody'); if(!b) return; b.innerHTML=secs.map(function(s){ return '<div class="adv-sec"><div class="adv-sec-h">'+s.t+'</div><div class="adv-grid">'+s.f.map(fieldHTML).join('')+'</div></div>'; }).join(''); }
+    function msSync(ms){ if(!ms) return; var sel=[].map.call(ms.querySelectorAll('.adv-ms-opt.on'), function(o){return o.getAttribute('data-v');}); var val=ms.querySelector('.adv-ms-val'); if(!val) return; if(!sel.length){ val.innerHTML='<span class="adv-ms-ph">Select</span>'; } else { val.innerHTML=sel.map(function(v){return '<span class="adv-ms-chip">'+v+'<button type="button" data-rm="'+v.replace(/"/g,'&quot;')+'">'+XC+'</button></span>';}).join(''); } }
+    var ov=document.getElementById('advSearch');
+    function openAdv(tab){ render(tab); if(ov){ ov.__tab=tab; ov.classList.add('open'); } }
+    function closeAdv(){ if(ov) ov.classList.remove('open'); }
+    document.addEventListener('click', function(e){
+      var kb=e.target.closest && e.target.closest('[data-fvkanban]'); if(kb){ e.preventDefault(); if(typeof openKanban==='function') openKanban('Action Plans — Kanban'); return; }
+      var fb=e.target.closest && e.target.closest('[data-advsearch]'); if(fb){ e.preventDefault(); openAdv(fb.getAttribute('data-advsearch')); return; }
+      if(e.target.closest && (e.target.closest('#advX')||e.target.closest('#advCancel'))){ closeAdv(); return; }
+      if(ov && e.target===ov){ closeAdv(); return; }
+      var cx=e.target.closest && e.target.closest('.adv-chip-x'); if(cx){ var ch=cx.closest('.adv-chip'); if(ch&&ch.parentNode) ch.parentNode.removeChild(ch); return; }
+      var msrm=e.target.closest && e.target.closest('.adv-ms-chip button'); if(msrm){ e.stopPropagation(); var rv=msrm.getAttribute('data-rm'); var ms0=msrm.closest('.adv-ms'); [].forEach.call(ms0.querySelectorAll('.adv-ms-opt'), function(o){ if(o.getAttribute('data-v')===rv) o.classList.remove('on'); }); msSync(ms0); return; }
+      var mso=e.target.closest && e.target.closest('.adv-ms-opt'); if(mso){ e.stopPropagation(); mso.classList.toggle('on'); msSync(mso.closest('.adv-ms')); return; }
+      var mst=e.target.closest && e.target.closest('.adv-ms'); if(mst){ e.stopPropagation(); var wo=mst.classList.contains('open'); [].forEach.call(document.querySelectorAll('.adv-ms.open'), function(x){ x.classList.remove('open'); }); if(!wo) mst.classList.add('open'); return; }
+      if(e.target.closest && e.target.closest('#advGo')){ var tab=ov&&ov.__tab; if(tab){ var btn=document.querySelector('.fv-filter[data-advsearch="'+tab+'"]'); if(btn) btn.classList.add('on'); } closeAdv(); return; }
+      if(e.target.closest && e.target.closest('#advClear')){ if(ov){ [].forEach.call(ov.querySelectorAll('.adv-in:not(.dis), .adv-date input'), function(i){ i.value=''; }); [].forEach.call(ov.querySelectorAll('.adv-ms'), function(ms){ [].forEach.call(ms.querySelectorAll('.adv-ms-opt.on'), function(o){o.classList.remove('on');}); msSync(ms); }); } return; }
+      [].forEach.call(document.querySelectorAll('.adv-ms.open'), function(x){ x.classList.remove('open'); });
+    });
+    document.addEventListener('input', function(e){ var s=e.target; if(!s.getAttribute || s.getAttribute('data-fvsearch')==null) return; var tab=s.getAttribute('data-fvsearch'); var panel=document.querySelector('#fullBody .ed-panel[data-fpanel="'+tab+'"]'); if(!panel) return; var q=(s.value||'').toLowerCase().trim(); [].forEach.call(panel.querySelectorAll('.rcard'), function(c){ c.style.display=(!q||c.textContent.toLowerCase().indexOf(q)>=0)?'':'none'; }); });
+    window.fvFilterOverdue=function(){ var panel=document.querySelector('#fullBody .ed-panel[data-fpanel="plan"]'); if(!panel) return; [].forEach.call(panel.querySelectorAll('.rcard'), function(c){ c.style.display=c.querySelector('.rbadge.bad')?'':'none'; }); var btn=panel.querySelector('.fv-filter'); if(btn) btn.classList.add('on'); };
+    // meeting-mode footer counts: plan = overdue only, feed = last 7 days
+    function setMeta(m,n,title){ if(!m) return; var svg=m.querySelector('svg'); m.innerHTML=(svg?svg.outerHTML:'')+n; if(title){ m.setAttribute('title',title); m.setAttribute('data-systip',title); } }
+    function updMeetingCounts(){ var planN=document.querySelectorAll('#fullBody .ed-panel[data-fpanel="plan"] .rbadge.bad').length; var feedN=document.querySelectorAll('#fullBody .ed-panel[data-fpanel="feed"] .feed2-card').length; var cards=document.querySelectorAll('.board-page[data-bp="b2"] .wcard'); for(var i=0;i<cards.length;i++){ var t=cards[i].querySelector('.wcard-title'); if(t&&/units today/i.test(t.textContent)){ setMeta(cards[i].querySelector('.w-meta[data-ftab="plan"]'), planN, planN+' overdue action plans'); setMeta(cards[i].querySelector('.w-meta[data-ftab="feed"]'), feedN, feedN+' messages in the last 7 days'); } } }
+    if(document.readyState!=='loading') setTimeout(updMeetingCounts,300); else document.addEventListener('DOMContentLoaded', function(){ setTimeout(updMeetingCounts,300); });
+  })();
   // Action Plan kanban modal (opens in a big modal when the action-plan widget is expanded — #100)
   var apKanban=document.getElementById('apKanban');
   function openKanban(title, html, hideTb){ var b=document.getElementById('kbBody'); if(b) b.innerHTML=html||apKanbanHTML(); var t=document.getElementById('kbTitle'); if(t) t.textContent=title||'Action Plans — Kanban'; var s=document.getElementById('kbSearch'); if(s) s.value=''; var tb=document.querySelector('#apKanban .kb-toolbar'); if(tb) tb.style.display=hideTb?'none':''; if(apKanban) apKanban.classList.add('open'); }
