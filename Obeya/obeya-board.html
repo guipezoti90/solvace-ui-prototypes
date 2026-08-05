@@ -141,7 +141,7 @@
   .chart{ display:flex; align-items:flex-end; gap:18px; height:150px; padding-left:30px; position:relative; }
   .chart-y{ position:absolute; left:0; top:0; bottom:18px; width:24px; display:flex; flex-direction:column; justify-content:space-between; font-size:10px; color:#999ba7; text-align:right; }
   .bar-wrap{ display:flex; flex-direction:column; align-items:center; gap:6px; flex:1; }
-  .bar{ width:18px; border-radius:6px; }
+  .bar{ width:18px; border-radius:12px; }
   .bar-x{ font-size:11px; color:#999ba7; }
   .chart-scroll{ height:6px; background:#f2f2f4; border-radius:99px; margin:8px 30px 0; position:relative; opacity:0; transition:opacity .15s; }
   .wcard:hover .chart-scroll{ opacity:1; }
@@ -523,7 +523,7 @@
   .em-widget .mb-tgt{ opacity:1; pointer-events:auto; cursor:grab; }
   .em-widget .mb-tgt::after{ content:""; position:absolute; left:50%; top:50%; transform:translate(-50%,-50%); width:6px; height:6px; border-radius:50%; background:#001391; border:none; }
   .minibars.alt .mb{ border-radius:99px; width:56%; margin:0 auto; box-shadow:inset 0 -7px 9px rgba(0,0,0,.14); }
-  .minibars .mb{ flex:1; min-height:2px; border-radius:6px 6px 0 0; background:#14ae5c; }
+  .minibars .mb{ flex:1; min-height:2px; border-radius:12px 12px 0 0; background:#14ae5c; }
   .minibars .mb.r{ background:#ec221f; }
   .minibars .mb{ position:relative; transition:filter .12s, box-shadow .12s; }
   .minibars .mb:hover{ filter:brightness(1.1); box-shadow:inset 0 0 0 2px rgba(0,19,145,.35); }
@@ -5189,8 +5189,12 @@
       clone.style.width=ww+'px'; clone.style.height=sq+'px'; clone.style.transform='none';
       // título 20px / subtítulo 16px
       // keep title & subtitle at their standard font size even in full view (per review)
+      requestAnimationFrame(function(){ roundBars(fullWidgetInner); });
     });
   }
+  // arredondamento proporcional à largura da barra (adapta ao zoom e ao nº de barras)
+  function roundBars(root){ root=root||document; [].forEach.call(root.querySelectorAll('.minibars .mb'), function(b){ if(b.closest('.minibars.alt, .minibars.dense')) return; var w=b.offsetWidth; if(!w) return; var r=Math.max(3, Math.round(w*0.5)); b.style.borderRadius=r+'px '+r+'px 0 0'; }); [].forEach.call(root.querySelectorAll('.bar'), function(b){ var w=b.offsetWidth; if(!w) return; var r=Math.max(3, Math.min(14, Math.round(w*0.5))); b.style.borderRadius=r+'px'; }); }
+  (function(){ function run(){ try{ roundBars(document); }catch(_){} } if(document.readyState!=='loading') setTimeout(run,250); else document.addEventListener('DOMContentLoaded', function(){ setTimeout(run,250); }); window.addEventListener('resize', function(){ clearTimeout(window.__rbz); window.__rbz=setTimeout(run,150); }); })();
   function closeFullView(){ fullModal.classList.remove('open'); fullWidgetInner.innerHTML=''; }
   document.getElementById('fullClose').addEventListener('click', closeFullView);
   document.getElementById('fullCloseBtn').addEventListener('click', closeFullView);

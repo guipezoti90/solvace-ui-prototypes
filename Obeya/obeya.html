@@ -441,13 +441,24 @@
   .fph{ color:#9aa0ac; font-size:14px }
   .fcaret{ margin-left:auto; color:var(--muted); display:inline-flex }
   .fchips{ display:flex; gap:6px; flex-wrap:wrap; align-items:center }
-  .fchip{ display:inline-flex; align-items:center; gap:6px; background:#eef1ff; color:var(--primary); border:1px solid #d7dcf7; border-radius:9999px; padding:3px 4px 3px 8px; font-size:12px; font-weight:600 }
+  .fchip{ display:inline-flex; align-items:center; gap:6px; background:#eef0f4; color:#444; border:0; border-radius:9999px; padding:3px 6px 3px 10px; font-size:12px; font-weight:600 }
   .fchip .f-av{ width:18px; height:18px; font-size:9px }
-  .fchip-x{ background:transparent; border:0; color:var(--primary); cursor:pointer; font-size:15px; line-height:1; padding:0 3px; border-radius:9999px } .fchip-x:hover{ background:#d7dcf7 }
+  .fchip-x{ background:transparent; border:0; color:#444; cursor:pointer; font-size:14px; line-height:1; padding:0 2px; border-radius:9999px } .fchip-x:hover{ background:#dfe1e8 }
   .fpanel{ position:absolute; left:0; right:0; top:100%; margin-top:4px; background:#fff; border:1px solid var(--input); border-radius:10px; box-shadow:0 8px 24px rgba(0,0,0,.12); max-height:210px; overflow-y:auto; z-index:3; padding:4px }
-  .fopt{ display:flex; align-items:center; gap:8px; padding:8px 10px; border-radius:8px; cursor:pointer; font-size:14px } .fopt:hover{ background:#f5f6fb } .fopt.on{ color:var(--primary); font-weight:600 }
+  .fopt{ display:flex; align-items:center; gap:10px; padding:10px 14px; border-radius:8px; cursor:pointer; font-size:14px; font-weight:400; color:#33373f } .fopt:hover{ background:#f2f2f4 } .fopt.on{ color:var(--primary); font-weight:400 }
   .fopt-ck{ margin-left:auto; color:var(--primary); display:inline-flex } .fopt-ck svg{ width:18px; height:18px }
   .f-av{ width:22px; height:22px; border-radius:50%; background:#e6e6ea; color:#444; display:inline-flex; align-items:center; justify-content:center; font-size:10px; font-weight:600; flex:0 0 22px }
+  /* filter drawer — four fixed Solvace sections as white cards */
+  #fltBody .flt-sec{ background:#fff; border:1px solid #E6E8EE; border-radius:16px; box-shadow:0 2px 8px rgba(16,24,40,.06); padding:16px; display:flex; flex-direction:column; gap:14px; text-transform:none; letter-spacing:normal }
+  #fltBody .flt-sec-h{ font-size:13px; font-weight:600; text-transform:none; letter-spacing:0; color:var(--primary) }
+  #fltBody .flabel{ font-size:13px; font-weight:400; color:#3a3a3a; margin-bottom:6px }
+  #fltBody .fph{ font-size:14px; color:#9aa0ac; font-weight:400 }
+  #fltBody .fcontrol{ flex-wrap:nowrap; height:44px; min-height:44px; overflow:hidden }
+  #fltBody .fchips{ flex-wrap:nowrap; overflow:hidden; min-width:0 }
+  .fchip-more{ background:#eef0f4 !important; color:#444 !important; flex:0 0 auto }
+  #fltBody .fsearch{ display:flex; align-items:center; gap:8px; height:44px; border:1px solid var(--input); border-radius:8px; padding:0 10px }
+  #fltBody .fsearch .fs-ico{ color:var(--muted); display:inline-flex } #fltBody .fsearch .fs-ico svg{ width:16px; height:16px }
+  #fltBody .fsearch .fs-in{ flex:1; min-width:0; border:0; outline:0; font-size:14px; font-family:inherit; background:none }
   /* ===== Floating bar — mobile (≤640px) ===== */
   @media (max-width:640px){
     /* top bar v2 — notifications + account panels fit the phone */
@@ -942,8 +953,14 @@ function filtered(){
 /* ===== filter drawer (KC standard): right side, multiselect fields = table columns ===== */
 function fesc(s){ return String(s).replace(/&/g,'&amp;').replace(/"/g,'&quot;').replace(/</g,'&lt;'); }
 function fltFields(){ return SCREEN==='aps'
-  ? [{k:'source',label:'Source'},{k:'resp',label:'Responsible',person:true},{k:'st',label:'Status'}]
-  : [{k:'name',label:'Room'},{k:'type',label:'Type'},{k:'owner',label:'Owner',person:true},{k:'st',label:'Status'}]; }
+  ? [{k:'source',label:'Source'},{k:'st',label:'Status'},{k:'resp',label:'Responsible',person:true}]
+  : [{k:'type',label:'Type'},{k:'st',label:'Status'},{k:'owner',label:'Owner',person:true}]; }
+/* four fixed Solvace sections — a field is routed by its label */
+var FLT_PEOPLE={Owner:1,Responsible:1,Originator:1,Approver:1,Reviewer:1,Author:1,Participants:1,Assignee:1,User:1,Team:1};
+var FLT_LOCATION={Location:1,Area:1,Region:1,Client:1,Site:1,Place:1,Plant:1};
+var FLT_GENERAL={Status:1,Type:1,System:1,Source:1};
+function fltSectionOf(label){ return FLT_PEOPLE[label]?'People':(FLT_LOCATION[label]?'Location':(FLT_GENERAL[label]?'General':'Others')); }
+function fltSearchHTML(){ return '<div class="ffield"><label class="flabel">Search</label><div class="fsearch"><span class="fs-ico">'+I.search+'</span><input class="fs-in" placeholder="Search by name, number…" value="'+fesc(query||'')+'" oninput="query=this.value;renderView()"></div></div>'; }
 function fltOptions(k){ if(k==='st') return Object.keys(M.statuses); var out=[]; DATA.forEach(function(r){ var v=r[k]; if(v!=null && out.indexOf(v)<0) out.push(v); }); out.sort(); return out; }
 function fltCount(){ var n=0, ks=Object.keys(fltApplied); for(var i=0;i<ks.length;i++){ n+=(fltApplied[ks[i]]||[]).length; } return n; }
 function fltSel(d,k){ d[k]=d[k]||[]; return d[k]; }
@@ -951,8 +968,13 @@ function fltMultiHTML(f){ var isP=!!f.person, sel=fltSel(fltDraft,f.k);
   var chips=sel.map(function(v){ return '<span class="fchip">'+(isP?'<span class="f-av">'+ini(v)+'</span>':'')+fesc(v)+'<button class="fchip-x" data-x data-k="'+f.k+'" data-v="'+fesc(v)+'" aria-label="Remove">✕</button></span>'; }).join('');
   var open=fltDD===f.k;
   var body=fltOptions(f.k).map(function(v){ var on=sel.indexOf(v)>=0; return '<div class="fopt'+(on?' on':'')+'" data-opt data-k="'+f.k+'" data-v="'+fesc(v)+'">'+(isP?'<span class="f-av">'+ini(v)+'</span>':'')+'<span>'+fesc(v)+'</span>'+(on?'<span class="fopt-ck">'+I.check+'</span>':'')+'</div>'; }).join('');
-  return '<div class="ffield"><label class="flabel">'+f.label+'</label><div class="fcontrol'+(open?' open':'')+'" data-dd="'+f.k+'">'+(sel.length?'<span class="fchips">'+chips+'</span>':'<span class="fph">All</span>')+'<span class="fcaret">'+I.chevDown+'</span></div>'+(open?'<div class="fpanel">'+body+'</div>':'')+'</div>'; }
-function renderFltDrawer(){ el('fltBody').innerHTML=fltFields().map(fltMultiHTML).join(''); }
+  return '<div class="ffield"><label class="flabel">'+f.label+'</label><div class="fcontrol'+(open?' open':'')+'" data-dd="'+f.k+'">'+(sel.length?'<span class="fchips">'+chips+'</span>':'<span class="fph">Select</span>')+'<span class="fcaret">'+I.chevDown+'</span></div>'+(open?'<div class="fpanel">'+body+'</div>':'')+'</div>'; }
+function renderFltDrawer(){ var fields=fltFields(); var secs={General:[],People:[],Location:[],Others:[]}; fields.forEach(function(f){ secs[fltSectionOf(f.label)].push(f); });
+  var order=['General','People','Location','Others'], html='';
+  order.forEach(function(s){ var inner=(s==='General'?fltSearchHTML():'')+secs[s].map(fltMultiHTML).join(''); if(!inner) return; html+='<div class="flt-sec"><div class="flt-sec-h">'+s+'</div>'+inner+'</div>'; });
+  el('fltBody').innerHTML=html; (window.requestAnimationFrame||setTimeout)(fltFit); }
+function fltFit(){ var ctrls=el('fltBody').querySelectorAll('.fcontrol'); [].forEach.call(ctrls,function(ctrl){ var wrap=ctrl.querySelector('.fchips'); if(!wrap) return; var chips=[].slice.call(wrap.querySelectorAll('.fchip')); var old=wrap.querySelector('.fchip-more'); if(old) old.remove(); chips.forEach(function(c){ c.style.display=''; }); if(!chips.length) return; var caret=ctrl.querySelector('.fcaret'); var avail=ctrl.clientWidth-(caret?caret.offsetWidth:20)-18; var gap=6, used=0, cut=chips.length; for(var i=0;i<chips.length;i++){ var w=chips[i].offsetWidth+gap; if(i>0 && used+w>avail-34){ cut=i; break; } used+=w; } if(cut<chips.length){ var n=0; for(var j=cut;j<chips.length;j++){ chips[j].style.display='none'; n++; } var b=document.createElement('span'); b.className='fchip fchip-more'; b.textContent='+'+n; wrap.appendChild(b); } }); }
+window.addEventListener('resize', function(){ if(el('fltDrawer') && el('fltDrawer').classList.contains('open')) fltFit(); });
 function openFltDrawer(){ fltDraft={}; Object.keys(fltApplied).forEach(function(k){ fltDraft[k]=fltApplied[k].slice(); }); fltDD=null; renderFltDrawer(); el('fltOv').classList.add('open'); el('fltDrawer').classList.add('open'); }
 function closeFltDrawer(){ el('fltOv').classList.remove('open'); el('fltDrawer').classList.remove('open'); fltDD=null; }
 function fltToggleDD(k){ fltDD=(fltDD===k)?null:k; renderFltDrawer(); }
