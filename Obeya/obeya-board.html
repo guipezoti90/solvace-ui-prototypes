@@ -127,7 +127,8 @@
   .guide-v{ width:1px; top:-2000px; height:6000px; }
   .guide-h{ height:1px; left:-2000px; width:6000px; }
   /* manual resize handle (bottom-right of the selected widget) */
-  .wresize{ position:absolute; right:4px; bottom:4px; width:24px; height:24px; border-radius:7px; background:#fff; border:1px solid #001391; color:#001391; cursor:nwse-resize; z-index:60; display:flex; align-items:center; justify-content:center; box-shadow:0 2px 6px rgba(0,19,145,.22); }
+  .wresize{ position:absolute; right:4px; bottom:4px; width:24px; height:24px; border-radius:7px; background:#fff; border:1px solid #001391; color:#001391; cursor:nwse-resize; z-index:60; display:flex; align-items:center; justify-content:center; box-shadow:0 2px 6px rgba(0,19,145,.22); opacity:0; transition:opacity .12s; }
+  .wcard:hover > .wresize, .wresize:active, .wcard.wz-resizing > .wresize{ opacity:1; }
   .wresize svg{ width:14px; height:14px; }
   .wcard-head{ display:flex; align-items:flex-start; justify-content:space-between; gap:8px; }
   .wcard-head>div:first-child{ min-width:0; }
@@ -1058,6 +1059,9 @@
   .size-toolbar input:focus{ border-color:#001391; }
   .size-toolbar .stok{ width:42px; height:36px; display:inline-flex; align-items:center; justify-content:center; border-radius:8px; background:#001391; color:#fff; border:none; cursor:pointer; }
   .size-toolbar .stok svg{ width:18px; height:18px; }
+  .size-toolbar input.under{ border-color:#ec221f; }
+  .size-toolbar .stwarn{ display:none; position:absolute; left:0; right:0; top:calc(100% + 6px); background:#fdeceb; color:#c0392b; border:1px solid #f5c6c2; border-radius:8px; padding:6px 10px; font-size:12px; font-weight:600; text-align:center; }
+  .size-toolbar.warn .stwarn{ display:block; }
 
   /* Move (layer) mini-menu reuses .menu glass */
   #moveMenu{ min-width:184px; z-index:9002; }
@@ -1847,6 +1851,7 @@
       <input id="sizeW" type="number" min="180" value="404" aria-label="Largura (px)">
       <input id="sizeH" type="number" min="180" value="300" aria-label="Altura (px)">
       <button class="stok" id="sizeOk" title="OK"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round"><path d="M20 6 9 17l-5-5"/></svg></button>
+      <div class="stwarn" id="sizeWarn">Minimum size is 180 × 180 px.</div>
     </div>
 
     <!-- Move (layer order) menu -->
@@ -3748,6 +3753,7 @@
     if(app.getAttribute('data-state')!=='edit' || !selectedWidget) return;
     e.stopPropagation(); e.preventDefault();
     ptr={ mode:'resize', el:selectedWidget, sx:e.clientX, sy:e.clientY, ow:parseInt(selectedWidget.style.width)||404, oh:parseInt(selectedWidget.style.height)||300 };
+    selectedWidget.classList.add('wz-resizing');
   });
 
   function hideEditMenus(){ sizeToolbar.style.display='none'; moveMenu.style.display='none'; }
@@ -3861,6 +3867,7 @@
     if(ptr && ptr.mode==='widget'){ if(ptr.group){ for(var gi=0;gi<ptr.group.length;gi++) ptr.group[gi].el.classList.remove('dragging'); } else if(ptr.el) ptr.el.classList.remove('dragging'); }
     var gb=document.querySelector('.wcont-bar.grabbing'); if(gb) gb.classList.remove('grabbing');
     if(ptr && ptr.mode==='pan') viewport.classList.remove('panning');
+    if(ptr && ptr.mode==='resize' && ptr.el) ptr.el.classList.remove('wz-resizing');
     ptr=null; if(typeof hideGuides==='function') hideGuides();
   });
 
@@ -3904,14 +3911,14 @@
     sizeToolbar.style.display='flex';
     placeAbove(sizeToolbar);
   }
+  function sizeCheck(){ var wi=document.getElementById('sizeW'), hi=document.getElementById('sizeH'); var w=parseInt(wi.value)||0, h=parseInt(hi.value)||0; wi.classList.toggle('under', w>0 && w<180); hi.classList.toggle('under', h>0 && h<180); var bad=(w>0&&w<180)||(h>0&&h<180); sizeToolbar.classList.toggle('warn', bad); return !bad && w>=180 && h>=180; }
+  ['sizeW','sizeH'].forEach(function(id){ var el=document.getElementById(id); if(el) el.addEventListener('input', sizeCheck); });
   document.getElementById('sizeOk').addEventListener('click', function(e){
     e.stopPropagation();
-    if(selectedWidget){
-      var w=parseInt(document.getElementById('sizeW').value)||404;
-      var h=parseInt(document.getElementById('sizeH').value)||300;
-      selectedWidget.style.width=Math.max(180,w)+'px';
-      selectedWidget.style.height=Math.max(180,h)+'px';
-    }
+    var w=parseInt(document.getElementById('sizeW').value)||0, h=parseInt(document.getElementById('sizeH').value)||0;
+    if(w<180||h<180){ sizeCheck(); return; }   // avisa e não aplica até corrigir
+    if(selectedWidget){ selectedWidget.style.width=w+'px'; selectedWidget.style.height=h+'px'; }
+    sizeToolbar.classList.remove('warn');
     sizeToolbar.style.display='none';
     editToolbar.style.display='flex';
   });
@@ -3996,8 +4003,7 @@
     +'<div class="ed-tr ed-sectr"><button class="zswitch on" type="button" data-sec="title"></button><span>Show title</span></div>'
     +'<div class="ed-secbox" data-secfields="title"><div class="ed-grid3" style="grid-template-columns:2.4fr 1.1fr 0.7fr"><div><label class="ed-label">Title</label><input class="ed-input" id="cfgTitle" data-cfg="title" value="Units Today" placeholder="Enter title"></div><div><label class="ed-label">Size</label><select class="ed-input ed-native" data-cfg="size"><option value="small">Small</option><option value="medium" selected>Medium</option><option value="large">Large</option></select></div><div><label class="ed-label">Color</label><div class="ed-select"><span class="swatch cfg-color-title" style="background:#0a0a0b"></span>'+_CHEV+'</div></div></div></div>'
     +'<hr class="ed-hr">'
-    +'<div class="ed-tr" style="margin-top:2px"><button class="zswitch on" type="button" disabled style="opacity:.55;pointer-events:none" data-systip="Always on"></button><span>Display format</span></div>'
-    +'<div class="ed-secbox"><select class="ed-input ed-native" data-cfg="dispfmt" style="max-width:260px"><option value="standard">Standard</option><option value="reduced">Reduced</option></select></div>'
+    +'<div class="ed-secbox"><label class="ed-label">Display format</label><select class="ed-input ed-native" data-cfg="dispfmt" style="max-width:260px"><option value="standard">Standard</option><option value="reduced">Reduced</option></select></div>'
     +'<div class="ed-tr ed-sectr"><button class="zswitch" type="button" data-sec="dec"></button><span>Decimal places</span></div>'
     +'<div class="ed-secbox" data-secfields="dec"><select class="ed-input ed-native" data-cfg="dec" style="max-width:260px"><option value="0">None</option><option value="1">One</option><option value="2">Two</option><option value="3">Three</option></select></div>'
     +'<div class="ed-tr ed-sectr"><button class="zswitch" type="button" data-sec="target"></button><span>Show target</span></div>'
@@ -4008,7 +4014,7 @@
     +'<div class="ed-tr ed-sectr"><button class="zswitch" type="button" data-sec="caption"></button><span>Show legend</span></div>'
     +'<div class="ed-secbox sec-hidden" data-secfields="caption"><div class="ed-grid2"><div><label class="ed-label">Legend</label><input class="ed-input" data-cfg="legend" placeholder="Enter legend"></div><div><label class="ed-label">Color</label><div class="ed-select"><span class="swatch cfg-color-cap" style="background:#9aa0ac"></span>'+_CHEV+'</div></div></div></div>'
     +'<div class="ed-tr ed-sectr"><button class="zswitch" type="button" data-sec="unit"></button><span>Show unit</span></div>'
-    +'<div class="ed-secbox sec-hidden" data-secfields="unit"><label class="ed-label">Unit</label><input class="ed-input" data-cfg="unit" placeholder="e.g. pcs, %, kg" style="max-width:260px"></div>'
+    +'<div class="ed-secbox sec-hidden" data-secfields="unit"><label class="ed-label">Unit</label><input class="ed-input" data-cfg="unit" maxlength="4" placeholder="e.g. pcs, %, kg" style="max-width:260px"></div>'
     +'<div class="ed-tr ed-sectr"><button class="zswitch" type="button" data-sec="tip"></button><span>Show tip</span></div>'
     +'<div class="ed-secbox sec-hidden" data-secfields="tip"><label class="ed-label">Tip</label><input class="ed-input" data-cfg="tip" placeholder="Enter tip text"></div>'
     +'<div class="ed-tr"><button class="zswitch" type="button" data-cfgsw="tborder"></button><span>Transparent border</span></div>'
@@ -4059,7 +4065,7 @@
     if(num){ var disp=BASE.toLocaleString('pt-BR',{minimumFractionDigits:dec,maximumFractionDigits:dec}); if(secOn('target')) disp+='/'+TGT.toLocaleString('pt-BR'); num.textContent=disp; }
     var sub=card.querySelector('.wcard-sub');
     var n2box=card.querySelector('.num2');
-    if(n2box){ n2box.classList.remove('pos','on','neg'); n2box.classList.toggle('num2-tgt', secOn('target')); if(secOn('cf')){ n2box.classList.add(BASE>TGT?'pos':(BASE<TGT?'neg':'on')); n2box.style.background=''; if(num) num.style.color=''; } else { n2box.style.background='#f2f3f5'; if(num) num.style.color='#0a0a0b'; } }
+    if(n2box){ n2box.classList.remove('pos','on','neg'); n2box.classList.toggle('num2-tgt', secOn('target')); n2box.setAttribute('data-cf', secOn('cf')?'1':'0'); if(secOn('cf')){ n2box.classList.add(BASE>TGT?'pos':(BASE<TGT?'neg':'on')); n2box.style.background=''; if(num) num.style.color=''; } else { n2box.style.background='#f2f3f5'; if(num) num.style.color='#0a0a0b'; } }
     if(secOn('tip') && val('[data-cfg="tip"]')){ card.setAttribute('data-systip', val('[data-cfg="tip"]')); if(n2box) n2box.setAttribute('data-systip',''); } else { card.removeAttribute('data-systip'); if(n2box) n2box.removeAttribute('data-systip'); }
     var an=card.querySelector('.w-andon'); if(an){ var a=val('[data-cfg="andon"]')||'below'; an.style.display=(secOn('cf') && a!=='none')?'':'none'; }
     if(sub){ if(secOn('caption')&&val('[data-cfg="legend"]')){ sub.textContent=val('[data-cfg="legend"]'); sub.style.color=bg('.cfg-color-cap')||'#9aa0ac'; sub.style.display=''; } else { sub.textContent=''; sub.style.display='none'; } }
@@ -4632,18 +4638,23 @@
   // #91 — click a bar / ring segment in UPDATE mode to edit only that datapoint
   (function(){
     var ed=document.createElement('div'); ed.id='dpEdit'; ed.style.display='none';
-    ed.innerHTML='<div class="dpe-lbl" id="dpeLbl">Datapoint</div><div class="dpe-step"><button type="button" class="dpe-mn" id="dpeMinus" aria-label="Decrease">−</button><input class="dpe-in" id="dpeIn" type="number"><button type="button" class="dpe-pl" id="dpePlus" aria-label="Increase">+</button></div><div class="dpe-acts"><button class="dpe-cancel" id="dpeCancel">Cancel</button><button class="dpe-save" id="dpeSave">Save</button></div>';
+    ed.innerHTML='<div class="dpe-lbl" id="dpeLbl">Datapoint</div><div class="dpe-step"><button type="button" class="dpe-mn" id="dpeMinus" aria-label="Decrease">−</button><input class="dpe-in" id="dpeIn" type="number"><button type="button" class="dpe-pl" id="dpePlus" aria-label="Increase">+</button></div><div id="dpeTgtWrap" style="display:none"><div class="dpe-lbl" style="margin-top:10px">Target</div><input class="dpe-in" id="dpeTgt" type="number"></div><div class="dpe-acts"><button class="dpe-cancel" id="dpeCancel">Cancel</button><button class="dpe-save" id="dpeSave">Save</button></div>';
     document.body.appendChild(ed);
     var curEl=null;
     function placeDp(){ if(!curEl) return; var r=curEl.getBoundingClientRect(); ed.style.left=Math.min(window.innerWidth-210, Math.max(8, r.left+r.width/2-100))+'px'; var top=r.top-ed.offsetHeight-10; ed.style.top=(top>8?top:r.bottom+10)+'px'; }
-    function openDp(el){ curEl=el; document.getElementById('dpeLbl').textContent=el.getAttribute('data-d')||'Datapoint'; var inp=document.getElementById('dpeIn'); inp.value=(el.getAttribute('data-v')||'').toString().replace(/[^0-9.\-]/g,''); ed.style.display='block'; barTip.style.display='none'; placeDp(); inp.focus(); inp.select(); }
+    function openDp(el){ curEl=el; var isNum=el.classList.contains('num2'); document.getElementById('dpeLbl').textContent=el.getAttribute('data-d')||(isNum?'Value':'Datapoint'); var inp=document.getElementById('dpeIn');
+      var raw=el.getAttribute('data-v')||''; if(isNum){ var vt=(el.querySelector('.num2-val')||{}).textContent||''; if(vt.trim()) raw=vt; }
+      inp.value=raw.toString().replace(/\./g,'').replace(',','.').replace(/[^0-9.\-]/g,'');
+      var tw=document.getElementById('dpeTgtWrap'), tg=document.getElementById('dpeTgt');
+      if(isNum){ tw.style.display=''; tg.value=(el.getAttribute('data-t')||'').toString().replace(/[^0-9.\-]/g,''); } else { tw.style.display='none'; }
+      ed.style.display='block'; barTip.style.display='none'; placeDp(); inp.focus(); inp.select(); }
     window.__repositionDp=function(){ if(ed.style.display==='block' && curEl) placeDp(); };
     window.addEventListener('scroll', function(){ if(ed.style.display==='block' && curEl) placeDp(); }, true);
     window.addEventListener('resize', function(){ if(ed.style.display==='block' && curEl) placeDp(); });
     (function(){ function step(d){ var inp=document.getElementById('dpeIn'); var v=parseFloat(inp.value)||0; v=Math.max(0, Math.round((v+d)*100)/100); inp.value=v; } var mn=document.getElementById('dpeMinus'), pl=document.getElementById('dpePlus'); if(mn) mn.addEventListener('click', function(e){ e.stopPropagation(); step(-1); }); if(pl) pl.addEventListener('click', function(e){ e.stopPropagation(); step(1); }); })();
     function closeDp(){ ed.style.display='none'; curEl=null; }
     document.getElementById('dpeCancel').addEventListener('click', closeDp);
-    document.getElementById('dpeSave').addEventListener('click', function(){ if(curEl){ var nv=document.getElementById('dpeIn').value; var ov=parseFloat(curEl.getAttribute('data-v'))||0; curEl.setAttribute('data-v', nv); if(curEl.classList.contains('bar')||curEl.classList.contains('mb')){ var hs=curEl.style.height||''; var num=parseFloat(hs)||0; var unit=(hs.indexOf('%')>=0)?'%':'px'; var nh=(ov>0)? num*(parseFloat(nv)/ov) : num; nh=(unit==='%')?Math.max(1,Math.min(100,nh)):Math.max(2,Math.min(150,nh)); curEl.style.height=nh+unit; } else if(curEl.classList.contains('cd')){ var tg=parseFloat(curEl.getAttribute('data-t'))||80; var pc=Math.round((parseFloat(nv)||0)/tg*100); curEl.setAttribute('data-p', pc); curEl.classList.remove('r','g','y'); curEl.classList.add(pc>=100?'g':(pc>=85?'y':'r')); } else if(curEl.classList.contains('num2')){ var vv=parseFloat(nv)||0; var t2=parseFloat(curEl.getAttribute('data-t')); if(isNaN(t2)) t2=vv; curEl.classList.remove('pos','neg','on'); curEl.classList.add(vv>t2?'pos':(vv<t2?'neg':'on')); var vEl=curEl.querySelector('.num2-val'); if(vEl) vEl.textContent=Number(vv).toLocaleString('pt-BR'); } } closeDp(); });
+    document.getElementById('dpeSave').addEventListener('click', function(){ if(curEl){ var nv=document.getElementById('dpeIn').value; var ov=parseFloat(curEl.getAttribute('data-v'))||0; curEl.setAttribute('data-v', nv); if(curEl.classList.contains('bar')||curEl.classList.contains('mb')){ var hs=curEl.style.height||''; var num=parseFloat(hs)||0; var unit=(hs.indexOf('%')>=0)?'%':'px'; var nh=(ov>0)? num*(parseFloat(nv)/ov) : num; nh=(unit==='%')?Math.max(1,Math.min(100,nh)):Math.max(2,Math.min(150,nh)); curEl.style.height=nh+unit; } else if(curEl.classList.contains('cd')){ var tg=parseFloat(curEl.getAttribute('data-t'))||80; var pc=Math.round((parseFloat(nv)||0)/tg*100); curEl.setAttribute('data-p', pc); curEl.classList.remove('r','g','y'); curEl.classList.add(pc>=100?'g':(pc>=85?'y':'r')); } else if(curEl.classList.contains('num2')){ var vv=parseFloat(nv)||0; var tg=document.getElementById('dpeTgt'); var t2=parseFloat(tg&&tg.value!==''?tg.value:curEl.getAttribute('data-t')); if(isNaN(t2)) t2=vv; curEl.setAttribute('data-t', t2); curEl.setAttribute('data-v', vv); var cfon=curEl.getAttribute('data-cf')==='1'; curEl.classList.remove('pos','neg','on'); if(cfon) curEl.classList.add(vv>t2?'pos':(vv<t2?'neg':'on')); var vEl=curEl.querySelector('.num2-val'); if(vEl) vEl.textContent=Number(vv).toLocaleString('pt-BR'); } } closeDp(); });
     ed.addEventListener('mousedown', function(e){ e.stopPropagation(); });
     document.addEventListener('click', function(e){
       if(app.getAttribute('data-state')!=='update'){ return; }
